@@ -1,0 +1,123 @@
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React from "react";
+import { BASE_URL } from "../../../CONSTANTS";
+import { calculateTimeDifference } from "../../utils/timeDifference";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "react-native-vector-icons";
+import Color from "../../../assets/colors/Color";
+
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
+const StoryCommentHeader = () => {
+  const { selectedStory } = useStateContext();
+
+  let timePassed = calculateTimeDifference(selectedStory.createdAT);
+
+  const navigation = useNavigation();
+
+  return (
+    <View>
+      {/* User Details Container */}
+      <TouchableOpacity
+        style={[
+          styles.userContainer,
+          {
+            width: "93%",
+            alignSelf: "center",
+            marginTop: height * 0.01,
+          },
+        ]}
+        onPress={() => {
+          navigation.navigate("UserProfile", {
+            userPhoneNumber: selectedStory.postedby.phoneNumber,
+          });
+        }}
+      >
+        <View>
+          <View style={{ flex: 1 }}>
+            {/* User Image */}
+            <Image
+              style={styles.userImg}
+              source={{
+                uri: `${BASE_URL}/images/${selectedStory?.postedby?.profile}`,
+              }}
+              resizeMode="cover"
+            />
+          </View>
+        </View>
+
+        {/* User Details */}
+        <View style={{ flex: 1, marginLeft: width * 0.03 }}>
+          {/* User Type */}
+          <View style={styles.userContainer}>
+            <View style={styles.userNameContainer}>
+              <Text style={styles.userName}>
+                {selectedStory?.postedby?.fullName}
+              </Text>
+              {(selectedStory?.postedby?.type === "Operations" ||
+                selectedStory?.postedby?.type === "Admin" ||
+                selectedStory?.postedby?.type === "Manager" ||
+                selectedStory?.postedby?.type === "Assistant Manager" ||
+                selectedStory?.postedby?.type === "Super Admin" ||
+                selectedStory?.postedby?.type === "celebrity") && (
+                <MaterialCommunityIcons
+                  name="check-decagram"
+                  style={styles.adminIcon}
+                />
+              )}
+            </View>
+          </View>
+          <Text style={styles.postDuration}>{timePassed} </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default StoryCommentHeader;
+
+const styles = StyleSheet.create({
+  userContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingVertical: 2,
+  },
+  userImg: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+    borderRadius: height * 0.1,
+  },
+  userName: {
+    fontWeight: "bold",
+    color: Color.Black,
+    paddingRight: width * 0.03,
+  },
+  userNameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    overflow: "hidden",
+  },
+  postDuration: {
+    fontSize: 14,
+    fontWeight: "400",
+    fontFamily: "Roboto_400Regular",
+    color: Color.DarkGrey,
+  },
+  adminIcon: {
+    alignSelf: "center",
+    fontSize: height * 0.018,
+    color: Color.Blue,
+  },
+});

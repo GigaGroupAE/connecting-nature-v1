@@ -1,0 +1,115 @@
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import AddButton from "../AddButton";
+import { MaterialIcons, Entypo } from "react-native-vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import Color from "../../../assets/colors/Color";
+import { useUserState } from "../../slices/userSlice";
+import { Image } from "react-native";
+import { scale } from "react-native-size-matters";
+
+const CreatePost = (props) => {
+  const navigation = useNavigation();
+  const userstate = useUserState();
+
+  return (
+    <Modal animationType="slide">
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          paddingHorizontal: 17,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => props.onCancel()}
+          style={styles.cancelIcon}
+        >
+          <Entypo name="cross" color={Color.Black} size={30} />
+        </TouchableOpacity>
+        {userstate.type !== "user" && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: "28%",
+              right: "38%",
+              alignSelf: "flex-end",
+            }}
+          >
+            <Text style={styles.text}>New Spotlight Story</Text>
+          </View>
+        )}
+        {userstate.type !== "user" && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: "25%",
+              paddingHorizontal: 17,
+              marginLeft: "75%",
+            }}
+          >
+            <TouchableOpacity
+              style={styles.addPost}
+              onPress={() => {
+                navigation.navigate("AddPost", {
+                  origin: "story",
+                  storyReload: props.storyReload,
+                });
+                props.closeModal();
+              }}
+            >
+              <Image
+                source={require("../../../assets/story.png")}
+                style={styles.imageStyle}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View
+          style={{
+            position: "absolute",
+            bottom: "14.5%",
+            right: "38%",
+            alignSelf: "flex-end",
+          }}
+        >
+          <Text style={styles.text}>Create New Post</Text>
+        </View>
+        <AddButton
+          clicktrigger={() => props.onAddPost()}
+          activeScreen={"CreatePost"}
+        />
+      </View>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  cancelIcon: {
+    alignSelf: "flex-end",
+    paddingHorizontal: 15,
+    marginTop: 17,
+  },
+  addPost: {
+    alignContent: "center",
+    alignItems: "center",
+    backgroundColor: Color.LightGrey,
+    borderRadius: 50,
+    padding: 17,
+    width: 58,
+    height: 58,
+    justifyContent: "center",
+  },
+  text: {
+    fontFamily: "Roboto_400Regular",
+    color: Color.Black,
+    fontSize: 14,
+  },
+  imageStyle: {
+    width: scale(28),
+    height: scale(28),
+  },
+});
+
+export default CreatePost;

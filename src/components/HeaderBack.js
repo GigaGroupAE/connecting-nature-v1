@@ -1,0 +1,61 @@
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Color from "../../assets/colors/Color";
+import { Ionicons } from "react-native-vector-icons";
+import { scale } from "react-native-size-matters";
+import { useNavigation } from "@react-navigation/native";
+
+export default function Header(props) {
+  const navigation = useNavigation();
+  const archived = props?.archived;
+  return (
+    <SafeAreaView>
+      <View style={styles.container}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={() => props.onback()}>
+            <AntDesign name="arrowleft" size={25} color={Color.Black} />
+          </TouchableOpacity>
+          <Text style={styles.title}>{props.title}</Text>
+        </View>
+        {!props.loading && (
+          <TouchableOpacity
+            style={styles.archiveContainer}
+            onPress={() => navigation.navigate("ArchivedScreen", { archived })}
+          >
+            <Ionicons name="archive-outline" style={styles.icon} />
+          </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Color.White,
+    alignContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 19,
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderColor: Color.VeryLightGrey,
+    justifyContent: "space-between",
+  },
+  title: {
+    color: Color.Black,
+    fontSize: 18,
+    lineHeight: 30,
+    marginTop: 2,
+    marginLeft: 10,
+    fontFamily: "Roboto_600SemiBold",
+  },
+  archiveContainer: {
+    paddingHorizontal: scale(10),
+  },
+  icon: {
+    fontSize: scale(18),
+    color: Color.Black,
+  },
+});

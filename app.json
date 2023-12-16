@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "Connecting Nature",
+    "slug": "connecting-nature",
+    "version": "1.0.5",
+    "orientation": "portrait",
+    "icon": "./assets/cn-icon.png",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(CONNECTING_NATURE) to use your location."
+        }
+  
+      ]
+    ],
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/cn-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "android": {
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/cn-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.notify.connectingnatureapp",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDpubq9wXVCU5nKMDsDG2ZzikdKIjW6cJU"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "960e2d66-956d-476c-a181-d6807eca91ea"
+      }
+    }
+  }
+}
