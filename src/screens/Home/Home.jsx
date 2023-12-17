@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react"
 import {
   StyleSheet,
   View,
@@ -7,31 +7,31 @@ import {
   RefreshControl,
   StatusBar,
   ActivityIndicator,
-} from "react-native";
-import BottomTab from "../../components/BottomTab.js";
+} from "react-native"
+import BottomTab from "../../components/BottomTab.js"
 
-import Post from "../../components/Post.js";
-import { useState, useEffect, useRef } from "react";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
-import { useUserState, useUserStateActions } from "../../slices/userSlice.js";
-import axios from "axios";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { usePostsStateActions } from "../../slices/postsSlice.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import Color from "../../../assets/colors/Color.js";
-import AppLoader from "../../components/AppLoader.js";
-import MiniVideoPlayer from "../../components/MiniVideoPlayer.js";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import HomeHeader from "./HomeHeader.jsx";
-import StoryHeader from "./StoryHeader.jsx";
-import HeaderForCampaign from "./HeaderForCampaign.jsx";
-import { axiosInstance } from "../../../axiosInstance.js";
+import Post from "../../components/Post.js"
+import { useState, useEffect, useRef } from "react"
+import * as Device from "expo-device"
+import * as Notifications from "expo-notifications"
+import Constants from "expo-constants"
+import { useUserState, useUserStateActions } from "../../slices/userSlice.js"
+import axios from "axios"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
+import { usePostsStateActions } from "../../slices/postsSlice.js"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { BASE_URL } from "../../../CONSTANTS.js"
+import Color from "../../../assets/colors/Color.js"
+import AppLoader from "../../components/AppLoader.js"
+import MiniVideoPlayer from "../../components/MiniVideoPlayer.js"
+import { useStateContext } from "../../contexts/ContextProvider.js"
+import HomeHeader from "./HomeHeader.jsx"
+import StoryHeader from "./StoryHeader.jsx"
+import HeaderForCampaign from "./HeaderForCampaign.jsx"
+import { axiosInstance } from "../../../axiosInstance.js"
 
-const LIMIT = 6; // initial number of posts
-const Height = Dimensions.get("screen").height;
+const LIMIT = 6 // initial number of posts
+const Height = Dimensions.get("screen").height
 
 const properArray = [
   // {
@@ -115,22 +115,22 @@ const properArray = [
     __v: 0,
     _id: "634ca222416a541201ee82d01e",
   },
-];
+]
 
 export default function Home() {
   //loading while fetching posts during pagination
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   //pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState();
-  const [campaign, setcampaign] = useState([]);
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState()
+  const [campaign, setcampaign] = useState([])
 
   //state context
   const { showMiniWindow, videoURI, videoAutherName, Stories, setStories } =
-    useStateContext();
+    useStateContext()
 
-  const flatListRef = useRef(null);
+  const flatListRef = useRef(null)
 
   const scrollToTop = useCallback(() => {
     if (flatListRef.current) {
@@ -138,14 +138,14 @@ export default function Home() {
         offset: 0,
         animated: true,
         duration: 500,
-      });
+      })
     }
-  }, []);
-  const [refresh, setRefresh] = useState(false);
-  const isFocused = useIsFocused();
+  }, [])
+  const [refresh, setRefresh] = useState(false)
+  const isFocused = useIsFocused()
   const reload = () => {
-    setRefresh(true);
-    setPage(2);
+    setRefresh(true)
+    setPage(2)
     axios
       .get(`${BASE_URL}/posts/posts-pagination?page=1&limit=${LIMIT}`, {
         headers: {
@@ -153,34 +153,34 @@ export default function Home() {
         },
       })
       .then((res) => {
-        setposts(res.data.newPosts);
-        setLoadingPending(false);
-        setRefresh(false);
+        setposts(res.data.newPosts)
+        setLoadingPending(false)
+        setRefresh(false)
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
-  const [loadingPending, setLoadingPending] = useState(true);
+  const [loadingPending, setLoadingPending] = useState(true)
 
-  const userstate = useUserState();
+  const userstate = useUserState()
   //INCLUDE user AS AN ARGUMENT IN BELOW 2 LINES IF YOU WANT TO ACCESS ADMIN AND CAMPAIGN CREATION.S
 
-  const userActions = useUserStateActions();
-  const PostActions = usePostsStateActions();
-  const navigation = useNavigation();
-  const [posts, setposts] = useState([]);
+  const userActions = useUserStateActions()
+  const PostActions = usePostsStateActions()
+  const navigation = useNavigation()
+  const [posts, setposts] = useState([])
   useEffect(() => {
-    fetchData();
-  }, [isFocused]);
+    fetchData()
+  }, [isFocused])
 
   //function for fetching posts
   const fetchData = async () => {
-    if (page === totalPages + 1) return;
-    console.log("fetch data is getting called with page number ", page);
+    if (page === totalPages + 1) return
+    console.log("fetch data is getting called with page number ", page)
 
-    setLoading(true);
+    setLoading(true)
 
     axios
       .get(`${BASE_URL}/posts/posts-pagination?page=${page}&limit=${LIMIT}`, {
@@ -189,39 +189,39 @@ export default function Home() {
         },
       })
       .then((res) => {
-        setLoading(false);
-        setposts([...posts, ...res.data.newPosts]);
-        setTotalPages(res.data.totalPages);
-        PostActions.setPosts({ posts });
-        setLoadingPending(false);
-        setRefresh(false);
-        setPage((prev) => prev + 1);
+        setLoading(false)
+        setposts([...posts, ...res.data.newPosts])
+        setTotalPages(res.data.totalPages)
+        PostActions.setPosts({ posts })
+        setLoadingPending(false)
+        setRefresh(false)
+        setPage((prev) => prev + 1)
       })
       .catch((err) => {
-        setLoading(false);
-        console.log("err while fetching posts is ", err);
-      });
-  };
+        setLoading(false)
+        console.log("err while fetching posts is ", err)
+      })
+  }
   async function registerForPushNotificationsAsync() {
-    let token;
+    let token
     if (Device.isDevice) {
       const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+        await Notifications.getPermissionsAsync()
+      let finalStatus = existingStatus
       if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
+        alert("Failed to get push token for push notification!")
+        return
       }
       token = await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig.extra.eas.projectId,
-      });
-      console.log(token);
+      })
+      console.log(token)
     } else {
-      alert("Must use physical device for Push Notifications");
+      alert("Must use physical device for Push Notifications")
     }
 
     if (Platform.OS === "android") {
@@ -230,22 +230,22 @@ export default function Home() {
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",
-      });
+      })
     }
 
-    return token;
+    return token
   }
 
   useEffect(() => {
     if (isFocused) {
       registerForPushNotificationsAsync().then((token) => {
-        setExpoPushToken(token);
+        setExpoPushToken(token)
         //make api call to save the token
         const config = {
           headers: {
             "auth-token": userstate.token,
           },
-        };
+        }
 
         //if there's a token in the state
         //that means that there must be a token in the database
@@ -259,35 +259,35 @@ export default function Home() {
               config
             )
             .then((res) => {
-              userActions.setExpoPushToken(res.data.expoPushToken);
+              userActions.setExpoPushToken(res.data.expoPushToken)
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         }
-      });
+      })
 
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification);
-        });
+          setNotification(notification)
+        })
 
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
-        });
+          console.log(response)
+        })
 
       return () => {
         Notifications.removeNotificationSubscription(
           notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
+        )
+        Notifications.removeNotificationSubscription(responseListener.current)
+      }
     }
-  }, [isFocused]);
+  }, [isFocused])
 
   async function registerForPushNotificationsAsync() {
-    let token;
+    let token
 
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync("default", {
@@ -295,93 +295,94 @@ export default function Home() {
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",
-      });
+      })
     }
 
     if (Device.isDevice) {
       const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+        await Notifications.getPermissionsAsync()
+      let finalStatus = existingStatus
       if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
+        alert("Failed to get push token for push notification!")
+        return
       }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+      token = (await Notifications.getExpoPushTokenAsync()).data
     } else {
-      alert("Must use physical device for Push Notifications");
+      alert("Must use physical device for Push Notifications")
     }
 
-    return token;
+    return token
   }
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  const [expoPushToken, setExpoPushToken] = useState("")
+  const [notification, setNotification] = useState(false)
+  const notificationListener = useRef()
+  const responseListener = useRef()
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
       shouldSetBadge: false,
     }),
-  });
+  })
 
-  const [videoInBottomNav, setNavVideo] = useState(null);
+  const [videoInBottomNav, setNavVideo] = useState(null)
   const video = (props) => {
-    setNavVideo(props);
-  };
+    setNavVideo(props)
+  }
 
   const handleEndReached = () => {
     if (!loading) {
-      fetchData();
+      fetchData()
     }
-  };
+  }
 
   const fetchStory = async () => {
-    setRefresh(true);
+    setRefresh(true)
     try {
       const response = await axios.get(`${BASE_URL}/story/getstories`, {
         headers: {
           "auth-token": userstate.token,
         },
-      });
-      setStories([...response.data]);
+      })
+      setStories([...response.data])
 
-      setRefresh(false);
+      setRefresh(false)
     } catch (error) {
-      console.error("Error fetching stories:", error);
-      setRefresh(false);
+      console.error("Error fetching stories:", error)
+      setRefresh(false)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
           "/campaigns/mostrecentcampaign"
-        );
+        )
 
         if (response?.data?.campaigns) {
-          setcampaign(response?.data?.campaigns);
+          setcampaign(response?.data?.campaigns)
         }
       } catch (error) {
-        console.log("Error:", error);
+        console.log("Error:", error)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
-  const HeaderComponent = useMemo(() => <HomeHeader />, []);
-  const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories]);
+  const HeaderComponent = useMemo(() => <HomeHeader />, [])
+  const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories])
   const ActivCampaignHeader = useMemo(
     () => <HeaderForCampaign campaign={campaign} />,
     [campaign]
-  );
+  )
 
+  console.log(posts)
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pageContainer}>
@@ -394,7 +395,7 @@ export default function Home() {
           // data={properArray}
           data={posts}
           keyExtractor={(item) => {
-            return item._id;
+            return item._id
           }}
           ListHeaderComponent={storyHeaderComponent}
           showsVerticalScrollIndicator={false}
@@ -434,7 +435,7 @@ export default function Home() {
 
       <StatusBar backgroundColor={Color.Blue} />
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -455,4 +456,4 @@ const styles = StyleSheet.create({
     height: "9%",
     bottom: Height * 0.07,
   },
-});
+})

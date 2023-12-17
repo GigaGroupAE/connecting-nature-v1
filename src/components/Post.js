@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react"
 import {
   StyleSheet,
   Text,
@@ -7,55 +7,55 @@ import {
   TouchableOpacity,
   Dimensions,
   Pressable,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
+} from "react-native"
+import { useNavigation } from "@react-navigation/native"
+import axios from "axios"
 
 //Icons import
-import { FontAwesome, AntDesign } from "react-native-vector-icons";
-import { useUserState } from "./../slices/userSlice";
+import { FontAwesome, AntDesign } from "react-native-vector-icons"
+import { useUserState } from "./../slices/userSlice"
 //HOST NAME
-import { BASE_URL } from "../../CONSTANTS";
-import Color from "../../assets/colors/Color";
+import { BASE_URL } from "../../CONSTANTS"
+import Color from "../../assets/colors/Color"
 
-import BottomSheetForPost from "./BottomSheetForPost";
-import moment from "moment";
-import PostHeader from "../screens/Home/PostHeader";
-import PostDeleteModal from "../screens/Home/PostDeleteModal";
-import PostDescription from "./PostDesciption";
-import PostVideo from "../screens/Home/PostVideo";
-import { useStateContext } from "../contexts/ContextProvider";
-import PostImage from "../screens/Home/PostImage";
-import PostSharedHeader from "./PostSharedHeader";
+import BottomSheetForPost from "./BottomSheetForPost"
+import moment from "moment"
+import PostHeader from "../screens/Home/PostHeader"
+import PostDeleteModal from "../screens/Home/PostDeleteModal"
+import PostDescription from "./PostDesciption"
+import PostVideo from "../screens/Home/PostVideo"
+import { useStateContext } from "../contexts/ContextProvider"
+import PostImage from "../screens/Home/PostImage"
+import PostSharedHeader from "./PostSharedHeader"
 
 export default function Post(props, postId) {
-  var date = moment().utcOffset("+05:00");
-  const { showSnackbar } = useStateContext();
-  const [visible, setVisible] = useState(false);
-  const [modalVisible, setmodalVisible] = useState(false);
+  var date = moment().utcOffset("+05:00")
+  const { showSnackbar } = useStateContext()
+  const [visible, setVisible] = useState(false)
+  const [modalVisible, setmodalVisible] = useState(false)
   const toggleBottomNavigationView = () => {
-    setVisible(!visible);
-  };
-  const navigation = useNavigation();
-  const userState = useUserState();
+    setVisible(!visible)
+  }
+  const navigation = useNavigation()
+  const userState = useUserState()
 
-  const route = `${BASE_URL}/posts/updateposts/${props.post._id}`;
-  const [reactions, setreactions] = useState(props.post.reactions);
-  const [comment, setcomment] = useState(props?.post?.comments);
-  const [liked, setliked] = useState(false);
+  const route = `${BASE_URL}/posts/updateposts/${props.post._id}`
+  const [reactions, setreactions] = useState(props.post.reactions)
+  const [comment, setcomment] = useState(props?.post?.comments)
+  const [liked, setliked] = useState(false)
 
   useEffect(() => {
-    setreactions(props.post.reactions);
+    setreactions(props.post.reactions)
     setliked(
       reactions.some((user) => {
-        return user._id === userState.id;
+        return user._id === userState.id
       })
-    );
-  }, [props.post.reactions]);
+    )
+  }, [props.post.reactions])
 
   useEffect(() => {
-    setcomment(props?.post?.comments);
-  }, [props?.post?.comments]);
+    setcomment(props?.post?.comments)
+  }, [props?.post?.comments])
 
   const modalComponent = useMemo(
     () => (
@@ -66,7 +66,7 @@ export default function Post(props, postId) {
       />
     ),
     [modalVisible, props.post, props.reload]
-  );
+  )
 
   const handleOnClickComment = () => {
     navigation.navigate("Comments", {
@@ -76,10 +76,10 @@ export default function Post(props, postId) {
       data: props.data,
       expoPushToken: props?.post?.postedby?.expoPushToken,
       setcomment: setcomment,
-    });
-  };
+    })
+  }
 
-  const [shares, setshares] = useState([...props.post.shares]);
+  const [shares, setshares] = useState([...props.post.shares])
   //notify shall be true in case of like action
   //notify shall be false in case of unlike action
   //so that the user shall not receive notification when the user has unliked
@@ -92,7 +92,7 @@ export default function Post(props, postId) {
           headers: {
             "auth-token": userState.token,
           },
-        };
+        }
         const { data } = await axios.post(
           `${BASE_URL}/notify/commentNotification/${props.post._id}`,
           {
@@ -112,7 +112,7 @@ export default function Post(props, postId) {
             },
           },
           config
-        );
+        )
       }
     }
 
@@ -127,12 +127,12 @@ export default function Post(props, postId) {
         }
       )
       .then((res) => {
-        setreactions(res.data.reactions);
+        setreactions(res.data.reactions)
       })
-      .catch((e) => console.log(e));
-  };
+      .catch((e) => console.log(e))
+  }
   const handleonshare = async (post) => {
-    navigation.navigate("postShare", { post: post, reload: props.reload });
+    navigation.navigate("postShare", { post: post, reload: props.reload })
     // try {
     //   let tempshares = [...shares];
     //   tempshares.push(userState.id);
@@ -186,7 +186,7 @@ export default function Post(props, postId) {
     //     "Sorry, we couldn't share the post at the moment. Please try again later."
     //   );
     // }
-  };
+  }
 
   const handleLocalNotification = async () => {
     try {
@@ -194,7 +194,7 @@ export default function Post(props, postId) {
         headers: {
           "auth-token": userState.token,
         },
-      };
+      }
       const notification = await axios.post(
         `${BASE_URL}/notify/commentNotification/${props.post._id}`,
         {
@@ -216,42 +216,42 @@ export default function Post(props, postId) {
           },
         },
         config
-      );
+      )
     } catch (error) {
-      console.log("error in local notofications", error);
+      console.log("error in local notofications", error)
     }
-  };
+  }
   const handlePostView = (props) => {
     navigation.navigate("PostView", {
       url: `${BASE_URL}/images/${props.post.media.name}`,
       message: props.post.description,
-    });
-  };
+    })
+  }
   const handlePostsLike = (item) => {
-    navigation.navigate("PostsLike", { item });
-  };
+    navigation.navigate("PostsLike", { item })
+  }
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      let templike = [...reactions]
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      };
-      templike.push(newLikes);
-      updatereactions(templike, true);
-      setliked(true);
+      }
+      templike.push(newLikes)
+      updatereactions(templike, true)
+      setliked(true)
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id;
-      });
-      updatereactions(newlikes, false);
-      setliked(false);
+        return reaction._id !== userState.id
+      })
+      updatereactions(newlikes, false)
+      setliked(false)
     }
-  };
+  }
 
   // Include data in the dependency array if you want this to run when data changes
   return (
@@ -420,7 +420,7 @@ export default function Post(props, postId) {
         )}
       </View>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -543,4 +543,4 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontSize: 21,
   },
-});
+})

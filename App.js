@@ -1,21 +1,21 @@
-import React from "react";
-import { ActivityIndicator } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import persistStore from "redux-persist/es/persistStore";
-import { store } from "./store";
-import { Provider as ReduxProvider } from "react-redux";
-import { PersistGate } from "redux-persist/lib/integration/react";
-import { Provider as PaperProvider } from "react-native-paper";
-import { isEqual } from "lodash";
+import React from "react"
+import { ActivityIndicator } from "react-native"
+import { createStackNavigator } from "@react-navigation/stack"
+import { NavigationContainer } from "@react-navigation/native"
+import persistStore from "redux-persist/es/persistStore"
+import { store } from "./store"
+import { Provider as ReduxProvider } from "react-redux"
+import { PersistGate } from "redux-persist/lib/integration/react"
+import { Provider as PaperProvider } from "react-native-paper"
+import { isEqual } from "lodash"
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import {
   useUserState,
   initialState as initialUserState,
-} from "./src/slices/userSlice.js";
-import { useFonts } from "expo-font";
+} from "./src/slices/userSlice.js"
+import { useFonts } from "expo-font"
 
 import {
   AdminHome,
@@ -88,41 +88,41 @@ import {
   ArchivedScreen,
   ArchivedCampaign,
   dodaylist,
-} from "./src/screens";
+} from "./src/screens"
 //contexts
 import {
   ContextProvider,
   useStateContext,
-} from "./src/contexts/ContextProvider";
-import SnackBar from "./src/components/SnackBar";
-import Color from "./assets/colors/Color";
-import OrderRequest from "./src/screens/Order Request/OrderRequest";
-import PostShare from "./src/components/PostShare";
-import Animation from "./src/screens/Animation";
-import LivePointsComment from "./src/components/LivePointsComment";
-import CreateCampaignPost from "./src/components/CreateCampaignPost";
+} from "./src/contexts/ContextProvider"
+import SnackBar from "./src/components/SnackBar"
+import Color from "./assets/colors/Color"
+import OrderRequest from "./src/screens/Order Request/OrderRequest"
+import PostShare from "./src/components/PostShare"
+import Animation from "./src/screens/Animation"
+import LivePointsComment from "./src/components/LivePointsComment"
+import CreateCampaignPost from "./src/components/CreateCampaignPost"
 let customFonts = {
   Roboto_300Light: require("./assets/fonts/Roboto-Light.ttf"),
   Roboto_400Regular: require("./assets/fonts/Roboto-Regular.ttf"),
   Roboto_500Medium: require("./assets/fonts/Roboto-Medium.ttf"),
   Roboto_600SemiBold: require("./assets/fonts/Roboto-Bold.ttf"),
   Roboto_700Bold: require("./assets/fonts/Roboto-Bold.ttf"),
-};
+}
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator()
 
-let persistor = persistStore(store);
+let persistor = persistStore(store)
 
 //REACT-QUERY
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 function Main() {
-  const { loading } = useStateContext();
-  const UserState = useUserState();
+  const { loading } = useStateContext()
+  const UserState = useUserState()
   const initialRouteName = isEqual(initialUserState, UserState)
     ? "SignIn"
-    : "Home";
+    : "Home"
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -238,11 +238,11 @@ function Main() {
 
       <SnackBar />
     </NavigationContainer>
-  );
+  )
 }
 
 export default function App() {
-  const [isLoaded] = useFonts(customFonts);
+  const [isLoaded] = useFonts(customFonts)
   if (!isLoaded) {
     return (
       <ActivityIndicator
@@ -250,7 +250,7 @@ export default function App() {
         color={Color.Blue}
         style={{ flex: 1, alignSelf: "center", justifyContent: "center" }}
       />
-    );
+    )
   }
   return (
     <ReduxProvider store={store}>
@@ -264,5 +264,5 @@ export default function App() {
         </PaperProvider>
       </PersistGate>
     </ReduxProvider>
-  );
+  )
 }

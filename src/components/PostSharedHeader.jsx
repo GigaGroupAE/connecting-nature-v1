@@ -1,16 +1,16 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { Entypo } from "react-native-vector-icons";
-import { Dimensions } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../utils/timeDifference";
-import { scale } from "react-native-size-matters";
-import Color from "../../assets/colors/Color";
-import AdminIcon from "./AdminIcon";
-import PostDescription from "./PostDesciption";
-import { BASE_URL } from "../../CONSTANTS";
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import React from "react"
+import { Entypo } from "react-native-vector-icons"
+import { Dimensions } from "react-native"
+import { useNavigation } from "@react-navigation/native"
+import { calculateTimeDifference } from "../utils/timeDifference"
+import { scale } from "react-native-size-matters"
+import Color from "../../assets/colors/Color"
+import AdminIcon from "./AdminIcon"
+import PostDescription from "./PostDesciption"
+import { BASE_URL } from "../../CONSTANTS"
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 
 const PostSharedHeader = ({
   postedBy,
@@ -19,29 +19,29 @@ const PostSharedHeader = ({
   description,
   createdAT,
 }) => {
-  const navigation = useNavigation();
-  const userImage = postedBy?.profile;
-  const userName = postedBy?.fullName;
-  const userType = postedBy?.type;
-  const userPhoneNumber = postedBy?.postedby?.phoneNumber;
-  const ownerImage = sharedBy?.postedby?.profile;
-  const ownerName = sharedBy?.postedby.fullName;
-  const ownerPhoneNumber = sharedBy?.postedby?.phoneNumber;
-  const ownerType = sharedBy?.postedby?.type;
+  const navigation = useNavigation()
+  const userImage = postedBy?.profile
+  const userName = postedBy?.fullName
+  const userType = postedBy?.type
+  const userPhoneNumber = postedBy?.postedby?.phoneNumber
+  const ownerImage = sharedBy?.postedby?.profile
+  const ownerName = sharedBy?.postedby?.fullName
+  const ownerPhoneNumber = sharedBy?.postedby?.phoneNumber
+  const ownerType = sharedBy?.postedby?.type
 
   const handleUserProfile = () => {
     navigation.navigate("UserProfile", {
       userPhoneNumber,
-    });
-  };
+    })
+  }
   const handleOwnerProfileNavigation = () => {
     navigation.navigate("UserProfile", {
       userPhoneNumber: ownerPhoneNumber,
-    });
-  };
+    })
+  }
 
-  let timePassed = calculateTimeDifference(createdAT);
-  let postTime = calculateTimeDifference(sharedBy?.createdAT);
+  let timePassed = calculateTimeDifference(createdAT)
+  let postTime = calculateTimeDifference(sharedBy?.createdAT)
   return (
     <View>
       <View style={styles.sharedContainer}>
@@ -148,10 +148,10 @@ const PostSharedHeader = ({
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default PostSharedHeader;
+export default PostSharedHeader
 
 const styles = StyleSheet.create({
   postHead: {
@@ -231,4 +231,4 @@ const styles = StyleSheet.create({
     marginTop: scale(7),
     borderTopWidth: 1,
   },
-});
+})
