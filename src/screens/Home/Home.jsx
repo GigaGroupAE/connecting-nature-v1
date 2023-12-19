@@ -17,7 +17,11 @@ import * as Notifications from "expo-notifications"
 import Constants from "expo-constants"
 import { useUserState, useUserStateActions } from "../../slices/userSlice.js"
 import axios from "axios"
-import { useIsFocused, useNavigation } from "@react-navigation/native"
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native"
 import { usePostsStateActions } from "../../slices/postsSlice.js"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL } from "../../../CONSTANTS.js"
@@ -33,93 +37,10 @@ import { axiosInstance } from "../../../axiosInstance.js"
 const LIMIT = 6 // initial number of posts
 const Height = Dimensions.get("screen").height
 
-const properArray = [
-  // {
-  //   comments: [],
-  //   createdAT: "2023-11-09T09:20:01.342Z",
-  //   description: "This is campagin post",
-  //   media: {
-  //     name: "16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-  //     type: "image/jpeg",
-  //     compressedPath:
-  //       "/images/compressed/16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-  //   },
-  //   postedby: {
-  //     _id: "6532afbee49eeb894e313434",
-  //     phoneNumber: "03207332722",
-  //     fullName: "Afzaal Ahmad",
-  //     type: "Admin",
-  //     profile: "169936058302803207332722.jpg",
-  //   },
-  //   reactions: [],
-  //   sharedBy: {
-  //     _id: "6532afbee49eeb894e313434",
-  //     phoneNumber: "03207332722",
-  //     fullName: "Afzaal Ahmad",
-  //     type: "Admin",
-  //     profile: "169936058302803207332722.jpg",
-  //   },
-  //   shares: [],
-  //   __v: 0,
-  //   _id: "654ca441dsfa541201ee82d01e",
-  // },
-  {
-    comments: [],
-    createdAT: "2023-11-09T09:20:01.342Z",
-    description: "This is campagin post",
-    media: {
-      name: "16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-      type: "image/jpeg",
-      compressedPath:
-        "/images/compressed/16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-    },
-    postedby: {
-      _id: "6532afbee49eeb894e313434",
-      phoneNumber: "03207332722",
-      fullName: "Afzaal Ahmad",
-      type: "Admin",
-      profile: "169936058302803207332722.jpg",
-    },
-    reactions: [],
-    sharedBy: {
-      _id: "6532afbeess9eeb894e313434",
-      phoneNumber: "03107332722",
-      fullName: " Ahmad",
-      type: "Admin",
-      profile: "169936058302803207332722.jpg",
-    },
-    shares: [],
-    __v: 0,
-    _id: "654ca4416a541201ee82d01e",
-  },
-  {
-    comments: [],
-    createdAT: "2023-11-09T09:20:01.342Z",
-    description: "This is campagin post",
-    media: {
-      name: "16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-      type: "image/jpeg",
-      compressedPath:
-        "/images/compressed/16995216011011699463426601Afzaal Ahmad_compressed_compressed.jpg",
-    },
-    postedby: {
-      _id: "6532afbee49eeb894e313434",
-      phoneNumber: "03207332722",
-      fullName: "Afzaal Ahmad",
-      type: "Admin",
-      profile: "169936058302803207332722.jpg",
-    },
-    reactions: [],
-    sharedBy: null,
-    shares: [],
-    __v: 0,
-    _id: "634ca222416a541201ee82d01e",
-  },
-]
-
 export default function Home() {
   //loading while fetching posts during pagination
   const [loading, setLoading] = useState(false)
+  const isFocused = useIsFocused()
 
   //pagination
   const [page, setPage] = useState(1)
@@ -142,7 +63,6 @@ export default function Home() {
     }
   }, [])
   const [refresh, setRefresh] = useState(false)
-  const isFocused = useIsFocused()
   const reload = () => {
     setRefresh(true)
     setPage(2)
@@ -171,9 +91,12 @@ export default function Home() {
   const PostActions = usePostsStateActions()
   const navigation = useNavigation()
   const [posts, setposts] = useState([])
-  useEffect(() => {
-    fetchData()
-  }, [isFocused])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData() // Fetch data whenever the screen gains focus
+    }, [fetchData])
+  )
 
   //function for fetching posts
   const fetchData = async () => {
@@ -382,7 +305,6 @@ export default function Home() {
     [campaign]
   )
 
-  console.log(posts)
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pageContainer}>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -7,88 +7,83 @@ import {
   StyleSheet,
   Pressable,
   Alert,
-} from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import VideoPlayer from "expo-video-player";
-import { scale } from "react-native-size-matters";
-import { AntDesign, FontAwesome, Entypo } from "react-native-vector-icons";
-import axios from "axios";
-import * as MediaLibrary from "expo-media-library";
-import moment from "moment";
-import { useUserState } from "../slices/userSlice";
-import { BASE_URL } from "../../CONSTANTS";
-import { useStateContext } from "../contexts/ContextProvider";
-import DescriptionText from "./DescriptionText";
-import Color from "../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import * as Permissions from "expo-permissions";
-import * as FileSystem from "expo-file-system";
-import PostShareModal from "./PostShareModal";
-let deviceHeight = Dimensions.get("screen").height;
-let deviceWidth = Dimensions.get("screen").width;
+} from "react-native"
+import GestureRecognizer from "react-native-swipe-gestures"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import VideoPlayer from "expo-video-player"
+import { scale } from "react-native-size-matters"
+import { AntDesign, FontAwesome, Entypo } from "react-native-vector-icons"
+import axios from "axios"
+import * as MediaLibrary from "expo-media-library"
+import moment from "moment"
+import { useUserState } from "../slices/userSlice"
+import { BASE_URL } from "../../CONSTANTS"
+import { useStateContext } from "../contexts/ContextProvider"
+import DescriptionText from "./DescriptionText"
+import Color from "../../assets/colors/Color"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import * as Permissions from "expo-permissions"
+import * as FileSystem from "expo-file-system"
+import PostShareModal from "./PostShareModal"
+let deviceHeight = Dimensions.get("screen").height
+let deviceWidth = Dimensions.get("screen").width
 export default function FullPostView(props) {
-  const video = useRef(null);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const userState = useUserState();
-  const route = useRoute();
+  const video = useRef(null)
+  const [modalVisible, setmodalVisible] = useState(false)
+  const userState = useUserState()
+  const route = useRoute()
   const {
     url,
     post,
-    reactions,
-    setreactions,
-    comments,
-    setcomment,
-    reload,
-    shares,
+
     screen,
-  } = route.params;
-  const Apiroute = `${BASE_URL}/posts/updateposts/${post?._id}`;
+  } = route.params
+  const Apiroute = `${BASE_URL}/posts/updateposts/${post?._id}`
   const [liked, setliked] = useState(
-    reactions?.some((user) => {
-      return user._id === userState.id;
+    post?.reactions?.some((user) => {
+      return user._id === userState.id
     })
-  );
+  )
 
-  const [likeCount, setlikeCount] = useState(reactions?.length);
-  var date = moment().utcOffset("+05:00");
+  const [likeCount, setlikeCount] = useState(post?.reactions?.length)
+  var date = moment().utcOffset("+05:00")
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
   const {
     setVideoURI,
     setShowMiniWindow,
     setVideoDescriptionHandler,
     setvideoAutherName,
     showSnackbar,
-  } = useStateContext();
+  } = useStateContext()
 
   useEffect(() => {
-    setShowMiniWindow(false);
-  }, []);
+    setShowMiniWindow(false)
+  }, [])
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      let templike = [...post?.reactions]
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      };
-      templike.push(newLikes);
-      setlikeCount();
-      updatereactions(templike, true);
-      setlikeCount(likeCount + 1);
+      }
+      templike.push(newLikes)
+      setlikeCount()
+      updatereactions(templike, true)
+      setlikeCount(likeCount + 1)
       // The true parameter indicates a like action.
     } else {
-      const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id;
-      });
-      setlikeCount(likeCount - 1);
+      const newlikes = post?.reactions.filter((reaction) => {
+        return reaction._id !== userState.id
+      })
+      setlikeCount(likeCount - 1)
 
-      updatereactions(newlikes, false);
+      updatereactions(newlikes, false)
     }
-  };
+  }
 
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
@@ -98,7 +93,7 @@ export default function FullPostView(props) {
           headers: {
             "auth-token": userState.token,
           },
-        };
+        }
         const { data } = await axios.post(
           `${BASE_URL}/notify/commentNotification/${post._id}`,
           {
@@ -118,7 +113,7 @@ export default function FullPostView(props) {
             },
           },
           config
-        );
+        )
       }
     }
 
@@ -133,11 +128,10 @@ export default function FullPostView(props) {
         }
       )
       .then((res) => {
-        setreactions(res.data.reactions);
-        setliked(!liked);
+        setliked(!liked)
       })
-      .catch((e) => console.log(e));
-  };
+      .catch((e) => console.log(e))
+  }
 
   // const handleDownlaod = () => {
   //   const documentDirectory = FileSystem.documentDirectory + url;
@@ -146,53 +140,52 @@ export default function FullPostView(props) {
 
   const imageUrl = {
     uri: `${url}`,
-  };
+  }
 
   const handleDownload = async () => {
-    let date = moment().format("YYYYMMDDhhmmss");
-    let fileUri = FileSystem.documentDirectory + `${date}.jpg`;
+    let date = moment().format("YYYYMMDDhhmmss")
+    let fileUri = FileSystem.documentDirectory + `${date}.jpg`
     try {
-      const res = await FileSystem.downloadAsync(imageUrl.uri, fileUri);
-      saveFile(res.uri);
+      const res = await FileSystem.downloadAsync(imageUrl.uri, fileUri)
+      saveFile(res.uri)
     } catch (err) {
-      console.log("FS Err: ", err);
+      console.log("FS Err: ", err)
     }
-  };
+  }
 
   const saveFile = async () => {
-    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
     if (status === "granted") {
       try {
-        const asset = await MediaLibrary.createAssetAsync(post?.media?.name);
-        const album = await MediaLibrary.getAlbumAsync("Download");
+        const asset = await MediaLibrary.createAssetAsync(post?.media?.name)
+        const album = await MediaLibrary.getAlbumAsync("Download")
         if (album == null) {
-          await MediaLibrary.createAlbumAsync("Download", asset, false);
-          console.log("donwloaded ");
+          await MediaLibrary.createAlbumAsync("Download", asset, false)
+          console.log("donwloaded ")
         } else {
-          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false)
         }
-        console.log("save");
-        showSnackbar("Save file");
+        console.log("save")
+        showSnackbar("Save file")
       } catch (err) {
-        console.log("Save err: ", err);
+        console.log("Save err: ", err)
       }
     } else if (status === "denied") {
-      alert("please allow permissions to download");
+      alert("please allow permissions to download")
     }
-  };
+  }
 
   const handleOnClickComment = () => {
     navigation.navigate("Comments", {
-      comments: comments,
+      comments: post?.comments,
       id: post?._id,
       postedBy: post?.postedby?._id,
       data: props?.data,
       expoPushToken: post?.postedby?.expoPushToken,
-      setcomment: setcomment,
-    });
-  };
+    })
+  }
   const handleonshare = async () => {
-    navigation.navigate("postShare", { post: post, reload: reload });
+    navigation.navigate("postShare", { post: post })
 
     // try {
     //   let tempshares = [...shares];
@@ -249,7 +242,7 @@ export default function FullPostView(props) {
     //   );
     //   console.log(error);
     // }
-  };
+  }
 
   const handleLocalNotification = async () => {
     try {
@@ -257,7 +250,7 @@ export default function FullPostView(props) {
         headers: {
           "auth-token": userState.token,
         },
-      };
+      }
       const notification = await axios.post(
         `${BASE_URL}/notify/commentNotification/${post?._id}`,
         {
@@ -279,11 +272,11 @@ export default function FullPostView(props) {
           },
         },
         config
-      );
+      )
     } catch (error) {
-      console.log("error in local notofications", error);
+      console.log("error in local notofications", error)
     }
-  };
+  }
 
   // const handleDownloadFile = async () => {
   //   const remoteFileUri = `${url}`;
@@ -319,7 +312,7 @@ export default function FullPostView(props) {
             {props.route.params.screen === "message" ? (
               <GestureRecognizer
                 onSwipeDown={() => {
-                  navigation.goBack();
+                  navigation.goBack()
                 }}
               >
                 <VideoPlayer
@@ -345,11 +338,11 @@ export default function FullPostView(props) {
             ) : (
               <GestureRecognizer
                 onSwipeDown={() => {
-                  setVideoURI(url);
-                  setVideoDescriptionHandler(post?.description);
-                  setShowMiniWindow(true);
-                  setvideoAutherName(post?.postedby?.fullName);
-                  navigation.goBack();
+                  setVideoURI(url)
+                  setVideoDescriptionHandler(post?.description)
+                  setShowMiniWindow(true)
+                  setvideoAutherName(post?.postedby?.fullName)
+                  navigation.goBack()
                 }}
               >
                 <VideoPlayer
@@ -423,9 +416,11 @@ export default function FullPostView(props) {
               <View style={style.commentContainer}>
                 <View>
                   <View>
-                    {comments?.length > 0 && (
+                    {post?.comments?.length > 0 && (
                       <View style={style.comment}>
-                        <Text style={style.likeCount}>{comments?.length}</Text>
+                        <Text style={style.likeCount}>
+                          {post?.comments?.length}
+                        </Text>
                         <Text style={style.commetTitle}>comments</Text>
                       </View>
                     )}
@@ -501,7 +496,7 @@ export default function FullPostView(props) {
         />
       </View>
     </View>
-  );
+  )
 }
 
 const style = StyleSheet.create({
@@ -614,4 +609,4 @@ const style = StyleSheet.create({
     paddingHorizontal: scale(10),
     paddingVertical: scale(10),
   },
-});
+})

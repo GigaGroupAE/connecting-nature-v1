@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import {
   View,
   Text,
@@ -9,35 +9,35 @@ import {
   Image,
   Dimensions,
   TextInput,
-} from "react-native";
+} from "react-native"
 import {
   AntDesign,
   Ionicons,
   Entypo,
   MaterialCommunityIcons,
-} from "react-native-vector-icons";
-import axios from "axios";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import Post from "../../components/Post";
-import { theme } from "../../../theme";
-import { usePostState } from "../../slices/postsSlice";
-import Color from "./../../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+} from "react-native-vector-icons"
+import axios from "axios"
+import { useUserState } from "../../slices/userSlice"
+import { BASE_URL } from "../../../CONSTANTS"
+import Post from "../../components/Post"
+import { theme } from "../../../theme"
+import { usePostState } from "../../slices/postsSlice"
+import Color from "./../../../assets/colors/Color"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import { useNavigation } from "@react-navigation/native"
 
 const SearchScreen = () => {
-  const navigation = useNavigation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const onChangeSearch = (query) => setSearchQuery(query);
-  const userstate = useUserState();
-  const [user, setuser] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("post");
+  const navigation = useNavigation()
+  const [searchQuery, setSearchQuery] = useState("")
+  const onChangeSearch = (query) => setSearchQuery(query)
+  const userstate = useUserState()
+  const [user, setuser] = useState([])
+  const [activeFilter, setActiveFilter] = useState("post")
   const handleCross = () => {
-    setSearchQuery("");
-  };
+    setSearchQuery("")
+  }
 
-  const postState = usePostState();
+  const postState = usePostState()
   useEffect(() => {
     axios
       .get(`${BASE_URL}/user/new-chat-contacts`, {
@@ -49,55 +49,31 @@ const SearchScreen = () => {
         //1- EXCLUDING LOGGED IN USER
         let tempUsers = res.data.contacts.filter(
           (user) => user.phoneNumber !== userstate.phoneNumber
-        );
+        )
 
-        setuser([...tempUsers]);
+        setuser([...tempUsers])
       })
-      .catch((e) => console.log(e));
-  }, []);
+      .catch((e) => console.log(e))
+  }, [])
 
   const handlebackpress = () => {
-    navigation.goBack();
-  };
+    navigation.goBack()
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Color.White }}>
       <ScrollView>
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            marginTop: 10,
-            marginHorizontal: 10,
-          }}
-        >
+        <View style={styles.mainContainer}>
           <TouchableOpacity onPress={handlebackpress}>
             <AntDesign name="arrowleft" size={28} color={Color.Black} />
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: 20,
-              paddingVertical: 4,
-              marginLeft: 10,
-              borderRadius: Dimensions.get("screen").height * 0.1,
-              backgroundColor: "#F1F1F1",
-            }}
-          >
+          <View style={styles.searchContainer}>
             <TextInput
               autoFocus
               placeholder="Search"
               value={searchQuery}
               onChangeText={onChangeSearch}
-              style={{
-                fontSize: 14,
-                marginTop: 3,
-                fontFamily: "Roboto_400Regular",
-                width: "82%",
-              }}
+              style={styles.textInput}
               placeholderTextColor={Color.Black}
             />
             <Pressable onPress={handleCross}>
@@ -182,9 +158,9 @@ const SearchScreen = () => {
           : activeFilter === "post" &&
             postState.posts.map((post, index) => {
               if (post.description.match(searchQuery)) {
-                return <Post post={post} />;
+                return <Post post={post} />
               } else {
-                return null;
+                return null
               }
             })}
 
@@ -193,9 +169,9 @@ const SearchScreen = () => {
           : activeFilter === "hashtag" &&
             postState.posts.map((post, index) => {
               if (post.description.match(searchQuery)) {
-                return <Post post={post} />;
+                return <Post post={post} />
               } else {
-                return null;
+                return null
               }
             })}
         {searchQuery === ""
@@ -212,6 +188,7 @@ const SearchScreen = () => {
                         userPhoneNumber: u?.phoneNumber,
                       })
                     }
+                    key={idx}
                   >
                     {/* //IMAGE HERE */}
                     <View
@@ -276,9 +253,9 @@ const SearchScreen = () => {
                       />
                     </View>
                   </Pressable>
-                );
+                )
               } else {
-                return null;
+                return null
               }
             })}
         {searchQuery === ""
@@ -287,10 +264,10 @@ const SearchScreen = () => {
             postState.posts.map((post, index) => {
               if (post.description.match(searchQuery)) {
                 if (post.media.type === "video/mp4") {
-                  return <Post post={post} />;
+                  return <Post post={post} key={index} />
                 }
               } else {
-                return null;
+                return null
               }
             })}
         {searchQuery && (
@@ -302,10 +279,10 @@ const SearchScreen = () => {
         )}
       </ScrollView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default SearchScreen;
+export default SearchScreen
 const styles = StyleSheet.create({
   filter: {
     flexDirection: "row",
@@ -317,6 +294,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: Color.LightGrey,
     flexWrap: "wrap",
+  },
+  mainContainer: {
+    flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    marginHorizontal: 10,
   },
   btn: {
     height: "100%",
@@ -417,4 +401,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Color.Blue,
   },
-});
+  searchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 4,
+    marginLeft: 10,
+    borderRadius: Dimensions.get("screen").height * 0.1,
+    backgroundColor: "#F1F1F1",
+  },
+  textInput: {
+    fontSize: 14,
+    marginTop: 3,
+    fontFamily: "Roboto_400Regular",
+    width: "82%",
+  },
+})

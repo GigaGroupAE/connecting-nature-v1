@@ -7,7 +7,7 @@ const PostDescription = ({ description }) => {
   // Memoize the removeHashtags function
   const removeHashtags = useMemo(() => {
     return (text) => {
-      const words = text.split(/\s+/)
+      const words = text?.split(/\s+/)
       const hasRegularWords = words?.some((word) => !/^#\S+/.test(word))
       if (!hasRegularWords) {
         return text

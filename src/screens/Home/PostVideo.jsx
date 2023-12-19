@@ -1,22 +1,14 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import VideoPlayer from "expo-video-player";
-import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "../../../CONSTANTS";
+import { Dimensions, StyleSheet, Text, View } from "react-native"
+import React from "react"
+import VideoPlayer from "expo-video-player"
+import { useNavigation } from "@react-navigation/native"
+import { BASE_URL } from "../../../CONSTANTS"
 
 const PostVideo = (props) => {
-  const navigation = useNavigation();
-  const video = React.useRef(null);
+  const navigation = useNavigation()
+  const video = React.useRef(null)
 
-  const {
-    post,
-    comments,
-    reactions,
-    setreactions,
-    setcomment,
-    reload,
-    shares,
-  } = props;
+  const { post } = props
 
   return (
     <VideoPlayer
@@ -27,21 +19,15 @@ const PostVideo = (props) => {
         enterFullscreen: () => {
           video.current.setStatusAsync({
             shouldPlay: false,
-          });
+          })
           navigation.navigate("FullPostView", {
             url: `${BASE_URL}/images/${post?.media?.name}`,
             message: "",
             mediatype: "video",
             //video: props.video,
             screen: "home",
-            comments,
-            reactions,
-            setreactions,
-            setcomment,
-            reload,
-            shares,
             post,
-          });
+          })
         },
         exitFullscreen: (e) => console.log(e),
       }}
@@ -56,9 +42,9 @@ const PostVideo = (props) => {
         resizeMode: "contain",
       }}
     />
-  );
-};
+  )
+}
 
-export default PostVideo;
+export default PostVideo
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

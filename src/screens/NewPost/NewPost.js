@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   StyleSheet,
   Text,
@@ -9,67 +9,67 @@ import {
   TouchableHighlight,
   Dimensions,
   Pressable,
-} from "react-native";
+} from "react-native"
 //icons import
-import { MaterialIcons, AntDesign } from "react-native-vector-icons";
-import * as FileSystem from "expo-file-system";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
+import { MaterialIcons, AntDesign } from "react-native-vector-icons"
+import * as FileSystem from "expo-file-system"
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
 
 //document picker
-import * as DocumentPicker from "expo-document-picker";
+import * as DocumentPicker from "expo-document-picker"
 
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { useUserState } from "./../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../../assets/colors/Color.js";
+import { useNavigation } from "@react-navigation/native"
+import axios from "axios"
+import { useUserState } from "./../../slices/userSlice"
+import { BASE_URL } from "../../../CONSTANTS.js"
+import { SafeAreaView } from "react-native-safe-area-context"
+import Color from "../../../assets/colors/Color.js"
 
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import PostTypeModal from "../../components/PostTypeModal";
-import PostCampaignSelectModal from "../../components/PostCampaignSelectModal";
-import { axiosInstance } from "../../../axiosInstance";
+import { useStateContext } from "../../contexts/ContextProvider.js"
+import PostTypeModal from "../../components/PostTypeModal"
+import PostCampaignSelectModal from "../../components/PostCampaignSelectModal"
+import { axiosInstance } from "../../../axiosInstance"
 
 export default function NewPost(props) {
   //images
-  const [image, setImage] = useState(null); // this will be an array that will hold the uri's of images to post
-  const navigation = useNavigation();
-  const userState = useUserState();
-  const [description, setDescription] = useState("");
-  const [data, setData] = useState(null);
-  const [compressImg, setCompressImg] = useState(null);
-  const [modalCampaign, setmodalCampaign] = useState(false);
-  const [campaignsName, setcampaignsName] = useState("");
-  const [campaign, setcampaign] = useState([]);
+  const [image, setImage] = useState(null) // this will be an array that will hold the uri's of images to post
+  const navigation = useNavigation()
+  const userState = useUserState()
+  const [description, setDescription] = useState("")
+  const [data, setData] = useState(null)
+  const [compressImg, setCompressImg] = useState(null)
+  const [modalCampaign, setmodalCampaign] = useState(false)
+  const [campaignsName, setcampaignsName] = useState("")
+  const [campaign, setcampaign] = useState([])
 
-  const [postType, setpostType] = useState(false);
+  const [postType, setpostType] = useState(false)
 
-  const { loading, setLoading, showSnackbar } = useStateContext();
+  const { loading, setLoading, showSnackbar } = useStateContext()
   const handleonPost = async () => {
-    setpostType(false);
-    setmodalCampaign(false);
+    setpostType(false)
+    setmodalCampaign(false)
     if (!description) {
-      showSnackbar("You can't share empty Post");
-      return;
+      showSnackbar("You can't share empty Post")
+      return
     }
-    navigation.goBack();
+    navigation.goBack()
 
     //creating form data
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append("description", description);
+    formData.append("description", description)
     //since we cannot add object to formdata and userState is an object
     //so we will STRINGIFY the userState and parse it at the backend
-    formData.append("postedby", JSON.stringify(userState.id));
+    formData.append("postedby", JSON.stringify(userState.id))
 
     if (!image) {
-      formData.append("media", null);
+      formData.append("media", null)
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: compressImg.uri,
         type: data.mimeType,
-      });
+      })
     }
     const config = {
       headers: {
@@ -77,7 +77,7 @@ export default function NewPost(props) {
         Accept: "application/json",
         "auth-token": userState.token,
       },
-    };
+    }
     //api call
     try {
       if (props.route.params.origin === "post") {
@@ -85,27 +85,27 @@ export default function NewPost(props) {
           `${BASE_URL}/posts/addpost/`,
           formData,
           config
-        );
-        showSnackbar("Post created successfully");
-        props?.route?.params?.reload();
+        )
+        showSnackbar("Post created successfully")
+        props?.route?.params?.reload()
       } else {
         if (image !== null) {
           const { data } = await axios.post(
             `${BASE_URL}/story/addstory/`,
             formData,
             config
-          );
-          props?.route?.params?.storyReload();
+          )
+          props?.route?.params?.storyReload()
 
-          showSnackbar("Story created successfully");
+          showSnackbar("Story created successfully")
         } else {
-          alert("Cannot create a story without an image");
+          alert("Cannot create a story without an image")
         }
       }
     } catch (error) {
-      console.log(error, "error is ");
+      console.log(error, "error is ")
     }
-  };
+  }
 
   const supportedImageFormats = [
     "image/jpeg",
@@ -113,94 +113,93 @@ export default function NewPost(props) {
     "image/gif",
     "image/bmp",
     "image/tiff",
-  ];
+  ]
 
   const pick = async () => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({});
+      let result = await DocumentPicker.getDocumentAsync({})
 
       if (!result.cancelled) {
-        let compressImage;
-        let manipResult;
+        let compressImage
+        let manipResult
 
-        if (supportedImageFormats.includes(result.mimeType)) {
-          let compressionQuality = 0.8;
+        if (supportedImageFormats.includes(result?.assets[0]?.mimeType)) {
+          let compressionQuality = 0.8
           while (compressionQuality >= 0.1) {
-            manipResult = await manipulateAsync(result.uri, [], {
+            manipResult = await manipulateAsync(result.assets[0]?.uri, [], {
               compress: compressionQuality,
               format: SaveFormat.JPEG,
-            });
-            compressImage = await FileSystem.getInfoAsync(manipResult.uri);
+            })
+            compressImage = await FileSystem.getInfoAsync(manipResult.uri)
             if (compressImage.size <= 1024 * 1024) {
-              break;
+              break
             }
-            compressionQuality -= 0.1;
+            compressionQuality -= 0.1
           }
         } else {
-          compressImage = result;
+          compressImage = result
         }
-        setCompressImg(compressImage);
-        setData(result);
-        setImage([result.uri]);
+        setCompressImg(compressImage)
+        setData(result.assets[0])
+        setImage([result.assets[0].uri])
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
     }
-  };
+  }
 
   const handlePostType = () => {
     if (campaign?.length === 0) {
-      handleonPost();
+      handleonPost()
     } else if (props.route.params.origin === "post") {
-      setpostType(true);
+      setpostType(true)
     } else {
-      handleonPost();
+      handleonPost()
     }
-  };
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
           "/campaigns/get-multiple-by-query?status=executed"
-        );
+        )
 
-        setcampaignsName(response?.data?.campaigns);
+        setcampaignsName(response?.data?.campaigns)
       } catch (error) {
-        console.log("Error:", error);
+        console.log("Error:", error)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const handleCampaignPost = async (campaignId) => {
-    setpostType(false);
-    setmodalCampaign(false);
-    console.log(campaignId);
+    setpostType(false)
+    setmodalCampaign(false)
     if (!description) {
-      showSnackbar("You can't share empty Post");
-      return;
+      showSnackbar("You can't share empty Post")
+      return
     }
-    navigation.goBack();
+    navigation.goBack()
 
     //creating form data
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append("description", description);
+    formData.append("description", description)
     //since we cannot add object to formdata and userState is an object
     //so we will STRINGIFY the userState and parse it at the backend
-    formData.append("postedby", JSON.stringify(userState.id));
-    formData.append("ref", campaignId);
+    formData.append("postedby", JSON.stringify(userState.id))
+    formData.append("ref", campaignId)
     if (!image) {
-      formData.append("media", null);
+      formData.append("media", null)
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: compressImg.uri,
         type: data.mimeType,
-      });
+      })
     }
     const config = {
       headers: {
@@ -208,59 +207,52 @@ export default function NewPost(props) {
         Accept: "application/json",
         "auth-token": userState.token,
       },
-    };
+    }
+
     //api call
     try {
       const { data } = await axios.post(
         `${BASE_URL}/posts/addpost/`,
         formData,
         config
-      );
-      showSnackbar("Post created successfully");
-      props?.route?.params?.reload();
+      )
+
+      showSnackbar("Post created successfully")
+      props?.route?.params?.reload()
     } catch (error) {
-      console.log(error, "error is ");
+      console.log(error, "error is ")
     }
-  };
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
           "/campaigns/mostrecentcampaign"
-        );
+        )
 
         if (response?.data?.campaigns) {
-          setcampaign(response?.data?.campaigns);
+          setcampaign(response?.data?.campaigns)
         }
       } catch (error) {
-        console.log("Error:", error);
+        console.log("Error:", error)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
-  console.log(campaign, "campaign");
+    fetchData()
+  }, [])
   return (
     <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
       <View style={styles.mainContainer}>
         <View style={styles.head}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              navigation.goBack()
             }}
           >
             <AntDesign name="arrowleft" size={28} color="#707070" />
           </TouchableOpacity>
-          <Text
-            style={{
-              marginRight: "30%",
-              bottom: -2,
-              fontFamily: "Roboto_600SemiBold",
-              color: Color.Grey,
-              fontSize: 18,
-            }}
-          >
+          <Text style={styles.storyButton}>
             {props.route.params.origin === "story"
               ? "Create Story"
               : "Create Post"}
@@ -343,7 +335,7 @@ export default function NewPost(props) {
         </View>
       </View>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -353,6 +345,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 19,
     paddingVertical: 10,
+  },
+  storyButton: {
+    marginRight: "30%",
+    bottom: -2,
+    fontFamily: "Roboto_600SemiBold",
+    color: Color.Grey,
+    fontSize: 18,
   },
   postButtonContainer: {
     backgroundColor: Color.Blue,
@@ -429,4 +428,4 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginLeft: 10,
   },
-});
+})

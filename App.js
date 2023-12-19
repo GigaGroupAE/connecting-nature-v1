@@ -1,5 +1,5 @@
 import React from "react"
-import { ActivityIndicator } from "react-native"
+import { ActivityIndicator, LogBox } from "react-native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 import persistStore from "redux-persist/es/persistStore"
@@ -116,6 +116,9 @@ let persistor = persistStore(store)
 //REACT-QUERY
 
 const queryClient = new QueryClient()
+LogBox.ignoreLogs([
+  "Unhandled promise rejection: Error: No 'projectId' found. If 'projectId' can't be inferred from the manifest (eg. in bare workflow), you have to pass it in yourself.",
+])
 
 function Main() {
   const { loading } = useStateContext()

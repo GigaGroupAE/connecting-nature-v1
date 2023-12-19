@@ -1,26 +1,20 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
-import AddButton from "../AddButton";
-import { MaterialIcons, Entypo } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { Image } from "react-native";
-import { scale } from "react-native-size-matters";
+import React, { useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native"
+import AddButton from "../AddButton"
+import { MaterialIcons, Entypo } from "react-native-vector-icons"
+import { useNavigation } from "@react-navigation/native"
+import Color from "../../../assets/colors/Color"
+import { useUserState } from "../../slices/userSlice"
+import { Image } from "react-native"
+import { scale } from "react-native-size-matters"
 
 const CreatePost = (props) => {
-  const navigation = useNavigation();
-  const userstate = useUserState();
+  const navigation = useNavigation()
+  const userstate = useUserState()
 
   return (
     <Modal animationType="slide">
-      <View
-        style={{
-          height: "100%",
-          width: "100%",
-          paddingHorizontal: 17,
-        }}
-      >
+      <View style={styles.mainContainer}>
         <TouchableOpacity
           onPress={() => props.onCancel()}
           style={styles.cancelIcon}
@@ -28,34 +22,20 @@ const CreatePost = (props) => {
           <Entypo name="cross" color={Color.Black} size={30} />
         </TouchableOpacity>
         {userstate.type !== "user" && (
-          <View
-            style={{
-              position: "absolute",
-              bottom: "28%",
-              right: "38%",
-              alignSelf: "flex-end",
-            }}
-          >
+          <View style={styles.spotLight}>
             <Text style={styles.text}>New Spotlight Story</Text>
           </View>
         )}
         {userstate.type !== "user" && (
-          <View
-            style={{
-              position: "absolute",
-              bottom: "25%",
-              paddingHorizontal: 17,
-              marginLeft: "75%",
-            }}
-          >
+          <View style={styles.post}>
             <TouchableOpacity
               style={styles.addPost}
               onPress={() => {
                 navigation.navigate("AddPost", {
                   origin: "story",
                   storyReload: props.storyReload,
-                });
-                props.closeModal();
+                })
+                props.closeModal()
               }}
             >
               <Image
@@ -66,14 +46,7 @@ const CreatePost = (props) => {
           </View>
         )}
 
-        <View
-          style={{
-            position: "absolute",
-            bottom: "14.5%",
-            right: "38%",
-            alignSelf: "flex-end",
-          }}
-        >
+        <View style={styles.createPost}>
           <Text style={styles.text}>Create New Post</Text>
         </View>
         <AddButton
@@ -82,10 +55,33 @@ const CreatePost = (props) => {
         />
       </View>
     </Modal>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    height: "100%",
+    width: "100%",
+    paddingHorizontal: 17,
+  },
+  spotLight: {
+    position: "absolute",
+    bottom: "28%",
+    right: "38%",
+    alignSelf: "flex-end",
+  },
+  post: {
+    position: "absolute",
+    bottom: "25%",
+    paddingHorizontal: 17,
+    marginLeft: "75%",
+  },
+  createPost: {
+    position: "absolute",
+    bottom: "14.5%",
+    right: "38%",
+    alignSelf: "flex-end",
+  },
   cancelIcon: {
     alignSelf: "flex-end",
     paddingHorizontal: 15,
@@ -110,6 +106,6 @@ const styles = StyleSheet.create({
     width: scale(28),
     height: scale(28),
   },
-});
+})
 
-export default CreatePost;
+export default CreatePost

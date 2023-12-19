@@ -22,7 +22,6 @@ import BottomSheetForPost from "./BottomSheetForPost"
 import moment from "moment"
 import PostHeader from "../screens/Home/PostHeader"
 import PostDeleteModal from "../screens/Home/PostDeleteModal"
-import PostDescription from "./PostDesciption"
 import PostVideo from "../screens/Home/PostVideo"
 import { useStateContext } from "../contexts/ContextProvider"
 import PostImage from "../screens/Home/PostImage"
@@ -30,7 +29,6 @@ import PostSharedHeader from "./PostSharedHeader"
 
 export default function Post(props, postId) {
   var date = moment().utcOffset("+05:00")
-  const { showSnackbar } = useStateContext()
   const [visible, setVisible] = useState(false)
   const [modalVisible, setmodalVisible] = useState(false)
   const toggleBottomNavigationView = () => {
@@ -40,18 +38,18 @@ export default function Post(props, postId) {
   const userState = useUserState()
 
   const route = `${BASE_URL}/posts/updateposts/${props.post._id}`
-  const [reactions, setreactions] = useState(props.post.reactions)
+  const [reactions, setreactions] = useState(props?.post?.reactions)
   const [comment, setcomment] = useState(props?.post?.comments)
   const [liked, setliked] = useState(false)
 
   useEffect(() => {
-    setreactions(props.post.reactions)
+    setreactions(props?.post?.reactions)
     setliked(
       reactions.some((user) => {
         return user._id === userState.id
       })
     )
-  }, [props.post.reactions])
+  }, [props?.post?.reactions])
 
   useEffect(() => {
     setcomment(props?.post?.comments)
@@ -60,20 +58,20 @@ export default function Post(props, postId) {
   const modalComponent = useMemo(
     () => (
       <PostDeleteModal
-        post={props.post}
-        reload={props.reload}
+        post={props?.post}
+        reload={props?.reload}
         setmodalVisible={setmodalVisible}
       />
     ),
-    [modalVisible, props.post, props.reload]
+    [modalVisible, props?.post, props?.reload]
   )
 
   const handleOnClickComment = () => {
     navigation.navigate("Comments", {
       comments: comment,
-      id: props.post._id,
-      postedBy: props.post.postedby._id,
-      data: props.data,
+      id: props?.post._id,
+      postedBy: props?.post?.postedby?._id,
+      data: props?.data,
       expoPushToken: props?.post?.postedby?.expoPushToken,
       setcomment: setcomment,
     })
@@ -133,59 +131,6 @@ export default function Post(props, postId) {
   }
   const handleonshare = async (post) => {
     navigation.navigate("postShare", { post: post, reload: props.reload })
-    // try {
-    //   let tempshares = [...shares];
-    //   tempshares.push(userState.id);
-    //   const formData = new FormData();
-    //   ["shares", "comments", "reactions"].forEach((e) =>
-    //     formData.append(e, JSON.stringify([]))
-    //   );
-    //   formData.append("description", props.post.description);
-    //   formData.append("postedby", JSON.stringify(userState.id));
-    //   formData.append("sharedBy", post?._id);
-    //   if (props.post.media) {
-    //     formData.append("media", {
-    //       name: props.post.media.name,
-    //       uri: `${BASE_URL}/images/${props.post.media.name}`,
-    //       type: props.post.media.type,
-    //     });
-    //   } else {
-    //     formData.append("media", null);
-    //   }
-    //   const config = {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //       Accept: "application/json",
-    //       "auth-token": userState.token,
-    //     },
-    //   };
-    //   const postResponse = await axios.post(
-    //     `${BASE_URL}/posts/addpost`,
-    //     formData,
-    //     config
-    //   );
-    //   if (userState.id !== props.post.postedby._id) {
-    //     handleLocalNotification();
-    //   }
-    //   showSnackbar("The post has been shared");
-    //   props.reload();
-    //   const patchResponse = await axios.patch(
-    //     route,
-    //     { shares: tempshares },
-    //     {
-    //       headers: {
-    //         "auth-token": userState.token,
-    //       },
-    //     }
-    //   );
-
-    //   setshares([...patchResponse.data.shares]);
-    // } catch (error) {
-    //   console.log(error);
-    //   showSnackbar(
-    //     "Sorry, we couldn't share the post at the moment. Please try again later."
-    //   );
-    // }
   }
 
   const handleLocalNotification = async () => {
@@ -253,6 +198,10 @@ export default function Post(props, postId) {
     }
   }
 
+  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"]
+  const supportedFormats = ["image/jpeg", "image/png", "image/jpg", "video/mp4"]
+  const isImageOrVideo = supportedFormats.includes(props.post.media?.type)
+
   // Include data in the dependency array if you want this to run when data changes
   return (
     <>
@@ -274,44 +223,23 @@ export default function Post(props, postId) {
             )}
           </View>
           <View style={styles.postContainer}>
-            {props.post.media?.type === "image/jpeg" ||
-            props.post.media?.type === "image/png" ||
-            props.post.media?.type === "image/jpg" ? (
-              <View style={styles.postImage}>
-                <PostImage
-                  post={props?.post}
-                  imageStyle={styles.image}
-                  reactions={reactions}
-                  comments={comment}
-                  setreactions={setreactions}
-                  setcomment={setcomment}
-                  reload={props.reload}
-                  shares={shares}
-                />
-              </View>
-            ) : null}
+            {props?.post?.media?.type &&
+              supportedImageFormats.includes(props?.post?.media?.type) && (
+                <View style={styles.postImage}>
+                  <PostImage post={props?.post} imageStyle={styles.image} />
+                </View>
+              )}
             <View>
               {props.post.media?.type === "video/mp4" ? (
-                <PostVideo
-                  post={props?.post}
-                  reactions={reactions}
-                  comments={comment}
-                  setreactions={setreactions}
-                  setcomment={setcomment}
-                  reload={props.reload}
-                  shares={shares}
-                />
+                <PostVideo post={props?.post} />
               ) : null}
             </View>
-            {reactions.length !== 0 ||
+            {reactions?.length !== 0 ||
             comment?.length !== 0 ||
-            props.post.shares.length !== 0 ? (
+            props?.post?.shares?.length !== 0 ? (
               <View
                 style={
-                  props.post.media?.type === "image/jpeg" ||
-                  props.post.media?.type === "image/png" ||
-                  props.post.media?.type === "image/jpg" ||
-                  props.post.media?.type === "video/mp4"
+                  isImageOrVideo
                     ? styles.imageStatsContainer
                     : styles.statsContainer
                 }
