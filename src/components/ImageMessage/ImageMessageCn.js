@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -7,27 +7,29 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+} from "react-native"
+import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
+import Color from "../../../assets/colors/Color"
+import { useUserState } from "../../slices/userSlice"
+import { ActivityIndicator } from "react-native"
+import { useNavigation } from "@react-navigation/native"
+import { calculateTimeDifference } from "../../utils/timeDifference"
+import { BASE_URL } from "../../../CONSTANTS"
 
-const Width = Dimensions.get("screen").width;
+const Width = Dimensions.get("screen").width
 
 const ImageMessageCn = (props) => {
-  const [longPress, setLongPress] = useState(false);
-  const userState = useUserState();
-  const navigation = useNavigation();
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
-    props;
+  const [longPress, setLongPress] = useState(false)
+  const userState = useUserState()
+  const navigation = useNavigation()
+  const { socket, item } = props
+  let timePassed = calculateTimeDifference(item.date)
 
   return (
     <View
       onLongPress={() => {
-        props.longPress();
-        setLongPress(true);
+        props.longPress()
+        setLongPress(true)
       }}
       style={[
         longPress && props.LongPressed
@@ -41,14 +43,14 @@ const ImageMessageCn = (props) => {
       <View>
         <View
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item.from
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item.from
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
@@ -58,32 +60,29 @@ const ImageMessageCn = (props) => {
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
             >
-              {props.image !== "" && (
+              {item.content !== "" && (
                 <Image
                   style={[
-                    userState.id === props.phoneNumber
+                    userState.id === item.from
                       ? styles.receiverImageMessage
                       : styles.senderImageMessage,
                   ]}
-                  source={{ uri: props.image }}
+                  source={{ uri: `${BASE_URL}/messageMedia/${item.content}` }}
                   resizeMode="cover"
                 />
               )}
             </Pressable>
-            {props.message && (
-              <Text style={[styles.message]}>{props.message}</Text>
-            )}
             <View
               style={[
-                props.message
+                props?.message
                   ? styles.timeContainer
                   : styles.OverlayTimeContainer,
               ]}
             >
-              <Text style={[props.message ? styles.time : styles.overlayTime]}>
-                {props.time}
+              <Text style={[props?.message ? styles.time : styles.overlayTime]}>
+                {timePassed}
               </Text>
-              {props.message ? (
+              {props?.message ? (
                 <Ionicons
                   name="checkmark"
                   size={14}
@@ -101,16 +100,16 @@ const ImageMessageCn = (props) => {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("MsgShare", {
-                forwardFrom: forwardFrom,
-                forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardFrom: userState?.id,
+                forwardChat: "chatId",
+                forwardType: "image",
+                forwardContent: item.content,
                 socket: socket,
               })
             }
             android_ripple={{ color: Color.DarkGrey, radius: 20 }}
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item.from
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}
@@ -126,8 +125,8 @@ const ImageMessageCn = (props) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
@@ -213,6 +212,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get("screen").height * 0.4,
     width: Dimensions.get("screen").width * 0.6,
   },
-});
+})
 
-export default ImageMessageCn;
+export default ImageMessageCn

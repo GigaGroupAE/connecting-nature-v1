@@ -1,95 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Dimensions,
   Pressable,
-} from "react-native";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
-import { Audio } from "expo-av";
-import { Appbar, Button, FAB } from "react-native-paper";
-import { useUserState } from "../../slices/userSlice";
-import Color from "../../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
+} from "react-native"
+import { MaterialCommunityIcons } from "react-native-vector-icons"
+import { BASE_URL } from "../../../CONSTANTS"
+import { Audio } from "expo-av"
+import { Appbar, Button, FAB } from "react-native-paper"
+import { useUserState } from "../../slices/userSlice"
+import Color from "../../../assets/colors/Color"
+import { useNavigation } from "@react-navigation/native"
+import { calculateTimeDifference } from "../../utils/timeDifference"
 
-const Width = Dimensions.get("screen").width;
+const Width = Dimensions.get("screen").width
 
 export default function RecordingVoiceMessageCn(props) {
-  const userState = useUserState();
-  const navigation = useNavigation();
-  const {
-    forwardFrom,
-    forwardChat,
-    forwardType,
-    forwardContent,
-    socket,
-    item,
-  } = props;
+  const userState = useUserState()
+  const navigation = useNavigation()
+  const { socket, item } = props
 
-  const [audioPlayback, setAudioPlayback] = React.useState("Not Playing");
-  const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  let timePassed = calculateTimeDifference(item.date)
+
+  const [audioPlayback, setAudioPlayback] = React.useState("Not Playing")
+  const [sound, setSound] = useState(null)
+  const [isPlaying, setIsPlaying] = useState(false)
 
   const playSound = async () => {
     try {
-      setAudioPlayback("Loading");
+      setAudioPlayback("Loading")
       const { sound } = await Audio.Sound.createAsync({
-        uri: `${BASE_URL}/messageMedia/${props.uri}`,
-      });
-      setSound(sound);
+        uri: `${BASE_URL}/messageMedia/${item.content}`,
+      })
+      setSound(sound)
       await sound.playAsync().then(() => {
-        setAudioPlayback("Playing");
-        setIsPlaying(true);
-      });
+        setAudioPlayback("Playing")
+        setIsPlaying(true)
+      })
       sound.setOnPlaybackStatusUpdate((playbackStatus) => {
         if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
-          setAudioPlayback("Not Playing");
-          setIsPlaying(false);
+          setAudioPlayback("Not Playing")
+          setIsPlaying(false)
         }
-      });
+      })
     } catch (error) {
-      console.log("Error playing sound", error);
+      console.log("Error playing sound", error)
     }
-  };
+  }
   const handlePlay = async () => {
     try {
       if (sound) {
         if (isPlaying) {
-          await sound.pauseAsync();
-          setIsPlaying(false);
+          await sound.pauseAsync()
+          setIsPlaying(false)
         } else {
-          await sound.playAsync();
-          setIsPlaying(true);
+          await sound.playAsync()
+          setIsPlaying(true)
         }
       }
     } catch (error) {
-      console.log("Error playing sound", error);
+      console.log("Error playing sound", error)
     }
-  };
+  }
 
   useEffect(() => {
     return sound
       ? () => {
-          setAudioPlayback("Not Playing");
-          setIsPlaying(false);
+          setAudioPlayback("Not Playing")
+          setIsPlaying(false)
         }
-      : undefined;
-  }, [sound]);
+      : undefined
+  }, [sound])
 
   return (
     <View>
       <View
         style={[
-          userState.id === props.phoneNumber
+          userState.id === item?.from
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
       >
         <Pressable
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
@@ -101,11 +97,11 @@ export default function RecordingVoiceMessageCn(props) {
                 icon={"play"}
                 loading={false}
                 onPress={() => {
-                  setAudioPlayback("Playing");
-                  playSound();
+                  setAudioPlayback("Playing")
+                  playSound()
                 }}
                 style={[
-                  userState.id === props.phoneNumber
+                  userState.id === item?.from
                     ? styles.receiverPlayerContainer
                     : styles.senderPlayerContainer,
                 ]}
@@ -121,7 +117,7 @@ export default function RecordingVoiceMessageCn(props) {
                 icon={"play"}
                 loading={true}
                 onPress={() => {
-                  setAudioPlayback("Not Playing");
+                  setAudioPlayback("Not Playing")
                 }}
                 style={{
                   marginVertical: 5,
@@ -140,8 +136,8 @@ export default function RecordingVoiceMessageCn(props) {
                 icon={"pause"}
                 loading={false}
                 onPress={() => {
-                  setAudioPlayback("Not Playing");
-                  handlePlay();
+                  setAudioPlayback("Not Playing")
+                  handlePlay()
                 }}
                 style={{
                   marginVertical: 5,
@@ -161,15 +157,15 @@ export default function RecordingVoiceMessageCn(props) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("MsgShare", {
-              forwardFrom: forwardFrom,
-              forwardChat: forwardChat,
-              forwardType: forwardType,
-              forwardContent: forwardContent,
+              forwardFrom: userState?.id,
+              forwardChat: "chatId",
+              forwardType: "audio",
+              forwardContent: item.content,
               socket: socket,
             })
           }
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.shareMessage
               : styles.receiverShareMessage,
           ]}
@@ -184,7 +180,7 @@ export default function RecordingVoiceMessageCn(props) {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -280,4 +276,4 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     borderRadius: 15,
   },
-});
+})

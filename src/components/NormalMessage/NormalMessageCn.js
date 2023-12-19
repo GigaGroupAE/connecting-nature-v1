@@ -1,38 +1,31 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-  Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react"
+import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native"
+import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
+import Color from "../../../assets/colors/Color"
+import { useUserState } from "../../slices/userSlice"
+import { useNavigation } from "@react-navigation/native"
+import { calculateTimeDifference } from "../../utils/timeDifference"
 
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get("screen").width
+const Height = Dimensions.get("screen").height
 
 const NormalMessageCn = (props) => {
-  const [longPress, setLongPress] = useState(false);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const userState = useUserState();
-  const navigation = useNavigation();
+  const [longPress, setLongPress] = useState(false)
+  const [modalVisible, setmodalVisible] = useState(false)
+  const userState = useUserState()
+  const navigation = useNavigation()
   // const [modalVisible, setmodalVisible] = useState(false);
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
-    props;
+  const { socket, item } = props
+  let timePassed = calculateTimeDifference(item.date)
 
   const handleDelet = (id) => {
-    setmodalVisible(true);
-    console.log("long press");
-  };
+    setmodalVisible(true)
+    console.log("long press")
+  }
 
   return (
     <Pressable
-      onLongPress={() => handleDelet(props.id)}
+      onLongPress={() => handleDelet(item._id)}
       style={[
         longPress && props.LongPressed
           ? {
@@ -48,43 +41,36 @@ const NormalMessageCn = (props) => {
         {/* TODO :: SINCE 2 USERS CAN HAVE THE SAME NAME SO CHANGE THE LOGIC TO CHECK WITH PHONE NUMBERS */}
         <View
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
           >
-            {/* For Chat One to One No need User Full Name as it is stick on the top that to whom we are chatting*/}
-            {/* Otherwise for Group chat we need Name of the receiver (Left Side Messages) */}
-
-            {/* {userState.fullName !== props.username && (
-              <Text style={[styles.username]}>{props.username}</Text>
-            )} */}
-
             <Text
               style={[
-                userState.id == props.phoneNumber
+                userState.id == item?.from
                   ? styles.receiverTextMessage
                   : styles.message,
               ]}
             >
-              {props.message}
+              {item.content}
             </Text>
             <View style={styles.timeContainer}>
               <Text
                 style={[
-                  userState.id == props.phoneNumber
+                  userState.id == item?.from
                     ? styles.time
                     : styles.messageReciveTime,
                 ]}
               >
-                {props.time}
+                {timePassed}
               </Text>
               {/* <Ionicons
                 name="checkmark"
@@ -96,16 +82,16 @@ const NormalMessageCn = (props) => {
           {/* <TouchableOpacity
             onPress={() =>
               navigation.navigate("MsgShare", {
-                forwardFrom: forwardFrom,
+                forwardFrom:userState?.id,
                 forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardType: "text",
+                forwardContent: item.content,
                 socket: socket,
               })
             }
             android_ripple={{ color: Color.DarkGrey, radius: 20 }}
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}
@@ -121,8 +107,8 @@ const NormalMessageCn = (props) => {
         </View>
       </View>
     </Pressable>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
@@ -235,6 +221,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginLeft: "10%",
   },
-});
+})
 
-export default NormalMessageCn;
+export default NormalMessageCn
