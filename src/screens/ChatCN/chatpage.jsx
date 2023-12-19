@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useState } from "react";
+import React, { useState } from "react"
 
-import { Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons"
 import {
   View,
   StyleSheet,
@@ -12,81 +12,81 @@ import {
   Dimensions,
   ActivityIndicator,
   TouchableOpacity,
-} from "react-native";
-import ChatScreenHeader from "./Components/ChatScreenHeader/ChatScreenHeader";
-import { io } from "socket.io-client";
-import { useEffect } from "react";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "./../../slices/userSlice";
-import * as ImagePicker from "expo-image-picker";
-import { Audio } from "expo-av";
-import { useNavigation } from "@react-navigation/native";
-import * as DocumentPicker from "expo-document-picker";
-import axios from "axios";
-import "react-native-get-random-values";
-import * as FileSystem from "expo-file-system";
+} from "react-native"
+import ChatScreenHeader from "./Components/ChatScreenHeader/ChatScreenHeader"
+import { io } from "socket.io-client"
+import { useEffect } from "react"
+import { BASE_URL } from "../../../CONSTANTS"
+import { useUserState } from "./../../slices/userSlice"
+import * as ImagePicker from "expo-image-picker"
+import { Audio } from "expo-av"
+import { useNavigation } from "@react-navigation/native"
+import * as DocumentPicker from "expo-document-picker"
+import axios from "axios"
+import "react-native-get-random-values"
+import * as FileSystem from "expo-file-system"
 
 //utility function for showing appropriate times
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import Color from "../../../assets/colors/Color";
-import ChatBottomBar from "./Components/ChatBottomBar/ChatBottomBar";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import NormalMessageCn from "../../components/NormalMessage/NormalMessageCn";
-import ImageMessageCn from "../../components/ImageMessage/ImageMessageCn";
-import RecordingVoiceMessageCn from "../../components/RecordingVoiceMessage/RecordingVoiceMessageCn";
-import DocumentMessageCn from "../../components/DocumentMessage/DocumentMessageCn";
-import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
-import VideoMessageCn from "../../components/VideoMessage/VideoMessageCn";
-import moment from "moment";
+import { calculateTimeDifference } from "../../utils/timeDifference"
+import Color from "../../../assets/colors/Color"
+import ChatBottomBar from "./Components/ChatBottomBar/ChatBottomBar"
+import { useStateContext } from "../../contexts/ContextProvider.js"
+import NormalMessageCn from "../../components/NormalMessage/NormalMessageCn"
+import ImageMessageCn from "../../components/ImageMessage/ImageMessageCn"
+import RecordingVoiceMessageCn from "../../components/RecordingVoiceMessage/RecordingVoiceMessageCn"
+import DocumentMessageCn from "../../components/DocumentMessage/DocumentMessageCn"
+import { SaveFormat, manipulateAsync } from "expo-image-manipulator"
+import VideoMessageCn from "../../components/VideoMessage/VideoMessageCn"
+import moment from "moment"
 
 const ChatPageCN = (props) => {
-  var date = moment().utcOffset("+05:00");
+  var date = moment().utcOffset("+05:00")
 
-  const { loading, setLoading, setImgloading, imgloading } = useStateContext();
-  const [isLongPressed, setIsLongPressed] = useState(false);
-  const [socket, setSocket] = useState(null);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const [deleteId, setdeleteId] = useState("");
+  const { loading, setLoading, setImgloading, imgloading } = useStateContext()
+  const [isLongPressed, setIsLongPressed] = useState(false)
+  const [socket, setSocket] = useState(null)
+  const [modalVisible, setmodalVisible] = useState(false)
+  const [deleteId, setdeleteId] = useState("")
 
   useEffect(() => {
-    let newSocket = io(BASE_URL, { auth: { token: userState.token } });
+    let newSocket = io(BASE_URL, { auth: { token: userState.token } })
     newSocket.on("connect", () => {
-      newSocket.emit("join", { id: props.route.params.group._id });
-    });
+      newSocket.emit("join", { id: props.route.params.group._id })
+    })
     newSocket.on("receive_message", (data) => {
       setChatMessages([
         ...(chatMessages.push(data) &&
           chatMessages.sort((a, b) => (a.date < b.date ? 1 : -1))),
-      ]);
-    });
+      ])
+    })
     newSocket.on("Deleted_messageCN", (data) => {
       setChatMessages([
         ...chatMessages
           .filter((message) => {
-            return message._id !== data;
+            return message._id !== data
           })
           .sort((a, b) => (a.date > b.date ? -1 : 1)),
-      ]);
-    });
-    setSocket(newSocket);
+      ])
+    })
+    setSocket(newSocket)
     return () => {
-      newSocket.emit("leave", { id: props.route.params.group._id });
-      newSocket.disconnect();
-    };
-  }, []);
+      newSocket.emit("leave", { id: props.route.params.group._id })
+      newSocket.disconnect()
+    }
+  }, [])
 
-  const userState = useUserState();
+  const userState = useUserState()
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const handleTakePicture = (image) => {
     try {
-      const formdata = new FormData();
+      const formdata = new FormData()
       formdata.append("media", {
         name: `${userState.fullName}.jpg`,
         uri: image.uri,
         type: "image/jpg",
-      });
+      })
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
@@ -100,51 +100,45 @@ const ChatPageCN = (props) => {
             chat: props.route.params.group._id,
             type: "image",
             content: res.data.path,
-          });
+          })
         })
         .catch((e) => {
-          console.log("working but error", e);
-        });
+          console.log("working but error", e)
+        })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
-  const [recording, setRecording] = useState(false);
+  }
+  const [recording, setRecording] = useState(false)
   const [chatMessages, setChatMessages] = useState(
     props?.route?.params?.group?.messages &&
       props?.route?.params?.group?.messages.sort((a, b) =>
         a.date < b.date ? 1 : -1
       )
-  );
+  )
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showInput, setShowInput] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showInput, setShowInput] = useState(false)
 
   // Function to update the showInput state
   const handleShowInput = (value) => {
-    setShowInput(value);
-  };
+    setShowInput(value)
+  }
 
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null)
   const pick = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.3,
-      allowsMultipleSelection: false, // TODO : SET THIS TO TRUE WHEN YOU WANT MULTIPLE IMAGES
-    });
+    })
 
-    if (!result.cancelled) {
-      //IF WILL RUN WHEN :  user has selected multiple images
-      //ELSE WILL RUN WHEN : user has selected single image
-      if (result.selected) {
-        let images = result.selected.map((img) => img.uri);
-        setImage(images);
-      } else {
-        // setImage([result.uri]);
-        handleSendImageMessage(result.uri);
-      }
+    console.log(result?.assets[0])
+
+    if (result?.canceled === false) {
+      // setImage([result.uri]);
+      handleSendImageMessage(result?.assets[0]?.uri)
     }
-  };
+  }
 
   const supportedImageFormats = [
     "image/jpeg",
@@ -152,68 +146,73 @@ const ChatPageCN = (props) => {
     "image/gif",
     "image/bmp",
     "image/tiff",
-  ];
-  let isDocumentPickingInProgress = false;
+  ]
+  let isDocumentPickingInProgress = false
 
   const pickDoc = async () => {
     if (isDocumentPickingInProgress) {
-      return;
+      return
     }
 
-    isDocumentPickingInProgress = true;
+    isDocumentPickingInProgress = true
 
     try {
       let result = await DocumentPicker.getDocumentAsync({
         quality: 0.5,
         allowsMultipleSelection: false,
-      });
-      if (result.type === "success") {
-        if (supportedImageFormats.includes(result.mimeType)) {
-          let compressionQuality = 0.8;
-          let compressImage;
+      })
+
+      if (result.canceled === false) {
+        if (supportedImageFormats.includes(result?.assets[0].mimeType)) {
+          let compressionQuality = 0.8
+          let compressImage
           while (compressionQuality >= 0.1) {
-            const manipResult = await manipulateAsync(result.uri, [], {
-              compress: compressionQuality,
-              format: SaveFormat.JPEG,
-            });
-            compressImage = await FileSystem.getInfoAsync(manipResult.uri);
+            const manipResult = await manipulateAsync(
+              result?.assets[0].uri,
+              [],
+              {
+                compress: compressionQuality,
+                format: SaveFormat.JPEG,
+              }
+            )
+            compressImage = await FileSystem.getInfoAsync(manipResult.uri)
             if (compressImage.size <= 1024 * 1024) {
-              break;
+              break
             }
-            compressionQuality -= 0.1;
+            compressionQuality -= 0.1
           }
-          handleSendImageMessage(compressImage.uri);
-          return;
+          handleSendImageMessage(compressImage.uri)
+          return
         }
 
-        if (result.mimeType === "video/mp4") {
-          handleSenVideoMessage(result);
+        if (result?.assets[0].mimeType === "video/mp4") {
+          handleSenVideoMessage(result?.assets[0])
         } else {
           handleSendDocumentMessage({
-            type: result.mimeType,
-            uri: result.uri,
-            size: result.size,
-            name: result.name,
-          });
+            type: result?.assets[0].mimeType,
+            uri: result?.assets[0].uri,
+            size: result?.assets[0].size,
+            name: result?.assets[0].name,
+          })
         }
       } else if (result.type === "cancel") {
-        console.log("Document picking cancelled.");
+        console.log("Document picking cancelled.")
       }
     } catch (error) {
-      console.error("An error occurred during document picking:", error);
+      console.error("An error occurred during document picking:", error)
     } finally {
-      isDocumentPickingInProgress = false;
+      isDocumentPickingInProgress = false
     }
-  };
+  }
 
   const handleSendDocumentMessage = async (docprops) => {
     try {
-      const formdata = new FormData();
+      const formdata = new FormData()
       formdata.append("media", {
         name: `${docprops.name}`,
         uri: docprops.uri,
         type: docprops.type,
-      });
+      })
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
@@ -231,24 +230,24 @@ const ChatPageCN = (props) => {
               name: docprops.name,
               size: docprops.size,
             },
-          });
+          })
         })
         .catch((e) => {
-          console.log("working but error", e);
-        });
+          console.log("working but error", e)
+        })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
-  const [voice, setvoice] = useState();
+  }
+  const [voice, setvoice] = useState()
   const handleSendAudioMessage = (uri) => {
     try {
-      const formdata = new FormData();
+      const formdata = new FormData()
       formdata.append("media", {
         name: `${userState.phoneNumber}.m4a`,
         uri: uri,
         type: "audio/mpeg",
-      });
+      })
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
@@ -262,65 +261,66 @@ const ChatPageCN = (props) => {
             chat: props.route.params.group._id,
             type: "audio",
             content: res.data.path,
-          });
+          })
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
+            console.log(props?.route?.params?.group?.members[0]._id)
             handleLocalNotification(
               props?.route?.params?.group?.members[1].expoPushToken
-            );
+            )
           }
         })
 
         .catch((e) => {
-          console.log("working but error", e);
-        });
+          console.log("working but error", e)
+        })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  };
+  }
   async function startRecording() {
-    setRecording((recording) => !recording);
+    setRecording((recording) => !recording)
     try {
-      await Audio.requestPermissionsAsync();
+      await Audio.requestPermissionsAsync()
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
-      });
+      })
 
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      setvoice(recording);
+      )
+      setvoice(recording)
     } catch (err) {
-      console.error("Failed to start recording", err);
+      console.error("Failed to start recording", err)
     }
   }
 
   async function stopRecording() {
-    setRecording((recording) => !recording);
-    setvoice(undefined);
+    setRecording((recording) => !recording)
+    setvoice(undefined)
     try {
-      await voice.stopAndUnloadAsync();
+      await voice.stopAndUnloadAsync()
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
-      });
-      const uri = voice.getURI();
-      console.log("Recording stopped and stored at", uri);
-      handleSendAudioMessage(uri);
+      })
+      const uri = voice.getURI()
+      console.log("Recording stopped and stored at", uri)
+      handleSendAudioMessage(uri)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 
   const handleSendImageMessage = async (imageprop) => {
-    setImgloading(true);
+    console.log(imageprop)
+    setImgloading(true)
     try {
-      const formdata = new FormData();
+      const formdata = new FormData()
       formdata.append("media", {
         name: `${userState.fullName}.jpg`,
         uri: imageprop,
         type: "image/jpg",
-      });
+      })
 
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
@@ -335,33 +335,33 @@ const ChatPageCN = (props) => {
             chat: props.route.params.group._id,
             type: "image",
             content: res.data.path,
-          });
-          setImgloading(false);
+          })
+          setImgloading(false)
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
+            console.log(props?.route?.params?.group?.members[0]._id)
             handleLocalNotification(
               props?.route?.params?.group?.members[1].expoPushToken
-            );
+            )
           }
         })
         .catch((e) => {
-          setImgloading(false);
-        });
+          setImgloading(false)
+        })
     } catch (e) {
-      console.log(e);
-      setImgloading(false);
+      console.log(e)
+      setImgloading(false)
     }
-  };
+  }
 
   const handleSenVideoMessage = async (videoprop) => {
-    setImgloading(true);
+    setImgloading(true)
     try {
-      const formdata = new FormData();
+      const formdata = new FormData()
       formdata.append("media", {
         name: videoprop.name,
         uri: videoprop.uri,
         type: "video/mp4",
-      });
+      })
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
@@ -375,50 +375,50 @@ const ChatPageCN = (props) => {
             chat: props.route.params.group._id,
             type: "video",
             content: res.data.path,
-          });
+          })
 
-          setImgloading(false);
+          setImgloading(false)
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
+            console.log(props?.route?.params?.group?.members[0]._id)
             handleLocalNotification(
               props?.route?.params?.group?.members[1].expoPushToken
-            );
+            )
           }
         })
         .catch((e) => {
-          console.log("working but error", e);
-          setImgloading(false);
-        });
+          console.log("working but error", e)
+          setImgloading(false)
+        })
     } catch (e) {
-      console.log(e);
-      setImgloading(false);
+      console.log(e)
+      setImgloading(false)
     }
-  };
+  }
 
   const sendtext = (text) => {
-    setLoading(true);
+    setLoading(true)
     socket.emit("send_messageCN", {
       from: userState.id,
       chat: props.route.params.group._id,
       type: "text",
       content: text,
-    });
+    })
     if (props?.route?.params?.group?.members[0]._id === userState.id) {
       handleLocalNotification(
         props?.route?.params?.group?.members[1].expoPushToken
-      );
+      )
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const handleLocalNotification = async (token) => {
-    console.log(token);
+    console.log(token)
     try {
       const config = {
         headers: {
           "auth-token": userState.token,
         },
-      };
+      }
       const notification = await axios.post(
         `${BASE_URL}/chat/notifychat`,
         {
@@ -426,23 +426,23 @@ const ChatPageCN = (props) => {
           expoPushtoken: token,
         },
         config
-      );
+      )
     } catch (error) {
-      console.log("error in local notofications", error);
+      console.log("error in local notofications", error)
     }
-  };
+  }
 
   const handleCamera = () => {
     navigation.navigate("Camera", {
       handleTakePicture: handleTakePicture,
-    });
-  };
+    })
+  }
 
   const handleDelet = (id) => {
-    setdeleteId(id);
-  };
+    setdeleteId(id)
+  }
 
-  let timePassed = calculateTimeDifference();
+  let timePassed = calculateTimeDifference()
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <>
@@ -492,7 +492,7 @@ const ChatPageCN = (props) => {
                   : chatMessages.filter((message, index) => {
                       if (typeof message.content === "string") {
                         if (message.content.match(searchQuery)) {
-                          return message;
+                          return message
                         }
                       }
                     })
@@ -503,56 +503,32 @@ const ChatPageCN = (props) => {
                   : chatMessages.filter((message, index) => {
                       if (typeof message.content === "string") {
                         if (message.content.match(searchQuery)) {
-                          console.log("matched");
-                          return message;
+                          console.log("matched")
+                          return message
                         }
-                      } else return null;
+                      } else return null
                     })
               }
               onEndReachedThreshold={0.1}
               onEndReached={() => {
-                console.log("FETCHING NEW MESSAGES");
+                console.log("FETCHING NEW MESSAGES")
               }}
               renderItem={({ item, index }) => {
-                let timePassed = calculateTimeDifference(item.date);
+                let timePassed = calculateTimeDifference(item.date)
 
                 return (
                   <View style={{ marginVertical: "1%" }}>
                     {item.type === "text" ? (
                       <NormalMessageCn
                         setmodalVisible={setmodalVisible}
-                        message={item.content}
-                        phoneNumber={item.from}
-                        time={timePassed ? timePassed : "1h"}
                         longPress={handleDelet}
-                        id={item._id}
-                        forwardFrom={userState.id}
-                        forwardChat="chatId"
-                        forwardType="text"
-                        forwardContent={item.content}
                         socket={socket}
                         item={item}
-                        image={""}
-                        onPress={() =>
-                          props.navigation.navigate("ViewImage", {
-                            url: `${BASE_URL}/messageMedia/${item.content}`,
-                            message: item.content,
-                          })
-                        }
                       />
                     ) : null}
                     {item.type === "image" ? (
                       <TouchableOpacity>
                         <ImageMessageCn
-                          username={item.from.fullName}
-                          time={timePassed ? timePassed : "1h"}
-                          phoneNumber={item.from}
-                          // ImgLoader={imgLoading}
-                          image={`${BASE_URL}/messageMedia/${item.content}`}
-                          forwardFrom={userState.id}
-                          forwardChat="chatId"
-                          forwardType="image"
-                          forwardContent={item.content}
                           socket={socket}
                           item={item}
                           onPress={() =>
@@ -566,45 +542,18 @@ const ChatPageCN = (props) => {
                     ) : null}
                     {item.type === "document" ? (
                       <DocumentMessageCn
-                        username={item.from.fullName}
-                        doc={item.content}
-                        time={timePassed ? timePassed : "1h"}
                         title={"Select"}
-                        phoneNumber={item.from}
-                        forwardFrom={userState.id}
-                        forwardChat="chatId"
-                        forwardType="document"
-                        forwardContent={item.content}
                         socket={socket}
                         item={item}
                       />
                     ) : null}
 
                     {item.type === "audio" ? (
-                      <RecordingVoiceMessageCn
-                        username={item.from.fullName}
-                        time={timePassed ? timePassed : "1h"}
-                        uri={item.content}
-                        phoneNumber={item.from}
-                        forwardFrom={userState.id}
-                        forwardChat="chatId"
-                        forwardType="audio"
-                        forwardContent={item.content}
-                        socket={socket}
-                        item={item}
-                      />
+                      <RecordingVoiceMessageCn socket={socket} item={item} />
                     ) : null}
                     {item.type === "video" ? (
                       <TouchableOpacity>
                         <VideoMessageCn
-                          username={item.from.fullName}
-                          time={timePassed ? timePassed : "1h"}
-                          phoneNumber={item.from}
-                          image={`${BASE_URL}/messageMedia/${item.content}`}
-                          forwardFrom={userState.id}
-                          forwardChat="chatId"
-                          forwardType="video"
-                          forwardContent={item.content}
                           socket={socket}
                           item={item}
                           onPress={() =>
@@ -617,7 +566,7 @@ const ChatPageCN = (props) => {
                       </TouchableOpacity>
                     ) : null}
                   </View>
-                );
+                )
               }}
             />
           }
@@ -639,8 +588,8 @@ const ChatPageCN = (props) => {
         </View>
       </>
     </TouchableWithoutFeedback>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -699,6 +648,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     width: "82%",
   },
-});
+})
 
-export default ChatPageCN;
+export default ChatPageCN

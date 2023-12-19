@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -7,40 +7,42 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import VideoPlayer from "expo-video-player";
-import { BASE_URL } from "../../../CONSTANTS";
+} from "react-native"
+import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
+import Color from "../../../assets/colors/Color"
+import { useUserState } from "../../slices/userSlice"
+import { ActivityIndicator } from "react-native"
+import { useNavigation } from "@react-navigation/native"
+import VideoPlayer from "expo-video-player"
+import { BASE_URL } from "../../../CONSTANTS"
+import { calculateTimeDifference } from "../../utils/timeDifference"
 
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get("screen").width
+const Height = Dimensions.get("screen").height
 
 const VideoMessageCn = (props) => {
-  const video = React.useRef(null);
+  const video = React.useRef(null)
 
-  const [longPress, setLongPress] = useState(false);
-  const userState = useUserState();
-  const navigation = useNavigation();
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
-    props;
-  const [modalVisible, setmodalVisible] = useState(false);
+  const [longPress, setLongPress] = useState(false)
+  const userState = useUserState()
+  const navigation = useNavigation()
+  const { socket, item } = props
+  let timePassed = calculateTimeDifference(item.date)
+
+  const [modalVisible, setmodalVisible] = useState(false)
   const handleNavigation = () => {
-    navigation.navigate("MsgShare");
-  };
+    navigation.navigate("MsgShare")
+  }
 
   const handleDelet = () => {
-    setmodalVisible(true);
-  };
+    setmodalVisible(true)
+  }
 
   return (
     <View
       onLongPress={() => {
-        props.longPress();
-        setLongPress(true);
+        props.longPress()
+        setLongPress(true)
       }}
       style={[
         longPress && props.LongPressed
@@ -56,14 +58,14 @@ const VideoMessageCn = (props) => {
         {/* TODO :: SINCE 2 USERS CAN HAVE THE SAME NAME SO CHANGETHE LOGIC TO CHECK WITH PHONE NUMBERS */}
         <View
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
@@ -74,7 +76,7 @@ const VideoMessageCn = (props) => {
               onLongPress={() => handleDelet()}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
             >
-              {props.image !== "" && (
+              {item.content !== "" && (
                 <View
                   style={{
                     backgroundColor: "red",
@@ -93,15 +95,15 @@ const VideoMessageCn = (props) => {
                       enterFullscreen: () => {
                         video.current.setStatusAsync({
                           shouldPlay: false,
-                        });
+                        })
                         navigation.navigate("PostView", {
-                          url: `${props.image}`,
+                          url: `${BASE_URL}/messageMedia/${item?.content}`,
                           message: "",
                           mediatype: "video",
                           description: "",
                           //video: props.video,
                           screen: "message",
-                        });
+                        })
                       },
                       exitFullscreen: (e) => console.log(e),
                     }}
@@ -112,7 +114,7 @@ const VideoMessageCn = (props) => {
                       isLooping: false,
                       ref: video,
                       source: {
-                        uri: `${props.image}`,
+                        uri: `${BASE_URL}/messageMedia/${item?.content}`,
                       },
                       shouldPlay: false,
                       resizeMode: "contain",
@@ -121,9 +123,6 @@ const VideoMessageCn = (props) => {
                 </View>
               )}
             </Pressable>
-            {props.message && (
-              <Text style={[styles.message]}>{props.message}</Text>
-            )}
             <View
               style={[
                 props.message
@@ -132,7 +131,7 @@ const VideoMessageCn = (props) => {
               ]}
             >
               <Text style={[props.message ? styles.time : styles.overlayTime]}>
-                {props.time}
+                {timePassed}
               </Text>
               {props.message ? (
                 <Ionicons
@@ -152,16 +151,16 @@ const VideoMessageCn = (props) => {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("MsgShare", {
-                forwardFrom: forwardFrom,
-                forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardFrom: userState.id,
+                forwardChat: "chatId",
+                forwardType: "video",
+                forwardContent: item.content,
                 socket: socket,
               })
             }
             android_ripple={{ color: Color.DarkGrey, radius: 20 }}
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}
@@ -177,8 +176,8 @@ const VideoMessageCn = (props) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
@@ -264,6 +263,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get("screen").height * 0.4,
     width: Dimensions.get("screen").width * 0.6,
   },
-});
+})
 
-export default VideoMessageCn;
+export default VideoMessageCn

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -10,28 +10,25 @@ import {
   Dimensions,
   Linking,
   Pressable,
-} from "react-native";
+} from "react-native"
 import {
   Ionicons,
   MaterialCommunityIcons,
   AntDesign,
   FontAwesome5,
   FontAwesome,
-} from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import Color from "../../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
-import MessageType from "./MessageType";
+} from "react-native-vector-icons"
+import { BASE_URL } from "../../../CONSTANTS"
+import { useUserState } from "../../slices/userSlice"
+import Color from "../../../assets/colors/Color"
+import { useNavigation } from "@react-navigation/native"
+import MessageType from "./MessageType"
+import { calculateTimeDifference } from "../../utils/timeDifference"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 
 const DocumentMessageCn = (props) => {
-  const userState = useUserState();
-  const [document, setDocument] = React.useState(props.doc);
-  const navigation = useNavigation();
-  const [modalVisible, setmodalVisible] = useState(false);
   const {
     forwardFrom,
     forwardChat,
@@ -39,17 +36,24 @@ const DocumentMessageCn = (props) => {
     forwardContent,
     socket,
     item,
-  } = props;
+  } = props
+  let timePassed = calculateTimeDifference(item.date)
+
+  const userState = useUserState()
+  const [document, setDocument] = React.useState(item?.content)
+  const navigation = useNavigation()
+  const [modalVisible, setmodalVisible] = useState(false)
+
   const shortTitle =
     document?.name?.length > 10
       ? document?.name.slice(0, 28) + "..."
-      : document?.name;
+      : document?.name
 
   return (
     <View>
       <Pressable
         style={[
-          userState.id === props.phoneNumber
+          userState.id === item?.from
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
@@ -57,21 +61,21 @@ const DocumentMessageCn = (props) => {
       >
         <View
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from
                 ? styles.receiverDocumentContainer
                 : styles.senderDocumentContainer,
             ]}
           >
             <Pressable
               onPress={() => {
-                Linking.openURL(`${BASE_URL}/messageMedia/${props.doc.path}`);
+                Linking.openURL(`${BASE_URL}/messageMedia/${item.content.path}`)
               }}
             >
               <View>
@@ -82,7 +86,7 @@ const DocumentMessageCn = (props) => {
                       flexDirection: "row",
                     }}
                   >
-                    <MessageType title={props?.doc?.name} />
+                    <MessageType title={item.content?.name} />
                     <Text
                       style={{
                         fontFamily: "Roboto",
@@ -123,7 +127,7 @@ const DocumentMessageCn = (props) => {
                       marginLeft: Width * 0.017,
                     }}
                   >
-                    {props.time}
+                    {timePassed}
                   </Text>
                 </View>
               </View>
@@ -133,15 +137,15 @@ const DocumentMessageCn = (props) => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("MsgShare", {
-              forwardFrom: forwardFrom,
-              forwardChat: forwardChat,
-              forwardType: forwardType,
-              forwardContent: forwardContent,
+              forwardFrom: userState?.id,
+              forwardChat: "chatId",
+              forwardType: "document",
+              forwardContent: item.content,
               socket: socket,
             })
           }
           style={[
-            userState.id === props.phoneNumber
+            userState.id === item?.from
               ? styles.shareMessage
               : styles.receiverShareMessage,
           ]}
@@ -156,8 +160,8 @@ const DocumentMessageCn = (props) => {
         </TouchableOpacity>
       </Pressable>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
@@ -271,6 +275,6 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: Color.VeryLightGrey,
   },
-});
+})
 
-export default DocumentMessageCn;
+export default DocumentMessageCn

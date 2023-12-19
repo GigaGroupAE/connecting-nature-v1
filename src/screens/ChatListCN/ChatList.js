@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react"
 import {
   View,
   Text,
@@ -10,113 +10,119 @@ import {
   Dimensions,
   Modal,
   Pressable,
-} from "react-native";
-import HeaderNormal from "../../components/HeaderNormal";
-import BottomTab from "../../components/BottomTab";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../../assets/colors/Color";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import {
-  FontAwesome,
-  Ionicons,
-  MaterialIcons,
-} from "react-native-vector-icons";
-import NoMessage from "./NoMessage";
+} from "react-native"
+import HeaderNormal from "../../components/HeaderNormal"
+import BottomTab from "../../components/BottomTab"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import Color from "../../../assets/colors/Color"
+import axios from "axios"
+import { BASE_URL } from "../../../CONSTANTS"
+import { useUserState } from "../../slices/userSlice"
+import { useStateContext } from "../../contexts/ContextProvider"
+import { calculateTimeDifference } from "../../utils/timeDifference"
+import NoMessage from "./NoMessage"
+import MessagePreview from "../../components/MessagePreview"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 
 export default function ChatList() {
-  const [Messages, setMessages] = useState([]);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const [refresh, setRefresh] = useState(false);
-  const [IsshowInput, setIsShowInput] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [Messages, setMessages] = useState([])
+  const [modalVisible, setmodalVisible] = useState(false)
+  const [refresh, setRefresh] = useState(false)
+  const [IsshowInput, setIsShowInput] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
-  const navigation = useNavigation();
-  const userState = useUserState();
-  const { group, setgroup, loading, setLoading } = useStateContext();
+  const navigation = useNavigation()
+  const userState = useUserState()
+  const { group, setgroup, loading, setLoading } = useStateContext()
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
         const res = await axios.get(`${BASE_URL}/chat/get-my-chats`, {
           headers: {
             "auth-token": userState.token,
           },
-        });
-        setMessages([...res.data.myChats]);
-        setLoading(false);
-        setRefresh(false); // Reset the refresh state after fetching data
+        })
+        setMessages([...res.data.myChats])
+        setLoading(false)
       } catch (error) {
-        console.log(error);
-        setLoading(false);
+        console.log(error)
+        setLoading(false)
       }
-    };
+    }
 
-    const unsubscribe = navigation.addListener("focus", () => {
-      setRefresh(true);
-    });
-
-    fetchData();
-
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation, refresh]);
+    fetchData()
+  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      const fetchMessages = async () => {
+        try {
+          const res = await axios.get(`${BASE_URL}/chat/get-my-chats`, {
+            headers: {
+              "auth-token": userState.token,
+            },
+          })
+          setMessages([...res.data.myChats])
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      fetchMessages()
+    }, [])
+  )
 
   const handleonbackpress = () => {
-    navigation.goBack();
-  };
+    navigation.goBack()
+  }
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].phoneNumber === userState.phoneNumber) {
-      const profile = props.members[1].profile;
+      const profile = props.members[1].profile
 
-      return `${BASE_URL}/images/${profile}`;
+      return `${BASE_URL}/images/${profile}`
     } else {
-      const profile = props.members[0].profile;
-      return `${BASE_URL}/images/${profile}`;
+      const profile = props.members[0].profile
+      return `${BASE_URL}/images/${profile}`
     }
-  };
+  }
 
   const handleCancel = useCallback(() => {
-    setmodalVisible(false);
-  }, []);
+    setmodalVisible(false)
+  }, [])
 
-  const scrollToTop = useCallback(() => {}, []);
+  const scrollToTop = useCallback(() => {}, [])
 
   const handleShowInput = useCallback(() => {
-    setIsShowInput(true);
-  }, []);
+    setIsShowInput(true)
+  }, [])
 
   const handleHideInput = useCallback(() => {
-    setIsShowInput(false);
-    setSearchQuery("");
-  }, []);
-  const latestChat = Messages.sort((a, b) => {
-    const dateA =
-      a.messages.length > 0
-        ? a.messages[a.messages.length - 1].createdAt
-        : null;
-    const dateB =
-      b.messages.length > 0
-        ? b.messages[b.messages.length - 1].createdAt
-        : null;
+    setIsShowInput(false)
+    setSearchQuery("")
+  }, [])
+  const sortedMessages = useMemo(() => {
+    return Messages?.slice().sort((a, b) => {
+      const dateA =
+        a?.messages?.length > 0
+          ? a.messages[a.messages.length - 1].createdAt
+          : null
+      const dateB =
+        b?.messages?.length > 0
+          ? b.messages[b.messages.length - 1].createdAt
+          : null
 
-    if (!dateA || !dateB) {
-      return 0;
-    }
+      if (!dateA || !dateB) {
+        return 0
+      }
 
-    const timeDifferenceA = Math.abs(new Date() - new Date(dateA));
-    const timeDifferenceB = Math.abs(new Date() - new Date(dateB));
+      const timeDifferenceA = Math.abs(new Date() - new Date(dateA))
+      const timeDifferenceB = Math.abs(new Date() - new Date(dateB))
 
-    return timeDifferenceA - timeDifferenceB;
-  });
+      return timeDifferenceA - timeDifferenceB
+    })
+  }, [Messages])
 
   return (
     <SafeAreaView style={{ backgroundColor: Color.White, height: "100%" }}>
@@ -154,61 +160,26 @@ export default function ChatList() {
         ) : (
           <View style={styles.container}>
             <FlatList
-              data={latestChat}
+              data={sortedMessages}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => {
-                let latestMessage = null;
+                const { messages } = item
 
-                if (item.messages.length > 0) {
-                  latestMessage =
-                    item.messages[item.messages.length - 1].createdAt;
-                }
-
-                let timePassed = latestMessage
-                  ? calculateTimeDifference(latestMessage)
-                  : "";
-
-                let masgTitle = "";
-
-                // item.messages[item.messages.length - 1]?.type === "document"
-                //   ? (masgTitle =
-                //       item.messages[item.messages.length - 1]?.content?.name
-                //         ?.length > 35
-                //         ? item.messages[
-                //             item.messages.length - 1
-                //           ]?.content?.name.slice(0, 35) + "..."
-                //         : item.messages[item.messages.length - 1]?.content.name)
-                //   : (masgTitle =
-                //       item.messages[item.messages.length - 1]?.content?.length >
-                //       35
-                //         ? item.messages[
-                //             item.messages.length - 1
-                //           ]?.content.slice(0, 35) + "..."
-                //         : item.messages[item.messages.length - 1]?.content);
-                let messageTye;
-                if (item.messages.length > 0) {
-                  messageTye = item.messages[item.messages.length - 1].type;
-                }
-
-                let removeLineBreak;
-                if (messageTye === "text") {
-                  const lastMessageContent =
-                    item.messages[item.messages.length - 1].content;
-                  removeLineBreak = lastMessageContent.replace(/[\r\n]+/g, " ");
-                  if (removeLineBreak.length > 40) {
-                    removeLineBreak = removeLineBreak.slice(0, 38) + "...";
-                  }
-                }
+                const latestMessage =
+                  messages?.length > 0 ? messages[messages.length - 1] : null
+                const timePassed = calculateTimeDifference(
+                  latestMessage.createdAt
+                )
 
                 return (
                   <Pressable
                     style={styles.mainBody}
                     onPress={() => {
-                      setgroup(item);
+                      setgroup(item)
                       navigation.navigate("ChatCN", {
                         group: item,
-                      });
+                      })
                     }}
                     delayLongPress={1000}
                   >
@@ -228,58 +199,11 @@ export default function ChatList() {
                           </Text>
                           <Text style={styles.timeText}>{timePassed}</Text>
                         </View>
-                        {messageTye === "text" ? (
-                          <Text style={styles.msgText}>{removeLineBreak}</Text>
-                        ) : null}
-                        {messageTye === "video" ? (
-                          <View style={styles.messageType}>
-                            <FontAwesome
-                              name="video-camera"
-                              style={{ fontSize: 14, color: Color.Grey }}
-                            />
-                            <Text style={{ ...styles.msgText, marginLeft: 6 }}>
-                              Video
-                            </Text>
-                          </View>
-                        ) : null}
-                        {messageTye === "image" ? (
-                          <View style={styles.messageType}>
-                            <FontAwesome
-                              name="photo"
-                              style={{ fontSize: 14, color: Color.Grey }}
-                            />
-                            <Text style={{ ...styles.msgText, marginLeft: 6 }}>
-                              Photo
-                            </Text>
-                          </View>
-                        ) : null}
-                        {messageTye === "document" ? (
-                          <View style={styles.messageType}>
-                            <Ionicons
-                              name="document"
-                              style={{ fontSize: 14, color: Color.Grey }}
-                            />
-                            <Text style={{ ...styles.msgText, marginLeft: 6 }}>
-                              Document
-                            </Text>
-                          </View>
-                        ) : null}
-
-                        {messageTye === "audio" ? (
-                          <View style={styles.messageType}>
-                            <MaterialIcons
-                              name="keyboard-voice"
-                              style={{ fontSize: 18, color: Color.Grey }}
-                            />
-                            <Text style={{ ...styles.msgText, marginLeft: 4 }}>
-                              Voice
-                            </Text>
-                          </View>
-                        ) : null}
+                        {!loading && <MessagePreview item={item} />}
                       </View>
                     </View>
                   </Pressable>
-                );
+                )
               }}
             />
             <Modal
@@ -287,7 +211,7 @@ export default function ChatList() {
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
-                setmodalVisible(!modalVisible);
+                setmodalVisible(!modalVisible)
               }}
             >
               <View style={styles.ConfrmModel}>
@@ -326,7 +250,7 @@ export default function ChatList() {
 
       <BottomTab activeMenu={"Chat"} scrollToTop={scrollToTop} />
     </SafeAreaView>
-  );
+  )
 }
 const styles = StyleSheet.create({
   container: {
@@ -353,9 +277,9 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   userAvatar: {
-    width: Dimensions.get("screen").height * 0.07,
-    height: Dimensions.get("screen").height * 0.07,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    width: Height * 0.07,
+    height: Height * 0.07,
+    borderRadius: Height * 0.1,
   },
 
   listHead: {
@@ -369,12 +293,7 @@ const styles = StyleSheet.create({
     color: Color.Black,
     marginLeft: 11,
   },
-  categoryText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 12,
-    color: Color.Blue,
-    marginLeft: 9,
-  },
+
   timeText: {
     position: "absolute",
     fontFamily: "Roboto_400Regular",
@@ -382,50 +301,10 @@ const styles = StyleSheet.create({
     color: Color.Black,
     right: "10%",
   },
-  messageContainer: {
-    width: "90%",
-  },
-  messageText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 13,
-    lineHeight: 22,
-    color: Color.Black,
-    marginLeft: 11,
-  },
-  bodyHeadContainer: {
-    paddingHorizontal: 19,
-    paddingVertical: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderColor: Color.VeryLightGrey,
-    borderWidth: 1,
-  },
-
-  bodyHeadText: {
-    fontFamily: "Roboto",
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#4582C3",
-  },
-  nochatText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 12,
-    color: Color.LightGrey,
-    opacity: 0.9,
-    alignSelf: "center",
-  },
   mainContent: {
     width: "100%",
     justifyContent: "space-around",
     // alignItems: "center",
-  },
-  msgText: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 12,
-    lineHeight: 22,
-    color: Color.Black,
-    marginLeft: 11,
   },
   btn: {
     paddingVertical: Height * 0.012,
@@ -478,7 +357,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginLeft: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    borderRadius: Height * 0.1,
     backgroundColor: "#F1F1F1",
   },
   textBox: {
@@ -487,37 +366,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     width: "82%",
   },
-  heading: {
-    fontFamily: "Roboto_700Bold",
-    color: Color.DarkGrey,
-    fontSize: Height * 0.019,
-    paddingVertical: Height * 0.01,
-  },
-  subHeading: {
-    fontFamily: "Roboto_500Medium",
-    color: Color.DarkGrey,
-    fontSize: Height * 0.016,
-  },
-  bellIcon: {
-    width: Width * 0.3,
-    height: Height * 0.14,
-    resizeMode: "contain",
-  },
-  button: {
-    backgroundColor: Color.Blue,
-    marginTop: Height * 0.05,
-    paddingHorizontal: Width * 0.06,
-    paddingVertical: Height * 0.012,
-    borderRadius: Height * 0.01,
-  },
-  buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
-    color: Color.White,
-    fontSize: Height * 0.02,
-  },
-  messageType: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 11,
-  },
-});
+})
