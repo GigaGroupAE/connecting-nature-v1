@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from "react"
 import {
   View,
   Text,
@@ -8,85 +8,86 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import HeaderBack from "../../components/HeaderBack";
-import CampaignCard from "./CampaignCard";
-import BottomTab from "../../components/BottomTab";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { useUserState } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import { axiosInstance } from "../../../axiosInstance";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { ActivityIndicator } from "react-native";
-import campaignIcon from "../../../assets/campaignICon.png";
-import moment from "moment";
-import { scale } from "react-native-size-matters";
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+} from "react-native"
+import HeaderBack from "../../components/HeaderBack"
+import CampaignCard from "./CampaignCard"
+import BottomTab from "../../components/BottomTab"
+import { useState, useEffect } from "react"
+import axios from "axios"
+import { useUserState } from "../../slices/userSlice"
+import { useNavigation } from "@react-navigation/native"
+import { BASE_URL } from "../../../CONSTANTS"
+import Color from "../../../assets/colors/Color"
+import { axiosInstance } from "../../../axiosInstance"
+import { useStateContext } from "../../contexts/ContextProvider"
+import { ActivityIndicator } from "react-native"
+import campaignIcon from "../../../assets/campaignICon.png"
+import moment from "moment"
+import { scale } from "react-native-size-matters"
+import NoCampaignIndicater from "../../components/NoCampaignIndicater"
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 
 export default function CampaignsScreen() {
-  const [campaigns, setcampaigns] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [archived, setarchived] = useState([]);
-  const navigation = useNavigation();
-  const userState = useUserState();
+  const [campaigns, setcampaigns] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [archived, setarchived] = useState([])
+  const navigation = useNavigation()
+  const userState = useUserState()
   const { setGlobalSocket, reactions, setreactions, comment, setcomment } =
-    useStateContext();
+    useStateContext()
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
         const response = await axiosInstance.get(
           "/campaigns/get-multiple-by-query?status=executed"
-        );
+        )
 
-        setcampaigns(response.data.campaigns);
-        setLoading(false);
+        setcampaigns(response.data.campaigns)
+        setLoading(false)
       } catch (error) {
-        console.log("Error:", error);
-        setLoading(false);
+        console.log("Error:", error)
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
         const response = await axiosInstance.get(
           "/archives/getArchiveCampaigns"
-        );
-        setarchived(response?.data?.newcampaigns);
+        )
+        setarchived(response?.data?.newcampaigns)
 
-        setLoading(false);
+        setLoading(false)
       } catch (error) {
-        console.log("Error:", error);
-        setLoading(false);
+        console.log("Error:", error)
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const handlebackpress = () => {
-    navigation.goBack();
-  };
+    navigation.goBack()
+  }
 
-  const sortedArray = campaigns.sort((a, b) => b._id - a._id);
+  const sortedArray = campaigns.sort((a, b) => b._id - a._id)
 
-  const scrollToTop = useCallback(() => {}, []);
+  const scrollToTop = useCallback(() => {}, [])
 
   const handleNavigation = (campaign) => {
-    setreactions(campaign?.reactions);
-    setcomment(campaign?.messages);
-    navigation.navigate("CampaignWithPosts", { campaign });
-  };
+    setreactions(campaign?.reactions)
+    setcomment(campaign?.messages)
+    navigation.navigate("CampaignWithPosts", { campaign })
+  }
 
   return (
     <SafeAreaView style={{ backgroundColor: Color.LightBlue, height: "100%" }}>
@@ -113,41 +114,12 @@ export default function CampaignsScreen() {
               {campaigns.length === 0 ? (
                 <View
                   style={{
-                    height: "100%",
                     alignItems: "center",
                     justifyContent: "center",
                     paddingVertical: Height * 0.2,
                   }}
                 >
-                  <View
-                    style={{
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image source={campaignIcon} style={styles.bellIcon} />
-                    <Text style={styles.heading}>Currently No Post Shared</Text>
-                    <Text style={styles.subHeading}>
-                      Currently, there are no activity in this section. Once
-                      admin start campaign in your radius, You will get notify.
-                      Stay tune...
-                    </Text>
-
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => navigation.goBack()}
-                    >
-                      <Text style={styles.buttonTitle}>Back to Home</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={styles.archivebutton}
-                      onPress={() =>
-                        navigation.navigate("ArchivedScreen", { archived })
-                      }
-                    >
-                      <Text style={styles.archiveText}>Archived Campaigns</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <NoCampaignIndicater />
                 </View>
               ) : (
                 <View>
@@ -172,7 +144,7 @@ export default function CampaignsScreen() {
                           teamBuser={campaign?.teamB?.members}
                         />
                       </TouchableOpacity>
-                    );
+                    )
                   })}
                 </View>
               )}
@@ -183,7 +155,7 @@ export default function CampaignsScreen() {
 
       <BottomTab activeMenu={"Campaign"} scrollToTop={scrollToTop} />
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -254,4 +226,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     color: Color.Blue,
   },
-});
+})
