@@ -33,7 +33,6 @@ const CreatePost = (props) => {
               onPress={() => {
                 navigation.navigate("AddPost", {
                   origin: "story",
-                  storyReload: props.storyReload,
                 })
                 props.closeModal()
               }}

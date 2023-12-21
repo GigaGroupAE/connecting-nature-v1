@@ -1,5 +1,5 @@
 import React from "react"
-import { ActivityIndicator, LogBox } from "react-native"
+import { ActivityIndicator, Dimensions, LogBox, View } from "react-native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 import persistStore from "redux-persist/es/persistStore"
@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/lib/integration/react"
 import { Provider as PaperProvider } from "react-native-paper"
 import { isEqual } from "lodash"
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClient, QueryClientProvider } from "react-query"
 
 import {
   useUserState,
@@ -101,6 +101,7 @@ import PostShare from "./src/components/PostShare"
 import Animation from "./src/screens/Animation"
 import LivePointsComment from "./src/components/LivePointsComment"
 import CreateCampaignPost from "./src/components/CreateCampaignPost"
+import PostSkeleton from "./src/components/PostSkeleton"
 let customFonts = {
   Roboto_300Light: require("./assets/fonts/Roboto-Light.ttf"),
   Roboto_400Regular: require("./assets/fonts/Roboto-Regular.ttf"),
@@ -110,16 +111,13 @@ let customFonts = {
 }
 
 const Stack = createStackNavigator()
+const Height = Dimensions.get("screen").height
 
 let persistor = persistStore(store)
 
 //REACT-QUERY
 
 const queryClient = new QueryClient()
-LogBox.ignoreLogs([
-  "Unhandled promise rejection: Error: No 'projectId' found. If 'projectId' can't be inferred from the manifest (eg. in bare workflow), you have to pass it in yourself.",
-])
-
 function Main() {
   const { loading } = useStateContext()
   const UserState = useUserState()
@@ -248,11 +246,9 @@ export default function App() {
   const [isLoaded] = useFonts(customFonts)
   if (!isLoaded) {
     return (
-      <ActivityIndicator
-        size={"large"}
-        color={Color.Blue}
-        style={{ flex: 1, alignSelf: "center", justifyContent: "center" }}
-      />
+      <View style={{ flex: 1, marginTop: 30 }}>
+        <PostSkeleton />
+      </View>
     )
   }
   return (

@@ -1,54 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react"
 import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
   FlatList,
-} from "react-native";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { useStateContext } from "../../contexts/ContextProvider";
-import StoryCard from "../../components/StoryCard";
+  ActivityIndicator,
+  Dimensions,
+} from "react-native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
+import { useInfiniteQuery } from "react-query"
+import Color from "../../../assets/colors/Color"
+import StoryCard from "../../components/StoryCard"
+import { fetchStories } from "../../Api/GetPost"
 
 const StoryHeader = () => {
-  const navigation = useNavigation();
-  const userstate = useUserState();
-  const isFocused = useIsFocused();
-  const { Stories, setStories } = useStateContext();
-  const [refresh, setRefresh] = useState(false);
+  const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
-  const fetchStory = async () => {
-    setRefresh(true);
-    try {
-      const response = await axios.get(`${BASE_URL}/story/getstories`, {
-        headers: {
-          "auth-token": userstate.token,
-        },
-      });
-      setStories([...response.data]);
-      setRefresh(false);
-    } catch (error) {
-      console.error("Error fetching stories:", error);
-      setRefresh(false);
-    }
-  };
-
+  const {
+    data: storiesData,
+    isLoading: storyLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery("stories", fetchStories, {
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage?.currentPage && lastPage?.totalPages) {
+        return lastPage.currentPage < lastPage.totalPages
+          ? lastPage.currentPage + 1
+          : null
+      }
+      return null
+    },
+    refetchOnWindowFocus: false,
+    cacheTime: 1000 * 60 * 5,
+  })
+  const refetchStories = () => {
+    refetch()
+  }
   useEffect(() => {
-    fetchStory();
-  }, [isFocused]);
+    if (isFocused) {
+      refetchStories()
+    }
+  }, [isFocused])
 
   const handleStoryNavigation = () => {
     navigation.navigate("StoriesPosts", {
-      Stories,
-    });
-  };
+      stories: storiesData?.pages.flatMap((page) => page.data) || [],
+    })
+  }
 
-  Stories?.sort((a, b) => new Date(b.createdAT) - new Date(a.createdAT));
+  const renderStoryCard = ({ item }) => {
+    return <StoryCard story={item} />
+  }
 
   return (
     <View style={styles.container}>
@@ -60,16 +66,23 @@ const StoryHeader = () => {
         <Text style={styles.seeAllText}>see all</Text>
       </TouchableOpacity>
       <FlatList
-        data={Stories}
+        data={storiesData?.pages.flatMap((page) => page?.stories) || []}
         keyExtractor={(item) => item._id}
         horizontal={true}
         initialNumToRender={3}
-        renderItem={({ item }) => <StoryCard story={item} />}
+        renderItem={renderStoryCard}
         showsHorizontalScrollIndicator={false}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (!isFetchingNextPage && hasNextPage) {
+            fetchNextPage()
+          }
+        }}
+        ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -92,6 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Roboto_400Regular",
   },
-});
+})
 
-export default StoryHeader;
+export default StoryHeader
