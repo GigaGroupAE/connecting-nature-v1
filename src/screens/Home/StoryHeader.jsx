@@ -47,9 +47,7 @@ const StoryHeader = () => {
   }, [isFocused])
 
   const handleStoryNavigation = () => {
-    navigation.navigate("StoriesPosts", {
-      stories: storiesData?.pages.flatMap((page) => page.data) || [],
-    })
+    navigation.navigate("StoriesPosts")
   }
 
   const renderStoryCard = ({ item }) => {
@@ -69,7 +67,7 @@ const StoryHeader = () => {
         data={storiesData?.pages.flatMap((page) => page?.stories) || []}
         keyExtractor={(item) => item._id}
         horizontal={true}
-        initialNumToRender={3}
+        initialNumToRender={10}
         renderItem={renderStoryCard}
         showsHorizontalScrollIndicator={false}
         onEndReachedThreshold={0.5}

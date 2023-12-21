@@ -6,35 +6,28 @@ import {
   Modal,
   Text,
   StyleSheet,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { BASE_URL } from "../../CONSTANTS";
-import Color from "../../assets/colors/Color";
-import { ProgressBar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import GradientBottomImage from "./GradientBottomImage";
-import { useStateContext } from "../contexts/ContextProvider";
+} from "react-native"
+import React, { useState, useEffect } from "react"
+import { BASE_URL } from "../../CONSTANTS"
+import Color from "../../assets/colors/Color"
+import { ProgressBar } from "react-native-paper"
+import { useNavigation } from "@react-navigation/native"
+import GradientBottomImage from "./GradientBottomImage"
+import { useStateContext } from "../contexts/ContextProvider"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 export default function StoryCard(props) {
-  const [visible, setvisible] = useState(false);
-  const [time, settime] = useState(0);
+  const [visible, setvisible] = useState(false)
+  const [time, settime] = useState(0)
 
-  const { setSelectedStory } = useStateContext();
-  const navigation = useNavigation();
-  useEffect(() => {
-    if (visible === true) {
-      setInterval(() => {
-        settime((prev) => prev + 0.1);
-      }, 500);
-    }
-  }, [visible]);
+  const { setSelectedStory } = useStateContext()
+  const navigation = useNavigation()
 
   const handleNavigation = (selectedStory) => {
-    navigation.navigate("StoryComment");
-    setSelectedStory(selectedStory);
-  };
+    navigation.navigate("StoryComment")
+    setSelectedStory(selectedStory)
+  }
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => handleNavigation(props.story)}>
@@ -75,7 +68,7 @@ export default function StoryCard(props) {
         <Modal animationType="slide" visible={visible}>
           <TouchableOpacity
             onPress={() => {
-              setvisible(false);
+              setvisible(false)
             }}
           >
             <View>
@@ -91,7 +84,7 @@ export default function StoryCard(props) {
         </Modal>
       </TouchableOpacity>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -132,4 +125,4 @@ const styles = StyleSheet.create({
     height: Height * 0.8,
     width: Width,
   },
-});
+})
