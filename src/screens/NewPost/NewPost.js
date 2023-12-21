@@ -44,7 +44,7 @@ export default function NewPost(props) {
 
   const [postType, setpostType] = useState(false)
 
-  const { loading, setLoading, showSnackbar } = useStateContext()
+  const { loading, setLoading, showSnackbar, setStories } = useStateContext()
   const handleonPost = async () => {
     setpostType(false)
     setmodalCampaign(false)
@@ -58,8 +58,6 @@ export default function NewPost(props) {
     const formData = new FormData()
 
     formData.append("description", description)
-    //since we cannot add object to formdata and userState is an object
-    //so we will STRINGIFY the userState and parse it at the backend
     formData.append("postedby", JSON.stringify(userState.id))
 
     if (!image) {
@@ -87,7 +85,6 @@ export default function NewPost(props) {
           config
         )
         showSnackbar("Post created successfully")
-        props?.route?.params?.reload()
       } else {
         if (image !== null) {
           const { data } = await axios.post(
@@ -95,9 +92,9 @@ export default function NewPost(props) {
             formData,
             config
           )
-          props?.route?.params?.storyReload()
 
           showSnackbar("Story created successfully")
+          setStories([data])
         } else {
           alert("Cannot create a story without an image")
         }
