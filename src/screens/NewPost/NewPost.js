@@ -65,7 +65,7 @@ export default function NewPost(props) {
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
-        uri: compressImg.uri,
+        uri: data.uri,
         type: data.mimeType,
       })
     }
@@ -76,7 +76,7 @@ export default function NewPost(props) {
         "auth-token": userState.token,
       },
     }
-    //api call
+
     try {
       if (props.route.params.origin === "post") {
         const { data } = await axios.post(
@@ -117,26 +117,7 @@ export default function NewPost(props) {
       let result = await DocumentPicker.getDocumentAsync({})
 
       if (!result.cancelled) {
-        let compressImage
-        let manipResult
-
-        if (supportedImageFormats.includes(result?.assets[0]?.mimeType)) {
-          let compressionQuality = 0.8
-          while (compressionQuality >= 0.1) {
-            manipResult = await manipulateAsync(result.assets[0]?.uri, [], {
-              compress: compressionQuality,
-              format: SaveFormat.JPEG,
-            })
-            compressImage = await FileSystem.getInfoAsync(manipResult.uri)
-            if (compressImage.size <= 1024 * 1024) {
-              break
-            }
-            compressionQuality -= 0.1
-          }
-        } else {
-          compressImage = result
-        }
-        setCompressImg(compressImage)
+        setCompressImg(result.assets[0].uri)
         setData(result.assets[0])
         setImage([result.assets[0].uri])
       }
@@ -172,6 +153,8 @@ export default function NewPost(props) {
     fetchData()
   }, [])
 
+  console.log(data?.uri)
+
   const handleCampaignPost = async (campaignId) => {
     setpostType(false)
     setmodalCampaign(false)
@@ -194,7 +177,7 @@ export default function NewPost(props) {
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
-        uri: compressImg.uri,
+        uri: data.uri,
         type: data.mimeType,
       })
     }

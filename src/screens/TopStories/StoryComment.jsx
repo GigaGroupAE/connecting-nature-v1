@@ -9,37 +9,37 @@ import {
   TouchableOpacity,
   ScrollView,
   Keyboard,
-} from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import CommentInput from "../../components/CommentInput";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import VideoPlayer from "expo-video-player";
-import { useStateContext } from "../../contexts/ContextProvider";
+} from "react-native"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import CommentInput from "../../components/CommentInput"
+import HeaderNormal from "../../components/HeaderNormal"
+import Color from "../../../assets/colors/Color"
+import { calculateTimeDifference } from "../../utils/timeDifference"
+import VideoPlayer from "expo-video-player"
+import { useStateContext } from "../../contexts/ContextProvider"
 
-import { BASE_URL } from "../../../CONSTANTS";
+import { BASE_URL } from "../../../CONSTANTS"
 
-import { AntDesign, MaterialCommunityIcons } from "react-native-vector-icons";
-import { useUserState } from "../../slices/userSlice";
-import axios from "axios";
-import { io } from "socket.io-client";
-import moment from "moment";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import MiniVideoPlayer from "../../components/MiniVideoPlayer";
-import StoryCommentHeader from "./StoryCommentHeader";
-import PostDescription from "../../components/PostDesciption";
+import { AntDesign, MaterialCommunityIcons } from "react-native-vector-icons"
+import { useUserState } from "../../slices/userSlice"
+import axios from "axios"
+import { io } from "socket.io-client"
+import moment from "moment"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import MiniVideoPlayer from "../../components/MiniVideoPlayer"
+import StoryCommentHeader from "./StoryCommentHeader"
+import PostDescription from "../../components/PostDesciption"
 
-import StoryVideo from "../../components/StoryVideo";
-import StoryImage from "../../components/StoryImage";
+import StoryVideo from "../../components/StoryVideo"
+import StoryImage from "../../components/StoryImage"
 
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
-const socket = io.connect(`${BASE_URL}/CN`);
+const width = Dimensions.get("screen").width
+const height = Dimensions.get("screen").height
+const socket = io.connect(`${BASE_URL}/CN`)
 
 //  comments container
 const CommentItem = ({ item }) => {
-  let timePassed = calculateTimeDifference(item.date);
+  let timePassed = calculateTimeDifference(item.date)
 
   return (
     <View style={styles.commentMainContainer}>
@@ -77,11 +77,11 @@ const CommentItem = ({ item }) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const StoryComment = (props) => {
-  var date = moment().utcOffset("+05:00");
+  var date = moment().utcOffset("+05:00")
   const {
     loading,
     setLoading,
@@ -90,24 +90,24 @@ const StoryComment = (props) => {
     videoURI,
     videoAutherName,
     showSnackbar,
-  } = useStateContext();
-  const userstate = useUserState();
-  const route = useRoute();
-  const [reactions, setreactions] = useState([...selectedStory.reactions]);
-  const [textInputFocused, setTextInputFocused] = useState(false);
-  const [comments, setcomments] = useState([...selectedStory.comments]);
-  const [shares, setshares] = useState([...selectedStory.shares]);
+  } = useStateContext()
+  const userstate = useUserState()
+  const route = useRoute()
+  const [reactions, setreactions] = useState([...selectedStory.reactions])
+  const [textInputFocused, setTextInputFocused] = useState(false)
+  const [comments, setcomments] = useState([...selectedStory.comments])
+  const [shares, setshares] = useState([...selectedStory.shares])
   const [liked, setliked] = useState(
     reactions.some((user) => {
-      return user._id === userstate.id;
+      return user._id === userstate.id
     })
-  );
-  let tempcomment = "";
+  )
+  let tempcomment = ""
   const handlecommentinput = (props) => {
     if (props !== "") {
-      tempcomment = props;
+      tempcomment = props
     }
-  };
+  }
 
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
@@ -121,7 +121,7 @@ const StoryComment = (props) => {
           headers: {
             "auth-token": userstate.token,
           },
-        };
+        }
       }
     }
     axios
@@ -135,28 +135,28 @@ const StoryComment = (props) => {
         }
       )
       .then((res) => {
-        setreactions(res.data.reactions);
+        setreactions(res.data.reactions)
       })
-      .catch((e) => console.log(e));
-  };
+      .catch((e) => console.log(e))
+  }
 
   // handle comments
   const handlesend = async () => {
-    setLoading(true);
-    Keyboard.dismiss();
+    setLoading(true)
+    Keyboard.dismiss()
     if (tempcomment !== "") {
-      let newcomments = comments;
+      let newcomments = comments
       newcomments.push({
         description: tempcomment,
         commented_by: userstate.id,
         date: date,
-      });
+      })
 
       const config = {
         headers: {
           "auth-token": userstate.token,
         },
-      };
+      }
 
       try {
         let { data } = await axios.patch(
@@ -167,54 +167,54 @@ const StoryComment = (props) => {
               "auth-token": userstate.token,
             },
           }
-        );
-        setLoading(false);
+        )
+        setLoading(false)
         if (data) {
-          socket.emit("send_comments_story", data);
-          setLoading(false);
+          socket.emit("send_comments_story", data)
+          setLoading(false)
         }
       } catch (error) {
-        console.log("coming from this block is the error", error);
-        setLoading(false);
+        console.log("coming from this block is the error", error)
+        setLoading(false)
       }
     } else {
-      alert("Cannot post an empty Comment");
-      setLoading(false);
+      alert("Cannot post an empty Comment")
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     try {
       socket.on("receive_comments_story", (data) => {
-        setcomments(data);
-      });
+        setcomments(data)
+      })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-  }, [socket]);
+  }, [socket])
 
   // handle share
 
   const handleonshare = async () => {
     try {
-      let tempshares = [...shares];
-      tempshares.push(userstate.id);
+      let tempshares = [...shares]
+      tempshares.push(userstate.id)
 
-      const formData = new FormData();
-      ["shares", "comments", "reactions"].forEach((e) =>
+      const formData = new FormData()
+      ;["shares", "comments", "reactions"].forEach((e) =>
         formData.append(e, JSON.stringify([]))
-      );
-      formData.append("description", selectedStory.description);
-      formData.append("postedby", JSON.stringify(userstate.id));
+      )
+      formData.append("description", selectedStory.description)
+      formData.append("postedby", JSON.stringify(userstate.id))
 
       if (selectedStory.media) {
         formData.append("media", {
           name: selectedStory.media.name,
           uri: `${BASE_URL}/images/${selectedStory.media.name}`,
           type: selectedStory.media.type,
-        });
+        })
       } else {
-        formData.append("media", null);
+        formData.append("media", null)
       }
 
       const config = {
@@ -223,15 +223,15 @@ const StoryComment = (props) => {
           Accept: "application/json",
           "auth-token": userstate.token,
         },
-      };
+      }
 
       // Create the new story
       const postResponse = await axios.post(
         `${BASE_URL}/story/addstory/`,
         formData,
         config
-      );
-      showSnackbar("The story has been shared");
+      )
+      showSnackbar("The story has been shared")
 
       // Update the shares count for the selected story
       const res = await axios.patch(
@@ -242,57 +242,91 @@ const StoryComment = (props) => {
             "auth-token": userstate.token,
           },
         }
-      );
-      setshares([...res.data.shares]);
+      )
+      setshares([...res.data.shares])
     } catch (error) {
-      console.log(error);
+      console.log(error)
       showSnackbar(
         "Sorry, we couldn't share the story at the moment. Please try again later."
-      );
+      )
     }
-  };
+  }
 
   const handleTextInputFocus = () => {
-    setTextInputFocused(true);
-  };
+    setTextInputFocused(true)
+  }
 
   const handleTextInputBlur = () => {
-    setTextInputFocused(false);
-  };
+    setTextInputFocused(false)
+  }
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      let templike = [...reactions]
       const newLikes = {
         phoneNumber: userstate.phoneNumber,
         fullName: userstate.fullName,
         type: userstate.type,
         profile: userstate.profile,
         _id: userstate.id,
-      };
-      templike.push(newLikes);
-      updatereactions(templike, true);
+      }
+      templike.push(newLikes)
+      updatereactions(templike, true)
 
-      setliked(true);
+      setliked(true)
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userstate.id;
-      });
-      updatereactions(newlikes, false);
+        return reaction._id !== userstate.id
+      })
+      updatereactions(newlikes, false)
 
-      setliked(false);
+      setliked(false)
     }
-  };
+  }
+
+  const StoryCommentHead = useMemo(() => <StoryCommentHeader />, [])
+  const StoryDescription = useMemo(
+    () => <PostDescription description={selectedStory.description} />,
+    [selectedStory.description]
+  )
+
+  const ShowStoryVideo = useMemo(
+    () => (
+      <StoryVideo
+        postVideo={selectedStory.media.name}
+        videoAuther={selectedStory.postedby.fullName}
+        videoDescription={selectedStory.description}
+        selectedStory={selectedStory}
+      />
+    ),
+    [selectedStory]
+  )
+
+  const ShowStoryImage = useMemo(
+    () => (
+      <StoryImage
+        media={selectedStory?.media.name}
+        mediaDesciption={selectedStory?.description}
+        id={selectedStory._id}
+        imageStyle={styles.image}
+      />
+    ),
+    [selectedStory]
+  )
+
+  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"]
+
   return (
     <View style={{ backgroundColor: Color.White, height: "100%" }}>
       {/* Header */}
       <HeaderNormal title={"Spotlight"} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* User Details */}
-        <StoryCommentHeader />
+
+        {StoryCommentHead}
         {/* Post Description */}
 
-        <PostDescription description={selectedStory.description} />
+        {StoryDescription}
 
         {/* Post Media */}
         <View
@@ -304,31 +338,16 @@ const StoryComment = (props) => {
           <View>
             {/* Video Player */}
             <View>
-              {selectedStory.media?.type === "video/mp4" ? (
-                <StoryVideo
-                  postVideo={selectedStory.media.name}
-                  videoAuther={selectedStory.postedby.fullName}
-                  videoDescription={selectedStory.description}
-                />
-              ) : null}
+              {selectedStory.media?.type === "video/mp4" && (
+                <View>{ShowStoryVideo}</View>
+              )}
             </View>
 
             {/* Image */}
             <View>
-              <View>
-                {selectedStory.media?.type === "image/jpeg" ||
-                selectedStory.media?.type === "image/png" ||
-                selectedStory.media?.type === "image/jpg" ? (
-                  <View>
-                    <StoryImage
-                      media={selectedStory?.media.name}
-                      mediaDesciption={selectedStory?.description}
-                      id={selectedStory._id}
-                      imageStyle={styles.image}
-                    />
-                  </View>
-                ) : null}
-              </View>
+              {supportedImageFormats.includes(selectedStory.media?.type) && (
+                <View>{ShowStoryImage}</View>
+              )}
             </View>
           </View>
 
@@ -398,10 +417,10 @@ const StoryComment = (props) => {
         onBlur={handleTextInputBlur}
       />
     </View>
-  );
-};
+  )
+}
 
-export default StoryComment;
+export default StoryComment
 
 const styles = StyleSheet.create({
   postLikes: {
@@ -539,4 +558,4 @@ const styles = StyleSheet.create({
     bottom: height * 0.07,
     backgroundColor: "red",
   },
-});
+})

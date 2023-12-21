@@ -5,15 +5,15 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "../../CONSTANTS";
+} from "react-native"
+import React from "react"
+import { useNavigation } from "@react-navigation/native"
+import { BASE_URL } from "../../CONSTANTS"
 
-const height = Dimensions.get("screen").height;
+const height = Dimensions.get("screen").height
 
 const StoryImage = ({ mediaDesciption, media, id, imageStyle }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
   return (
     <TouchableOpacity
       key={id}
@@ -31,9 +31,9 @@ const StoryImage = ({ mediaDesciption, media, id, imageStyle }) => {
         }}
       />
     </TouchableOpacity>
-  );
-};
+  )
+}
 
-export default StoryImage;
+export default StoryImage
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})
