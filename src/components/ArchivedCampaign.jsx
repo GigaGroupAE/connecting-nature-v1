@@ -7,116 +7,124 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-
-import { scale } from "react-native-size-matters";
-
-import axios from "axios";
-import { useUserState } from "../slices/userSlice";
-import { BASE_URL } from "../../CONSTANTS";
-import CampaignHeader from "./CampaignHeader";
-import CampaignTimeLeft from "./CampaignTimeLeft";
-import LivePointsTeamPoints from "./LivePointsTeamPoints";
-import LivePointsTeamMember from "./LivePointsTeamMember";
-import LivePointsAction from "./LivePointsAction";
-import Color from "../../assets/colors/Color";
-import CampaignPosts from "../screens/CampaignsScreen/CampaignPosts";
-import ArchivedTeams from "./ArchivedTeams";
+} from "react-native"
+import React, { useMemo, useState } from "react"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { scale } from "react-native-size-matters"
+import CampaignHeader from "./CampaignHeader"
+import LivePointsTeamPoints from "./LivePointsTeamPoints"
+import LivePointsTeamMember from "./LivePointsTeamMember"
+import LivePointsAction from "./LivePointsAction"
+import Color from "../../assets/colors/Color"
+import CampaignPosts from "../screens/CampaignsScreen/CampaignPosts"
+import ArchivedTeams from "./ArchivedTeams"
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
   Easing,
-} from "react-native-reanimated";
-import DoDayPointsLIveShot from "../DoDayPointsLIveShot";
+} from "react-native-reanimated"
+import DoDayPointsLIveShot from "../DoDayPointsLIveShot"
+import { useInfiniteQuery } from "react-query"
+import { fetchPostsByCampaign } from "../Api/GetPost"
+import PostSkeleton from "./PostSkeleton"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
+
+const EmptyState = ({ navigation }) => (
+  <View
+    style={{
+      alignItems: "center",
+      backgroundColor: Color.White,
+      height: "100%",
+      justifyContent: "center",
+    }}
+  >
+    <Image
+      source={require("../../assets/newPost.png")}
+      style={styles.bellIcon}
+    />
+    <Text style={styles.heading}>Currently No Post Shared</Text>
+    <Text style={styles.subHeading}>
+      At present, there are no posts that have been shared. As soon as new posts
+      are shared, they will appear here.
+    </Text>
+
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => navigation.navigate("Home")}
+    >
+      <Text style={styles.buttonTitle}>Back to Home</Text>
+    </TouchableOpacity>
+  </View>
+)
 
 const ArchivedCampaign = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
-  const route = useRoute();
-  const userState = useUserState();
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
-  const [leadingTeam, setleadingTeam] = useState("");
-  const [equalpoints, setequalpoints] = useState("");
-  // console.log(campaign?.messages);
-  const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true);
-  const [newImageVisible, setNewImageVisible] = useState(false);
-  const [posts, setposts] = useState("");
-  const [loading, setloading] = useState(false);
-  const campaign = route?.params;
+  const route = useRoute()
+  const [teamAuser, setteamAuser] = useState("")
+  const [teamBuser, setteamBuser] = useState("")
+  const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true)
+  const [newImageVisible, setNewImageVisible] = useState(false)
+  const campaign = route?.params
 
-  console.log(campaign);
-
-  useEffect(() => {
-    if (campaign?.teamA?.members?.length > 0) {
-      const teamAuser = Object.values(campaign?.teamA?.members);
-      setteamAuser(teamAuser);
+  useMemo(() => {
+    if (campaign?.teamA?.members.length > 0) {
+      const teamA = Object.values(campaign.teamA.members)
+      setteamAuser(teamA)
     }
-    if (campaign?.teamB?.members?.length > 0) {
-      const teamAuser = Object.values(campaign?.teamB?.members);
-      setteamBuser(teamAuser);
+  }, [campaign?.teamA?.members])
+
+  useMemo(() => {
+    if (campaign?.teamB?.members.length > 0) {
+      const teamB = Object.values(campaign.teamB.members)
+      setteamBuser(teamB)
     }
-  }, []);
+  }, [campaign?.teamB?.members])
 
-  //   useEffect(() => {
-  //     if (campaign?.teamA?.points > campaign?.teamB?.points) {
-  //       setleadingTeam("Team A");
-  //     } else if (campaign?.teamA?.points < campaign?.teamB?.points) {
-  //       setleadingTeam("Team B");
-  //     } else {
-  //       setequalpoints("both");
-  //     }
-  //   }, []);
-
-  const fetchData = async () => {
-    setloading(true);
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/posts/getPostByCampaign/${campaign?._id}`,
-        {
-          headers: {
-            "auth-token": userState.token,
-          },
+  const {
+    data: campaignPosts,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ["campaignPosts", campaign?._id],
+    ({ pageParam = 1 }) =>
+      fetchPostsByCampaign({ pageParam, campaignId: campaign?._id }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage?.currentPage && lastPage?.totalPages) {
+          return lastPage.currentPage < lastPage.totalPages
+            ? lastPage.currentPage + 1
+            : null
         }
-      );
-
-      res?.data?.posts?.sort(
-        (a, b) => new Date(b.createdAT) - new Date(a.createdAT)
-      );
-      setposts(res?.data?.posts);
-      setloading(false);
-    } catch (error) {
-      console.log(error);
-      setloading(false);
+        return null
+      },
+      refetchOnWindowFocus: false,
+      cacheTime: 1000 * 60 * 5,
     }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [campaign?._id]);
+  )
 
   const handleShareNavigaton = () => {
-    navigation.navigate("LivePoll", { campaign });
-  };
-  const scrollY = useSharedValue(0);
+    navigation.navigate("LivePoll", { campaign })
+  }
+  const scrollY = useSharedValue(0)
 
   const handleScroll = (event) => {
-    scrollY.value = event.nativeEvent.contentOffset.y;
+    scrollY.value = event.nativeEvent.contentOffset.y
 
     if (event.nativeEvent.contentOffset.y > 40) {
-      setCampaignTimeLeftVisible(false);
-      setNewImageVisible(true);
+      setCampaignTimeLeftVisible(false)
+      setNewImageVisible(true)
     } else {
-      setCampaignTimeLeftVisible(true);
-      setNewImageVisible(false);
+      setCampaignTimeLeftVisible(true)
+      setNewImageVisible(false)
     }
-  };
+  }
 
   const animatedTimeLeftStyle = useAnimatedStyle(() => ({
     opacity: withTiming(campaignTimeLeftVisible ? 5 : -10, {
@@ -131,7 +139,7 @@ const ArchivedCampaign = () => {
         }),
       },
     ],
-  }));
+  }))
 
   const animatedLeftStyle = useAnimatedStyle(() => ({
     opacity: withTiming(campaignTimeLeftVisible ? 0 : 1, {
@@ -146,7 +154,12 @@ const ArchivedCampaign = () => {
         }),
       },
     ],
-  }));
+  }))
+  const handleEndReached = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage()
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -164,7 +177,7 @@ const ArchivedCampaign = () => {
         )}
         {!newImageVisible && (
           <Animated.View style={[{ width: "100%" }, animatedTimeLeftStyle]}>
-            <DoDayPointsLIveShot doday={campaign} loading={loading} />
+            <DoDayPointsLIveShot doday={campaign} loading={isLoading} />
           </Animated.View>
         )}
         {/* members teams */}
@@ -180,85 +193,56 @@ const ArchivedCampaign = () => {
         <LivePointsAction campaign={campaign} onpress={handleShareNavigaton} />
       </View>
       <View style={styles.postContainer}>
-        {loading && (
-          <View
-            style={{
-              flex: 1,
-              alignSelf: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ActivityIndicator size={"large"} color={Color.Blue} />
+        {isLoading && (
+          <View>
+            <PostSkeleton />
           </View>
         )}
-
-        {!loading && (
-          <View>
-            {posts?.length === 0 ? (
-              <View
-                style={{
-                  alignItems: "center",
-                  backgroundColor: Color.White,
-                  height: "100%",
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  source={require("../../assets/newPost.png")}
-                  style={styles.bellIcon}
-                />
-                <Text style={styles.heading}>Currently No Post Shared</Text>
-                <Text style={styles.subHeading}>
-                  At present, there are no posts that have been shared. As soon
-                  as new posts are shared, they will appear here.
-                </Text>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => navigation.navigate("Home")}
-                >
-                  <Text style={styles.buttonTitle}>Back to Home</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <FlatList
-                data={posts}
-                renderItem={({ item }) => {
-                  return (
-                    <View
-                      style={{
-                        marginBottom: 10,
-                      }}
-                    >
-                      <CampaignPosts
-                        post={item}
-                        campaignId={campaign?._id}
-                        reload={fetchData}
-                      />
-                    </View>
-                  );
-                }}
-                onScroll={(event) => handleScroll(event)}
-                scrollEventThrottle={16}
-              />
-            )}
+        {!isLoading &&
+          campaignPosts?.pages.flatMap((item) => item?.posts.length) < 1 && (
+            <EmptyState navigation={() => navigation.navigate("Home")} />
+          )}
+        {!isLoading && (
+          <View style={{ marginTop: 10 }}>
+            <FlatList
+              data={campaignPosts?.pages.flatMap((page) => page.posts) || []}
+              renderItem={({ item }) => {
+                return (
+                  <View
+                    style={{
+                      marginBottom: 10,
+                    }}
+                  >
+                    <CampaignPosts
+                      post={item}
+                      campaignId={campaign?._id}
+                      reload={refetch}
+                    />
+                  </View>
+                )
+              }}
+              onScroll={(event) => handleScroll(event)}
+              scrollEventThrottle={16}
+              keyExtractor={(item) => `${item?._id}`}
+              onEndReachedThreshold={0.5}
+              onEndReached={handleEndReached}
+              ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
+            />
           </View>
         )}
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default ArchivedCampaign;
+export default ArchivedCampaign
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: Color.Black,
   },
   scoreCard: {
     backgroundColor: Color.LightBg,
-    // height: scale(155),
     alignItems: "center",
     overflow: "hidden",
   },
@@ -320,4 +304,4 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontSize: Height * 0.019,
   },
-});
+})

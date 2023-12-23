@@ -1,34 +1,31 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../assets/colors/Color";
-import { Ionicons } from "react-native-vector-icons";
-import { scale } from "react-native-size-matters";
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native"
+import AntDesign from "react-native-vector-icons/AntDesign"
+import { SafeAreaView } from "react-native-safe-area-context"
+import Color from "../../assets/colors/Color"
+import { Ionicons } from "react-native-vector-icons"
+import { scale } from "react-native-size-matters"
+import { useNavigation } from "@react-navigation/native"
 
 export default function Header(props) {
-  const navigation = useNavigation();
-  const archived = props?.archived;
+  const navigation = useNavigation()
   return (
     <SafeAreaView>
       <View style={styles.container}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => props.onback()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={25} color={Color.Black} />
           </TouchableOpacity>
           <Text style={styles.title}>{props.title}</Text>
         </View>
-        {!props.loading && (
-          <TouchableOpacity
-            style={styles.archiveContainer}
-            onPress={() => navigation.navigate("ArchivedScreen", { archived })}
-          >
-            <Ionicons name="archive-outline" style={styles.icon} />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={styles.archiveContainer}
+          onPress={() => navigation.navigate("ArchivedScreen")}
+        >
+          <Ionicons name="archive-outline" style={styles.icon} />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -58,4 +55,4 @@ const styles = StyleSheet.create({
     fontSize: scale(18),
     color: Color.Black,
   },
-});
+})

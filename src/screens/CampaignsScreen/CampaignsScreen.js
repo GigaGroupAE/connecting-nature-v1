@@ -1,158 +1,105 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect } from "react"
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   TouchableOpacity,
   Dimensions,
+  FlatList,
 } from "react-native"
 import HeaderBack from "../../components/HeaderBack"
 import CampaignCard from "./CampaignCard"
 import BottomTab from "../../components/BottomTab"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { useUserState } from "../../slices/userSlice"
-import { useNavigation } from "@react-navigation/native"
-import { BASE_URL } from "../../../CONSTANTS"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
 import Color from "../../../assets/colors/Color"
-import { axiosInstance } from "../../../axiosInstance"
 import { useStateContext } from "../../contexts/ContextProvider"
-import { ActivityIndicator } from "react-native"
-import campaignIcon from "../../../assets/campaignICon.png"
-import moment from "moment"
 import { scale } from "react-native-size-matters"
 import NoCampaignIndicater from "../../components/NoCampaignIndicater"
+import { fetchCampaigns } from "../../utils/CampaignsHelper"
+import { useQuery } from "react-query"
+import CampaignsSkeletn from "../../components/Skeletns/CampaignsSkeletn"
 const Height = Dimensions.get("screen").height
 const Width = Dimensions.get("screen").width
 
 export default function CampaignsScreen() {
-  const [campaigns, setcampaigns] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [archived, setarchived] = useState([])
+  const {
+    data: campaigns,
+    isLoading: campaignsLoading,
+    refetch,
+  } = useQuery("campaigns", fetchCampaigns)
   const navigation = useNavigation()
-  const userState = useUserState()
-  const { setGlobalSocket, reactions, setreactions, comment, setcomment } =
-    useStateContext()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const response = await axiosInstance.get(
-          "/campaigns/get-multiple-by-query?status=executed"
-        )
-
-        setcampaigns(response.data.campaigns)
-        setLoading(false)
-      } catch (error) {
-        console.log("Error:", error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const response = await axiosInstance.get(
-          "/archives/getArchiveCampaigns"
-        )
-        setarchived(response?.data?.newcampaigns)
-
-        setLoading(false)
-      } catch (error) {
-        console.log("Error:", error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  const handlebackpress = () => {
-    navigation.goBack()
-  }
-
-  const sortedArray = campaigns.sort((a, b) => b._id - a._id)
-
+  const isFocused = useIsFocused()
+  const { setreactions, setcomment } = useStateContext()
   const scrollToTop = useCallback(() => {}, [])
+  useEffect(() => {
+    if (isFocused) {
+      refetch()
+    }
+  }, [isFocused])
 
   const handleNavigation = (campaign) => {
     setreactions(campaign?.reactions)
     setcomment(campaign?.messages)
     navigation.navigate("CampaignWithPosts", { campaign })
   }
+  const renderItem = useCallback(
+    ({ item }) => (
+      <TouchableOpacity onPress={() => handleNavigation(item)}>
+        <CampaignCard
+          title={item?.campaignName}
+          leaderA={item?.teamA?.leader?.fullName}
+          leaderB={item?.teamB?.leader?.fullName}
+          location={item?.venue || "Coming Soon..."}
+          date={item?.date}
+          mainBg={styles.cardBg}
+          countA={item?.teamA?.members?.length}
+          countB={item?.teamB?.members?.length}
+          locked={item?.locked}
+          color={item?.color}
+          teamAuser={item?.teamA?.members}
+          teamBuser={item?.teamB?.members}
+        />
+      </TouchableOpacity>
+    ),
+    []
+  )
+
+  const renderCampaigns = () => {
+    if (campaignsLoading) {
+      return <CampaignsSkeletn />
+    } else if (!campaigns?.length) {
+      return (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            paddingVertical: Height * 0.2,
+          }}
+        >
+          <NoCampaignIndicater />
+        </View>
+      )
+    } else {
+      return (
+        <FlatList
+          data={campaigns}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+        />
+      )
+    }
+  }
 
   return (
     <SafeAreaView style={{ backgroundColor: Color.LightBlue, height: "100%" }}>
-      {/* onPress Command can be use in next "Header Back line (18)". It's a props */}
-      <HeaderBack
-        title={"Campaigns"}
-        onback={handlebackpress}
-        archived={archived}
-        loading={loading}
-      />
+      <HeaderBack title={"Campaigns"} />
       <View style={styles.main}>
         <Text style={styles.screenTitle}>Live & Upcoming Events</Text>
         <Text style={styles.description}>Are you ready for it?</Text>
-
-        {loading === true ? (
-          <ActivityIndicator
-            style={{ position: "absolute", bottom: "20%", left: "48%" }}
-            size={"large"}
-            color={Color.Blue}
-          />
-        ) : (
-          <ScrollView style={styles.scrollView}>
-            <View>
-              {campaigns.length === 0 ? (
-                <View
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingVertical: Height * 0.2,
-                  }}
-                >
-                  <NoCampaignIndicater />
-                </View>
-              ) : (
-                <View>
-                  {campaigns.map((campaign) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => handleNavigation(campaign)}
-                        key={campaign._id}
-                      >
-                        <CampaignCard
-                          title={campaign?.campaignName}
-                          leaderA={campaign?.teamA?.leader?.fullName}
-                          leaderB={campaign?.teamB?.leader?.fullName}
-                          location={campaign?.venue || "Coming Soon..."}
-                          date={campaign?.date}
-                          mainBg={styles.cardBg}
-                          countA={campaign?.teamA?.members?.length}
-                          countB={campaign?.teamB?.members?.length}
-                          locked={campaign?.locked}
-                          color={campaign?.color}
-                          teamAuser={campaign?.teamA?.members}
-                          teamBuser={campaign?.teamB?.members}
-                        />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              )}
-            </View>
-          </ScrollView>
-        )}
+        {renderCampaigns()}
       </View>
-
       <BottomTab activeMenu={"Campaign"} scrollToTop={scrollToTop} />
     </SafeAreaView>
   )

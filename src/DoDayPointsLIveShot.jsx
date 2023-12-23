@@ -5,25 +5,29 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import React, { useEffect, useRef } from "react";
-import ViewShot from "react-native-view-shot";
-import { BASE_URL } from "../CONSTANTS";
-import Color from "../assets/colors/Color";
-import { useStateContext } from "./contexts/ContextProvider";
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+} from "react-native"
+import React, { useEffect, useRef } from "react"
+import ViewShot from "react-native-view-shot"
+import { BASE_URL } from "../CONSTANTS"
+import Color from "../assets/colors/Color"
+import { useStateContext } from "./contexts/ContextProvider"
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 const DoDayPointsLIveShot = ({ doday, loading }) => {
   const { campaignViewShortImage, setcampaignViewShortImage } =
-    useStateContext();
-  const viewShotRef = useRef();
+    useStateContext()
+  const viewShotRef = useRef()
+
   useEffect(() => {
     const CaptureImage = async () => {
-      const imageUri = await viewShotRef.current.capture();
-      setcampaignViewShortImage(imageUri);
-    };
-    CaptureImage();
-  }, [loading]);
+      const imageUri = await viewShotRef.current.capture()
+      setcampaignViewShortImage(imageUri)
+    }
+
+    if (campaignViewShortImage === null) {
+      CaptureImage()
+    }
+  }, [campaignViewShortImage, setcampaignViewShortImage])
 
   return (
     <View style={{ width: "100%" }}>
@@ -83,10 +87,10 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
         </View>
       </ViewShot>
     </View>
-  );
-};
+  )
+}
 
-export default DoDayPointsLIveShot;
+export default DoDayPointsLIveShot
 
 const styles = StyleSheet.create({
   pollHeading: {
@@ -148,4 +152,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: Height * 0.012,
   },
-});
+})

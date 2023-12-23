@@ -4,11 +4,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { scale } from "react-native-size-matters";
-import Color from "../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
+} from "react-native"
+import React from "react"
+import { scale } from "react-native-size-matters"
+import Color from "../../assets/colors/Color"
 
 const LivePointsTeamPoints = ({ campaign }) => {
   return (
@@ -29,10 +28,10 @@ const LivePointsTeamPoints = ({ campaign }) => {
         </View>
       </ImageBackground>
     </View>
-  );
-};
+  )
+}
 
-export default LivePointsTeamPoints;
+export default LivePointsTeamPoints
 
 const styles = StyleSheet.create({
   imageBackground: {
@@ -61,4 +60,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     fontSize: scale(12),
   },
-});
+})
