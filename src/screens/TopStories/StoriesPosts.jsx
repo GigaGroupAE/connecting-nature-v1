@@ -56,7 +56,7 @@ const StoriesPosts = (props) => {
           <FlatList
             data={storiesData?.pages.flatMap((page) => page?.stories) || []}
             keyExtractor={(item) => item._id}
-            initialNumToRender={3}
+            initialNumToRender={5}
             renderItem={renderPost}
             showsHorizontalScrollIndicator={false}
             onEndReachedThreshold={0.5}

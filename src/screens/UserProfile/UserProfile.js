@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react"
 import {
   StyleSheet,
   Text,
@@ -8,47 +8,47 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-} from "react-native";
-import Post from "../../components/Post";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState, useUserStateActions } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import Color from "../../../assets/colors/Color.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderUserProfile from "../../components/HeaderUserProfile.js";
-import axios from "axios";
-import { isFollowing } from "../../utils/isFollowing.js";
-import VideoPlayer from "expo-video-player";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
-import { ActivityIndicator } from "react-native";
-import NoPostHeader from "./NoPostHeader.jsx";
+} from "react-native"
+import Post from "../../components/Post"
+import { useNavigation } from "@react-navigation/native"
+import { useUserState, useUserStateActions } from "../../slices/userSlice"
+import { BASE_URL } from "../../../CONSTANTS.js"
+import Color from "../../../assets/colors/Color.js"
+import { SafeAreaView } from "react-native-safe-area-context"
+import HeaderUserProfile from "../../components/HeaderUserProfile.js"
+import axios from "axios"
+import { isFollowing } from "../../utils/isFollowing.js"
+import VideoPlayer from "expo-video-player"
+import { useStateContext } from "../../contexts/ContextProvider.js"
+import { MaterialCommunityIcons } from "react-native-vector-icons"
+import { ActivityIndicator } from "react-native"
+import NoPostHeader from "./NoPostHeader.jsx"
 
-const ITEMS_PER_PAGE = 5;
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const ITEMS_PER_PAGE = 5
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 export default function UserProfile(props) {
-  const { setgroup } = useStateContext();
-  const [user, setUser] = useState(null);
-  const [refresh, setRefresh] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
-  const video = useRef(null);
-  const userState = useUserState();
-  const [following, setFollowing] = useState(userState.following);
-  const [CNGroups, setCNGroups] = useState([]);
-  const [posts, setposts] = useState([]);
-  const [followersPost, setfollowersPost] = useState([]);
-  const userActions = useUserStateActions();
-  const [bottomvideo, setbottomvideo] = useState("");
-  const [showPostCount, setshowPostCount] = useState([]);
+  const { setgroup } = useStateContext()
+  const [user, setUser] = useState(null)
+  const [refresh, setRefresh] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const navigation = useNavigation()
+  const video = useRef(null)
+  const userState = useUserState()
+  const [following, setFollowing] = useState(userState.following)
+  const [CNGroups, setCNGroups] = useState([])
+  const [posts, setposts] = useState([])
+  const [followersPost, setfollowersPost] = useState([])
+  const userActions = useUserStateActions()
+  const [bottomvideo, setbottomvideo] = useState("")
+  const [showPostCount, setshowPostCount] = useState([])
 
   const [followingg, setIsFollowingg] = useState(
     isFollowing(following, user?.phoneNumber)
-  );
+  )
 
-  const UserPhoneNumber = props?.route?.params?.userPhoneNumber;
-  const activeScreen = props?.route?.params?.screen;
+  const UserPhoneNumber = props?.route?.params?.userPhoneNumber
+  const activeScreen = props?.route?.params?.screen
 
   useEffect(() => {
     axios
@@ -58,12 +58,12 @@ export default function UserProfile(props) {
         },
       })
       .then((res) => {
-        setCNGroups([...res.data.myChats]);
+        setCNGroups([...res.data.myChats])
       })
       .catch((e) => {
-        console.log(e);
-      });
-  }, [UserPhoneNumber]);
+        console.log(e)
+      })
+  }, [UserPhoneNumber])
 
   useEffect(() => {
     const getUser = async () => {
@@ -74,12 +74,12 @@ export default function UserProfile(props) {
         {
           headers: { "auth-token": userState.token },
         }
-      );
-      setUser(data.user);
-      setIsFollowingg(isFollowing(userState.following, user.phoneNumber));
-    };
-    getUser();
-  }, [following, UserPhoneNumber]);
+      )
+      setUser(data.user)
+      setIsFollowingg(isFollowing(userState.following, user.phoneNumber))
+    }
+    getUser()
+  }, [following, UserPhoneNumber])
 
   const handleFollow = async () => {
     //here  do the api call
@@ -93,51 +93,51 @@ export default function UserProfile(props) {
             "auth-token": userState.token,
           },
         }
-      );
+      )
       if (data.success) {
-        userActions.setFollowing(data.following);
-        setFollowing(data.following);
+        userActions.setFollowing(data.following)
+        setFollowing(data.following)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const selectcontact = (props) => {
-    let first = false;
-    let second = false;
-    let foundGroup = {};
-    const individualGroups = CNGroups;
+    let first = false
+    let second = false
+    let foundGroup = {}
+    const individualGroups = CNGroups
     individualGroups.map((group) => {
       if (
         group.members[0].phoneNumber === userState.phoneNumber ||
         group.members[0].phoneNumber === props.phoneNumber
       ) {
-        first = true;
+        first = true
         if (
           group.members[1].phoneNumber === userState.phoneNumber ||
           group.members[1].phoneNumber === props.phoneNumber
         ) {
-          second = true;
-          foundGroup = group;
+          second = true
+          foundGroup = group
         }
       }
-    });
+    })
     if (first === true && second === true) {
-      setgroup(foundGroup);
-      console.log(foundGroup);
-      navigation.navigate("ChatCN", { group: foundGroup });
+      setgroup(foundGroup)
+      console.log(foundGroup)
+      navigation.navigate("ChatCN", { group: foundGroup })
     } else {
-      console.log("login user is ===>", userState.id);
-      console.log("props user is =====>", props._id);
+      console.log("login user is ===>", userState.id)
+      console.log("props user is =====>", props._id)
 
-      let members = [userState.id, props._id];
-      let data;
+      let members = [userState.id, props._id]
+      let data
 
       data = {
         members: members,
         messages: [],
-      };
+      }
       axios
         .post(`${BASE_URL}/chat/createchat`, data, {
           headers: {
@@ -153,28 +153,28 @@ export default function UserProfile(props) {
             })
             .then((res) => {
               const newgroup = res.data.myChats.filter((singlegroup) => {
-                return singlegroup._id === response.data._id;
-              });
-              setgroup(newgroup[0]);
-              navigation.navigate("ChatCN", { group: newgroup[0] });
+                return singlegroup._id === response.data._id
+              })
+              setgroup(newgroup[0])
+              navigation.navigate("ChatCN", { group: newgroup[0] })
             })
-            .catch((e) => console.log(e));
+            .catch((e) => console.log(e))
         })
-        .catch((e) => console.log(e));
+        .catch((e) => console.log(e))
     }
-  };
+  }
 
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   const handleLoadMore = () => {
     if (page < totalPages) {
-      setPage(page + 1);
+      setPage(page + 1)
     }
-  };
+  }
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(true)
 
     axios
       .get(
@@ -186,16 +186,16 @@ export default function UserProfile(props) {
         }
       )
       .then((res) => {
-        setposts([...posts, ...res.data.posts]);
-        setfollowersPost(res.data.posts);
+        setposts([...posts, ...res.data.posts])
+        setfollowersPost(res.data.posts)
         // setshowPostCount(res.data.posts);
-        setTotalPages(res.data.totalPages);
-        setLoading(false);
+        setTotalPages(res.data.totalPages)
+        setLoading(false)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  }, [page, UserPhoneNumber]);
+        setLoading(false)
+      })
+  }, [page, UserPhoneNumber])
   useEffect(() => {
     axios
       .get(
@@ -207,15 +207,15 @@ export default function UserProfile(props) {
         }
       )
       .then((res) => {
-        setshowPostCount(res.data.posts);
+        setshowPostCount(res.data.posts)
       })
       .catch((e) => {
-        setLoading(false);
-      });
-  }, [UserPhoneNumber]);
+        setLoading(false)
+      })
+  }, [UserPhoneNumber])
 
   const reload = () => {
-    setRefresh(true);
+    setRefresh(true)
     axios
       .get(
         `${BASE_URL}/posts/get-user-posts/${
@@ -226,42 +226,42 @@ export default function UserProfile(props) {
         }
       )
       .then((res) => {
-        const newPosts = res.data.posts;
-        setposts((prevPosts) => [...prevPosts, ...newPosts]);
-        setshowPostCount(res.data.posts);
-        setRefresh(false);
+        const newPosts = res.data.posts
+        setposts((prevPosts) => [...prevPosts, ...newPosts])
+        setshowPostCount(res.data.posts)
+        setRefresh(false)
       })
       .catch((err) => {
-        console.log(err);
-        setRefresh(false);
-      });
-  };
+        console.log(err)
+        setRefresh(false)
+      })
+  }
 
   const handleFollowers = () => {
     navigation.navigate("Followers", {
       userFollowing: user,
       screen: "Followers",
       user: user,
-    });
-  };
+    })
+  }
 
   const handleFollowing = () => {
     navigation.navigate("Followers", {
       userFollowing: user,
       screen: "Following",
       user: user,
-    });
-  };
+    })
+  }
 
   const handleEditProfile = () => {
-    navigation.navigate("EditProfile");
-  };
+    navigation.navigate("EditProfile")
+  }
   const handleAddPost = () => {
-    navigation.navigate("AddPost", { origin: "post" });
-  };
+    navigation.navigate("AddPost", { origin: "post" })
+  }
 
-  posts?.sort((a, b) => new Date(b.createdAT) - new Date(a.createdAT));
-  followersPost?.sort((a, b) => new Date(b.createdAT) - new Date(a.createdAT));
+  posts?.sort((a, b) => new Date(b.createdAT) - new Date(a.createdAT))
+  followersPost?.sort((a, b) => new Date(b.createdAT) - new Date(a.createdAT))
   return (
     user && (
       <SafeAreaView style={styles.safeArea}>
@@ -409,7 +409,7 @@ export default function UserProfile(props) {
                       <FlatList
                         data={followersPost}
                         keyExtractor={(item) => {
-                          return item._id;
+                          return item._id
                         }}
                         onEndReached={handleLoadMore}
                         // onEndReachedThreshold={0.5}
@@ -424,7 +424,7 @@ export default function UserProfile(props) {
                   <FlatList
                     data={posts}
                     keyExtractor={(item) => {
-                      return item._id;
+                      return item._id
                     }}
                     // onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
@@ -480,7 +480,7 @@ export default function UserProfile(props) {
         ) : null}
       </SafeAreaView>
     )
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -620,4 +620,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_600SemiBold",
     fontSize: 14,
   },
-});
+})

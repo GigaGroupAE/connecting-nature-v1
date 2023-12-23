@@ -5,21 +5,21 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+} from "react-native"
+import React, { useEffect, useState } from "react"
 import {
   FontAwesome,
   AntDesign,
   MaterialCommunityIcons,
-} from "react-native-vector-icons";
-import Color from "../../assets/colors/Color";
-import moment from "moment";
-import { useStateContext } from "../contexts/ContextProvider";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../slices/userSlice";
-import { BASE_URL } from "../../CONSTANTS";
-import { scale } from "react-native-size-matters";
-import axios from "axios";
+} from "react-native-vector-icons"
+import Color from "../../assets/colors/Color"
+import moment from "moment"
+import { useStateContext } from "../contexts/ContextProvider"
+import { useNavigation } from "@react-navigation/native"
+import { useUserState } from "../slices/userSlice"
+import { BASE_URL } from "../../CONSTANTS"
+import { scale } from "react-native-size-matters"
+import axios from "axios"
 
 const LivePointsAction = ({
   campaign,
@@ -28,28 +28,28 @@ const LivePointsAction = ({
   handleComment,
   setlikeAnimation,
 }) => {
-  var date = moment().utcOffset("+05:00");
-  const { reactions, setreactions, comment, setcomment } = useStateContext();
-  const [visible, setVisible] = useState(false);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const [shares, setshares] = useState([]);
+  var date = moment().utcOffset("+05:00")
+  const { reactions, setreactions, comment, setcomment } = useStateContext()
+  const [visible, setVisible] = useState(false)
+  const [modalVisible, setmodalVisible] = useState(false)
+  const [shares, setshares] = useState([])
   const toggleBottomNavigationView = () => {
-    setVisible(!visible);
-  };
-  const navigation = useNavigation();
-  const userState = useUserState();
+    setVisible(!visible)
+  }
+  const navigation = useNavigation()
+  const userState = useUserState()
 
-  const route = `${BASE_URL}/campaigns/update/${campaign?._id}`;
+  const route = `${BASE_URL}/campaigns/update/${campaign?._id}`
 
-  const [liked, setliked] = useState(false);
+  const [liked, setliked] = useState(false)
 
   useEffect(() => {
     setliked(
       reactions?.some((user) => {
-        return user._id === userState.id;
+        return user._id === userState.id
       })
-    );
-  }, [reactions]);
+    )
+  }, [reactions])
 
   const updatereactions = async (likes, notify = false) => {
     axios
@@ -63,56 +63,46 @@ const LivePointsAction = ({
         }
       )
       .then((res) => {
-        setreactions(res.data.reactions);
+        setreactions(res.data.reactions)
       })
-      .catch((e) => console.log(e));
-  };
+      .catch((e) => console.log(e))
+  }
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      let templike = [...reactions]
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      };
-      templike.push(newLikes);
-      updatereactions(templike, true);
-      setliked(true);
-      setlikeAnimation(true);
+      }
+      templike.push(newLikes)
+      updatereactions(templike, true)
+      setliked(true)
+      setlikeAnimation(true)
       setTimeout(() => {
-        setlikeAnimation(false);
-      }, 40);
+        setlikeAnimation(false)
+      }, 40)
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id;
-      });
-      updatereactions(newlikes, false);
+        return reaction._id !== userState.id
+      })
+      updatereactions(newlikes, false)
 
-      setliked(false);
+      setliked(false)
     }
-  };
+  }
 
   const handleCommentnavigation = () => {
-    console.log(campaign?.status);
-    if (campaign?.status === "archived") {
-      navigation.navigate("CampaignComments", {
-        campaign: campaign,
-        screen: "arch",
-      });
-    } else {
-      navigation.navigate("CampaignComments", {
-        campaign: campaign,
-        screen: "",
-      });
-    }
-  };
+    const screen = campaign?.status === "archived" ? "arch" : ""
+    navigation.navigate("CampaignComments", { campaign, screen })
+  }
 
   const handleonshare = () => {
-    onpress();
-  };
+    onpress()
+  }
 
   return (
     <View>
@@ -213,10 +203,10 @@ const LivePointsAction = ({
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default LivePointsAction;
+export default LivePointsAction
 
 const styles = StyleSheet.create({
   statsContainer: {
@@ -312,4 +302,4 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontSize: scale(20),
   },
-});
+})

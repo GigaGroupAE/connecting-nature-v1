@@ -5,51 +5,51 @@ import {
   Text,
   View,
   TouchableOpacity,
-} from "react-native";
-import React, { useMemo, useState } from "react";
-import moment from "moment";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import PostDeleteModal from "../Home/PostDeleteModal";
-import Color from "../../../assets/colors/Color";
-import PostHeader from "../Home/PostHeader";
-import { FontAwesome, AntDesign } from "react-native-vector-icons";
-import PostImage from "../Home/PostImage";
-import PostVideo from "../Home/PostVideo";
-import axios from "axios";
-import PostSharedHeader from "../../components/PostSharedHeader";
+} from "react-native"
+import React, { useMemo, useState } from "react"
+import moment from "moment"
+import { useStateContext } from "../../contexts/ContextProvider"
+import { useNavigation } from "@react-navigation/native"
+import { useUserState } from "../../slices/userSlice"
+import { BASE_URL } from "../../../CONSTANTS"
+import PostDeleteModal from "../Home/PostDeleteModal"
+import Color from "../../../assets/colors/Color"
+import PostHeader from "../Home/PostHeader"
+import { FontAwesome, AntDesign } from "react-native-vector-icons"
+import PostImage from "../Home/PostImage"
+import PostVideo from "../Home/PostVideo"
+import axios from "axios"
+import PostSharedHeader from "../../components/PostSharedHeader"
 
-const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
+const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"]
 
 const supportedMediaFormats = [
   "image/jpeg",
   "image/png",
   "image/jpg",
   "video/mp4",
-];
+]
 
 const CampaignPosts = ({ post, campaignId, reload }) => {
-  var date = moment().utcOffset("+05:00");
-  const { showSnackbar } = useStateContext();
-  const [visible, setVisible] = useState(false);
-  const [modalVisible, setmodalVisible] = useState(false);
-  const [shares, setshares] = useState([post?.shares]);
+  var date = moment().utcOffset("+05:00")
+  const { showSnackbar } = useStateContext()
+  const [visible, setVisible] = useState(false)
+  const [modalVisible, setmodalVisible] = useState(false)
+  const [shares, setshares] = useState([post?.shares])
   const toggleBottomNavigationView = () => {
-    setVisible(!visible);
-  };
-  const navigation = useNavigation();
-  const userState = useUserState();
-  const route = `${BASE_URL}/posts/updateposts/${post?._id}`;
-  const [reactions, setreactions] = useState(post?.reactions);
-  const [comment, setcomment] = useState(post?.comments);
+    setVisible(!visible)
+  }
+  const navigation = useNavigation()
+  const userState = useUserState()
+  const route = `${BASE_URL}/posts/updateposts/${post?._id}`
+  const [reactions, setreactions] = useState(post?.reactions)
+  const [comment, setcomment] = useState(post?.comments)
 
   const [liked, setliked] = useState(
     reactions.some((user) => {
-      return user._id === userState.id;
+      return user._id === userState.id
     })
-  );
+  )
 
   const handleOnClickComment = () => {
     navigation.navigate("Comments", {
@@ -59,8 +59,8 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
       data: "",
       expoPushToken: post?.postedby?.expoPushToken,
       setcomment: setcomment,
-    });
-  };
+    })
+  }
 
   // useEffect(() => {
   //   setliked(
@@ -79,7 +79,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
       />
     ),
     [modalVisible, post]
-  );
+  )
 
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
@@ -90,7 +90,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
           headers: {
             "auth-token": userState.token,
           },
-        };
+        }
         const { data } = await axios.post(
           `${BASE_URL}/notify/commentNotification/${post?._id}`,
           {
@@ -110,7 +110,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
             },
           },
           config
-        );
+        )
       }
     }
 
@@ -125,13 +125,13 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
         }
       )
       .then((res) => {
-        setreactions(res?.data?.reactions);
+        setreactions(res?.data?.reactions)
       })
-      .catch((e) => console.log(e));
-  };
+      .catch((e) => console.log(e))
+  }
 
   const handleonshare = async (post) => {
-    navigation.navigate("postShare", { post: post, reload: reload });
+    navigation.navigate("postShare", { post: post, reload: reload })
 
     // try {
     //   let tempshares = [...shares];
@@ -190,7 +190,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
     //     "Sorry, we couldn't share the post at the moment. Please try again later."
     //   );
     // }
-  };
+  }
 
   const handleLocalNotification = async () => {
     try {
@@ -198,7 +198,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
         headers: {
           "auth-token": userState.token,
         },
-      };
+      }
       const notification = await axios.post(
         `${BASE_URL}/notify/commentNotification/${post._id}`,
         {
@@ -220,11 +220,11 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
           },
         },
         config
-      );
+      )
     } catch (error) {
-      console.log("error in local notofications", error);
+      console.log("error in local notofications", error)
     }
-  };
+  }
   // const handlePostView = (props) => {
   //   navigation.navigate("PostView", {
   //     url: `${BASE_URL}/images/${props.post.media.name}`,
@@ -232,30 +232,30 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
   //   });
   // };
   const handlePostsLike = (item) => {
-    navigation.navigate("PostsLike", { item });
-  };
+    navigation.navigate("PostsLike", { item })
+  }
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      let templike = [...reactions]
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      };
-      templike.push(newLikes);
-      updatereactions(templike, true);
-      setliked(true);
+      }
+      templike.push(newLikes)
+      updatereactions(templike, true)
+      setliked(true)
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id;
-      });
-      updatereactions(newlikes, false);
-      setliked(false);
+        return reaction._id !== userState.id
+      })
+      updatereactions(newlikes, false)
+      setliked(false)
     }
-  };
+  }
 
   return (
     <View
@@ -410,10 +410,10 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default CampaignPosts;
+export default CampaignPosts
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -535,4 +535,4 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontSize: 21,
   },
-});
+})

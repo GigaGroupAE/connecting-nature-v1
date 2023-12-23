@@ -21,3 +21,10 @@ export const fetchRecentCampaigns = async () => {
   const response = await axiosInstance.get("/campaigns/mostrecentcampaign")
   return response.data?.campaigns
 }
+
+export const fetchPostsByCampaign = async ({ pageParam = 1, campaignId }) => {
+  const response = await axiosInstance.get(
+    `/posts/getPostByCampaign/${campaignId}?page=${pageParam}&limit=${LIMIT}`
+  )
+  return response.data
+}

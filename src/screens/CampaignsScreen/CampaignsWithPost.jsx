@@ -7,22 +7,22 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import CampaignHeader from "../../components/CampaignHeader";
-import { scale } from "react-native-size-matters";
-import Color from "../../../assets/colors/Color";
-import { BASE_URL } from "../../../CONSTANTS";
-import LivePointsTeamMember from "../../components/LivePointsTeamMember";
-import LivePointsTeamPoints from "../../components/LivePointsTeamPoints";
-import CampaignPosts from "./CampaignPosts";
-import axios from "axios";
-import { useUserState } from "../../slices/userSlice";
-import LivePointsAction from "../../components/LivePointsAction";
-import CampaignTimeLeft from "../../components/CampaignTimeLeft";
-import * as Sharing from "expo-sharing";
-import LottieView from "lottie-react-native";
+} from "react-native"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import CampaignHeader from "../../components/CampaignHeader"
+import { scale } from "react-native-size-matters"
+import Color from "../../../assets/colors/Color"
+import { BASE_URL } from "../../../CONSTANTS"
+import LivePointsTeamMember from "../../components/LivePointsTeamMember"
+import LivePointsTeamPoints from "../../components/LivePointsTeamPoints"
+import CampaignPosts from "./CampaignPosts"
+import axios from "axios"
+import { useUserState } from "../../slices/userSlice"
+import LivePointsAction from "../../components/LivePointsAction"
+import CampaignTimeLeft from "../../components/CampaignTimeLeft"
+import * as Sharing from "expo-sharing"
+import LottieView from "lottie-react-native"
 import Animated, {
   useSharedValue,
   withTiming,
@@ -32,94 +32,124 @@ import Animated, {
   FadeOutUp,
   BounceIn,
   BounceOut,
-} from "react-native-reanimated";
-import DoDayPointsLIveShot from "../../DoDayPointsLIveShot";
-import LivepollComments from "../../LivepollComments";
-import CampaignShare from "../../components/CampaignShare";
-import { useStateContext } from "../../contexts/ContextProvider";
+} from "react-native-reanimated"
+import DoDayPointsLIveShot from "../../DoDayPointsLIveShot"
+import LivepollComments from "../../LivepollComments"
+import CampaignShare from "../../components/CampaignShare"
+import { useStateContext } from "../../contexts/ContextProvider"
+import { fetchPostsByCampaign } from "../../Api/GetPost"
+import { useInfiniteQuery } from "react-query"
+import PostSkeleton from "../../components/PostSkeleton"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
+
+const EmptyState = ({ navigation }) => (
+  <View
+    style={{
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: Color.White,
+    }}
+  >
+    <View
+      style={{
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={require("../../../assets/newPost.png")}
+        style={styles.bellIcon}
+      />
+      <Text style={styles.heading}>Currently No Post Shared</Text>
+      <Text style={styles.subHeading}>
+        At present, there are no posts that have been shared. As soon as new
+        posts are shared, they will appear here.
+      </Text>
+
+      <TouchableOpacity style={styles.button} onPress={navigation}>
+        <Text style={styles.buttonTitle}>Back to Home</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+)
 
 const CampaignsWithPost = () => {
-  const navigation = useNavigation();
-  const animation = useRef(null);
-  const route = useRoute();
-  const { campaignViewShortImage, campaignPosts, setcampaignPosts } =
-    useStateContext();
-  const userState = useUserState();
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
-  const [likeAnimation, setlikeAnimation] = useState(false);
-  const [showShareModal, setshowShareModal] = useState(false);
-  const [posts, setposts] = useState("");
-  const [loading, setloading] = useState(false);
-  const campaign = route?.params?.campaign;
-  useEffect(() => {
+  const navigation = useNavigation()
+  const animation = useRef(null)
+  const route = useRoute()
+  const { campaignViewShortImage } = useStateContext()
+  const [teamAuser, setteamAuser] = useState("")
+  const [teamBuser, setteamBuser] = useState("")
+  const [likeAnimation, setlikeAnimation] = useState(false)
+  const [showShareModal, setshowShareModal] = useState(false)
+  const campaign = route?.params?.campaign
+  useMemo(() => {
     if (campaign?.teamA?.members.length > 0) {
-      const teamAuser = Object.values(campaign?.teamA?.members);
-      setteamAuser(teamAuser);
+      const teamA = Object.values(campaign.teamA.members)
+      setteamAuser(teamA)
     }
+  }, [campaign?.teamA?.members])
+
+  useMemo(() => {
     if (campaign?.teamB?.members.length > 0) {
-      const teamAuser = Object.values(campaign?.teamB?.members);
-      setteamBuser(teamAuser);
+      const teamB = Object.values(campaign.teamB.members)
+      setteamBuser(teamB)
     }
-  }, []);
+  }, [campaign?.teamB?.members])
 
-  const fetchData = async () => {
-    setloading(true);
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/posts/getPostByCampaign/${campaign?._id}`,
-        {
-          headers: {
-            "auth-token": userState.token,
-          },
+  const {
+    data: campaignPosts,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ["campaignPosts", campaign?._id],
+    ({ pageParam = 1 }) =>
+      fetchPostsByCampaign({ pageParam, campaignId: campaign?._id }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage?.currentPage && lastPage?.totalPages) {
+          return lastPage.currentPage < lastPage.totalPages
+            ? lastPage.currentPage + 1
+            : null
         }
-      );
-
-      res?.data?.posts?.sort(
-        (a, b) => new Date(b.createdAT) - new Date(a.createdAT)
-      );
-      setcampaignPosts(res?.data?.posts);
-      setloading(false);
-    } catch (error) {
-      console.log(error);
-      setloading(false);
+        return null
+      },
+      refetchOnWindowFocus: false,
+      cacheTime: 1000 * 60 * 5,
     }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [campaign?._id]);
+  )
 
   const handleShareNavigaton = () => {
-    setshowShareModal(!showShareModal);
-  };
+    setshowShareModal(!showShareModal)
+  }
 
   const handleComment = () => {
     navigation.navigate("CampaignComments", {
       campaign: campaign,
       screen: "",
-    });
-  };
-  // console.log(campaign?.messages);
-  const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true);
-  const [newImageVisible, setNewImageVisible] = useState(false);
+    })
+  }
+  const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true)
+  const [newImageVisible, setNewImageVisible] = useState(false)
 
-  const scrollY = useSharedValue(0);
+  const scrollY = useSharedValue(0)
 
   const handleScroll = (event) => {
-    scrollY.value = event.nativeEvent.contentOffset.y;
+    scrollY.value = event.nativeEvent.contentOffset.y
 
     if (event.nativeEvent.contentOffset.y > 40) {
-      setCampaignTimeLeftVisible(false);
-      setNewImageVisible(true);
+      setCampaignTimeLeftVisible(false)
+      setNewImageVisible(true)
     } else {
-      setCampaignTimeLeftVisible(true);
-      setNewImageVisible(false);
+      setCampaignTimeLeftVisible(true)
+      setNewImageVisible(false)
     }
-  };
+  }
 
   const animatedTimeLeftStyle = useAnimatedStyle(() => ({
     opacity: withTiming(campaignTimeLeftVisible ? 5 : -10, {
@@ -134,7 +164,7 @@ const CampaignsWithPost = () => {
         }),
       },
     ],
-  }));
+  }))
 
   const animatedLeftStyle = useAnimatedStyle(() => ({
     opacity: withTiming(campaignTimeLeftVisible ? 0 : 1, {
@@ -149,7 +179,7 @@ const CampaignsWithPost = () => {
         }),
       },
     ],
-  }));
+  }))
 
   const handleShareExternal = async () => {
     // Share the captured image
@@ -157,11 +187,17 @@ const CampaignsWithPost = () => {
       mimeType: "image/jpeg",
       dialogTitle: "Share this image",
       UTI: "public.jpeg",
-    });
-  };
+    })
+  }
   const handlePointsShareFeed = async () => {
-    navigation.navigate("PointsSharePost", campaignViewShortImage);
-  };
+    navigation.navigate("PointsSharePost", campaignViewShortImage)
+  }
+
+  const handleEndReached = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage()
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -172,9 +208,7 @@ const CampaignsWithPost = () => {
       />
       {/* Score bored  */}
       <View style={styles.scoreCard}>
-        {/* container time left  */}
         <CampaignTimeLeft campaign={campaign} />
-        {/* container points  */}
         {newImageVisible && (
           <Animated.View style={[{ width: "100%" }, animatedLeftStyle]}>
             <LivePointsTeamPoints campaign={campaign} />
@@ -182,7 +216,7 @@ const CampaignsWithPost = () => {
         )}
         {!newImageVisible && (
           <Animated.View style={[{ width: "100%" }, animatedTimeLeftStyle]}>
-            <DoDayPointsLIveShot doday={campaign} loading={loading} />
+            <DoDayPointsLIveShot doday={campaign} loading={isLoading} />
           </Animated.View>
         )}
         {/* members teams */}
@@ -234,55 +268,19 @@ const CampaignsWithPost = () => {
       </View>
 
       <View style={styles.postContainer}>
-        {loading && (
-          <View
-            style={{
-              flex: 1,
-              alignSelf: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ActivityIndicator size={"large"} color={Color.Blue} />
+        {isLoading && (
+          <View>
+            <PostSkeleton />
           </View>
         )}
-        {!loading && campaignPosts?.length === 0 && (
-          <View
-            style={{
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: Color.White,
-            }}
-          >
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={require("../../../assets/newPost.png")}
-                style={styles.bellIcon}
-              />
-              <Text style={styles.heading}>Currently No Post Shared</Text>
-              <Text style={styles.subHeading}>
-                At present, there are no posts that have been shared. As soon as
-                new posts are shared, they will appear here.
-              </Text>
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("Home")}
-              >
-                <Text style={styles.buttonTitle}>Back to Home</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
-        {!loading && (
+        {!isLoading &&
+          campaignPosts?.pages.flatMap((item) => item?.posts.length) < 1 && (
+            <EmptyState navigation={() => navigation.navigate("Home")} />
+          )}
+        {!isLoading && (
           <View style={{ marginTop: 10 }}>
             <FlatList
-              data={campaignPosts}
+              data={campaignPosts?.pages.flatMap((page) => page.posts) || []}
               renderItem={({ item }) => {
                 return (
                   <View
@@ -293,23 +291,26 @@ const CampaignsWithPost = () => {
                     <CampaignPosts
                       post={item}
                       campaignId={campaign?._id}
-                      reload={fetchData}
+                      reload={refetch}
                     />
                   </View>
-                );
+                )
               }}
               onScroll={(event) => handleScroll(event)}
               scrollEventThrottle={16}
               keyExtractor={(item) => `${item?._id}`}
+              onEndReachedThreshold={0.5}
+              onEndReached={handleEndReached}
+              ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
             />
           </View>
         )}
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default CampaignsWithPost;
+export default CampaignsWithPost
 
 const styles = StyleSheet.create({
   container: {
@@ -380,4 +381,4 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontSize: Height * 0.019,
   },
-});
+})

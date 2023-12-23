@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -6,53 +6,46 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
+} from "react-native"
+import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
+import Color from "../../../assets/colors/Color"
 
 //utils
-import { returnCountDown } from "../../utils/countdown";
-import { BASE_URL } from "../../../CONSTANTS";
+import { returnCountDown } from "../../utils/countdown"
+import { BASE_URL } from "../../../CONSTANTS"
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get("screen").height
+const Width = Dimensions.get("screen").width
 
 export default function CampaignCard(props) {
-  const [countDown, setCountDown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
+  const [teamAuser, setteamAuser] = useState("")
+  const [teamBuser, setteamBuser] = useState("")
   //here i want to calculate the countdown
-  useEffect(() => {
-    let compareDate = new Date(props.date);
-    const interval = setInterval(() => {
-      const newCountDown = returnCountDown(compareDate);
-      if (newCountDown === "-1") {
-        clearInterval(interval);
-      } else {
-        setCountDown(newCountDown);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [props.date]);
 
   useEffect(() => {
     if (props?.teamAuser.length > 0) {
-      const teamAuser = Object.values(props?.teamAuser);
-      setteamAuser(teamAuser);
+      const teamAuser = Object.values(props?.teamAuser)
+      setteamAuser(teamAuser)
     }
     if (props?.teamBuser.length > 0) {
-      const teamAuser = Object.values(props?.teamBuser);
-      setteamBuser(teamAuser);
+      const teamAuser = Object.values(props?.teamBuser)
+      setteamBuser(teamAuser)
     }
-  }, []);
+  }, [])
+
+  // useMemo(() => {
+  //   if (campaign?.teamA?.members.length > 0) {
+  //     const teamA = Object.values(campaign.teamA.members)
+  //     setteamAuser(teamA)
+  //   }
+  // }, [campaign?.teamA?.members])
+
+  // useMemo(() => {
+  //   if (campaign?.teamB?.members.length > 0) {
+  //     const teamB = Object.values(campaign.teamB.members)
+  //     setteamBuser(teamB)
+  //   }
+  // }, [campaign?.teamB?.members])
 
   return (
     <View style={[props.mainBg, { backgroundColor: props.color }]}>
@@ -165,7 +158,7 @@ export default function CampaignCard(props) {
         </Text>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -266,4 +259,4 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     alignSelf: "center",
   },
-});
+})
