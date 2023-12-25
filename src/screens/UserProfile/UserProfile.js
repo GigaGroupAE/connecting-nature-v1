@@ -531,7 +531,6 @@ const styles = StyleSheet.create({
   userProfileStats: {
     flexDirection: "row",
     marginTop: 16,
-    // paddingHorizontal: 35,
     justifyContent: "space-between",
     width: "73%",
     position: "relative",

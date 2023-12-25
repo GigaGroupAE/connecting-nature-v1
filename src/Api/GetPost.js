@@ -28,3 +28,10 @@ export const fetchPostsByCampaign = async ({ pageParam = 1, campaignId }) => {
   )
   return response.data
 }
+
+export const fetchUserPosts = async (userPhoneNumber, pageParam = 1) => {
+  const response = await axiosInstance.get(
+    `/posts/get-user-posts/${userPhoneNumber}?page=${pageParam}`
+  )
+  return response.data
+}
