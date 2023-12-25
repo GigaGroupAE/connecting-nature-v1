@@ -23,7 +23,7 @@ const MessagePreview = ({ item }) => {
           messagePreview.length > 40
             ? messagePreview.slice(0, 38) + "..."
             : messagePreview
-        messageType = "Text"
+        messageType = ""
         break
       case "video":
         messageType = "Video"
@@ -63,7 +63,7 @@ const MessagePreview = ({ item }) => {
 
   return (
     <View>
-      {messageType === "Text" && (
+      {messageType === "" && (
         <Text style={styles.msgText}>{messagePreview}</Text>
       )}
       {messageType && (

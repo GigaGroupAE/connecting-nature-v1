@@ -23,60 +23,43 @@ import { useStateContext } from "../../contexts/ContextProvider"
 import { calculateTimeDifference } from "../../utils/timeDifference"
 import NoMessage from "./NoMessage"
 import MessagePreview from "../../components/MessagePreview"
+import { axiosInstance } from "../../../axiosInstance"
+import { useQuery } from "react-query"
+import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan"
 
 const Height = Dimensions.get("screen").height
 const Width = Dimensions.get("screen").width
 
+const fetchMessages = async () => {
+  const response = await axiosInstance.get("/chat/get-my-chats")
+  return response.data.myChats
+}
+
 export default function ChatList() {
-  const [Messages, setMessages] = useState([])
+  // const [Messages, setMessages] = useState([])
   const [modalVisible, setmodalVisible] = useState(false)
   const [refresh, setRefresh] = useState(false)
   const [IsshowInput, setIsShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
+  const {
+    data: Messages,
+    isLoading: loading,
+    refetch,
+  } = useQuery("cnmessages", fetchMessages)
+
   const navigation = useNavigation()
   const userState = useUserState()
-  const { group, setgroup, loading, setLoading } = useStateContext()
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const res = await axios.get(`${BASE_URL}/chat/get-my-chats`, {
-          headers: {
-            "auth-token": userState.token,
-          },
-        })
-        setMessages([...res.data.myChats])
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-  useFocusEffect(
-    useCallback(() => {
-      const fetchMessages = async () => {
-        try {
-          const res = await axios.get(`${BASE_URL}/chat/get-my-chats`, {
-            headers: {
-              "auth-token": userState.token,
-            },
-          })
-          setMessages([...res.data.myChats])
-        } catch (error) {
-          console.log(error)
-        }
-      }
-      fetchMessages()
-    }, [])
-  )
-
+  const { group, setgroup } = useStateContext()
   const handleonbackpress = () => {
     navigation.goBack()
   }
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch()
+    }, [])
+  )
+
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].phoneNumber === userState.phoneNumber) {
       const profile = props.members[1].profile
@@ -154,99 +137,103 @@ export default function ChatList() {
           </View>
         </View>
       ) : null}
-      <View>
-        {!loading && Messages?.length == 0 ? (
-          <NoMessage />
-        ) : (
-          <View style={styles.container}>
-            <FlatList
-              data={sortedMessages}
-              keyExtractor={(item) => item._id}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => {
-                const { messages } = item
+      {loading ? (
+        <ArchivedCampaignSkelentan />
+      ) : (
+        <View>
+          {!loading && Messages?.length == 0 ? (
+            <NoMessage />
+          ) : (
+            <View style={styles.container}>
+              <FlatList
+                data={sortedMessages}
+                keyExtractor={(item) => item._id}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const { messages } = item
 
-                const latestMessage =
-                  messages?.length > 0 ? messages[messages.length - 1] : null
-                const timePassed = calculateTimeDifference(
-                  latestMessage.createdAt
-                )
+                  const latestMessage =
+                    messages?.length > 0 ? messages[messages.length - 1] : null
+                  const timePassed = calculateTimeDifference(
+                    latestMessage.createdAt
+                  )
 
-                return (
-                  <Pressable
-                    style={styles.mainBody}
-                    onPress={() => {
-                      setgroup(item)
-                      navigation.navigate("ChatCN", {
-                        group: item,
-                      })
-                    }}
-                    delayLongPress={1000}
-                  >
-                    <View style={styles.singleNotification}>
-                      <Image
-                        style={styles.userAvatar}
-                        source={{ uri: setPhotoForDirectChat(item) }}
-                      />
+                  return (
+                    <Pressable
+                      style={styles.mainBody}
+                      onPress={() => {
+                        setgroup(item)
+                        navigation.navigate("ChatCN", {
+                          group: item,
+                        })
+                      }}
+                      delayLongPress={1000}
+                    >
+                      <View style={styles.singleNotification}>
+                        <Image
+                          style={styles.userAvatar}
+                          source={{ uri: setPhotoForDirectChat(item) }}
+                        />
 
-                      <View style={styles.mainContent}>
-                        <View style={styles.listHead}>
-                          <Text style={styles.userName}>
-                            {item.members[0].phoneNumber ===
-                            userState.phoneNumber
-                              ? item.members[1].fullName
-                              : item.members[0].fullName}
-                          </Text>
-                          <Text style={styles.timeText}>{timePassed}</Text>
+                        <View style={styles.mainContent}>
+                          <View style={styles.listHead}>
+                            <Text style={styles.userName}>
+                              {item.members[0].phoneNumber ===
+                              userState.phoneNumber
+                                ? item.members[1].fullName
+                                : item.members[0].fullName}
+                            </Text>
+                            <Text style={styles.timeText}>{timePassed}</Text>
+                          </View>
+                          <MessagePreview item={item} />
                         </View>
-                        {!loading && <MessagePreview item={item} />}
                       </View>
-                    </View>
-                  </Pressable>
-                )
-              }}
-            />
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setmodalVisible(!modalVisible)
-              }}
-            >
-              <View style={styles.ConfrmModel}>
-                <View>
-                  <Text
-                    style={{
-                      fontFamily: "Roboto_400Regular",
-                      fontWeight: "400",
-                    }}
-                  >
-                    Do you really want to delete the Chat?
-                  </Text>
-                </View>
-                <View style={styles.model}>
-                  <TouchableOpacity onPress={() => handleDelete()}>
-                    <Text style={styles.btn}>Yes Delete</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleCancel()}>
+                    </Pressable>
+                  )
+                }}
+              />
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setmodalVisible(!modalVisible)
+                }}
+              >
+                <View style={styles.ConfrmModel}>
+                  <View>
                     <Text
                       style={{
-                        ...styles.btn,
-                        backgroundColor: Color.White,
-                        color: Color.Black,
-                        borderWidth: 1,
+                        fontFamily: "Roboto_400Regular",
+                        fontWeight: "400",
                       }}
                     >
-                      No, Cancel
+                      Do you really want to delete the Chat?
                     </Text>
-                  </TouchableOpacity>
+                  </View>
+                  <View style={styles.model}>
+                    <TouchableOpacity onPress={() => handleDelete()}>
+                      <Text style={styles.btn}>Yes Delete</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleCancel()}>
+                      <Text
+                        style={{
+                          ...styles.btn,
+                          backgroundColor: Color.White,
+                          color: Color.Black,
+                          borderWidth: 1,
+                        }}
+                      >
+                        No, Cancel
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Modal>
-          </View>
-        )}
-      </View>
+              </Modal>
+            </View>
+          )}
+        </View>
+      )}
 
       <BottomTab activeMenu={"Chat"} scrollToTop={scrollToTop} />
     </SafeAreaView>
