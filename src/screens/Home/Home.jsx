@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import {
   View,
   FlatList,
@@ -11,7 +11,11 @@ import { useInfiniteQuery, useQuery } from "react-query"
 import Color from "../../../assets/colors/Color"
 import BottomTab from "../../components/BottomTab"
 import Post from "../../components/Post"
-import { fetchPosts, fetchRecentCampaigns } from "../../Api/GetPost"
+import {
+  fetchPosts,
+  fetchRecentCampaigns,
+  registerForPushNotificationsAsync,
+} from "../../Api/GetPost"
 import PostSkeleton from "../../components/PostSkeleton"
 import { SafeAreaView } from "react-native"
 import HomeHeader from "./HomeHeader"
@@ -20,9 +24,28 @@ import { useStateContext } from "../../contexts/ContextProvider"
 import MiniVideoPlayer from "../../components/MiniVideoPlayer"
 import StoryHeader from "./StoryHeader"
 import HeaderForCampaign from "./HeaderForCampaign"
+import * as Notifications from "expo-notifications"
+import { useUserState, useUserStateActions } from "../../slices/userSlice"
+import { BASE_URL } from "../../../CONSTANTS"
+import axios from "axios"
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+})
 
 const Home = () => {
   const isFocused = useIsFocused()
+  const [expoPushToken, setExpoPushToken] = useState("")
+  const [notification, setNotification] = useState(false)
+  const userstate = useUserState()
+  const userActions = useUserStateActions()
+  const notificationListener = useRef()
+  const responseListener = useRef()
+
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
     useStateContext()
 
@@ -50,11 +73,10 @@ const Home = () => {
     }
   )
 
-  const {
-    data: campaign,
-    isLoading,
-    isError,
-  } = useQuery("mostRecentCampaigns", fetchRecentCampaigns)
+  const { data: campaign } = useQuery(
+    "mostRecentCampaigns",
+    fetchRecentCampaigns
+  )
   useEffect(() => {
     if (isFocused) {
       refetch()
@@ -80,6 +102,52 @@ const Home = () => {
       }
     }
   }, [postsData, postsLoading])
+
+  useEffect(() => {
+    if (isFocused) {
+      if (!userstate.expoPushToken)
+        registerForPushNotificationsAsync().then((token) => {
+          setExpoPushToken(token)
+          //make api call to save the token
+          const config = {
+            headers: {
+              "auth-token": userstate.token,
+            },
+          }
+          if (!userstate.expoPushToken) {
+            axios
+              .put(
+                `${BASE_URL}/user/updateUserExpoToken`,
+                { expoPushToken: `${token}` },
+                config
+              )
+              .then((res) => {
+                userActions.setExpoPushToken(res.data.expoPushToken)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+          }
+        })
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification)
+        })
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response)
+        })
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        )
+        Notifications.removeNotificationSubscription(responseListener.current)
+      }
+    }
+  }, [isFocused])
 
   const HeaderComponent = useMemo(() => <HomeHeader />, [])
   const VideoMiniPlayer = useMemo(
