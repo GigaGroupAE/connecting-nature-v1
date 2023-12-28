@@ -1,6 +1,6 @@
 //
 
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -11,37 +11,37 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
-} from "react-native";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
+} from "react-native"
+import HeaderNormal from "../../components/HeaderNormal"
+import Color from "../../../assets/colors/Color"
+import { useUserState } from "../../slices/userSlice"
 
-import { BASE_URL } from "../../../CONSTANTS";
-import { useStateContext } from "../../contexts/ContextProvider";
-import Icon from "../../../assets/BlockedUserIcon.png";
+import { BASE_URL } from "../../../CONSTANTS"
+import { useStateContext } from "../../contexts/ContextProvider"
+import Icon from "../../../assets/BlockedUserIcon.png"
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+const height = Dimensions.get("screen").height
+const width = Dimensions.get("screen").width
 
 //axios instance
-import { axiosInstance } from "../../../axiosInstance";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { axiosInstance } from "../../../axiosInstance"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+import { ActivityIndicator } from "react-native"
+import { useNavigation } from "@react-navigation/native"
 //react query
 
 // TODO : ADD SOME UI IF THERE IS NO BLOCKED USER
 
 const fetchBlockedUsers = async () => {
-  const { data } = await axiosInstance.get("/user/get-blockedUsers");
-  return data;
-};
+  const { data } = await axiosInstance.get("/user/get-blockedUsers")
+  return data
+}
 const unblockMutationFn = async (id) => {
-  const { data } = await axiosInstance.patch(`/user/unblock-user/${id}`);
-  return data;
-};
+  const { data } = await axiosInstance.patch(`/user/unblock-user/${id}`)
+  return data
+}
 const BlockedUsers = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const {
     data: rqData,
     isLoading: rqIsLoading,
@@ -50,16 +50,16 @@ const BlockedUsers = () => {
     queryKey: ["BlockedUsers"],
     queryFn: fetchBlockedUsers,
     staleTime: 1000 * 10, //data will go stale after 10 secs
-  });
+  })
   const unblockUserMutation = useMutation({
     mutationFn: unblockMutationFn,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["BlockedUsers"]);
+      queryClient.invalidateQueries(["BlockedUsers"])
     },
-  });
-  const navigation = useNavigation();
+  })
+  const navigation = useNavigation()
 
-  const { setLoading } = useStateContext();
+  const { setLoading } = useStateContext()
 
   if (rqIsLoading)
     return (
@@ -68,25 +68,25 @@ const BlockedUsers = () => {
         size={"large"}
         color={Color.Blue}
       />
-    );
+    )
 
   if (rqError) {
-    console.log("error is ", rqError);
-    Alert.alert("error", rqError.data);
-    return;
+    console.log("error is ", rqError)
+    Alert.alert("error", rqError.data)
+    return
   }
 
   const handlePress = async (id) => {
-    console.log("unblock pressed");
+    console.log("unblock pressed")
     try {
-      setLoading(true);
-      await unblockUserMutation.mutateAsync(id);
-      setLoading(false);
+      setLoading(true)
+      await unblockUserMutation.mutateAsync(id)
+      setLoading(false)
     } catch (error) {
-      console.log("error while pressing unblock button is  ", error);
-      setLoading(false);
+      console.log("error while pressing unblock button is  ", error)
+      setLoading(false)
     }
-  };
+  }
 
   const renderItem = ({ item }) => {
     return (
@@ -107,8 +107,8 @@ const BlockedUsers = () => {
           <Text style={styles.buttonText}>Unblock</Text>
         </TouchableOpacity>
       </View>
-    );
-  };
+    )
+  }
 
   return (
     <SafeAreaView>
@@ -152,8 +152,8 @@ const BlockedUsers = () => {
         )}
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -235,6 +235,6 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontSize: height * 0.02,
   },
-});
+})
 
-export default BlockedUsers;
+export default BlockedUsers

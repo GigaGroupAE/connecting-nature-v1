@@ -39,7 +39,11 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
     }
   }, [campaignViewShortImage, setcampaignViewShortImage])
   useEffect(() => {
-    if (remainingTime === "Campaign ended" && campaignViewShortImage !== null) {
+    if (
+      remainingTime === "Campaign ended" &&
+      campaignViewShortImage !== null &&
+      doday?.status !== "archived"
+    ) {
       handleCampaignCompletion()
     }
   }, [remainingTime, campaignViewShortImage])

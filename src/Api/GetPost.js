@@ -3,7 +3,7 @@ import Constants from "expo-constants"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
 
-const LIMIT = "15"
+const LIMIT = "30"
 
 export const fetchPosts = async ({ pageParam = 1 }) => {
   const response = await axiosInstance.get(
@@ -31,7 +31,7 @@ export const fetchPostsByCampaign = async ({ pageParam = 1, campaignId }) => {
   return response.data
 }
 
-export const fetchUserPosts = async (userPhoneNumber, pageParam = 1) => {
+export const fetchUserPosts = async ({ userPhoneNumber, pageParam = 1 }) => {
   const response = await axiosInstance.get(
     `/posts/get-user-posts/${userPhoneNumber}?page=${pageParam}`
   )
@@ -69,4 +69,19 @@ export async function registerForPushNotificationsAsync() {
   }
 
   return token.data
+}
+
+export const fetchUser = async (phoneNumber) => {
+  const response = await axiosInstance.get(`/user/get-user/${phoneNumber}`)
+  return response.data.user
+}
+
+export const fetchUsersPostCount = async (phoneNumber) => {
+  const response = await axiosInstance.get(`/posts/getPostCount/${phoneNumber}`)
+  return response.data.totalItems
+}
+
+export const getMyChat = async () => {
+  const response = await axiosInstance.get("/chat/get-my-chats")
+  return response.data.myChats
 }
