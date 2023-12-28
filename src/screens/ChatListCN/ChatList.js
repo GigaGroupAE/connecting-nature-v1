@@ -155,7 +155,7 @@ export default function ChatList() {
                   const latestMessage =
                     messages?.length > 0 ? messages[messages.length - 1] : null
                   const timePassed = calculateTimeDifference(
-                    latestMessage.createdAt
+                    latestMessage?.createdAt
                   )
 
                   return (
