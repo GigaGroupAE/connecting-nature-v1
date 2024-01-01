@@ -85,3 +85,8 @@ export const getMyChat = async () => {
   const response = await axiosInstance.get("/chat/get-my-chats")
   return response.data.myChats
 }
+
+export const getGroups = async () => {
+  const response = await axiosInstance.get("/groups/getgroups")
+  return response.data
+}

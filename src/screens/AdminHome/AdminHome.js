@@ -188,14 +188,14 @@ export default function AdminHome(props) {
         },
       })
       .then((res) => {
-        let groups = res.data.filter((group) => {
-          const currentUser = group.members.filter((member) => {
-            return member?.member?.phoneNumber === userState.phoneNumber;
-          });
-          return currentUser.length !== 0;
-        });
-        // console.log(groups);
-        setgroups([...groups]);
+        // let groups = res.data.filter((group) => {
+        //   const currentUser = group.members.filter((member) => {
+        //     return member?.member?.phoneNumber === userState.phoneNumber
+        //   })
+        //   return currentUser.length !== 0
+        // })
+        // // console.log(groups);
+        setgroups([...res?.data]);
         const camapgin = groups?.filter((item) => {
           return item?.type === "campaign";
         });
