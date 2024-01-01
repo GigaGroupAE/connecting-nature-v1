@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
+  StatusBar,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -129,6 +130,8 @@ const SignIn = () => {
           <Text style={styles.createNew}>Sign Up!</Text>
         </TouchableOpacity>
       </View>
+      <StatusBar backgroundColor={Color.Blue} />
+
     </KeyboardAvoidingView>
   );
 };
