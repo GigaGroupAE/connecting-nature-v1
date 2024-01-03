@@ -159,9 +159,8 @@ export default function Comments(props) {
         comment: `${commenendId}`,
         PostId: `${postId}`,
       });
-
-      setcomments(res?.data);
-      props?.route?.params?.setcomment(res?.data);
+      setcomments(res?.data?.comments);
+      props?.route?.params?.setcomment(res?.data?.comments);
     } catch (error) {
       console.log(error, "error");
     }
@@ -271,25 +270,7 @@ export default function Comments(props) {
       })
       .catch((e) => console.log(e));
   };
-  const handleDeleteComment = async (index) => {
-    try {
-      const { data } = await axios.post(
-        `${BASE_URL}/post/delete-Comment`,
-        {
-          comment: index,
-          postId: props.route.params.id,
-        },
-        {
-          headers: {
-            "auth-token": userState.token,
-          },
-        }
-      );
-      setcomments(data.comments);
-    } catch (e) {
-      console.log(error);
-    }
-  };
+
   return (
     <View>
       <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
@@ -319,8 +300,8 @@ export default function Comments(props) {
             style={styles.mainScroll}
             showsVerticalScrollIndicator={false}
           >
-            {comments.map((comment) => {
-              return <Comment comment={comment} handleDelete={handleDelete} />;
+            {comments.map((comment,index) => {
+              return <Comment comment={comment} handleDelete={handleDelete}   updatereactions={updatereactions} postid={postId} key={comment?._id}/>;
             })}
           </ScrollView>
         </View>
