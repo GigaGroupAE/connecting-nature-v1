@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -26,11 +26,12 @@ import moment from "moment";
 import { useStateContext } from "../../contexts/ContextProvider";
 import axios from "axios";
 import VideoPlayer from "expo-video-player";
+import StoryDeleteModal from "./StoryDeleteModal";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
-const SingleStory = ({ post }) => {
+const SingleStory = ({ post, refetch }) => {
   const { setSelectedStory, showSnackbar } = useStateContext();
   const route = useRoute();
   const isFocused = useIsFocused();
@@ -46,6 +47,8 @@ const SingleStory = ({ post }) => {
   const userstate = useUserState();
   const [reactions, setreactions] = useState([...selectedStory.reactions]);
   const [comments, setcomments] = useState([...selectedStory.comments]);
+  const [modalVisible, setmodalVisible] = useState(false);
+
   const [shares, setshares] = useState([...selectedStory.shares]);
   const [liked, setliked] = useState(
     reactions.some((user) => {
@@ -179,152 +182,171 @@ const SingleStory = ({ post }) => {
     // console.log(e.nativeEvent);
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Image
-        style={styles.profilePicture}
-        source={{ uri: `${BASE_URL}/images/${post?.postedby?.profile}` }}
-        // source={user}
-      />
-      <View style={styles.contentContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("UserProfile", {
-              userPhoneNumber: post.postedby.phoneNumber,
-            });
-          }}
-          style={{ flexDirection: "row" }}
-        >
-          <Text style={styles.username}>{post?.postedby?.fullName}</Text>
-          {(post.postedby.type === "Operations" ||
-            post.postedby.type === "Admin" ||
-            post.postedby.type === "Manager" ||
-            post.postedby.type === "Assistant Manager" ||
-            post.postedby.type === "Super Admin" ||
-            post.postedby.type === "celebrity") && (
-            <MaterialCommunityIcons
-              name="check-decagram"
-              style={styles.adminIcon}
-            />
-          )}
 
-          <Entypo
-            name="dots-three-horizontal"
-            size={15}
-            color={Color.Black}
-            style={{ position: "absolute", right: 16, alignSelf: "center" }}
-          />
-        </TouchableOpacity>
-        <Text style={styles.timestamp}>{timePassed}</Text>
-        <TouchableOpacity onPress={() => handleNavigation(post)}>
-          <Text
-            style={styles.content}
-            onTextLayout={onTextLayout}
-            numberOfLines={textShown ? undefined : 4}
+
+  const modalComponent = useMemo(
+    () => (
+      <StoryDeleteModal
+        post={post}
+        refetch={refetch}
+        setmodalVisible={setmodalVisible}
+      />
+    ),
+    [modalVisible, post]
+  );
+
+  return (
+    <View>
+      {modalVisible && modalComponent}
+      <View style={styles.container}>
+        <Image
+          style={styles.profilePicture}
+          source={{ uri: `${BASE_URL}/images/${post?.postedby?.profile}` }}
+          // source={user}
+        />
+        <View style={styles.contentContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("UserProfile", {
+                userPhoneNumber: post.postedby.phoneNumber,
+              });
+            }}
+            style={{ flexDirection: "row" }}
           >
-            {post.description}
-          </Text>
-          {lengthMore ? (
+            <Text style={styles.username}>{post?.postedby?.fullName}</Text>
+            {(post.postedby.type === "Operations" ||
+              post.postedby.type === "Admin" ||
+              post.postedby.type === "Manager" ||
+              post.postedby.type === "Assistant Manager" ||
+              post.postedby.type === "Super Admin" ||
+              post.postedby.type === "celebrity") && (
+              <MaterialCommunityIcons
+                name="check-decagram"
+                style={styles.adminIcon}
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ position: "absolute", right: 16, alignSelf: "center" }}
+            onPress={() => setmodalVisible(true)}
+          >
+            <Entypo
+              name="dots-three-horizontal"
+              size={15}
+              color={Color.Black}
+            />
+          </TouchableOpacity>
+          <Text style={styles.timestamp}>{timePassed}</Text>
+          <TouchableOpacity onPress={() => handleNavigation(post)}>
             <Text
-              onPress={toggleNumberOfLines}
+              style={styles.content}
+              onTextLayout={onTextLayout}
+              numberOfLines={textShown ? undefined : 4}
+            >
+              {post.description}
+            </Text>
+            {lengthMore ? (
+              <Text
+                onPress={toggleNumberOfLines}
+                style={{
+                  ...styles.content,
+                  color: Color.Blue,
+                  paddingVertical: Height * 0.00012,
+                  // paddingVertical: 2,
+                  paddingBottom: 4,
+                }}
+              >
+                {textShown ? "Read less..." : "Read more..."}
+              </Text>
+            ) : null}
+          </TouchableOpacity>
+          {post.media?.type === "image/jpeg" ||
+          post.media?.type === "image/png" ||
+          post.media?.type === "image/jpg" ? (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("PostView", {
+                  url: `${BASE_URL}/images/${post.media.name}`,
+                  message: post.description,
+                })
+              }
+            >
+              <Image
+                style={styles.postImage}
+                source={{ uri: `${BASE_URL}/images/${post?.media?.name}` }}
+              />
+            </TouchableOpacity>
+          ) : null}
+          {post.media?.type === "video/mp4" ? (
+            <View
               style={{
-                ...styles.content,
-                color: Color.Blue,
-                paddingVertical: Height * 0.00012,
-                // paddingVertical: 2,
-                paddingBottom: 4,
+                backgroundColor: "red",
+                height: Height * 0.27,
+                borderRadius: Height * 0.02,
+                overflow: "hidden",
               }}
             >
-              {textShown ? "Read less..." : "Read more..."}
-            </Text>
-          ) : null}
-        </TouchableOpacity>
-        {post.media?.type === "image/jpeg" ||
-        post.media?.type === "image/png" ||
-        post.media?.type === "image/jpg" ? (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("PostView", {
-                url: `${BASE_URL}/images/${post.media.name}`,
-                message: post.description,
-              })
-            }
-          >
-            <Image
-              style={styles.postImage}
-              source={{ uri: `${BASE_URL}/images/${post?.media?.name}` }}
-            />
-          </TouchableOpacity>
-        ) : null}
-        {post.media?.type === "video/mp4" ? (
-          <View
-            style={{
-              backgroundColor: "red",
-              height: Height * 0.27,
-              borderRadius: Height * 0.02,
-              overflow: "hidden",
-            }}
-          >
-            <VideoPlayer
-              style={{ height: 200 }}
-              fullscreen={{
-                enterFullscreen: () => {
-                  video.current.setStatusAsync({
-                    shouldPlay: false,
-                  });
-                  navigation.navigate("PostView", {
-                    url: `${BASE_URL}/images/${post.media.name}`,
-                    message: "",
-                    mediatype: "video",
-                    description: post.description,
-                    autherName: post.postedby.fullName,
-                    screen: "home",
-                  });
-                },
-                exitFullscreen: (e) => console.log(e),
-              }}
-              defaultControlsVisible={true}
-              videoProps={{
-                isLooping: false,
-                ref: video,
-                source: {
-                  uri: `${BASE_URL}/images/${post.media.name}`,
-                },
-                shouldPlay: false,
-                resizeMode: "contain",
-              }}
-            />
-          </View>
-        ) : null}
-
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.postLikes} onPress={handleLike}>
-            {liked ? (
-              <AntDesign
-                name="heart"
-                style={{ ...styles.icons, color: Color.Red }}
+              <VideoPlayer
+                style={{ height: 200 }}
+                fullscreen={{
+                  enterFullscreen: () => {
+                    video.current.setStatusAsync({
+                      shouldPlay: false,
+                    });
+                    navigation.navigate("PostView", {
+                      url: `${BASE_URL}/images/${post.media.name}`,
+                      message: "",
+                      mediatype: "video",
+                      description: post.description,
+                      autherName: post.postedby.fullName,
+                      screen: "home",
+                    });
+                  },
+                  exitFullscreen: (e) => console.log(e),
+                }}
+                defaultControlsVisible={true}
+                videoProps={{
+                  isLooping: false,
+                  ref: video,
+                  source: {
+                    uri: `${BASE_URL}/images/${post.media.name}`,
+                  },
+                  shouldPlay: false,
+                  resizeMode: "contain",
+                }}
               />
-            ) : (
-              <AntDesign name="hearto" style={styles.icons} />
-            )}
-            <Text style={styles.comment}>{reactions.length}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleNavigation(post)}>
-            <View style={{ flexDirection: "row" }}>
-              <Octicons name="comment" size={20} color="#000" />
-              <View style={{ marginLeft: 7, alignSelf: "center" }}>
-                <Text>{post.comments.length}</Text>
-              </View>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleonshare}>
-            <View style={{ flexDirection: "row" }}>
-              <AntDesign name="sharealt" size={20} color="#000" />
-              <View style={{ marginLeft: 7, alignSelf: "center" }}>
-                <Text>{post.shares.length}</Text>
+          ) : null}
+
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.postLikes} onPress={handleLike}>
+              {liked ? (
+                <AntDesign
+                  name="heart"
+                  style={{ ...styles.icons, color: Color.Red }}
+                />
+              ) : (
+                <AntDesign name="hearto" style={styles.icons} />
+              )}
+              <Text style={styles.comment}>{reactions.length}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleNavigation(post)}>
+              <View style={{ flexDirection: "row" }}>
+                <Octicons name="comment" size={20} color="#000" />
+                <View style={{ marginLeft: 7, alignSelf: "center" }}>
+                  <Text>{post.comments.length}</Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleonshare}>
+              <View style={{ flexDirection: "row" }}>
+                <AntDesign name="sharealt" size={20} color="#000" />
+                <View style={{ marginLeft: 7, alignSelf: "center" }}>
+                  <Text>{post.shares.length}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>

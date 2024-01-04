@@ -46,6 +46,7 @@ export default function Comments(props) {
   const userState = useUserState();
   const [comments, setcomments] = useState([...props.route.params.comments]);
   const [textInputFocused, setTextInputFocused] = useState(false);
+  const [isReplay, setisReplay] = useState(true)
   const postId = props?.route?.params?.id;
   let tempcomment = "";
   const handlecommentinput = (props) => {
@@ -115,7 +116,7 @@ export default function Comments(props) {
               },
               config
             );
-            console.log(data);
+    
           }
           socket.emit("send_comments", data);
           setLoading(false);
@@ -231,44 +232,23 @@ export default function Comments(props) {
     }
   };
   const handleCommentReplies = async (comment, index) => {
-    await axios.post(
-      `${BASE_URL}/notify/commentNotification/${props.route.params.post.id}`,
-      {
-        user: userState.phoneNumber,
-        body: {
-          date: date,
-          user: {
-            profile: userState.profile,
-            fullName: userState.fullName,
-            type: userState.type,
-            expoPushToken: props?.post?.postedby?.expoPushToken,
-          },
-        },
-        data: {
-          title: "comment-reply",
-          content: props.post._id,
-        },
-      },
-      config
-    );
-
     let newcomments = [...comments];
     //Paste the description and the essentials of the comment replies here for it to work
     newcomments[index].comments = comments[index]?.replies?.push({});
-    axios
-      .patch(
-        route,
-        { comments: newcomments },
-        {
-          headers: {
-            "auth-token": userState.token,
-          },
-        }
-      )
-      .then((res) => {
-        setreactions(res.data.reactions);
-      })
-      .catch((e) => console.log(e));
+    // axios
+    //   .patch(
+    //     route,
+    //     { comments: newcomments },
+    //     {
+    //       headers: {
+    //         "auth-token": userState.token,
+    //       },
+    //     }
+    //   )
+    //   .then((res) => {
+    //     setreactions(res.data.reactions);
+    //   })
+    //   .catch((e) => console.log(e));
   };
 
   return (
@@ -300,8 +280,17 @@ export default function Comments(props) {
             style={styles.mainScroll}
             showsVerticalScrollIndicator={false}
           >
-            {comments.map((comment,index) => {
-              return <Comment comment={comment} handleDelete={handleDelete}   updatereactions={updatereactions} postid={postId} key={comment?._id}/>;
+            {comments.map((comment, index) => {
+              return (
+                <Comment
+                  comment={comment}
+                  handleDelete={handleDelete}
+                  updatereactions={updatereactions}
+                  postid={postId}
+                  key={comment?._id}
+                  setTextInputFocused={setTextInputFocused}
+                />
+              );
             })}
           </ScrollView>
         </View>
