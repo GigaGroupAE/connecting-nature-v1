@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,20 +14,75 @@ import { BASE_URL } from "../../CONSTANTS";
 import Color from "../../assets/colors/Color";
 import { useNavigation } from "@react-navigation/native";
 import DeleteCommentModal from "./DeleteCommentModal";
+import { useUserState } from "../slices/userSlice";
+import { axiosInstance } from "../../axiosInstance";
 export default function Comment({
   comment,
   handleDelete,
   index,
   updatereactions,
+  postid,
 }) {
   let timePassed = calculateTimeDifference(comment?.date);
+  const userState = useUserState();
+
   const [modalVisible, setmodalVisible] = useState(false);
   const navigation = useNavigation();
+  const [commentsLikes, setcommentsLikes] = useState(comment?.likes);
+  const [isLike, setisLike] = useState(false);
+
+  useEffect(() => {
+    setcommentsLikes(comment?.likes);
+    setisLike(
+      commentsLikes?.some((user) => {
+        return user === userState.id;
+      })
+    );
+  }, [comment]);
+
+  const handleLikee = async (liked, item) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/posts/update-Comment/${postid}`,
+        {
+          likes: liked,
+          commentId: item?._id,
+          type:"like"
+        }
+      );
+
+      setcommentsLikes(response?.data?.likes);
+    } catch (error) {
+      console.log(error, "error while updated reactions");
+    }
+  };
 
   const commented_by = comment?.commented_by;
 
   const getindex = (item, aindex) => {
     updatereactions(item, aindex);
+  };
+
+  const handleLike = (item) => {
+    if (!isLike) {
+      let templike = [...commentsLikes];
+      const newLikes = {
+        phoneNumber: userState.phoneNumber,
+        fullName: userState.fullName,
+        type: userState.type,
+        profile: userState.profile,
+        _id: userState.id,
+      };
+      templike.push(newLikes);
+      handleLikee(templike, item);
+      setisLike(true);
+    } else {
+      const newlikes = commentsLikes.filter((reaction) => {
+        return reaction !== userState.id;
+      });
+      handleLikee(newlikes, item);
+      setisLike(false);
+    }
   };
 
   return (
@@ -63,6 +118,20 @@ export default function Comment({
         </View>
         <View style={styles.action}>
           <Text style={styles.time}>{timePassed}</Text>
+          <TouchableOpacity
+            style={styles.likeButton}
+            onPress={() => handleLike(comment)}
+          >
+            <AntDesign
+              name={isLike ? "like1" : "like2"}
+              size={16}
+              color={isLike ? Color.Blue : Color.Black}
+            />
+            {commentsLikes?.length !== 0 && (
+              <Text style={styles.time}>{commentsLikes?.length}</Text>
+            )}
+          </TouchableOpacity>
+  
         </View>
       </View>
       <DeleteCommentModal
@@ -131,6 +200,7 @@ const styles = StyleSheet.create({
     color: Color.Black,
     lineHeight: 21,
     marginRight: 15,
+    fontFamily: "Roboto_400Regular",
   },
   like: {
     fontSize: 13,
@@ -143,5 +213,10 @@ const styles = StyleSheet.create({
     color: Color.Blue,
     fontWeight: "500",
     lineHeight: 21,
+  },
+  likeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
   },
 });

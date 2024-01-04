@@ -11,12 +11,12 @@ import { BASE_URL } from "../../../CONSTANTS";
 import { calculateTimeDifference } from "../../utils/timeDifference";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import { MaterialCommunityIcons, Entypo } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
-const StoryCommentHeader = () => {
+const StoryCommentHeader = ({ setmodalVisible }) => {
   const { selectedStory } = useStateContext();
 
   let timePassed = calculateTimeDifference(selectedStory.createdAT);
@@ -26,7 +26,7 @@ const StoryCommentHeader = () => {
   return (
     <View>
       {/* User Details Container */}
-      <TouchableOpacity
+      <View
         style={[
           styles.userContainer,
           {
@@ -35,13 +35,14 @@ const StoryCommentHeader = () => {
             marginTop: height * 0.01,
           },
         ]}
-        onPress={() => {
-          navigation.navigate("UserProfile", {
-            userPhoneNumber: selectedStory.postedby.phoneNumber,
-          });
-        }}
       >
-        <View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("UserProfile", {
+              userPhoneNumber: selectedStory.postedby.phoneNumber,
+            });
+          }}
+        >
           <View style={{ flex: 1 }}>
             {/* User Image */}
             <Image
@@ -52,13 +53,20 @@ const StoryCommentHeader = () => {
               resizeMode="cover"
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* User Details */}
         <View style={{ flex: 1, marginLeft: width * 0.03 }}>
           {/* User Type */}
           <View style={styles.userContainer}>
-            <View style={styles.userNameContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("UserProfile", {
+                  userPhoneNumber: selectedStory.postedby.phoneNumber,
+                });
+              }}
+              style={styles.userNameContainer}
+            >
               <Text style={styles.userName}>
                 {selectedStory?.postedby?.fullName}
               </Text>
@@ -73,11 +81,21 @@ const StoryCommentHeader = () => {
                   style={styles.adminIcon}
                 />
               )}
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ position: "absolute", right: 16, alignSelf: "center" }}
+              onPress={() => setmodalVisible(true)}
+            >
+              <Entypo
+                name="dots-three-horizontal"
+                size={15}
+                color={Color.Black}
+              />
+            </TouchableOpacity>
           </View>
           <Text style={styles.postDuration}>{timePassed} </Text>
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };

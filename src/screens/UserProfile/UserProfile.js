@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native"
 import UserProfileState from "../../components/UserProfileState"
 import PostSkeleton from "../../components/PostSkeleton"
 import Post from "../../components/Post"
+import NoPostHeader from "./NoPostHeader"
 
 const Height = Dimensions.get("screen").height
 const Width = Dimensions.get("screen").width
@@ -107,6 +108,10 @@ const UserProfile = (props) => {
           backgroundColor: Color.Disable,
         }}
       >
+              {!postsLoading &&
+          postsData?.pages.flatMap((item) => item?.posts.length) < 1 && (
+            <NoPostHeader navigation={() => navigation.navigate("Home")} />
+          )}
         {postsLoading ? (
           <PostSkeleton />
         ) : (

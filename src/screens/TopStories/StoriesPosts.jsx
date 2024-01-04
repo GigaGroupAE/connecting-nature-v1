@@ -10,10 +10,11 @@ import { useInfiniteQuery } from "react-query"
 import { fetchStories } from "../../Api/GetPost"
 import PostSkeleton from "../../components/PostSkeleton"
 
-const renderPost = ({ item }) => <SingleStory key={item._id} post={item} />
 
 const StoriesPosts = (props) => {
   const isFocused = useIsFocused()
+const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch={refetch} />
+
 
   const {
     data: storiesData,

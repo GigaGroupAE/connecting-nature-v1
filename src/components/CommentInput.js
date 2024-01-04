@@ -107,6 +107,7 @@ export default function CommentInput(props) {
             setvalue(e);
           }}
           multiline={true}
+          
         />
         <TouchableOpacity
           disabled={props.disabled}

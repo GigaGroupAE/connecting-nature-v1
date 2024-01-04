@@ -11,7 +11,6 @@ export const fetchPosts = async ({ pageParam = 1 }) => {
   )
   return response.data
 }
-
 export const fetchStories = async ({ pageParam = 1 }) => {
   const response = await axiosInstance.get(
     `/story/getstories?page=${pageParam}&limit=${LIMIT}`
