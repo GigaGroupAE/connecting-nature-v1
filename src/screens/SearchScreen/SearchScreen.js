@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,35 +9,37 @@ import {
   Image,
   Dimensions,
   TextInput,
-} from "react-native"
+} from "react-native";
 import {
   AntDesign,
   Ionicons,
   Entypo,
   MaterialCommunityIcons,
-} from "react-native-vector-icons"
-import axios from "axios"
-import { useUserState } from "../../slices/userSlice"
-import { BASE_URL } from "../../../CONSTANTS"
-import Post from "../../components/Post"
-import { theme } from "../../../theme"
-import { usePostState } from "../../slices/postsSlice"
-import Color from "./../../../assets/colors/Color"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { useNavigation } from "@react-navigation/native"
+} from "react-native-vector-icons";
+import axios from "axios";
+import { useUserState } from "../../slices/userSlice";
+import { BASE_URL } from "../../../CONSTANTS";
+import Post from "../../components/Post";
+import { theme } from "../../../theme";
+import { usePostState } from "../../slices/postsSlice";
+import Color from "./../../../assets/colors/Color";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
+import { axiosInstance } from "../../../axiosInstance";
+import _debounce from "lodash.debounce";
 
 const SearchScreen = () => {
-  const navigation = useNavigation()
-  const [searchQuery, setSearchQuery] = useState("")
-  const onChangeSearch = (query) => setSearchQuery(query)
-  const userstate = useUserState()
-  const [user, setuser] = useState([])
-  const [activeFilter, setActiveFilter] = useState("post")
+  const navigation = useNavigation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const userstate = useUserState();
+  const [user, setuser] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("post");
+  const [loading, setloading] = useState(false);
   const handleCross = () => {
-    setSearchQuery("")
-  }
-
-  const postState = usePostState()
+    setSearchQuery("");
+  };
+  const [posts, setposts] = useState([]);
+  const postState = usePostState();
   useEffect(() => {
     axios
       .get(`${BASE_URL}/user/new-chat-contacts`, {
@@ -49,16 +51,33 @@ const SearchScreen = () => {
         //1- EXCLUDING LOGGED IN USER
         let tempUsers = res.data.contacts.filter(
           (user) => user.phoneNumber !== userstate.phoneNumber
-        )
+        );
 
-        setuser([...tempUsers])
+        setuser([...tempUsers]);
       })
-      .catch((e) => console.log(e))
-  }, [])
+      .catch((e) => console.log(e));
+  }, []);
 
   const handlebackpress = () => {
-    navigation.goBack()
-  }
+    navigation.goBack();
+  };
+  const debouncedSearch = _debounce(async (query) => {
+    try {
+      const response = await axiosInstance.get(
+        `/posts/search-post?search=${query}`
+      );
+      console.log(response?.data);
+      setposts(response?.data?.searchResult);
+    } catch (error) {
+      console.log(error);
+    }
+  }, 1000);
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+    if (activeFilter === "post" || "hashtag") {
+      debouncedSearch(query);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Color.White }}>
@@ -156,24 +175,24 @@ const SearchScreen = () => {
         {searchQuery === ""
           ? null
           : activeFilter === "post" &&
-            postState.posts.map((post, index) => {
-              if (post.description.match(searchQuery)) {
-                return <Post post={post} />
-              } else {
-                return null
-              }
-            })}
+            posts
+              .filter((post) =>
+                post.description
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              )
+              .map((post, index) => <Post post={post} key={index} />)}
 
         {searchQuery === ""
           ? null
           : activeFilter === "hashtag" &&
-            postState.posts.map((post, index) => {
-              if (post.description.match(searchQuery)) {
-                return <Post post={post} />
-              } else {
-                return null
-              }
-            })}
+            posts
+              .filter((post) =>
+                post.description
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              )
+              .map((post, index) => <Post post={post} key={index} />)}
         {searchQuery === ""
           ? null
           : activeFilter === "users" &&
@@ -253,9 +272,9 @@ const SearchScreen = () => {
                       />
                     </View>
                   </Pressable>
-                )
+                );
               } else {
-                return null
+                return null;
               }
             })}
         {searchQuery === ""
@@ -264,10 +283,10 @@ const SearchScreen = () => {
             postState.posts.map((post, index) => {
               if (post.description.match(searchQuery)) {
                 if (post.media.type === "video/mp4") {
-                  return <Post post={post} key={index} />
+                  return <Post post={post} key={index} />;
                 }
               } else {
-                return null
+                return null;
               }
             })}
         {searchQuery && (
@@ -279,10 +298,10 @@ const SearchScreen = () => {
         )}
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default SearchScreen
+export default SearchScreen;
 const styles = StyleSheet.create({
   filter: {
     flexDirection: "row",
@@ -417,4 +436,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     width: "82%",
   },
-})
+});
