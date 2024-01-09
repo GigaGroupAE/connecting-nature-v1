@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,32 +7,28 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native"
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
-import Color from "../../../assets/colors/Color"
-import { useUserState } from "../../slices/userSlice"
-import { ActivityIndicator } from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import { calculateTimeDifference } from "../../utils/timeDifference"
-import { BASE_URL } from "../../../CONSTANTS"
+} from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
+import Color from "../../../assets/colors/Color";
+import { useUserState } from "../../slices/userSlice";
+import { ActivityIndicator } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { calculateTimeDifference } from "../../utils/timeDifference";
+import { BASE_URL } from "../../../CONSTANTS";
 
-const Width = Dimensions.get("screen").width
+const Width = Dimensions.get("screen").width;
 
 const ImageMessageCn = (props) => {
-  const [longPress, setLongPress] = useState(false)
-  const userState = useUserState()
-  const navigation = useNavigation()
-  const { socket, item } = props
-  let timePassed = calculateTimeDifference(item.date)
+  const userState = useUserState();
+  const navigation = useNavigation();
+  const { socket, item } = props;
+  let timePassed = calculateTimeDifference(item.date);
 
   return (
-    <View
-      onLongPress={() => {
-        props.longPress()
-        setLongPress(true)
-      }}
+    <Pressable
+      onLongPress={() => props?.longPress(item._id, item?.from)}
       style={[
-        longPress && props.LongPressed
+        props.LongPressed
           ? {
               backgroundColor: Color.LightBlue,
               // opacity: 0.7,
@@ -59,6 +55,7 @@ const ImageMessageCn = (props) => {
               key={props.index}
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
+              onLongPress={() => props?.longPress(item._id, item?.from)}
             >
               {item.content !== "" && (
                 <Image
@@ -124,9 +121,9 @@ const ImageMessageCn = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
-  )
-}
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
@@ -212,6 +209,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get("screen").height * 0.4,
     width: Dimensions.get("screen").width * 0.6,
   },
-})
+});
 
-export default ImageMessageCn
+export default ImageMessageCn;

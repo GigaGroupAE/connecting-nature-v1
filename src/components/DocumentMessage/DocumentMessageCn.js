@@ -30,10 +30,6 @@ const Width = Dimensions.get("screen").width
 
 const DocumentMessageCn = (props) => {
   const {
-    forwardFrom,
-    forwardChat,
-    forwardType,
-    forwardContent,
     socket,
     item,
   } = props
@@ -42,7 +38,6 @@ const DocumentMessageCn = (props) => {
   const userState = useUserState()
   const [document, setDocument] = React.useState(item?.content)
   const navigation = useNavigation()
-  const [modalVisible, setmodalVisible] = useState(false)
 
   const shortTitle =
     document?.name?.length > 10
@@ -57,7 +52,9 @@ const DocumentMessageCn = (props) => {
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
-        android_ripple={{ foreground: true, color: Color.LightGrey }}
+        android_ripple={{ color: Color.LightGrey }}
+        onLongPress={() => props?.    longPress(item._id,item?.from)}
+
       >
         <View
           style={[
@@ -77,6 +74,8 @@ const DocumentMessageCn = (props) => {
               onPress={() => {
                 Linking.openURL(`${BASE_URL}/messageMedia/${item.content.path}`)
               }}
+              onLongPress={() => props?.    longPress(item._id,item?.from)}
+
             >
               <View>
                 <View>

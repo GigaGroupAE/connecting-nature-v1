@@ -125,7 +125,7 @@ const Home = () => {
                 userActions.setExpoPushToken(res.data.expoPushToken)
               })
               .catch((err) => {
-                console.log(err)
+                console.log(err,"error")
               })
           }
         })
@@ -148,6 +148,7 @@ const Home = () => {
       }
     }
   }, [isFocused])
+
 
   const HeaderComponent = useMemo(() => <HomeHeader />, [])
   const VideoMiniPlayer = useMemo(

@@ -39,13 +39,11 @@ const VideoMessageCn = (props) => {
   }
 
   return (
-    <View
-      onLongPress={() => {
-        props.longPress()
-        setLongPress(true)
-      }}
+    <Pressable
+    onLongPress={() => props?.    longPress(item._id,item?.from)}
+
       style={[
-        longPress && props.LongPressed
+    props.LongPressed
           ? {
               backgroundColor: Color.LightBlue,
               // opacity: 0.7,
@@ -73,21 +71,23 @@ const VideoMessageCn = (props) => {
             <Pressable
               key={props.index}
               onPress={props.onPress}
-              onLongPress={() => handleDelet()}
+              onLongPress={() => props?.    longPress(item._id,item?.from)}
+
               android_ripple={{ foreground: true, color: Color.LightGrey }}
             >
               {item.content !== "" && (
-                <View
+                <Pressable
                   style={{
                     backgroundColor: "red",
                     overflow: "hidden",
                     backgroundColor: Color.White,
-                    borderWidth: 5,
+                    borderWidth: 3,
                     borderColor: Color.VeryLightGrey,
                     borderTopLeftRadius: 15,
                     borderBottomLeftRadius: 15,
                     borderBottomRightRadius: 15,
                   }}
+          
                 >
                   <VideoPlayer
                     style={{ width: 205, height: 300, borderRadius: 20 }}
@@ -119,8 +119,9 @@ const VideoMessageCn = (props) => {
                       shouldPlay: false,
                       resizeMode: "contain",
                     }}
+                    
                   />
-                </View>
+                </Pressable>
               )}
             </Pressable>
             <View
@@ -175,7 +176,7 @@ const VideoMessageCn = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
 

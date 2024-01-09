@@ -66,7 +66,6 @@ const SearchScreen = () => {
       const response = await axiosInstance.get(
         `/posts/search-post?search=${query}`
       );
-      console.log(response?.data);
       setposts(response?.data?.searchResult);
     } catch (error) {
       console.log(error);

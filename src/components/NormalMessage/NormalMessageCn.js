@@ -20,12 +20,12 @@ const NormalMessageCn = (props) => {
 
   const handleDelet = (id) => {
     setmodalVisible(true)
-    console.log("long press")
+
   }
 
   return (
     <Pressable
-      onLongPress={() => handleDelet(item._id)}
+      onLongPress={() => props?.    longPress(item._id,item?.from)}
       style={[
         longPress && props.LongPressed
           ? {
