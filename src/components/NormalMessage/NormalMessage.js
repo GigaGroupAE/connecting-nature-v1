@@ -11,6 +11,7 @@ import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import { useUserState } from "../../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
+import { calculateTimeDifference } from "../../utils/timeDifference";
 
 const Width = Dimensions.get("screen").width;
 const Hight = Dimensions.get("screen").height;
@@ -20,22 +21,25 @@ const NormalMessage = (props) => {
   const [pressIn, setPressIn] = useState(false);
   const userState = useUserState();
   const [modalVisible, setmodalVisible] = useState(false);
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
+  const {  socket,item } =
     props;
 
   const navigation = useNavigation();
+  let timePassed = calculateTimeDifference(item.date);
+
 
   // console.log(props?.item?._id, props?.item?.group, "props");
 
   const handleDelete = (props) => {
     const data = {
-      chat: props?.item?._id,
-      id: props?.item?.group,
+      chat: item?._id,
+      id: item?.group,
     };
-    if (userState.id === props.sender) {
+    if (      userState.id === item?.from) {
       props.longPress(data);
     }
   };
+
 
   return (
     <Pressable
@@ -55,14 +59,14 @@ const NormalMessage = (props) => {
         {/* TODO :: SINCE 2 USERS CAN HAVE THE SAME NAME SO CHANGE THE LOGIC TO CHECK WITH PHONE NUMBERS */}
         <View
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
@@ -73,18 +77,18 @@ const NormalMessage = (props) => {
             {/* {userState.fullName !== props.username && (
               <Text style={[styles.username]}>{props.username}</Text>
             )} */}
-            {userState.id !== props.sender ? (
+            {      userState.id !== item?.from?._id ? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
-                    <Text style={styles.senderName}>{props.username}</Text>
+                    <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
                 ) : null}
               </View>
             ) : null}
-            <Text style={[styles.message]}>{props.message}</Text>
+            <Text style={[styles.message]}>{item.content}</Text>
             <View style={styles.timeContainer}>
-              <Text style={styles.time}>{props.time}</Text>
+              <Text style={styles.time}>{timePassed}</Text>
               <Ionicons
                 name="checkmark"
                 size={14}
@@ -95,15 +99,15 @@ const NormalMessage = (props) => {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("MessageForwardCRM", {
-                forwardFrom: forwardFrom,
-                forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardFrom:userState.id,
+                forwardChat: "chatId",
+                forwardType:"text",
+                forwardContent:item.content,
                 socket: socket,
               })
             }
             style={[
-              userState.id === props.phoneNumber
+              userState.id === item?.from?._id
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}

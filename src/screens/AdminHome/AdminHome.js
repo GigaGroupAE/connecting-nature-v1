@@ -27,9 +27,20 @@ import { ScrollView } from "react-native-gesture-handler";
 import AdminHomeManegeTab from "./AdminHomeManegeTab";
 import { scale } from "react-native-size-matters";
 import GroupMembersList from "../../components/GroupMembersList";
+import { axiosInstance } from "../../../axiosInstance";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
+
+
+const fetchGroups=async()=>{
+  try {
+    const {data}=await axiosInstance.get("/groups/getgroups")
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export default function AdminHome(props) {
   const [visible, setVisible] = React.useState(false);
@@ -56,6 +67,7 @@ export default function AdminHome(props) {
   const { setgroup } = useStateContext();
   const [groups, setgroups] = useState([]);
   const contactstateactions = useContactsStateActions();
+
 
   //fetch user contacts in this useEffect
   useEffect(() => {

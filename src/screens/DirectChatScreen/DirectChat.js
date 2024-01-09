@@ -58,7 +58,6 @@ export default function DirectChat(props, { route }) {
             "auth-token": userState.token,
           },
         });
-
         let groups = res.data.filter((group) => {
           const currentuser = group.members.filter((m) => {
             return m.member?.phoneNumber === userState.phoneNumber;

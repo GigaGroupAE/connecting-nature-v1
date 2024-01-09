@@ -23,9 +23,9 @@ const DocumentMessage = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const [document, setDocument] = React.useState(props.doc);
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
-    props;
+  const {  socket,item } =
+  props;
+  const [document, setDocument] = React.useState(item.content);
 
   const shortTitle =
     document?.name?.length > 25
@@ -44,7 +44,7 @@ const DocumentMessage = (props) => {
     <View>
       <Pressable
         style={[
-          userState.id === props.sender
+          userState.id === item?.from?._id
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
@@ -54,7 +54,7 @@ const DocumentMessage = (props) => {
       >
         <View
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
@@ -62,16 +62,16 @@ const DocumentMessage = (props) => {
         >
           <View
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.receiverDocumentContainer
                 : styles.senderDocumentContainer,
             ]}
           >
-            {userState.id !== props.sender ? (
+            {           userState.id === item?.from?._id ? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
-                    <Text style={styles.senderName}>{props.username}</Text>
+                    <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
                 ) : null}
               </View>
@@ -84,10 +84,10 @@ const DocumentMessage = (props) => {
                   paddingHorizontal: 4,
                 }}
                 onPress={() => {
-                  Linking.openURL(`${BASE_URL}/messageMedia/${props.doc.path}`);
+                  Linking.openURL(`${BASE_URL}/messageMedia/${item.content?.path}`);
                 }}
               >
-                <MessageType title={props?.doc?.name} />
+                <MessageType title={item.content?.name} />
 
                 <View
                   style={{
@@ -127,15 +127,15 @@ const DocumentMessage = (props) => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("MessageForwardCRM", {
-              forwardFrom: forwardFrom,
-              forwardChat: forwardChat,
-              forwardType: forwardType,
-              forwardContent: forwardContent,
+              forwardFrom: userState?.id,
+              forwardChat: "chatId",
+              forwardType: "document",
+              forwardContent: item.content,
               socket: socket,
             })
           }
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.shareMessage
               : styles.receiverShareMessage,
           ]}
