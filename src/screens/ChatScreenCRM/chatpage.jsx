@@ -451,14 +451,14 @@ const ChatPage = (props) => {
       content: text,
     });
 
-    if (props?.route?.params?.group.type === "individual") {
-      handleLocalNotification(
-        props?.route?.params?.group?.members[1]?.member.expoPushToken
-      );
-      // console.log(props?.route?.params?.group);
-    } else {
-      handleGroupNotification(props?.route?.params?.group?.title);
-    }
+    // if (props?.route?.params?.group.type === "individual") {
+    //   handleLocalNotification(
+    //     props?.route?.params?.group?.members[1]?.member.expoPushToken
+    //   );
+    //   // console.log(props?.route?.params?.group);
+    // } else {
+    //   handleGroupNotification(props?.route?.params?.group?.title);
+    // }
 
     setLoading(false);
   };
@@ -611,11 +611,12 @@ const ChatPage = (props) => {
   const handleShare = (item) => {};
 
   const handleDelete = async () => {
+    console.log("press")
     try {
-      socket.emit("Delete_message", {
-        chat: `${selectedMessage?.chat}`,
-        id: `${selectedMessage?.id}`,
-      });
+      // socket.emit("Delete_message", {
+      //   chat: `${selectedMessage?.chat}`,
+      //   id: `${selectedMessage?.id}`,
+      // });
     } catch (error) {}
   };
 
