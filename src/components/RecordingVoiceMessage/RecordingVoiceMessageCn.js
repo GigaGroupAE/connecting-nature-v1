@@ -76,12 +76,14 @@ export default function RecordingVoiceMessageCn(props) {
 
   return (
     <View>
-      <View
+      <Pressable
         style={[
           userState.id === item?.from
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
+        onLongPress={() => props?.    longPress(item._id,item?.from)}
+
       >
         <Pressable
           style={[
@@ -90,6 +92,8 @@ export default function RecordingVoiceMessageCn(props) {
               : styles.senderTextMessageContainer,
           ]}
           android_ripple={{ foreground: true, color: Color.LightGrey }}
+          onLongPress={() => props?.    longPress(item._id,item?.from)}
+
         >
           <View>
             {audioPlayback === "Not Playing" ? (
@@ -178,7 +182,7 @@ export default function RecordingVoiceMessageCn(props) {
             />
           </View>
         </TouchableOpacity>
-      </View>
+      </Pressable>
     </View>
   )
 }
