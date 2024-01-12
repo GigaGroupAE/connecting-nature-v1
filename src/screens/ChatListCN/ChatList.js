@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react"
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -10,102 +10,102 @@ import {
   Dimensions,
   Modal,
   Pressable,
-} from "react-native"
-import HeaderNormal from "../../components/HeaderNormal"
-import BottomTab from "../../components/BottomTab"
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import Color from "../../../assets/colors/Color"
-import axios from "axios"
-import { BASE_URL } from "../../../CONSTANTS"
-import { useUserState } from "../../slices/userSlice"
-import { useStateContext } from "../../contexts/ContextProvider"
-import { calculateTimeDifference } from "../../utils/timeDifference"
-import NoMessage from "./NoMessage"
-import MessagePreview from "../../components/MessagePreview"
-import { axiosInstance } from "../../../axiosInstance"
-import { useQuery } from "react-query"
-import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan"
+} from "react-native";
+import HeaderNormal from "../../components/HeaderNormal";
+import BottomTab from "../../components/BottomTab";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Color from "../../../assets/colors/Color";
+import axios from "axios";
+import { BASE_URL } from "../../../CONSTANTS";
+import { useUserState } from "../../slices/userSlice";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { calculateTimeDifference } from "../../utils/timeDifference";
+import NoMessage from "./NoMessage";
+import MessagePreview from "../../components/MessagePreview";
+import { axiosInstance } from "../../../axiosInstance";
+import { useQuery } from "react-query";
+import NotificationsSkeleton from "../../components/NotificationsSkeleton";
 
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get("screen").width;
 
 const fetchMessages = async () => {
-  const response = await axiosInstance.get("/chat/get-my-chats")
-  return response.data.myChats
-}
+  const response = await axiosInstance.get("/chat/get-my-chats");
+  return response.data.myChats;
+};
 
 export default function ChatList() {
   // const [Messages, setMessages] = useState([])
-  const [modalVisible, setmodalVisible] = useState(false)
-  const [refresh, setRefresh] = useState(false)
-  const [IsshowInput, setIsShowInput] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [modalVisible, setmodalVisible] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [IsshowInput, setIsShowInput] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     data: Messages,
     isLoading: loading,
     refetch,
-  } = useQuery("cnmessages", fetchMessages)
+  } = useQuery("cnmessages", fetchMessages);
 
-  const navigation = useNavigation()
-  const userState = useUserState()
-  const { group, setgroup } = useStateContext()
+  const navigation = useNavigation();
+  const userState = useUserState();
+  const { group, setgroup } = useStateContext();
   const handleonbackpress = () => {
-    navigation.goBack()
-  }
+    navigation.goBack();
+  };
   useFocusEffect(
     React.useCallback(() => {
-      refetch()
+      refetch();
     }, [])
-  )
+  );
 
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].phoneNumber === userState.phoneNumber) {
-      const profile = props.members[1].profile
+      const profile = props.members[1].profile;
 
-      return `${BASE_URL}/images/${profile}`
+      return `${BASE_URL}/images/${profile}`;
     } else {
-      const profile = props.members[0].profile
-      return `${BASE_URL}/images/${profile}`
+      const profile = props.members[0].profile;
+      return `${BASE_URL}/images/${profile}`;
     }
-  }
+  };
 
   const handleCancel = useCallback(() => {
-    setmodalVisible(false)
-  }, [])
+    setmodalVisible(false);
+  }, []);
 
-  const scrollToTop = useCallback(() => {}, [])
+  const scrollToTop = useCallback(() => {}, []);
 
   const handleShowInput = useCallback(() => {
-    setIsShowInput(true)
-  }, [])
+    setIsShowInput(true);
+  }, []);
 
   const handleHideInput = useCallback(() => {
-    setIsShowInput(false)
-    setSearchQuery("")
-  }, [])
+    setIsShowInput(false);
+    setSearchQuery("");
+  }, []);
   const sortedMessages = useMemo(() => {
     return Messages?.slice().sort((a, b) => {
       const dateA =
         a?.messages?.length > 0
           ? a.messages[a.messages.length - 1].createdAt
-          : null
+          : null;
       const dateB =
         b?.messages?.length > 0
           ? b.messages[b.messages.length - 1].createdAt
-          : null
+          : null;
 
       if (!dateA || !dateB) {
-        return 0
+        return 0;
       }
 
-      const timeDifferenceA = Math.abs(new Date() - new Date(dateA))
-      const timeDifferenceB = Math.abs(new Date() - new Date(dateB))
+      const timeDifferenceA = Math.abs(new Date() - new Date(dateA));
+      const timeDifferenceB = Math.abs(new Date() - new Date(dateB));
 
-      return timeDifferenceA - timeDifferenceB
-    })
-  }, [Messages])
+      return timeDifferenceA - timeDifferenceB;
+    });
+  }, [Messages]);
 
   return (
     <SafeAreaView style={{ backgroundColor: Color.White, height: "100%" }}>
@@ -138,7 +138,7 @@ export default function ChatList() {
         </View>
       ) : null}
       {loading ? (
-        <ArchivedCampaignSkelentan />
+        <NotificationsSkeleton />
       ) : (
         <View>
           {!loading && Messages?.length == 0 ? (
@@ -150,22 +150,22 @@ export default function ChatList() {
                 keyExtractor={(item) => item._id}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
-                  const { messages } = item
+                  const { messages } = item;
 
                   const latestMessage =
-                    messages?.length > 0 ? messages[messages.length - 1] : null
+                    messages?.length > 0 ? messages[messages.length - 1] : null;
                   const timePassed = calculateTimeDifference(
                     latestMessage?.createdAt
-                  )
+                  );
 
                   return (
                     <Pressable
                       style={styles.mainBody}
                       onPress={() => {
-                        setgroup(item)
+                        setgroup(item);
                         navigation.navigate("ChatCN", {
                           group: item,
-                        })
+                        });
                       }}
                       delayLongPress={1000}
                     >
@@ -189,7 +189,7 @@ export default function ChatList() {
                         </View>
                       </View>
                     </Pressable>
-                  )
+                  );
                 }}
               />
               <Modal
@@ -197,7 +197,7 @@ export default function ChatList() {
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
-                  setmodalVisible(!modalVisible)
+                  setmodalVisible(!modalVisible);
                 }}
               >
                 <View style={styles.ConfrmModel}>
@@ -237,7 +237,7 @@ export default function ChatList() {
 
       <BottomTab activeMenu={"Chat"} scrollToTop={scrollToTop} />
     </SafeAreaView>
-  )
+  );
 }
 const styles = StyleSheet.create({
   container: {
@@ -353,4 +353,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     width: "82%",
   },
-})
+});

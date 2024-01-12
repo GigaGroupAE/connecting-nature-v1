@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, Animated } from "react-native";
-import Color from "../../assets/colors/Color";
+import Color from "../../../assets/colors/Color";
 
-const NotificationsSkeleton = () => {
+const SInglePostSkeleton = () => {
   const shimmerAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -34,7 +34,25 @@ const NotificationsSkeleton = () => {
 
   return (
     <View style={styles.container}>
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+      <Animated.View
+        style={[
+          styles.postContainer,
+          { opacity: shimmerOpacity, marginBottom: 10 },
+        ]}
+      >
+        <View style={styles.userInfo}>
+          <Animated.View
+            style={[styles.userImagePlaceholder, { opacity: shimmerOpacity }]}
+          />
+          <Animated.View
+            style={[styles.userNamePlaceholder, { opacity: shimmerOpacity }]}
+          />
+        </View>
+        <Animated.View style={[styles.content, { opacity: shimmerOpacity }]} />
+        <Animated.View style={[styles.footer, { opacity: shimmerOpacity }]} />
+      </Animated.View>
+
+      {[1, 2, 3, 4, 5, 6].map((index) => (
         <Animated.View
           key={index}
           style={[
@@ -46,17 +64,12 @@ const NotificationsSkeleton = () => {
             <Animated.View
               style={[styles.userImagePlaceholder, { opacity: shimmerOpacity }]}
             />
-            <View style={{ flex: 1, gap: 4 }}>
-              <Animated.View
-                style={[
-                  styles.userNamePlaceholder,
-                  { opacity: shimmerOpacity },
-                ]}
-              />
-              <Animated.View
-                style={[styles.content, { opacity: shimmerOpacity }]}
-              />
-            </View>
+            <Animated.View
+              style={[
+                styles.PostCommentPlaceholder,
+                { opacity: shimmerOpacity },
+              ]}
+            />
           </View>
         </Animated.View>
       ))}
@@ -87,23 +100,30 @@ const styles = StyleSheet.create({
     backgroundColor: Color.LightGrey,
   },
   userNamePlaceholder: {
-    width: 180,
-    height: 25,
+    flex: 1,
+    height: 40,
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
   content: {
+    height: 150,
     width: "100%",
-    height: 35,
+    marginBottom: 10,
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
   footer: {
-    height: 30,
+    height: 40,
     width: "100%",
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
+  PostCommentPlaceholder: {
+    height: "100%",
+    backgroundColor: Color.LightGrey,
+    borderRadius: 4,
+    width: "70%",
+  },
 });
 
-export default NotificationsSkeleton;
+export default SInglePostSkeleton;

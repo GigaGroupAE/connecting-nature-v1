@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from "react"
-import { View, StyleSheet, Animated } from "react-native"
-import Color from "../../assets/colors/Color"
+import React, { useEffect, useRef } from "react";
+import { View, StyleSheet, Animated } from "react-native";
+import Color from "../../assets/colors/Color";
 
-const PostSkeleton = () => {
-  const shimmerAnimation = useRef(new Animated.Value(0)).current
+const PostSkeleton = ({ screen }) => {
+  const shimmerAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    shimmer()
-  }, [])
+    shimmer();
+  }, []);
 
   const shimmer = () => {
     Animated.loop(
@@ -24,16 +24,19 @@ const PostSkeleton = () => {
         }),
       ]),
       { iterations: -1 }
-    ).start()
-  }
+    ).start();
+  };
 
   const shimmerOpacity = shimmerAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [0.3, 0.7],
-  })
+  });
 
   return (
     <View style={styles.container}>
+      {screen === "home" && (
+        <Animated.View style={[styles.content, { opacity: shimmerOpacity }]} />
+      )}
       {[1, 2, 3].map((index) => (
         <Animated.View
           key={index}
@@ -42,9 +45,6 @@ const PostSkeleton = () => {
             { opacity: shimmerOpacity, marginBottom: index === 3 ? 0 : 10 },
           ]}
         >
-          <Animated.View
-            style={[styles.content, { opacity: shimmerOpacity }]}
-          />
           <View style={styles.userInfo}>
             <Animated.View
               style={[styles.userImagePlaceholder, { opacity: shimmerOpacity }]}
@@ -60,13 +60,13 @@ const PostSkeleton = () => {
         </Animated.View>
       ))}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: Color.VeryLightGrey,
+    backgroundColor: Color.White,
     marginBottom: 10,
     borderRadius: 8,
   },
@@ -104,6 +104,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
-})
+});
 
-export default PostSkeleton
+export default PostSkeleton;

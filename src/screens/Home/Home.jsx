@@ -1,33 +1,33 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   FlatList,
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
-} from "react-native"
-import { useIsFocused } from "@react-navigation/native"
-import { useInfiniteQuery, useQuery } from "react-query"
-import Color from "../../../assets/colors/Color"
-import BottomTab from "../../components/BottomTab"
-import Post from "../../components/Post"
+} from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { useInfiniteQuery, useQuery } from "react-query";
+import Color from "../../../assets/colors/Color";
+import BottomTab from "../../components/BottomTab";
+import Post from "../../components/Post";
 import {
   fetchPosts,
   fetchRecentCampaigns,
   registerForPushNotificationsAsync,
-} from "../../Api/GetPost"
-import PostSkeleton from "../../components/PostSkeleton"
-import { SafeAreaView } from "react-native"
-import HomeHeader from "./HomeHeader"
-import { StatusBar } from "react-native"
-import { useStateContext } from "../../contexts/ContextProvider"
-import MiniVideoPlayer from "../../components/MiniVideoPlayer"
-import StoryHeader from "./StoryHeader"
-import HeaderForCampaign from "./HeaderForCampaign"
-import * as Notifications from "expo-notifications"
-import { useUserState, useUserStateActions } from "../../slices/userSlice"
-import { BASE_URL } from "../../../CONSTANTS"
-import axios from "axios"
+} from "../../Api/GetPost";
+import PostSkeleton from "../../components/PostSkeleton";
+import { SafeAreaView } from "react-native";
+import HomeHeader from "./HomeHeader";
+import { StatusBar } from "react-native";
+import { useStateContext } from "../../contexts/ContextProvider";
+import MiniVideoPlayer from "../../components/MiniVideoPlayer";
+import StoryHeader from "./StoryHeader";
+import HeaderForCampaign from "./HeaderForCampaign";
+import * as Notifications from "expo-notifications";
+import { useUserState, useUserStateActions } from "../../slices/userSlice";
+import { BASE_URL } from "../../../CONSTANTS";
+import axios from "axios";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -35,19 +35,19 @@ Notifications.setNotificationHandler({
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
-})
+});
 
 const Home = () => {
-  const isFocused = useIsFocused()
-  const [expoPushToken, setExpoPushToken] = useState("")
-  const [notification, setNotification] = useState(false)
-  const userstate = useUserState()
-  const userActions = useUserStateActions()
-  const notificationListener = useRef()
-  const responseListener = useRef()
+  const isFocused = useIsFocused();
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const userstate = useUserState();
+  const userActions = useUserStateActions();
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
-    useStateContext()
+    useStateContext();
 
   const {
     data: postsData,
@@ -64,56 +64,56 @@ const Home = () => {
         if (lastPage?.currentPage && lastPage?.totalPages) {
           return lastPage.currentPage < lastPage.totalPages
             ? lastPage.currentPage + 1
-            : null
+            : null;
         }
-        return null
+        return null;
       },
       refetchOnWindowFocus: false,
       cacheTime: 1000 * 60 * 5,
     }
-  )
+  );
 
   const { data: campaign } = useQuery(
     "mostRecentCampaigns",
     fetchRecentCampaigns
-  )
+  );
   useEffect(() => {
     if (isFocused) {
-      refetch()
+      refetch();
     }
-  }, [isFocused, refetch])
+  }, [isFocused, refetch]);
 
   const handleRefresh = () => {
-    refetch()
-  }
+    refetch();
+  };
 
   const handleEndReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }
+  };
 
   const renderItem = useMemo(() => {
     return ({ item }) => {
       if (!postsData || postsLoading) {
-        return <PostSkeleton />
+        return <PostSkeleton />;
       } else {
-        return <Post post={item} key={item._id} reload={refetch} />
+        return <Post post={item} key={item._id} reload={refetch} />;
       }
-    }
-  }, [postsData, postsLoading])
+    };
+  }, [postsData, postsLoading]);
 
   useEffect(() => {
     if (isFocused) {
       if (!userstate.expoPushToken)
         registerForPushNotificationsAsync().then((token) => {
-          setExpoPushToken(token)
+          setExpoPushToken(token);
           //make api call to save the token
           const config = {
             headers: {
               "auth-token": userstate.token,
             },
-          }
+          };
           if (!userstate.expoPushToken) {
             axios
               .put(
@@ -122,47 +122,46 @@ const Home = () => {
                 config
               )
               .then((res) => {
-                userActions.setExpoPushToken(res.data.expoPushToken)
+                userActions.setExpoPushToken(res.data.expoPushToken);
               })
               .catch((err) => {
-                console.log(err,"error")
-              })
+                console.log(err, "error");
+              });
           }
-        })
+        });
 
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification)
-        })
+          setNotification(notification);
+        });
 
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response)
-        })
+          console.log(response);
+        });
 
       return () => {
         Notifications.removeNotificationSubscription(
           notificationListener.current
-        )
-        Notifications.removeNotificationSubscription(responseListener.current)
-      }
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
     }
-  }, [isFocused])
+  }, [isFocused]);
 
-
-  const HeaderComponent = useMemo(() => <HomeHeader />, [])
+  const HeaderComponent = useMemo(() => <HomeHeader />, []);
   const VideoMiniPlayer = useMemo(
     () => (
       (<MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />),
       [videoURI]
     )
-  )
+  );
 
-  const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories])
+  const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories]);
   const ActivCampaignHeader = useMemo(
     () => <HeaderForCampaign campaign={campaign} />,
     [campaign]
-  )
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -170,7 +169,7 @@ const Home = () => {
         {HeaderComponent}
         {campaign?.length !== 0 && <View>{ActivCampaignHeader}</View>}
         {postsLoading ? (
-          <PostSkeleton />
+          <PostSkeleton screen="home" />
         ) : (
           <FlatList
             data={postsData?.pages.flatMap((page) => page.newPosts) || []}
@@ -204,10 +203,10 @@ const Home = () => {
       />
       <StatusBar backgroundColor={Color.Blue} />
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -227,4 +226,4 @@ const styles = StyleSheet.create({
     height: "9%",
     bottom: 10,
   },
-})
+});

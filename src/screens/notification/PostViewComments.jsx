@@ -14,11 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useUserState } from "../../slices/userSlice";
 import PostVideo from "../Home/PostVideo";
 import PostImage from "../Home/PostImage";
-import {
-  FontAwesome,
-  AntDesign,
-  MaterialCommunityIcons,
-} from "react-native-vector-icons";
+import { FontAwesome, AntDesign } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import axios from "axios";
 import { useStateContext } from "../../contexts/ContextProvider";
