@@ -157,12 +157,7 @@ const ChatPage = (props) => {
   const [animation, setAnimation] = useState(new Animated.Value(0));
   const [doc, setdoc] = useState(null);
 
-  const supportedImageFormats = [
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-
-  ];
+  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
   const pick = async () => {
     setImgloading(true);
     let result = await DocumentPicker.getDocumentAsync({
@@ -174,14 +169,14 @@ const ChatPage = (props) => {
       let compressImage;
       let manipResult;
       if (supportedImageFormats.includes(result?.assets[0].mimeType)) {
-        manipResult = await manipulateAsync(      result?.assets[0].uri, [], {
+        manipResult = await manipulateAsync(result?.assets[0].uri, [], {
           compress: 0.8,
           format: SaveFormat.JPEG,
         });
         compressImage = await FileSystem.getInfoAsync(manipResult.uri);
         handleSendImageMessage(compressImage.uri);
         setImgloading(false);
-      } else if (result?.assets[0].mimeType=== "video/mp4") {
+      } else if (result?.assets[0].mimeType === "video/mp4") {
         handleSenVideoMessage(result?.assets[0]);
         setImgloading(false);
       } else {
@@ -196,8 +191,8 @@ const ChatPage = (props) => {
       }
     } else if (result.type === "cancel") {
       setImgloading(false);
-    }else{
-      console.log("error")
+    } else {
+      console.log("error");
     }
   };
 
@@ -212,14 +207,14 @@ const ChatPage = (props) => {
       let compressImage;
       let manipResult;
       if (supportedImageFormats.includes(result?.assets[0].mimeType)) {
-        manipResult = await manipulateAsync(              result?.assets[0].uri, [], {
+        manipResult = await manipulateAsync(result?.assets[0].uri, [], {
           compress: 0.8,
           format: SaveFormat.JPEG,
         });
         compressImage = await FileSystem.getInfoAsync(manipResult.uri);
         handleSendImageMessage(compressImage.uri);
         setImgloading(false);
-      } else if (result?.assets[0].mimeType=== "video/mp4") {
+      } else if (result?.assets[0].mimeType === "video/mp4") {
         handleSenVideoMessage(result?.assets[0]);
         setImgloading(false);
       } else {
@@ -243,7 +238,7 @@ const ChatPage = (props) => {
     try {
       const formdata = new FormData();
       formdata.append("media", {
-        name: videoprop.name, 
+        name: videoprop.name,
         uri: videoprop.uri,
         type: videoprop.mimeType,
       });
@@ -611,7 +606,7 @@ const ChatPage = (props) => {
   const handleShare = (item) => {};
 
   const handleDelete = async () => {
-    console.log("press")
+    console.log("press");
     try {
       // socket.emit("Delete_message", {
       //   chat: `${selectedMessage?.chat}`,
@@ -818,8 +813,7 @@ const ChatPage = (props) => {
                         {item.type === "image" ? (
                           <View style={isImage ? null : { marginBottom: 5 }}>
                             <ImageMessage
-                            groupTitle={props.route?.params?.group?.title}
-
+                              groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
                               phoneNumber={item.from}
                               longPress={handleLongPress}
@@ -836,9 +830,8 @@ const ChatPage = (props) => {
                         ) : null}
                         {item?.type === "video" ? (
                           <View style={isImage ? null : { marginBottom: 5 }}>
-                            <VideoMessageCRM       
-                            groupTitle={props.route?.params?.group?.title}
-
+                            <VideoMessageCRM
+                              groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
                               phoneNumber={item.from}
                               longPress={handleLongPress}
@@ -855,13 +848,11 @@ const ChatPage = (props) => {
                         ) : null}
                         {item?.type === "document" ? (
                           <DocumentMessage
-                          groupTitle={props.route?.params?.group?.title}
-                         
+                            groupTitle={props.route?.params?.group?.title}
                             time={timePassed ? timePassed : "1h"}
                             title={"Select"}
                             phoneNumber={item?.from}
                             longPress={handleLongPress}
-                         
                             socket={socket}
                             item={item}
                             sender={item.from._id}

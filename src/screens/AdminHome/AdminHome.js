@@ -9,7 +9,7 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { List } from "react-native-paper";
 import AdminBottomTab from "../../components/AdminBottomTab";
 import { Ionicons, MaterialIcons } from "react-native-vector-icons";
@@ -28,26 +28,26 @@ import AdminHomeManegeTab from "./AdminHomeManegeTab";
 import { scale } from "react-native-size-matters";
 import GroupMembersList from "../../components/GroupMembersList";
 import { axiosInstance } from "../../../axiosInstance";
+import { useQuery } from "react-query";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
-
-const fetchGroups=async()=>{
+const fetchGroups = async () => {
+  console.log("rerun");
   try {
-    const {data}=await axiosInstance.get("/groups/getgroups")
-    return data
+    const { data } = await axiosInstance.get("/groups/getgroups");
+    return data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 export default function AdminHome(props) {
   const [visible, setVisible] = React.useState(false);
   const [refresh, setRefresh] = useState(false);
   const [isChatListOpen, setisChatListOpen] = useState({});
   const [groupDetails, setgroupDetails] = useState("");
-  const [campaignGroups, setcampaignGroups] = useState([]);
   const [loading, setloading] = useState(false);
 
   const showModal = useCallback(() => {
@@ -65,13 +65,18 @@ export default function AdminHome(props) {
     marginHorizontal: Width * 0.04,
   };
   const { setgroup } = useStateContext();
-  const [groups, setgroups] = useState([]);
-  const contactstateactions = useContactsStateActions();
 
+  const contactstateactions = useContactsStateActions();
+  const {
+    data: groups = [], // Initialize as an empty array
+    isLoading: loadinga,
+    refetch,
+  } = useQuery("groups", fetchGroups);
 
   //fetch user contacts in this useEffect
   useEffect(() => {
     const fetchcontacts = async () => {
+      console.log("run");
       try {
         const { status } = await Contacts.requestPermissionsAsync({});
         if (status === "granted") {
@@ -187,53 +192,15 @@ export default function AdminHome(props) {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [])
+  );
+
   const userState = useUserState();
 
   //TODO :: CLEAN-UP BELOW USE-EFFECT INTO SIMPLER LOGIC
-  //fetching group in this useEffect
-  const fetchGroup = () => {
-    setloading(true);
-    axios
-      .get(`${BASE_URL}/groups/getgroups`, {
-        headers: {
-          "auth-token": userState.token,
-        },
-      })
-      .then((res) => {
-        // let groups = res.data.filter((group) => {
-        //   const currentUser = group.members.filter((member) => {
-        //     return member?.member?.phoneNumber === userState.phoneNumber
-        //   })
-        //   return currentUser.length !== 0
-        // })
-        // // console.log(groups);
-        setgroups([...res?.data]);
-        const camapgin = groups?.filter((item) => {
-          return item?.type === "campaign";
-        });
-        setcampaignGroups(camapgin);
-        setloading(false);
-        setRefresh(false); // Reset refresh state
-      })
-      .catch((error) => {
-        setloading(false);
-        console.log(error);
-      });
-  };
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      setRefresh(true);
-    });
-
-    // Fetch data if refresh is true
-    if (refresh) {
-      fetchGroup();
-    }
-
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation, refresh]);
 
   const handleAdminChat = () => {
     let groupfound = false;
@@ -691,7 +658,7 @@ export default function AdminHome(props) {
               )}
             />
           </View>
-          <AdminHomeManegeTab camapgins={campaignGroups} loading={loading} />
+          <AdminHomeManegeTab loading={loading} />
         </View>
       </ScrollView>
       <AdminBottomTab contact={selectcontact} onPressAdmin={handleAdminChat} />
