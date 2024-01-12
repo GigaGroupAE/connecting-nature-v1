@@ -12,6 +12,7 @@ import Color from "../../../assets/colors/Color";
 import { useUserState } from "../../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
 import VideoPlayer from "expo-video-player";
+import { calculateTimeDifference } from "../../utils/timeDifference";
 
 const Width = Dimensions.get("screen").width;
 const Height = Dimensions.get("screen").height;
@@ -22,8 +23,10 @@ const VideoMessageCRM = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
+  const {  socket,item } =
     props;
+    let timePassed = calculateTimeDifference(item.date);
+
 
   const [modalVisible, setmodalVisible] = useState(false);
 
@@ -51,23 +54,23 @@ const VideoMessageCRM = (props) => {
         {/* TODO :: SINCE 2 USERS CAN HAVE THE SAME NAME SO CHANGETHE LOGIC TO CHECK WITH PHONE NUMBERS */}
         <View
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
           >
-            {userState.id !== props.sender ? (
+            {           userState.id === item?.from?._id? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
-                    <Text style={styles.senderName}>{props.username}</Text>
+                    <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
                 ) : null}
               </View>
@@ -137,7 +140,7 @@ const VideoMessageCRM = (props) => {
               ]}
             >
               <Text style={[props.message ? styles.time : styles.overlayTime]}>
-                {props.time}
+                {timePassed}
               </Text>
               {props.message ? (
                 <Ionicons
@@ -156,16 +159,16 @@ const VideoMessageCRM = (props) => {
           </View>
           <TouchableOpacity
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}
             onPress={() =>
               navigation.navigate("MessageForwardCRM", {
-                forwardFrom: forwardFrom,
-                forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardFrom: userState?.id,
+                forwardChat:"chatId",
+                forwardType: "video",
+                forwardContent:item.content,
                 socket: socket,
               })
             }

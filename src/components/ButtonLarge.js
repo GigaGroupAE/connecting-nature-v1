@@ -1,4 +1,10 @@
-import { StyleSheet, TouchableOpacity, Text, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import Color from "../../assets/colors/Color";
 
 export default function ButtonLarge(props) {
@@ -8,7 +14,11 @@ export default function ButtonLarge(props) {
       onPress={() => props.click()}
       disabled={props.disabled}
     >
-      <Text style={styles.titleText}>{props.title}</Text>
+      {props?.disabled ? (
+        <ActivityIndicator style={styles.titleText} />
+      ) : (
+        <Text style={styles.titleText}>{props.title}</Text>
+      )}
     </TouchableOpacity>
   );
 }

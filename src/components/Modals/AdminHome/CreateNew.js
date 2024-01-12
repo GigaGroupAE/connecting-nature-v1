@@ -4,7 +4,6 @@ import { Modal, Portal, Button, Provider } from "react-native-paper";
 import { FontAwesome5, Entypo, Ionicons } from "react-native-vector-icons";
 import Color from "../../../../assets/colors/Color";
 import { useNavigation } from "@react-navigation/native";
-import AdminReviewButton from "../../AdminReviewButton";
 import { useUserState } from "../../../slices/userSlice";
 
 const Height = Dimensions.get("screen").height;

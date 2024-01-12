@@ -25,14 +25,14 @@ export default function RecordingVoiceMessage(props) {
   const [modalVisible, setmodalVisible] = useState(false);
 
   const [audioPlayback, setAudioPlayback] = React.useState("Not Playing");
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
+  const { forwardFrom, forwardChat, forwardType, forwardContent, socket ,item} =
     props;
 
   const playSound = async () => {
     try {
       setAudioPlayback("Loading");
       const { sound } = await Audio.Sound.createAsync({
-        uri: `${BASE_URL}/messageMedia/${props.uri}`,
+        uri: `${BASE_URL}/messageMedia/${item.content}`,
       });
       setSound(sound);
       await sound.playAsync().then(() => {
@@ -87,24 +87,24 @@ export default function RecordingVoiceMessage(props) {
     <View>
       <View
         style={[
-          userState.id === props.sender
+          userState.id === item?.from?._id
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
       >
         <TouchableOpacity
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
           onLongPress={handleDelete}
         >
-          {userState.id !== props.sender ? (
+          {           userState.id !== item?.from?._id ? (
             <View>
               {props?.groupTitle !== "test" ? (
                 <View>
-                  <Text style={styles.senderName}>{props.username}</Text>
+                  <Text style={styles.senderName}>{item.from.fullName}</Text>
                 </View>
               ) : null}
             </View>
@@ -183,16 +183,16 @@ export default function RecordingVoiceMessage(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            userState.id === props.sender
+            userState.id == item?.from?._id
               ? styles.shareMessage
               : styles.receiverShareMessage,
           ]}
           onPress={() =>
             navigation.navigate("MessageForwardCRM", {
-              forwardFrom: forwardFrom,
-              forwardChat: forwardChat,
-              forwardType: forwardType,
-              forwardContent: forwardContent,
+              forwardFrom: userState?.id,
+              forwardChat: "chatId",
+              forwardType: "audio",
+              forwardContent: item.content,
               socket: socket,
             })
           }

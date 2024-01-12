@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -13,81 +13,55 @@ import {
 } from "react-native";
 
 import Upcomingcall from "../../../assets/UpcomingCall.png";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Color from "../../../assets/colors/Color";
 import axios from "axios";
 import { BASE_URL } from "../../../CONSTANTS";
-import {
-  Ionicons,
-  AntDesign,
-  Entypo,
-  FontAwesome,
-  MaterialIcons,
-} from "react-native-vector-icons";
+import { AntDesign, Entypo } from "react-native-vector-icons";
 import { useUserState } from "./../../slices/userSlice";
 import NewChatButton from "../../components/NewChatButton";
 import { theme } from "../../../theme";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { calculateTimeDifference } from "../../utils/timeDifference";
-import { ActivityIndicator } from "react-native";
 import NoMessage from "../ChatListCN/NoMessage";
+import { axiosInstance } from "../../../axiosInstance";
+import { useQuery } from "react-query";
+import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan";
+import MessagePreview from "../../components/MessagePreview";
 const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
 const WIDTH = Dimensions.get("screen").width;
 
+const fetchMessages = async () => {
+  try {
+    const { data } = await axiosInstance.get("/groups/getcrmmessages");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default function DirectChat(props, { route }) {
-  const { setgroup, loading, setLoading } = useStateContext();
+  const { setgroup } = useStateContext();
 
-  const [isLongPressed, setIsLongPressed] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
-  const [modalVisible, setmodalVisible] = useState(false);
-
-  const [Messages, setMessages] = useState([]);
-  const [isStatusInactive, setIsStatusInactive] = useState(false);
-  const [refresh, setRefresh] = useState(false);
 
   const navigation = useNavigation();
   const userState = useUserState();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`${BASE_URL}/groups/getgroups`, {
-          headers: {
-            "auth-token": userState.token,
-          },
-        });
+  const {
+    data: Messages = [],
+    isLoading: loading,
+    refetch,
+  } = useQuery("crmmessages", fetchMessages);
 
-        let groups = res.data.filter((group) => {
-          const currentuser = group.members.filter((m) => {
-            return m.member?.phoneNumber === userState.phoneNumber;
-          });
-          return currentuser.length !== 0;
-        });
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [])
+  );
 
-        let individualGroups = groups.filter((group) => {
-          return group.type === "individual";
-        });
-
-        setMessages([...individualGroups]);
-        setLoading(false);
-        setRefresh(false); // Reset the refresh state after fetching data
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
-    const unsubscribe = navigation.addListener("focus", () => {
-      setRefresh(true);
-    });
-
-    fetchData();
-
-    return () => {
-      unsubscribe(); // Clean up the navigation listener when the component unmounts
-    };
-  }, [navigation, refresh]);
   // const navigate = useNavigation();
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].member.phoneNumber === userState.phoneNumber) {
@@ -176,25 +150,28 @@ export default function DirectChat(props, { route }) {
       IntranetChat: "IntranetChat",
     });
   };
-  const latestChat = Messages.sort((a, b) => {
-    const dateA =
-      a.messages.length > 0
-        ? a.messages[a.messages.length - 1].createdAt
-        : null;
-    const dateB =
-      b.messages.length > 0
-        ? b.messages[b.messages.length - 1].createdAt
-        : null;
 
-    if (!dateA || !dateB) {
-      return 0;
-    }
+  const sortedMessages = useMemo(() => {
+    return Messages?.slice().sort((a, b) => {
+      const dateA =
+        a?.messages?.length > 0
+          ? a.messages[a.messages.length - 1].createdAt
+          : null;
+      const dateB =
+        b?.messages?.length > 0
+          ? b.messages[b.messages.length - 1].createdAt
+          : null;
 
-    const timeDifferenceA = Math.abs(new Date() - new Date(dateA));
-    const timeDifferenceB = Math.abs(new Date() - new Date(dateB));
+      if (!dateA || !dateB) {
+        return 0;
+      }
 
-    return timeDifferenceA - timeDifferenceB;
-  });
+      const timeDifferenceA = Math.abs(new Date() - new Date(dateA));
+      const timeDifferenceB = Math.abs(new Date() - new Date(dateB));
+
+      return timeDifferenceA - timeDifferenceB;
+    });
+  }, [Messages]);
   let messageTye;
 
   return (
@@ -267,223 +244,99 @@ export default function DirectChat(props, { route }) {
           </Text>
         </Pressable>
       </View>
-      {loading ? (
-        <ActivityIndicator
-          style={{ position: "absolute", bottom: "20%", left: "48%" }}
-          size={"large"}
-          color={Color.Blue}
-        />
-      ) : (
-        <View style={styles.container}>
-          {activeTeam === "Chat" ? (
-            <View>
-              {Messages.length === 0 ? (
-                <View>
-                  <NoMessage onpress={handleNewChat} />
-                </View>
-              ) : (
-                <FlatList
-                  data={latestChat}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => {
-                    let latestMessage = null;
 
-                    if (item.messages.length > 0) {
-                      latestMessage =
-                        item.messages[item.messages.length - 1].createdAt;
-                    }
+      <View style={styles.container}>
+        {activeTeam === "Chat" ? (
+          <View>
+            {loading ? (
+              <ArchivedCampaignSkelentan />
+            ) : (
+              <View>
+                {Messages?.length === 0 ? (
+                  <View style={{ height: "100%" }}>
+                    <NoMessage onpress={handleNewChat} />
+                  </View>
+                ) : (
+                  <FlatList
+                    data={sortedMessages}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => {
+                      const { messages } = item;
 
-                    let timePassed = latestMessage
-                      ? calculateTimeDifference(latestMessage)
-                      : "";
-
-                    let masgTitle = "";
-
-                    // item.messages[item.messages.length - 1]?.type === "document"
-                    //   ? (masgTitle =
-                    //       item.messages[item.messages.length - 1]?.content?.name
-                    //         ?.length > 35
-                    //         ? item.messages[
-                    //             item.messages.length - 1
-                    //           ]?.content?.name.slice(0, 35) + "..."
-                    //         : item.messages[item.messages.length - 1]?.content.name)
-                    //   : (masgTitle =
-                    //       item.messages[item.messages.length - 1]?.content?.length >
-                    //       35
-                    //         ? item.messages[
-                    //             item.messages.length - 1
-                    //           ]?.content.slice(0, 35) + "..."
-                    //         : item.messages[item.messages.length - 1]?.content);
-                    let messageTye;
-                    if (item.messages.length > 0) {
-                      messageTye = item.messages[item.messages.length - 1].type;
-                    }
-
-                    let removeLineBreak;
-                    if (messageTye === "text") {
-                      const lastMessageContent =
-                        item.messages[item.messages.length - 1].content;
-                      removeLineBreak = lastMessageContent.replace(
-                        /[\r\n]+/g,
-                        ""
+                      const latestMessage =
+                        messages?.length > 0
+                          ? messages[messages.length - 1]
+                          : null;
+                      const timePassed = calculateTimeDifference(
+                        latestMessage?.createdAt
                       );
-                      if (removeLineBreak.length > 40) {
-                        removeLineBreak = removeLineBreak.slice(0, 38) + "...";
-                      }
-                    }
-                    return (
-                      <View>
-                        <Pressable
-                          android_ripple={{ color: Color.LightGrey }}
-                          style={styles.mainBody}
-                          onPress={() => {
-                            setgroup(item);
-                            navigation.navigate("ChatCRM", {
-                              group: item,
-                            });
-                          }}
-                          delayLongPress={1000}
-                        >
-                          <View style={styles.singleNotification}>
-                            <Image
-                              style={styles.userAvatar}
-                              source={{ uri: setPhotoForDirectChat(item) }}
-                            />
-
-                            <View>
-                              <View style={styles.listHead}>
-                                <Text style={styles.userName}>
-                                  {item.members[0].member.phoneNumber ===
-                                  userState.phoneNumber
-                                    ? item.members[1].member.fullName
-                                    : item.members[0].member.fullName}
-                                </Text>
-                                <Text style={styles.timeText}>
-                                  {timePassed}
-                                </Text>
-                              </View>
-                              <View style={styles.messageContainer}>
-                                <Text style={styles.messageText}>
-                                  {messageTye === "text" ? (
-                                    <Text style={styles.msgText}>
-                                      {removeLineBreak}
-                                    </Text>
-                                  ) : null}
-                                  {messageTye === "video" ? (
-                                    <View style={styles.messageType}>
-                                      <FontAwesome
-                                        name="video-camera"
-                                        style={{
-                                          fontSize: 14,
-                                          color: Color.Grey,
-                                        }}
-                                      />
-                                      <Text
-                                        style={{
-                                          ...styles.msgText,
-                                          marginLeft: 6,
-                                        }}
-                                      >
-                                        Video
-                                      </Text>
-                                    </View>
-                                  ) : null}
-                                  {messageTye === "image" ? (
-                                    <View style={styles.messageType}>
-                                      <FontAwesome
-                                        name="photo"
-                                        style={{
-                                          fontSize: 14,
-                                          color: Color.Grey,
-                                        }}
-                                      />
-                                      <Text
-                                        style={{
-                                          ...styles.msgText,
-                                          marginLeft: 6,
-                                        }}
-                                      >
-                                        Photo
-                                      </Text>
-                                    </View>
-                                  ) : null}
-                                  {messageTye === "document" ? (
-                                    <View style={styles.messageType}>
-                                      <Ionicons
-                                        name="document"
-                                        style={{
-                                          fontSize: 14,
-                                          color: Color.Grey,
-                                        }}
-                                      />
-                                      <Text
-                                        style={{
-                                          ...styles.msgText,
-                                          marginLeft: 6,
-                                        }}
-                                      >
-                                        Document
-                                      </Text>
-                                    </View>
-                                  ) : null}
-
-                                  {messageTye === "audio" ? (
-                                    <View style={styles.messageType}>
-                                      <MaterialIcons
-                                        name="keyboard-voice"
-                                        style={{
-                                          fontSize: 18,
-                                          color: Color.Grey,
-                                        }}
-                                      />
-                                      <Text
-                                        style={{
-                                          ...styles.msgText,
-                                          marginLeft: 6,
-                                        }}
-                                      >
-                                        Voice
-                                      </Text>
-                                    </View>
-                                  ) : null}
-                                </Text>
+                      return (
+                        <View>
+                          <Pressable
+                            android_ripple={{ color: Color.LightGrey }}
+                            style={styles.mainBody}
+                            onPress={() => {
+                              setgroup(item);
+                              navigation.navigate("ChatCRM", {
+                                group: item,
+                              });
+                            }}
+                          >
+                            <View style={styles.singleNotification}>
+                              <Image
+                                style={styles.userAvatar}
+                                source={{ uri: setPhotoForDirectChat(item) }}
+                              />
+                              <View style={styles.mainContent}>
+                                <View style={styles.listHead}>
+                                  <Text style={styles.userName}>
+                                    {item.members[0].member.phoneNumber ===
+                                    userState.phoneNumber
+                                      ? item.members[1].member.fullName
+                                      : item.members[0].member.fullName}
+                                  </Text>
+                                  <Text style={styles.timeText}>
+                                    {timePassed}
+                                  </Text>
+                                </View>
+                                <MessagePreview item={item} />
                               </View>
                             </View>
-                          </View>
-                        </Pressable>
-                      </View>
-                    );
-                  }}
-                />
-              )}
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <Image
-                source={Upcomingcall}
-                style={{
-                  width: WIDTH * 0.5,
-                  height: "30%",
-                }}
-              />
-              <View style={{ position: "absolute", top: "25%" }}>
-                <Text style={styles.nochatText}>
-                  Stay tuned for the upcoming Calls feature! You'll be able to
-                </Text>
-                <Text style={styles.nochatText}>
-                  make voice and video calls with your contacts
-                </Text>
+                          </Pressable>
+                        </View>
+                      );
+                    }}
+                  />
+                )}
               </View>
+            )}
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Image
+              source={Upcomingcall}
+              style={{
+                width: WIDTH * 0.5,
+                height: "30%",
+              }}
+            />
+            <View style={{ position: "absolute", top: "25%" }}>
+              <Text style={styles.nochatText}>
+                Stay tuned for the upcoming Calls feature! You'll be able to
+              </Text>
+              <Text style={styles.nochatText}>
+                make voice and video calls with your contacts
+              </Text>
             </View>
-          )}
-        </View>
-      )}
+          </View>
+        )}
+      </View>
 
       {activeTeam === "Chat" ? (
         <NewChatButton

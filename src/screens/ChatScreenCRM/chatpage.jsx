@@ -69,7 +69,6 @@ const ChatPage = (props) => {
   const [selectedMessage, setselectedMessage] = useState(null);
 
   const handleLongPress = (item) => {
-    console.log(item);
     if (isLongPressed === false) {
       setIsLongPressed(true);
       setselectedMessage(item);
@@ -158,13 +157,7 @@ const ChatPage = (props) => {
   const [animation, setAnimation] = useState(new Animated.Value(0));
   const [doc, setdoc] = useState(null);
 
-  const supportedImageFormats = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/bmp",
-    "image/tiff",
-  ];
+  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
   const pick = async () => {
     setImgloading(true);
     let result = await DocumentPicker.getDocumentAsync({
@@ -172,32 +165,34 @@ const ChatPage = (props) => {
       allowsMultipleSelection: false,
     });
 
-    if (result.type === "success") {
+    if (result?.canceled === false) {
       let compressImage;
       let manipResult;
-      if (supportedImageFormats.includes(result.mimeType)) {
-        manipResult = await manipulateAsync(result.uri, [], {
+      if (supportedImageFormats.includes(result?.assets[0].mimeType)) {
+        manipResult = await manipulateAsync(result?.assets[0].uri, [], {
           compress: 0.8,
           format: SaveFormat.JPEG,
         });
         compressImage = await FileSystem.getInfoAsync(manipResult.uri);
         handleSendImageMessage(compressImage.uri);
         setImgloading(false);
-      } else if (result.mimeType === "video/mp4") {
-        handleSenVideoMessage(result);
+      } else if (result?.assets[0].mimeType === "video/mp4") {
+        handleSenVideoMessage(result?.assets[0]);
         setImgloading(false);
       } else {
         setdoc();
         handleSendDocumentMessage({
-          type: result.mimeType,
-          uri: result.uri,
-          size: result.size,
-          name: result.name,
+          type: result?.assets[0].mimeType,
+          uri: result?.assets[0].uri,
+          size: result?.assets[0].size,
+          name: result?.assets[0].name,
         });
         setImgloading(false);
       }
     } else if (result.type === "cancel") {
       setImgloading(false);
+    } else {
+      console.log("error");
     }
   };
 
@@ -208,27 +203,27 @@ const ChatPage = (props) => {
       allowsMultipleSelection: false,
     });
 
-    if (result.type === "success") {
+    if (result?.canceled === false) {
       let compressImage;
       let manipResult;
-      if (supportedImageFormats.includes(result.mimeType)) {
-        manipResult = await manipulateAsync(result.uri, [], {
+      if (supportedImageFormats.includes(result?.assets[0].mimeType)) {
+        manipResult = await manipulateAsync(result?.assets[0].uri, [], {
           compress: 0.8,
           format: SaveFormat.JPEG,
         });
         compressImage = await FileSystem.getInfoAsync(manipResult.uri);
         handleSendImageMessage(compressImage.uri);
         setImgloading(false);
-      } else if (result.mimeType === "video/mp4") {
-        handleSenVideoMessage(result);
+      } else if (result?.assets[0].mimeType === "video/mp4") {
+        handleSenVideoMessage(result?.assets[0]);
         setImgloading(false);
       } else {
         setdoc();
         handleSendDocumentMessage({
-          type: result.mimeType,
-          uri: result.uri,
-          size: result.size,
-          name: result.name,
+          type: result?.assets[0].mimeType,
+          uri: result?.assets[0].uri,
+          size: result?.assets[0].size,
+          name: result?.assets[0].name,
         });
         setImgloading(false);
       }
@@ -243,7 +238,7 @@ const ChatPage = (props) => {
     try {
       const formdata = new FormData();
       formdata.append("media", {
-        name: videoprop.name, // phone number is added to make sure data doesn't duplicate at any cost
+        name: videoprop.name,
         uri: videoprop.uri,
         type: videoprop.mimeType,
       });
@@ -611,7 +606,7 @@ const ChatPage = (props) => {
   const handleShare = (item) => {};
 
   const handleDelete = async () => {
-    console.log("press")
+    console.log("press");
     try {
       // socket.emit("Delete_message", {
       //   chat: `${selectedMessage?.chat}`,
@@ -781,18 +776,9 @@ const ChatPage = (props) => {
                       <View>
                         {item.type === "text" ? (
                           <NormalMessage
-                            message={item.content}
                             groupTitle={props.route?.params?.group?.title}
-                            username={item.from.fullName}
-                            time={timePassed ? timePassed : "1h"}
                             longPress={handleLongPress}
                             image={""}
-                            sender={item.from._id}
-                            forwardFrom={userState.id}
-                            forwardChat="chatId"
-                            forwardType="text"
-                            forwardContent={item.content}
-                            handleShare={handleShare}
                             socket={socket}
                             onPress={() =>
                               props.navigation.navigate("ViewImage", {
@@ -827,16 +813,10 @@ const ChatPage = (props) => {
                         {item.type === "image" ? (
                           <View style={isImage ? null : { marginBottom: 5 }}>
                             <ImageMessage
-                              username={item.from.fullName}
-                              time={timePassed ? timePassed : "1h"}
+                              groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
-                              sender={item.from._id}
                               phoneNumber={item.from}
-                              forwardFrom={userState.id}
-                              forwardChat="chatId"
-                              forwardType="image"
                               longPress={handleLongPress}
-                              forwardContent={item.content}
                               socket={socket}
                               item={item}
                               onPress={() =>
@@ -851,16 +831,10 @@ const ChatPage = (props) => {
                         {item?.type === "video" ? (
                           <View style={isImage ? null : { marginBottom: 5 }}>
                             <VideoMessageCRM
-                              username={item.from.fullName}
-                              time={timePassed ? timePassed : "1h"}
+                              groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
-                              sender={item.from._id}
                               phoneNumber={item.from}
-                              forwardFrom={userState.id}
                               longPress={handleLongPress}
-                              forwardChat="chatId"
-                              forwardType="video"
-                              forwardContent={item.content}
                               socket={socket}
                               item={item}
                               onPress={() =>
@@ -874,16 +848,11 @@ const ChatPage = (props) => {
                         ) : null}
                         {item?.type === "document" ? (
                           <DocumentMessage
-                            username={item.from.fullName}
-                            doc={item.content}
+                            groupTitle={props.route?.params?.group?.title}
                             time={timePassed ? timePassed : "1h"}
                             title={"Select"}
                             phoneNumber={item?.from}
                             longPress={handleLongPress}
-                            forwardFrom={userState.id}
-                            forwardChat="chatId"
-                            forwardType="document"
-                            forwardContent={item.content}
                             socket={socket}
                             item={item}
                             sender={item.from._id}
@@ -892,13 +861,8 @@ const ChatPage = (props) => {
 
                         {item.type === "audio" ? (
                           <RecordingVoiceMessage
-                            username={item.from.fullName}
                             time={timePassed ? timePassed : "1h"}
-                            uri={item.content}
-                            forwardFrom={userState.id}
-                            forwardChat="chatId"
-                            forwardType="audio"
-                            forwardContent={item.content}
+                            groupTitle={props.route?.params?.group?.title}
                             socket={socket}
                             phoneNumber={item?.from}
                             item={item}

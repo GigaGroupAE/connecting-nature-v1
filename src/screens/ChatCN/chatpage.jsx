@@ -48,7 +48,6 @@ const ChatPageCN = (props) => {
   const [modalVisible, setmodalVisible] = useState(false);
   const [deleteId, setdeleteId] = useState("");
   const [messagesId, setmessagesId] = useState([])
-  console.log(messagesId)
   useEffect(() => {
     let newSocket = io(BASE_URL, { auth: { token: userState.token } });
     newSocket.on("connect", () => {
@@ -130,7 +129,7 @@ const ChatPageCN = (props) => {
       quality: 0.3,
     });
 
-    console.log(result?.assets[0]);
+
 
     if (result?.canceled === false) {
       // setImage([result.uri]);

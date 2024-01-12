@@ -25,8 +25,10 @@ import { BASE_URL } from "../../../CONSTANTS";
 import Color from "../../../assets/colors/Color";
 import { useStateContext } from "../../contexts/ContextProvider.js";
 export default function CreateGroup() {
+  const [loading, setLoading] = useState(false);
+
   // const route = useRoute();
-  const { loading, setLoading, showSnackbar } = useStateContext();
+  const { showSnackbar } = useStateContext();
   let height = Dimensions.get("screen").height;
   let width = Dimensions.get("screen").width;
   const userState = useUserState();
@@ -62,8 +64,6 @@ export default function CreateGroup() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -87,7 +87,6 @@ export default function CreateGroup() {
     } else {
       type = "Outsource";
     }
-    console.log(selected);
     let members = [
       { member: userState.id, privilege: "Owner" },
       { member: groupLeader._id, privilege: "Lead" },
@@ -138,7 +137,6 @@ export default function CreateGroup() {
         config
       );
       console.log("data from creategroup request :: ", data);
-
       navigation.goBack();
       setLoading(false);
       showSnackbar("Group Created Successfully");
@@ -361,6 +359,7 @@ export default function CreateGroup() {
                 </View>
               ) : null}
             </View>
+
             <ButtonLarge
               title={"Create Group"}
               click={handleOnCreate}

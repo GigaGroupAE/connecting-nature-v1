@@ -12,6 +12,7 @@ import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import { useUserState } from "../../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
+import { calculateTimeDifference } from "../../utils/timeDifference";
 
 const Width = Dimensions.get("screen").width;
 const Height = Dimensions.get("screen").height;
@@ -21,8 +22,9 @@ const ImageMessage = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
+  const { socket ,item} =
     props;
+    let timePassed = calculateTimeDifference(item.date);
 
   const [modalVisible, setmodalVisible] = useState(false);
 
@@ -31,6 +33,8 @@ const ImageMessage = (props) => {
       props.longPress();
     }
   };
+
+  console.log(props)
 
   return (
     <Pressable
@@ -49,23 +53,23 @@ const ImageMessage = (props) => {
         {/* TODO :: SINCE 2 USERS CAN HAVE THE SAME NAME SO CHANGETHE LOGIC TO CHECK WITH PHONE NUMBERS */}
         <View
           style={[
-            userState.id === props.sender
+            userState.id === item?.from?._id
               ? styles.receiverTextMessageMainContainer
               : styles.senderTextMessageMainContainer,
           ]}
         >
           <View
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.receiverTextMessageContainer
                 : styles.senderTextMessageContainer,
             ]}
           >
-            {userState.id !== props.sender ? (
+            {           userState.id !== item?.from?._id? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
-                    <Text style={styles.senderName}>{props.username}</Text>
+                    <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
                 ) : null}
               </View>
@@ -79,7 +83,7 @@ const ImageMessage = (props) => {
               {props.image !== "" && (
                 <Image
                   style={[
-                    userState.id === props.sender
+                    userState.id === item?.from?._id
                       ? styles.receiverImageMessage
                       : styles.senderImageMessage,
                   ]}
@@ -99,7 +103,7 @@ const ImageMessage = (props) => {
               ]}
             >
               <Text style={[props.message ? styles.time : styles.overlayTime]}>
-                {props.time}
+                {timePassed}
               </Text>
               {props.message ? (
                 <Ionicons
@@ -118,16 +122,16 @@ const ImageMessage = (props) => {
           </View>
           <TouchableOpacity
             style={[
-              userState.id === props.sender
+              userState.id === item?.from?._id
                 ? styles.shareMessage
                 : styles.receiverShareMessage,
             ]}
             onPress={() =>
               navigation.navigate("MessageForwardCRM", {
-                forwardFrom: forwardFrom,
-                forwardChat: forwardChat,
-                forwardType: forwardType,
-                forwardContent: forwardContent,
+                forwardFrom: userState.id,
+                forwardChat: "chatId",
+                forwardType: "image",
+                forwardContent: item.content,
                 socket: socket,
               })
             }
