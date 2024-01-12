@@ -1,43 +1,39 @@
 import { StyleSheet, View } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import HeaderNormal from "../../components/HeaderNormal";
 import PostHeader from "../Home/PostHeader";
-import PostDescription from "../../components/PostDesciption";
 import Color from "../../../assets/colors/Color";
 import { axiosInstance } from "../../../axiosInstance";
 import { useStateContext } from "../../contexts/ContextProvider";
 import PostViewComments from "./PostViewComments";
 import PostDeleteModal from "../Home/PostDeleteModal";
+import { useQuery } from "react-query";
+import SInglePostSkeleton from "../../components/Skeleton/SInglePostSkeleton";
+
+const fetchPost = async (postId) => {
+  const { data } = await axiosInstance.post(`/posts/getPost`, {
+    id: postId,
+  });
+  return data;
+};
 
 const PostView = (props) => {
   const postId = props.route?.params?.postId;
-  const { setLoading, showSnackbar } = useStateContext();
-  const [post, setpost] = useState();
+  const { showSnackbar } = useStateContext();
   const navigation = useNavigation();
   const [modalVisible, setmodalVisible] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.post(`/posts/getPost`, {
-          id: postId,
-        });
-        setpost(response?.data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        navigation.navigate("Home");
-        showSnackbar("Sorry, this post has been deleted");
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (!post) {
-    return null;
-  }
+  const {
+    data: post,
+    isLoading,
+    isError,
+  } = useQuery(["postview", postId], () => fetchPost(postId), {
+    retry: 1,
+    onError: (error) => {
+      navigation.navigate("Home");
+      showSnackbar("Sorry, this post has been deleted");
+    },
+  });
 
   const reload = () => {
     navigation.navigate("Home");
@@ -46,23 +42,20 @@ const PostView = (props) => {
   return (
     <View style={styles.container}>
       <HeaderNormal title="Post" />
-      <View style={{ flex: 1 }}>
-        {modalVisible && (
-          <PostDeleteModal
-            post={post}
-            reload={reload}
-            setmodalVisible={setmodalVisible}
-          />
-        )}
-
-        <PostHeader data={post} setmodalVisible={setmodalVisible} />
-        <PostViewComments post={post} />
-        {/* <PostDeleteModal
-          post={post}
-          reload={reload}
-          setmodalVisible={setmodalVisible}
-        /> */}
-      </View>
+      {isLoading && <SInglePostSkeleton />}
+      {!isLoading && post && (
+        <View style={{ flex: 1 }}>
+          {modalVisible && (
+            <PostDeleteModal
+              post={post}
+              reload={reload}
+              setmodalVisible={setmodalVisible}
+            />
+          )}
+          <PostHeader data={post} setmodalVisible={setmodalVisible} />
+          <PostViewComments post={post} />
+        </View>
+      )}
     </View>
   );
 };
