@@ -22,9 +22,8 @@ const ImageMessage = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const { socket ,item} =
-    props;
-    let timePassed = calculateTimeDifference(item.date);
+  const { socket, item } = props;
+  let timePassed = calculateTimeDifference(item.date);
 
   const [modalVisible, setmodalVisible] = useState(false);
 
@@ -33,8 +32,6 @@ const ImageMessage = (props) => {
       props.longPress();
     }
   };
-
-  console.log(props)
 
   return (
     <Pressable
@@ -65,7 +62,7 @@ const ImageMessage = (props) => {
                 : styles.senderTextMessageContainer,
             ]}
           >
-            {           userState.id !== item?.from?._id? (
+            {userState.id !== item?.from?._id ? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>

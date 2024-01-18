@@ -21,25 +21,10 @@ const NormalMessage = (props) => {
   const [pressIn, setPressIn] = useState(false);
   const userState = useUserState();
   const [modalVisible, setmodalVisible] = useState(false);
-  const {  socket,item } =
-    props;
+  const { socket, item } = props;
 
   const navigation = useNavigation();
   let timePassed = calculateTimeDifference(item.date);
-
-
-  // console.log(props?.item?._id, props?.item?.group, "props");
-
-  const handleDelete = (props) => {
-    const data = {
-      chat: item?._id,
-      id: item?.group,
-    };
-    if (      userState.id === item?.from) {
-      props.longPress(data);
-    }
-  };
-
 
   return (
     <Pressable
@@ -52,7 +37,7 @@ const NormalMessage = (props) => {
       ]}
       onPressIn={() => setPressIn(true)}
       onPressOut={() => setPressIn(false)}
-      onLongPress={() => handleDelete(props)}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
     >
       <View>
         {/* <View style={styles.textMessageMainContainer}> */}
@@ -77,7 +62,7 @@ const NormalMessage = (props) => {
             {/* {userState.fullName !== props.username && (
               <Text style={[styles.username]}>{props.username}</Text>
             )} */}
-            {      userState.id !== item?.from?._id ? (
+            {userState.id !== item?.from?._id ? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
@@ -99,10 +84,10 @@ const NormalMessage = (props) => {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("MessageForwardCRM", {
-                forwardFrom:userState.id,
+                forwardFrom: userState.id,
                 forwardChat: "chatId",
-                forwardType:"text",
-                forwardContent:item.content,
+                forwardType: "text",
+                forwardContent: item.content,
                 socket: socket,
               })
             }

@@ -27,8 +27,8 @@ import { calculateTimeDifference } from "../../utils/timeDifference";
 import NoMessage from "../ChatListCN/NoMessage";
 import { axiosInstance } from "../../../axiosInstance";
 import { useQuery } from "react-query";
-import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan";
 import MessagePreview from "../../components/MessagePreview";
+import NotificationsSkeleton from "../../components/NotificationsSkeleton";
 const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
 const WIDTH = Dimensions.get("screen").width;
 
@@ -249,7 +249,7 @@ export default function DirectChat(props, { route }) {
         {activeTeam === "Chat" ? (
           <View>
             {loading ? (
-              <ArchivedCampaignSkelentan />
+              <NotificationsSkeleton />
             ) : (
               <View>
                 {Messages?.length === 0 ? (
