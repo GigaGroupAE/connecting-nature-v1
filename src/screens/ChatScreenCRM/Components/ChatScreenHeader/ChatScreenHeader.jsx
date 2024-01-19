@@ -46,7 +46,6 @@ const ChatScreenHeader = (props) => {
         });
 
         let memb = member[0];
-        console.log("MEMB IS -----------", memb);
         setPhoto(`${BASE_URL}/images/${memb.member.profile}`);
         settitle(memb.member.fullName);
         setsubtitle(memb.member.type);

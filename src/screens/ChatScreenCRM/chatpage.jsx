@@ -66,14 +66,8 @@ const ChatPage = (props) => {
   const [chatMessages, setChatMessages] = useState(null);
 
   const [isLongPressed, setIsLongPressed] = useState(false);
-  const [selectedMessage, setselectedMessage] = useState(null);
-
-  const handleLongPress = (item) => {
-    if (isLongPressed === false) {
-      setIsLongPressed(true);
-      setselectedMessage(item);
-    }
-  };
+  const [deleteId, setdeleteId] = useState("");
+  const [messagesId, setmessagesId] = useState([]);
 
   const handlePressedCancel = () => {
     if (isLongPressed === true) {
@@ -493,11 +487,12 @@ const ChatPage = (props) => {
           type: data.type,
           date: data.date,
           from: data.from,
-          id: data.id,
+          _id: data._id,
         },
         ...prev,
       ]);
     });
+    
 
     newSocket.on("update_message", (data) => {
       let tempMessages = chatMessages;
@@ -508,23 +503,17 @@ const ChatPage = (props) => {
           return m;
         }
       });
-      newSocket.on("Delete_message", (data) => {
-        console.log(data, "data");
-        setChatMessages([
-          ...chatMessages
-            .filter((message) => {
-              return message._id !== data;
-            })
-            .sort((a, b) => (a.date < b.date ? 1 : -1)),
-        ]);
-      });
+    
       setChatMessages([
         ...(tempMessages &&
           tempMessages.sort((a, b) => (a.date < b.date ? 1 : -1))),
       ]);
     });
-    //this is for the do-day portal screen
+    newSocket.on("Delete_message", (data, message) => {
+      setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
+    });
 
+    //this is for the do-day portal screen
     newSocket.on("receive_points", (data) => {
       if (data.error) {
         showSnackbar(data.message);
@@ -542,6 +531,7 @@ const ChatPage = (props) => {
       setGlobalSocket(null);
     };
   }, []);
+
 
   const handleCamera = () => {
     navigation.navigate("Camera", {
@@ -605,15 +595,25 @@ const ChatPage = (props) => {
 
   const handleShare = (item) => {};
 
-  const handleDelete = async () => {
-    console.log("press");
+  const handleDelete = (id, from) => {
+    if (userState?.id === from?._id) {
+      setdeleteId(id);
+      setIsLongPressed(true);
+    }
+  };
+  const handleDeleteMessage = async () => {
+    setmessagesId((messagesId) => [...messagesId, deleteId]);
+
     try {
-      // socket.emit("Delete_message", {
-      //   chat: `${selectedMessage?.chat}`,
-      //   id: `${selectedMessage?.id}`,
-      // });
+      socket.emit("Delete_message", {
+        groupId: props.route.params.group._id,
+        id: deleteId,
+      });
+
+      setIsLongPressed(false);
     } catch (error) {}
   };
+
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -654,26 +654,10 @@ const ChatPage = (props) => {
                 style={{ marginTop: 0, paddingRight: "55%" }}
               />
             </Pressable>
-
-            {/* <Pressable
-              android_ripple={{ color: Color.LightGrey, borderless: true }}
-              onPress={handleShare}
-              style={{ alignSelf: "center" }}
-            >
-              <MaterialCommunityIcons
-                name="share"
-                color={Color.White}
-                size={25}
-                style={{
-                  marginTop: 0,
-                  borderRadius: Dimensions.get("screen").height * 0.1,
-                }}
-              />
-            </Pressable> */}
             <Pressable
               android_ripple={{ color: Color.LightGrey, borderless: true }}
               style={{ alignSelf: "center" }}
-              onPress={handleDelete}
+              onPress={handleDeleteMessage}
             >
               <MaterialCommunityIcons
                 name="delete"
@@ -777,7 +761,7 @@ const ChatPage = (props) => {
                         {item.type === "text" ? (
                           <NormalMessage
                             groupTitle={props.route?.params?.group?.title}
-                            longPress={handleLongPress}
+                            longPress={handleDelete}
                             image={""}
                             socket={socket}
                             onPress={() =>
@@ -816,7 +800,7 @@ const ChatPage = (props) => {
                               groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
                               phoneNumber={item.from}
-                              longPress={handleLongPress}
+                              longPress={handleDelete}
                               socket={socket}
                               item={item}
                               onPress={() =>
@@ -834,7 +818,7 @@ const ChatPage = (props) => {
                               groupTitle={props.route?.params?.group?.title}
                               image={`${BASE_URL}/messageMedia/${item.content}`}
                               phoneNumber={item.from}
-                              longPress={handleLongPress}
+                              longPress={handleDelete}
                               socket={socket}
                               item={item}
                               onPress={() =>
@@ -852,7 +836,7 @@ const ChatPage = (props) => {
                             time={timePassed ? timePassed : "1h"}
                             title={"Select"}
                             phoneNumber={item?.from}
-                            longPress={handleLongPress}
+                            longPress={handleDelete}
                             socket={socket}
                             item={item}
                             sender={item.from._id}
@@ -867,7 +851,7 @@ const ChatPage = (props) => {
                             phoneNumber={item?.from}
                             item={item}
                             sender={item.from._id}
-                            longPress={handleLongPress}
+                            longPress={handleDelete}
                           />
                         ) : null}
                       </View>

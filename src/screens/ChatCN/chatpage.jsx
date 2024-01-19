@@ -47,23 +47,23 @@ const ChatPageCN = (props) => {
   const [socket, setSocket] = useState(null);
   const [modalVisible, setmodalVisible] = useState(false);
   const [deleteId, setdeleteId] = useState("");
-  const [messagesId, setmessagesId] = useState([])
+  const [messagesId, setmessagesId] = useState([]);
   useEffect(() => {
     let newSocket = io(BASE_URL, { auth: { token: userState.token } });
     newSocket.on("connect", () => {
       newSocket.emit("join", { id: props.route.params.group._id });
     });
     newSocket.on("receive_message", (data) => {
-
-      setChatMessages(prevChatMessages => {
+      setChatMessages((prevChatMessages) => {
         const updatedMessages = [...prevChatMessages, data];
-        const filteredMessages = updatedMessages.filter(message => !messagesId.includes(message._id));
+        const filteredMessages = updatedMessages.filter(
+          (message) => !messagesId.includes(message._id)
+        );
         return filteredMessages.sort((a, b) => (a.date < b.date ? 1 : -1));
       });
-      
     });
-    newSocket.on("Deleted_messageCN", (data,message) => {
-      setChatMessages( message.sort((a, b) => (a.date < b.date ? 1 : -1)));
+    newSocket.on("Deleted_messageCN", (data, message) => {
+      setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
     });
     setSocket(newSocket);
     return () => {
@@ -71,8 +71,6 @@ const ChatPageCN = (props) => {
       newSocket.disconnect();
     };
   }, []);
-
-
 
   const userState = useUserState();
   const navigation = useNavigation();
@@ -128,8 +126,6 @@ const ChatPageCN = (props) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.3,
     });
-
-
 
     if (result?.canceled === false) {
       // setImage([result.uri]);
@@ -408,7 +404,6 @@ const ChatPageCN = (props) => {
   };
 
   const handleLocalNotification = async (token) => {
-    console.log(token);
     try {
       const config = {
         headers: {
@@ -441,7 +436,7 @@ const ChatPageCN = (props) => {
     }
   };
   const handleDeleteMessage = async () => {
-    setmessagesId(messagesId => [...messagesId, deleteId]);
+    setmessagesId((messagesId) => [...messagesId, deleteId]);
 
     try {
       socket.emit("Delete_messageCN", {
@@ -575,8 +570,7 @@ const ChatPageCN = (props) => {
                       <TouchableOpacity>
                         <ImageMessageCn
                           socket={socket}
-                        longPress={handleDelet}
-
+                          longPress={handleDelet}
                           item={item}
                           onPress={() =>
                             props.navigation.navigate("ViewImage", {
@@ -593,20 +587,20 @@ const ChatPageCN = (props) => {
                         socket={socket}
                         item={item}
                         longPress={handleDelet}
-
                       />
                     ) : null}
 
                     {item.type === "audio" ? (
-                      <RecordingVoiceMessageCn socket={socket} item={item}  
-                      longPress={handleDelet}
+                      <RecordingVoiceMessageCn
+                        socket={socket}
+                        item={item}
+                        longPress={handleDelet}
                       />
                     ) : null}
                     {item.type === "video" ? (
                       <TouchableOpacity>
                         <VideoMessageCn
-                        longPress={handleDelet}
-
+                          longPress={handleDelet}
                           socket={socket}
                           item={item}
                           onPress={() =>

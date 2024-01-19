@@ -34,11 +34,6 @@ const DocumentMessage = (props) => {
 
   const [modalVisible, setmodalVisible] = useState(false);
 
-  const handleDelete = () => {
-    if (userState.id === props.sender) {
-      props.longPress();
-    }
-  };
 
   return (
     <View>
@@ -50,7 +45,8 @@ const DocumentMessage = (props) => {
         ]}
         android_ripple={{ foreground: true, color: Color.LightGrey }}
         // onLongPress={props.longPress}
-        onPress={() => console.log("pressed ")}
+        onLongPress={() => props?.longPress(item._id, item?.from)}
+
       >
         <View
           style={[
@@ -58,7 +54,7 @@ const DocumentMessage = (props) => {
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
-          onLongPress={handleDelete}
+      
         >
           <View
             style={[
@@ -78,7 +74,8 @@ const DocumentMessage = (props) => {
             ) : null}
             <Pressable>
               <Pressable
-                onLongPress={handleDelete}
+                onLongPress={() => props?.longPress(item._id, item?.from)}
+
                 style={{
                   flexDirection: "row",
                   paddingHorizontal: 4,
@@ -86,6 +83,7 @@ const DocumentMessage = (props) => {
                 onPress={() => {
                   Linking.openURL(`${BASE_URL}/messageMedia/${item.content?.path}`);
                 }}
+
               >
                 <MessageType title={item.content?.name} />
 

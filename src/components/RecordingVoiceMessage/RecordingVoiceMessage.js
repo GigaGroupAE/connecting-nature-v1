@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Pressable,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
 import { BASE_URL } from "../../../CONSTANTS";
@@ -25,7 +26,7 @@ export default function RecordingVoiceMessage(props) {
   const [modalVisible, setmodalVisible] = useState(false);
 
   const [audioPlayback, setAudioPlayback] = React.useState("Not Playing");
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket ,item} =
+  const { socket ,item} =
     props;
 
   const playSound = async () => {
@@ -77,20 +78,18 @@ export default function RecordingVoiceMessage(props) {
       : undefined;
   }, [sound]);
 
-  const handleDelete = () => {
-    if (userState.id === props.sender) {
-      props.longPress();
-    }
-  };
+ 
 
   return (
     <View>
-      <View
+      <Pressable
         style={[
           userState.id === item?.from?._id
             ? styles.receiverTextMessageMainContainer
             : styles.senderTextMessageMainContainer,
         ]}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
+
       >
         <TouchableOpacity
           style={[
@@ -98,7 +97,8 @@ export default function RecordingVoiceMessage(props) {
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
-          onLongPress={handleDelete}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
+
         >
           {           userState.id !== item?.from?._id ? (
             <View>
@@ -109,7 +109,9 @@ export default function RecordingVoiceMessage(props) {
               ) : null}
             </View>
           ) : null}
-          <View>
+          <Pressable 
+      onLongPress={() => props?.longPress(item._id, item?.from)}
+      >
             {audioPlayback === "Not Playing" ? (
               <Button
                 icon={"play"}
@@ -171,7 +173,7 @@ export default function RecordingVoiceMessage(props) {
                 Playing Audio
               </Button>
             )}
-          </View>
+          </Pressable>
           <View style={styles.timeContainer}>
             <Text style={styles.time}>{props.time}</Text>
             <Ionicons
@@ -205,7 +207,7 @@ export default function RecordingVoiceMessage(props) {
             />
           </View>
         </TouchableOpacity>
-      </View>
+      </Pressable>
     </View>
   );
 }

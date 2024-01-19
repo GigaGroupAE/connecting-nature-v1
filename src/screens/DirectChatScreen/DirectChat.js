@@ -27,15 +27,14 @@ import { calculateTimeDifference } from "../../utils/timeDifference";
 import NoMessage from "../ChatListCN/NoMessage";
 import { axiosInstance } from "../../../axiosInstance";
 import { useQuery } from "react-query";
-import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan";
 import MessagePreview from "../../components/MessagePreview";
+import NotificationsSkeleton from "../../components/NotificationsSkeleton";
 const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
 const WIDTH = Dimensions.get("screen").width;
 
 const fetchMessages = async () => {
   try {
     const { data } = await axiosInstance.get("/groups/getcrmmessages");
-
     return data;
   } catch (error) {
     console.log(error);
@@ -249,7 +248,7 @@ export default function DirectChat(props, { route }) {
         {activeTeam === "Chat" ? (
           <View>
             {loading ? (
-              <ArchivedCampaignSkelentan />
+              <NotificationsSkeleton />
             ) : (
               <View>
                 {Messages?.length === 0 ? (
@@ -262,7 +261,6 @@ export default function DirectChat(props, { route }) {
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => {
                       const { messages } = item;
-
                       const latestMessage =
                         messages?.length > 0
                           ? messages[messages.length - 1]

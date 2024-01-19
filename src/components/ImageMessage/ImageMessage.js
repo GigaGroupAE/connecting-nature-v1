@@ -22,19 +22,11 @@ const ImageMessage = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const { socket ,item} =
-    props;
-    let timePassed = calculateTimeDifference(item.date);
+  const { socket, item } = props;
+  let timePassed = calculateTimeDifference(item.date);
 
   const [modalVisible, setmodalVisible] = useState(false);
 
-  const handleDelete = () => {
-    if (userState.id === props.sender) {
-      props.longPress();
-    }
-  };
-
-  console.log(props)
 
   return (
     <Pressable
@@ -46,7 +38,7 @@ const ImageMessage = (props) => {
             }
           : null,
       ]}
-      onLongPress={() => console.log("pressed ")}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
     >
       <View>
         {/* <View style={styles.textMessageMainContainer}> */}
@@ -65,7 +57,7 @@ const ImageMessage = (props) => {
                 : styles.senderTextMessageContainer,
             ]}
           >
-            {           userState.id !== item?.from?._id? (
+            {userState.id !== item?.from?._id ? (
               <View>
                 {props?.groupTitle !== "test" ? (
                   <View>
@@ -78,7 +70,8 @@ const ImageMessage = (props) => {
               key={props.index}
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
-              onLongPress={handleDelete}
+              onLongPress={() => props?.longPress(item._id, item?.from)}
+
             >
               {props.image !== "" && (
                 <Image

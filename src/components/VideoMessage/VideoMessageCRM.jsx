@@ -47,7 +47,8 @@ const VideoMessageCRM = (props) => {
             }
           : null,
       ]}
-      onLongPress={handleDelete}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
+
     >
       <View>
         {/* <View style={styles.textMessageMainContainer}> */}
@@ -79,7 +80,8 @@ const VideoMessageCRM = (props) => {
               key={props.index}
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
-              onLongPress={handleDelete}
+              onLongPress={() => props?.longPress(item._id, item?.from)}
+
             >
               {props.image !== "" && (
                 <Pressable
@@ -91,7 +93,8 @@ const VideoMessageCRM = (props) => {
                     borderBottomRightRadius: 8,
                     zIndex: 100,
                   }}
-                  onLongPress={() => console.log("long presss")}
+                  onLongPress={() => props?.longPress(item._id, item?.from)}
+
                   onPress={() => console.log("clicked")}
                 >
                   <VideoPlayer
