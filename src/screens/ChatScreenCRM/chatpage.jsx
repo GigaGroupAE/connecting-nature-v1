@@ -487,11 +487,12 @@ const ChatPage = (props) => {
           type: data.type,
           date: data.date,
           from: data.from,
-          id: data.id,
+          _id: data._id,
         },
         ...prev,
       ]);
     });
+    
 
     newSocket.on("update_message", (data) => {
       let tempMessages = chatMessages;
@@ -502,14 +503,14 @@ const ChatPage = (props) => {
           return m;
         }
       });
-      newSocket.on("Delete_message", (data, message) => {
-        console.log(data, message, "not work ");
-        setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
-      });
+    
       setChatMessages([
         ...(tempMessages &&
           tempMessages.sort((a, b) => (a.date < b.date ? 1 : -1))),
       ]);
+    });
+    newSocket.on("Delete_message", (data, message) => {
+      setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
     });
 
     //this is for the do-day portal screen
@@ -530,6 +531,7 @@ const ChatPage = (props) => {
       setGlobalSocket(null);
     };
   }, []);
+
 
   const handleCamera = () => {
     navigation.navigate("Camera", {
@@ -612,7 +614,6 @@ const ChatPage = (props) => {
     } catch (error) {}
   };
 
-  console.log(messagesId);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

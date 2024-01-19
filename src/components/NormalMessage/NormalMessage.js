@@ -20,11 +20,12 @@ const NormalMessage = (props) => {
   const [longPress, setLongPress] = useState(false);
   const [pressIn, setPressIn] = useState(false);
   const userState = useUserState();
-  const [modalVisible, setmodalVisible] = useState(false);
   const { socket, item } = props;
 
   const navigation = useNavigation();
   let timePassed = calculateTimeDifference(item.date);
+
+  // console.log(item)
 
   return (
     <Pressable
@@ -35,8 +36,6 @@ const NormalMessage = (props) => {
             }
           : null,
       ]}
-      onPressIn={() => setPressIn(true)}
-      onPressOut={() => setPressIn(false)}
       onLongPress={() => props?.longPress(item._id, item?.from)}
     >
       <View>

@@ -27,11 +27,6 @@ const ImageMessage = (props) => {
 
   const [modalVisible, setmodalVisible] = useState(false);
 
-  const handleDelete = () => {
-    if (userState.id === props.sender) {
-      props.longPress();
-    }
-  };
 
   return (
     <Pressable
@@ -43,7 +38,7 @@ const ImageMessage = (props) => {
             }
           : null,
       ]}
-      onLongPress={() => console.log("pressed ")}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
     >
       <View>
         {/* <View style={styles.textMessageMainContainer}> */}
@@ -75,7 +70,8 @@ const ImageMessage = (props) => {
               key={props.index}
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
-              onLongPress={handleDelete}
+              onLongPress={() => props?.longPress(item._id, item?.from)}
+
             >
               {props.image !== "" && (
                 <Image

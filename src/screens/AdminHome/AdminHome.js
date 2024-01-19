@@ -34,7 +34,6 @@ const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
 const fetchGroups = async () => {
-  console.log("rerun");
   try {
     const { data } = await axiosInstance.get("/groups/getgroups");
     return data;
@@ -45,10 +44,8 @@ const fetchGroups = async () => {
 
 export default function AdminHome(props) {
   const [visible, setVisible] = React.useState(false);
-  const [refresh, setRefresh] = useState(false);
   const [isChatListOpen, setisChatListOpen] = useState({});
   const [groupDetails, setgroupDetails] = useState("");
-  const [loading, setloading] = useState(false);
 
   const showModal = useCallback(() => {
     setVisible(true);
@@ -69,14 +66,13 @@ export default function AdminHome(props) {
   const contactstateactions = useContactsStateActions();
   const {
     data: groups = [], // Initialize as an empty array
-    isLoading: loadinga,
+    isLoading: loading,
     refetch,
   } = useQuery("groups", fetchGroups);
 
   //fetch user contacts in this useEffect
   useEffect(() => {
     const fetchcontacts = async () => {
-      console.log("run");
       try {
         const { status } = await Contacts.requestPermissionsAsync({});
         if (status === "granted") {
@@ -200,8 +196,6 @@ export default function AdminHome(props) {
 
   const userState = useUserState();
 
-  //TODO :: CLEAN-UP BELOW USE-EFFECT INTO SIMPLER LOGIC
-
   const handleAdminChat = () => {
     let groupfound = false;
     const admingroup = groups.filter((group) => {
@@ -315,11 +309,12 @@ export default function AdminHome(props) {
             <Text style={styles.groupHeading}>GROUPS</Text>
             <FlatList
               data={sections}
-              renderItem={({ item }) => (
-                <View>
+              renderItem={({ item ,index}) => (
+                <View key={index}>
                   <View style={styles.adminGroupListContainer}>
                     <List.Accordion
                       title={item.title}
+                      key={index}
                       titleStyle={{ color: "black" }}
                       expanded={true}
                       style={{
@@ -332,6 +327,7 @@ export default function AdminHome(props) {
                           {...props}
                           icon="folder"
                           style={{ display: "none" }}
+                          key={index}
                         />
                       )}
                     >
@@ -656,6 +652,7 @@ export default function AdminHome(props) {
                   </View>
                 </View>
               )}
+            
             />
           </View>
           <AdminHomeManegeTab loading={loading} />

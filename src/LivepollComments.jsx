@@ -36,7 +36,6 @@ const LivepollComments = ({ id, screen }) => {
   const userState = useUserState();
 
   const handleComment = (item) => {
-    console.log("Comment pressed:", item);
     let newcomments = comment;
     newcomments.push({
       description: item?.description,

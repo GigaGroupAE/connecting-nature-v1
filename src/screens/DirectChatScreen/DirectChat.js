@@ -35,7 +35,6 @@ const WIDTH = Dimensions.get("screen").width;
 const fetchMessages = async () => {
   try {
     const { data } = await axiosInstance.get("/groups/getcrmmessages");
-
     return data;
   } catch (error) {
     console.log(error);
@@ -262,7 +261,6 @@ export default function DirectChat(props, { route }) {
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => {
                       const { messages } = item;
-
                       const latestMessage =
                         messages?.length > 0
                           ? messages[messages.length - 1]
