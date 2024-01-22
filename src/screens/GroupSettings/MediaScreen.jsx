@@ -13,6 +13,8 @@ import Color from "../../../assets/colors/Color";
 import HeaderNormal from "../../components/HeaderNormal";
 import FileMedia from "./FIleMedia";
 import DocType from "./DocType";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const MediaScreen = () => {
   const route = useRoute();
@@ -38,62 +40,65 @@ const MediaScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <HeaderNormal title={route?.params?.groupTitle} />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={styles.container}>
+        <HeaderNormal title={route?.params?.groupTitle} />
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          width: "100%",
-          borderBottomWidth: 1,
-          borderBottomColor: Color.VeryLightGrey,
-          height: scale(40),
-        }}
-      >
-        <TouchableOpacity
-          style={isActiveMedia ? styles.activeScreen : styles.mediaContainer}
-          onPress={handleActiveMedia}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            width: "100%",
+            borderBottomWidth: 1,
+            borderBottomColor: Color.VeryLightGrey,
+            height: scale(40),
+          }}
         >
-          <Text style={styles.title}>Media</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={isActiveDoc ? styles.activeScreen : styles.docContainer}
-          onPress={handleActiveDoc}
-        >
-          <Text style={styles.title}>Doc</Text>
-        </TouchableOpacity>
-        <TouchableOpacity></TouchableOpacity>
+          <TouchableOpacity
+            style={isActiveMedia ? styles.activeScreen : styles.mediaContainer}
+            onPress={handleActiveMedia}
+          >
+            <Text style={styles.title}>Media</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={isActiveDoc ? styles.activeScreen : styles.docContainer}
+            onPress={handleActiveDoc}
+          >
+            <Text style={styles.title}>Doc</Text>
+          </TouchableOpacity>
+          <TouchableOpacity></TouchableOpacity>
+        </View>
+        <ScrollView style={styles.content}>
+          {isActiveDoc ? (
+            <View style={styles.docs}>
+              <DocType data={docData} />
+            </View>
+          ) : (
+            <FlatList
+              data={imageData}
+              keyExtractor={(item) => {
+                return item._id;
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <View>
+                    {item?.type !== "audio" && (
+                      <FileMedia
+                        data={item}
+                        key={item._id}
+                        activeScreen="media"
+                      />
+                    )}
+                  </View>
+                );
+              }}
+              numColumns={3}
+            />
+          )}
+        </ScrollView>
       </View>
-      <ScrollView style={styles.content}>
-        {isActiveDoc ? (
-          <View style={styles.docs}>
-            <DocType data={docData} />
-          </View>
-        ) : (
-          <FlatList
-            data={imageData}
-            keyExtractor={(item) => {
-              return item._id;
-            }}
-            renderItem={({ item }) => {
-              return (
-                <View>
-                  {item?.type !== "audio" && (
-                    <FileMedia
-                      data={item}
-                      key={item._id}
-                      activeScreen="media"
-                    />
-                  )}
-                </View>
-              );
-            }}
-            numColumns={3}
-          />
-        )}
-      </ScrollView>
-    </View>
+    </SafeAreaProvider>
   );
 };
 

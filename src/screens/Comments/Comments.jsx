@@ -9,6 +9,8 @@ import {
   Keyboard,
   Dimensions,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Comment from "../../components/Comment";
 import CommentInput from "../../components/CommentInput";
@@ -46,7 +48,7 @@ export default function Comments(props) {
   const userState = useUserState();
   const [comments, setcomments] = useState([...props.route.params.comments]);
   const [textInputFocused, setTextInputFocused] = useState(false);
-  const [isReplay, setisReplay] = useState(true)
+  const [isReplay, setisReplay] = useState(true);
   const postId = props?.route?.params?.id;
   let tempcomment = "";
   const handlecommentinput = (props) => {
@@ -116,7 +118,6 @@ export default function Comments(props) {
               },
               config
             );
-    
           }
           socket.emit("send_comments", data);
           setLoading(false);
@@ -252,7 +253,10 @@ export default function Comments(props) {
   };
 
   return (
-    <View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : ""}
+      style={{ flex: 1 }}
+    >
       <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
         <View style={styles.main}>
           <View style={styles.header}>
@@ -303,7 +307,7 @@ export default function Comments(props) {
           onBlur={handleTextInputBlur}
         />
       </SafeAreaView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

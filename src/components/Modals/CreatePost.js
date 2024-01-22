@@ -1,16 +1,18 @@
-import React, { useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native"
-import AddButton from "../AddButton"
-import { MaterialIcons, Entypo } from "react-native-vector-icons"
-import { useNavigation } from "@react-navigation/native"
-import Color from "../../../assets/colors/Color"
-import { useUserState } from "../../slices/userSlice"
-import { Image } from "react-native"
-import { scale } from "react-native-size-matters"
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import AddButton from "../AddButton";
+import { MaterialIcons, Entypo } from "react-native-vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import Color from "../../../assets/colors/Color";
+import { useUserState } from "../../slices/userSlice";
+import { Image } from "react-native";
+import { scale } from "react-native-size-matters";
+import { screenHeight } from "../../utils/ScreenDimensions";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CreatePost = (props) => {
-  const navigation = useNavigation()
-  const userstate = useUserState()
+  const navigation = useNavigation();
+  const userstate = useUserState();
 
   return (
     <Modal animationType="slide">
@@ -33,8 +35,8 @@ const CreatePost = (props) => {
               onPress={() => {
                 navigation.navigate("AddPost", {
                   origin: "story",
-                })
-                props.closeModal()
+                });
+                props.closeModal();
               }}
             >
               <Image
@@ -54,14 +56,15 @@ const CreatePost = (props) => {
         />
       </View>
     </Modal>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   mainContainer: {
     height: "100%",
     width: "100%",
     paddingHorizontal: 17,
+    flex: 1,
   },
   spotLight: {
     position: "absolute",
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
   cancelIcon: {
     alignSelf: "flex-end",
     paddingHorizontal: 15,
-    marginTop: 17,
+    marginTop: screenHeight * 0.03,
   },
   addPost: {
     alignContent: "center",
@@ -105,6 +108,6 @@ const styles = StyleSheet.create({
     width: scale(28),
     height: scale(28),
   },
-})
+});
 
-export default CreatePost
+export default CreatePost;

@@ -4,7 +4,7 @@ import HeaderNormal from "../../components/HeaderNormal";
 import { Entypo } from "react-native-vector-icons";
 import { useUserStateActions } from "../../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { BASE_URL } from "../../../CONSTANTS.js";
 import { useUserState } from "../../slices/userSlice";
 
@@ -12,6 +12,7 @@ import Color from "../../../assets/colors/Color";
 import axios from "axios";
 import { useCartStateActions } from "../../slices/cartSlice";
 import { SETTINGS_DATA } from "./settingsData";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 export default function Settings() {
   const userState = useUserState();
@@ -56,7 +57,8 @@ export default function Settings() {
     }
   };
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <HeaderNormal title={"Settings"} />
       <View>
         <View style={styles.mainListItems}>
@@ -78,7 +80,7 @@ export default function Settings() {
           })}
         </View>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

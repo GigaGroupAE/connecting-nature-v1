@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import HeaderNormal from "../../components/HeaderNormal";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import InputText from "../../components/InputText";
 import AddGroupLeaderBtn from "../../components/AddGroupLeaderBtn";
@@ -24,6 +24,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { BASE_URL } from "../../../CONSTANTS";
 import Color from "../../../assets/colors/Color";
 import { useStateContext } from "../../contexts/ContextProvider.js";
+import CustomStatsBar from "../../components/CustomStatsBar";
 export default function CreateGroup() {
   const [loading, setLoading] = useState(false);
 
@@ -150,7 +151,8 @@ export default function CreateGroup() {
     setgroupLeader(props);
   };
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <View style={styles.main}>
         <HeaderNormal title={"Create Profile"} onback={handlebackpress} />
         <KeyboardAvoidingView behavior="padding">
@@ -368,7 +370,7 @@ export default function CreateGroup() {
           </View>
         </KeyboardAvoidingView>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

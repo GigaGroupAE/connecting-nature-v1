@@ -13,6 +13,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import ChatScreenHeader from "./Components/ChatScreenHeader/ChatScreenHeader";
 import { io } from "socket.io-client";
@@ -448,193 +450,198 @@ const ChatPageCN = (props) => {
     } catch (error) {}
   };
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <>
-        {!isLongPressed && (
-          <ChatScreenHeader
-            groupState={props.route.params.group}
-            handleShowInput={handleShowInput}
-          />
-        )}
-        {isLongPressed && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              height: "7.4%",
-              width: "100%",
-              backgroundColor: Color.Blue,
-              paddingHorizontal: 15,
-            }}
-          >
-            <Pressable
-              onPress={() => setIsLongPressed(false)}
-              style={{ alignSelf: "center" }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : ""}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <>
+          {!isLongPressed && (
+            <ChatScreenHeader
+              groupState={props.route.params.group}
+              handleShowInput={handleShowInput}
+            />
+          )}
+          {isLongPressed && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                height: "7.4%",
+                width: "100%",
+                backgroundColor: Color.Blue,
+                paddingHorizontal: 15,
+              }}
             >
-              <Entypo
-                name="cross"
-                color={Color.White}
-                size={25}
-                // style={{ marginTop: 0, paddingRight: "55%" }}
-              />
-            </Pressable>
-            <TouchableOpacity
-              android_ripple={{ color: Color.LightGrey, borderless: true }}
-              style={{ alignSelf: "center" }}
-              onPress={handleDeleteMessage}
-            >
-              <MaterialCommunityIcons
-                name="delete"
-                color={Color.White}
-                size={25}
-                style={{ marginTop: 0 }}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {showInput ? (
-          <View
-            style={{
-              backgroundColor: Color.White,
-              width: "100%",
-            }}
-          >
-            <View style={styles.chatSearchContainer}>
-              <TouchableOpacity onPress={() => setShowInput(false)}>
-                <Entypo name="cross" size={28} color={Color.Grey} />
-              </TouchableOpacity>
-              <View style={styles.searchContainer}>
-                <TextInput
-                  autoFocus
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  style={styles.textBox}
+              <Pressable
+                onPress={() => setIsLongPressed(false)}
+                style={{ alignSelf: "center" }}
+              >
+                <Entypo
+                  name="cross"
+                  color={Color.White}
+                  size={25}
+                  // style={{ marginTop: 0, paddingRight: "55%" }}
                 />
+              </Pressable>
+              <TouchableOpacity
+                android_ripple={{ color: Color.LightGrey, borderless: true }}
+                style={{ alignSelf: "center" }}
+                onPress={handleDeleteMessage}
+              >
+                <MaterialCommunityIcons
+                  name="delete"
+                  color={Color.White}
+                  size={25}
+                  style={{ marginTop: 0 }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {showInput ? (
+            <View
+              style={{
+                backgroundColor: Color.White,
+                width: "100%",
+              }}
+            >
+              <View style={styles.chatSearchContainer}>
+                <TouchableOpacity onPress={() => setShowInput(false)}>
+                  <Entypo name="cross" size={28} color={Color.Grey} />
+                </TouchableOpacity>
+                <View style={styles.searchContainer}>
+                  <TextInput
+                    autoFocus
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    style={styles.textBox}
+                  />
+                </View>
               </View>
             </View>
-          </View>
-        ) : null}
+          ) : null}
 
-        <View style={styles.container}>
-          {
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              style={{
-                marginHorizontal: 10,
-              }}
-              inverted={true}
-              keyExtractor={(item) => item._id}
-              extraData={
-                searchQuery === ""
-                  ? chatMessages
-                  : chatMessages.filter((message, index) => {
-                      if (typeof message.content === "string") {
-                        if (message.content.match(searchQuery)) {
-                          return message;
-                        }
-                      }
-                    })
-              }
-              data={
-                searchQuery === ""
-                  ? chatMessages
-                  : chatMessages.filter((message, index) => {
-                      if (typeof message.content === "string") {
-                        if (message.content.match(searchQuery)) {
-                          console.log("matched");
-                          return message;
-                        }
-                      } else return null;
-                    })
-              }
-              onEndReachedThreshold={0.1}
-              onEndReached={() => {
-                console.log("FETCHING NEW MESSAGES");
-              }}
-              renderItem={({ item, index }) => {
-                let timePassed = calculateTimeDifference(item.date);
-
-                return (
-                  <View style={{ marginVertical: "1%" }}>
-                    {item.type === "text" ? (
-                      <NormalMessageCn
-                        setmodalVisible={setmodalVisible}
-                        longPress={handleDelet}
-                        socket={socket}
-                        item={item}
-                      />
-                    ) : null}
-                    {item.type === "image" ? (
-                      <TouchableOpacity>
-                        <ImageMessageCn
-                          socket={socket}
-                          longPress={handleDelet}
-                          item={item}
-                          onPress={() =>
-                            props.navigation.navigate("ViewImage", {
-                              url: `${BASE_URL}/messageMedia/${item.content}`,
-                              message: item.content,
-                            })
+          <View style={styles.container}>
+            {
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                style={{
+                  marginHorizontal: 10,
+                }}
+                inverted={true}
+                keyExtractor={(item) => item._id}
+                extraData={
+                  searchQuery === ""
+                    ? chatMessages
+                    : chatMessages.filter((message, index) => {
+                        if (typeof message.content === "string") {
+                          if (message.content.match(searchQuery)) {
+                            return message;
                           }
-                        />
-                      </TouchableOpacity>
-                    ) : null}
-                    {item.type === "document" ? (
-                      <DocumentMessageCn
-                        title={"Select"}
-                        socket={socket}
-                        item={item}
-                        longPress={handleDelet}
-                      />
-                    ) : null}
+                        }
+                      })
+                }
+                data={
+                  searchQuery === ""
+                    ? chatMessages
+                    : chatMessages.filter((message, index) => {
+                        if (typeof message.content === "string") {
+                          if (message.content.match(searchQuery)) {
+                            console.log("matched");
+                            return message;
+                          }
+                        } else return null;
+                      })
+                }
+                onEndReachedThreshold={0.1}
+                onEndReached={() => {
+                  console.log("FETCHING NEW MESSAGES");
+                }}
+                renderItem={({ item, index }) => {
+                  let timePassed = calculateTimeDifference(item.date);
 
-                    {item.type === "audio" ? (
-                      <RecordingVoiceMessageCn
-                        socket={socket}
-                        item={item}
-                        longPress={handleDelet}
-                      />
-                    ) : null}
-                    {item.type === "video" ? (
-                      <TouchableOpacity>
-                        <VideoMessageCn
+                  return (
+                    <View style={{ marginVertical: "1%" }}>
+                      {item.type === "text" ? (
+                        <NormalMessageCn
+                          setmodalVisible={setmodalVisible}
                           longPress={handleDelet}
                           socket={socket}
                           item={item}
-                          onPress={() =>
-                            props.navigation.navigate("ViewImage", {
-                              url: `${BASE_URL}/messageMedia/${item.content}`,
-                              message: item.content,
-                            })
-                          }
                         />
-                      </TouchableOpacity>
-                    ) : null}
-                  </View>
-                );
-              }}
+                      ) : null}
+                      {item.type === "image" ? (
+                        <TouchableOpacity>
+                          <ImageMessageCn
+                            socket={socket}
+                            longPress={handleDelet}
+                            item={item}
+                            onPress={() =>
+                              props.navigation.navigate("ViewImage", {
+                                url: `${BASE_URL}/messageMedia/${item.content}`,
+                                message: item.content,
+                              })
+                            }
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                      {item.type === "document" ? (
+                        <DocumentMessageCn
+                          title={"Select"}
+                          socket={socket}
+                          item={item}
+                          longPress={handleDelet}
+                        />
+                      ) : null}
+
+                      {item.type === "audio" ? (
+                        <RecordingVoiceMessageCn
+                          socket={socket}
+                          item={item}
+                          longPress={handleDelet}
+                        />
+                      ) : null}
+                      {item.type === "video" ? (
+                        <TouchableOpacity>
+                          <VideoMessageCn
+                            longPress={handleDelet}
+                            socket={socket}
+                            item={item}
+                            onPress={() =>
+                              props.navigation.navigate("ViewImage", {
+                                url: `${BASE_URL}/messageMedia/${item.content}`,
+                                message: item.content,
+                              })
+                            }
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                  );
+                }}
+              />
+            }
+            <View style={{ marginLeft: "40%" }}>
+              {imgloading && (
+                <ActivityIndicator size={"large"} color={Color.Blue} />
+              )}
+            </View>
+
+            <ChatBottomBar
+              disabled={loading}
+              pick={pick}
+              pickDoc={pickDoc}
+              startRecording={startRecording}
+              stopRecording={stopRecording}
+              handleCamera={handleCamera}
+              sendtext={sendtext}
             />
-          }
-          <View style={{ marginLeft: "40%" }}>
-            {imgloading && (
-              <ActivityIndicator size={"large"} color={Color.Blue} />
-            )}
           </View>
-
-          <ChatBottomBar
-            disabled={loading}
-            pick={pick}
-            pickDoc={pickDoc}
-            startRecording={startRecording}
-            stopRecording={stopRecording}
-            handleCamera={handleCamera}
-            sendtext={sendtext}
-          />
-        </View>
-      </>
-    </TouchableWithoutFeedback>
+        </>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

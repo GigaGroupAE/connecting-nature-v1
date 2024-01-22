@@ -17,9 +17,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useContactState } from "./../../slices/contactslice";
 import Color from "../../../assets/colors/Color";
 import Contact from "./contact";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "react-native-vector-icons";
 import HeaderNormal from "../../components/HeaderNormal";
+import CustomStatsBar from "../../components/CustomStatsBar";
 export default function Invite() {
   //const contactstate = useContactsState();
   const navigation = useNavigation();
@@ -58,7 +59,8 @@ export default function Invite() {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <HeaderNormal title="Add Participants" />
 
       <View style={[styles.body]}>
@@ -116,7 +118,7 @@ export default function Invite() {
           )}
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

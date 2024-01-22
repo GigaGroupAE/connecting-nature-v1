@@ -32,6 +32,8 @@ import { BASE_URL } from "../../../CONSTANTS";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { ActivityIndicator } from "react-native";
 import verification from "../../../assets/verification.png";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -314,35 +316,40 @@ const UserList = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <HeaderNormal title="Verification Request" />
-      <View style={styles.container}>
-        {data?.requests?.length == 0 ? (
-          <View style={styles.noRequestContainer}>
-            <View style={{ alignItems: "center", marginBottom: height * 0.18 }}>
-              <Image source={verification} style={styles.bellIcon} />
-              <Text style={styles.heading}>
-                No Verification Request Received Yet!
-              </Text>
-              <Text style={styles.subHeading}>
-                There are no verification request received yet
-              </Text>
-              <Text style={styles.subHeading}>
-                . Once you received the requests it will be listed{" "}
-              </Text>
-              <Text style={styles.subHeading}>in this section.</Text>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={{ flex: 1 }}>
+        <HeaderNormal title="Verification Request" />
+        <View style={styles.container}>
+          {data?.requests?.length == 0 ? (
+            <View style={styles.noRequestContainer}>
+              <View
+                style={{ alignItems: "center", marginBottom: height * 0.18 }}
+              >
+                <Image source={verification} style={styles.bellIcon} />
+                <Text style={styles.heading}>
+                  No Verification Request Received Yet!
+                </Text>
+                <Text style={styles.subHeading}>
+                  There are no verification request received yet
+                </Text>
+                <Text style={styles.subHeading}>
+                  . Once you received the requests it will be listed{" "}
+                </Text>
+                <Text style={styles.subHeading}>in this section.</Text>
+              </View>
             </View>
-          </View>
-        ) : (
-          <FlatList
-            data={data.requests}
-            renderItem={renderItem}
-            keyExtractor={(item) => item._id}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-          />
-        )}
+          ) : (
+            <FlatList
+              data={data.requests}
+              renderItem={renderItem}
+              keyExtractor={(item) => item._id}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+            />
+          )}
+        </View>
       </View>
-    </View>
+    </SafeAreaProvider>
   );
 };
 

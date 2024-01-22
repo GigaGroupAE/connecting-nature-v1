@@ -22,6 +22,8 @@ import { useUserState } from "./../../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/Header";
 import HeaderNormal from "../../components/HeaderNormal";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 function Support(props) {
   const userState = useUserState();
   const [groups, setgroups] = useState([]);
@@ -156,8 +158,10 @@ function Support(props) {
   // Function rendering the JSX for this screen.
   return (
     // Using ScrollView to dismiss keyboard when user clicks anywhere on the screen.
-    <View style={[styles.body]}>
-      {/* <Appbar.Header
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={[styles.body]}>
+        {/* <Appbar.Header
         style={{
           width: "100%",
           height: 70,
@@ -187,458 +191,459 @@ function Support(props) {
           }}
         />
       </Appbar.Header> */}
-      <View style={{ width: "100%" }}>
-        <HeaderNormal title={"Support"} onback={() => navigation.goBack()} />
-      </View>
+        <View style={{ width: "100%" }}>
+          <HeaderNormal title={"Support"} onback={() => navigation.goBack()} />
+        </View>
 
-      <View style={[styles.row, { elevation: 2 }]}>
-        <TouchableOpacity
-          onPress={ContactUs}
-          style={[
-            styles.btnTab,
-            { borderRightWidth: 1, borderRightColor: "#D3D3D3" },
-          ]}
-        >
-          <Text
-            style={{
-              fontFamily: "Roboto_500Medium",
-              fontSize: 14,
-              color: Color.Black,
-            }}
+        <View style={[styles.row, { elevation: 2 }]}>
+          <TouchableOpacity
+            onPress={ContactUs}
+            style={[
+              styles.btnTab,
+              { borderRightWidth: 1, borderRightColor: "#D3D3D3" },
+            ]}
           >
-            Contact Us
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={FAQs}
-          style={[
-            styles.btnTab,
-            { borderRightWidth: 1, borderRightColor: "#D3D3D3" },
-          ]}
-        >
-          <Text
-            style={{
-              fontFamily: "Roboto_500Medium",
-              fontSize: 14,
-              color: Color.Black,
-            }}
-          >
-            FAQs
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        style={{
-          flex: 1,
-          width: "100%",
-        }}
-        contentContainerStyle={{
-          alignItems: "center",
-        }}
-      >
-        {page === "ContactUs" && (
-          <>
-            <View
+            <Text
               style={{
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                padding: 20,
-                marginTop: 10,
+                fontFamily: "Roboto_500Medium",
+                fontSize: 14,
+                color: Color.Black,
               }}
             >
-              <Text
+              Contact Us
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={FAQs}
+            style={[
+              styles.btnTab,
+              { borderRightWidth: 1, borderRightColor: "#D3D3D3" },
+            ]}
+          >
+            <Text
+              style={{
+                fontFamily: "Roboto_500Medium",
+                fontSize: 14,
+                color: Color.Black,
+              }}
+            >
+              FAQs
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          style={{
+            flex: 1,
+            width: "100%",
+          }}
+          contentContainerStyle={{
+            alignItems: "center",
+          }}
+        >
+          {page === "ContactUs" && (
+            <>
+              <View
                 style={{
-                  fontFamily: "Roboto_600SemiBold",
-                  fontSize: 16,
-                  color: Color.Black,
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  padding: 20,
+                  marginTop: 10,
                 }}
               >
-                EMAIL US
-              </Text>
-              <TouchableOpacity
-                onPress={() => Linking.openURL("mailto:contact@intranet.com")}
-                style={[
-                  {
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  },
-                ]}
-              >
-                <View
+                <Text
+                  style={{
+                    fontFamily: "Roboto_600SemiBold",
+                    fontSize: 16,
+                    color: Color.Black,
+                  }}
+                >
+                  EMAIL US
+                </Text>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL("mailto:contact@intranet.com")}
                   style={[
-                    styles.row,
                     {
-                      marginTop: 10,
-                      marginBottom: 10,
-                      paddingTop: 5,
-                      paddingBottom: 5,
-                      borderRadius: 5,
                       width: "100%",
-                      justifyContent: "flex-start",
-                      alignSelf: "center",
+                      alignItems: "center",
+                      justifyContent: "center",
                     },
                   ]}
                 >
-                  <IconButton
-                    icon="email"
-                    color={Color.Black}
-                    size={20}
-                    style={{
-                      backgroundColor: "#EDEDED",
-                      borderWidth: 0,
-                      borderColor: Color.White,
-                    }}
-                  />
                   <View
-                    style={{
-                      marginLeft: 12,
-                      flexDirection: "column",
-                    }}
+                    style={[
+                      styles.row,
+                      {
+                        marginTop: 10,
+                        marginBottom: 10,
+                        paddingTop: 5,
+                        paddingBottom: 5,
+                        borderRadius: 5,
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        alignSelf: "center",
+                      },
+                    ]}
                   >
-                    <Text
+                    <IconButton
+                      icon="email"
+                      color={Color.Black}
+                      size={20}
                       style={{
-                        fontFamily: "Roboto_500Medium",
-                        fontSize: 15,
-                        color: Color.Black,
+                        backgroundColor: "#EDEDED",
+                        borderWidth: 0,
+                        borderColor: Color.White,
+                      }}
+                    />
+                    <View
+                      style={{
+                        marginLeft: 12,
+                        flexDirection: "column",
                       }}
                     >
-                      contact@intranet.com
-                    </Text>
+                      <Text
+                        style={{
+                          fontFamily: "Roboto_500Medium",
+                          fontSize: 15,
+                          color: Color.Black,
+                        }}
+                      >
+                        contact@intranet.com
+                      </Text>
+                    </View>
+                    <IconButton
+                      icon="chevron-right"
+                      color={Color.Black}
+                      size={25}
+                      style={{
+                        marginLeft: "auto",
+                        margin: 0,
+                        marginRight: 10,
+                        padding: 0,
+                      }}
+                    />
                   </View>
-                  <IconButton
-                    icon="chevron-right"
-                    color={Color.Black}
-                    size={25}
-                    style={{
-                      marginLeft: "auto",
-                      margin: 0,
-                      marginRight: 10,
-                      padding: 0,
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                padding: 20,
-              }}
-            >
-              <Text
+                </TouchableOpacity>
+              </View>
+              <View
                 style={{
-                  fontFamily: "Roboto_600SemiBold",
-                  fontSize: 16,
-                  color: Color.Black,
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  padding: 20,
                 }}
               >
-                Call US
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL(`tel:${"+923441234567"}`);
-                }}
-                style={[
-                  {
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  },
-                ]}
-              >
-                <View
+                <Text
+                  style={{
+                    fontFamily: "Roboto_600SemiBold",
+                    fontSize: 16,
+                    color: Color.Black,
+                  }}
+                >
+                  Call US
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    Linking.openURL(`tel:${"+923441234567"}`);
+                  }}
                   style={[
-                    styles.row,
                     {
-                      marginTop: 10,
-                      marginBottom: 10,
-                      paddingTop: 5,
-                      paddingBottom: 5,
-                      borderRadius: 5,
                       width: "100%",
-                      justifyContent: "flex-start",
-                      alignSelf: "center",
+                      alignItems: "center",
+                      justifyContent: "center",
                     },
                   ]}
                 >
-                  <IconButton
-                    icon="phone"
-                    color={Color.Black}
-                    size={20}
-                    style={{
-                      backgroundColor: "#EDEDED",
-                      borderWidth: 0,
-                      borderColor: Color.White,
-                    }}
-                  />
                   <View
-                    style={{
-                      marginLeft: 12,
-                      flexDirection: "column",
-                    }}
+                    style={[
+                      styles.row,
+                      {
+                        marginTop: 10,
+                        marginBottom: 10,
+                        paddingTop: 5,
+                        paddingBottom: 5,
+                        borderRadius: 5,
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        alignSelf: "center",
+                      },
+                    ]}
                   >
-                    <Text
+                    <IconButton
+                      icon="phone"
+                      color={Color.Black}
+                      size={20}
                       style={{
-                        fontFamily: "Roboto_500Medium",
-                        fontSize: 15,
-                        color: colors.text,
+                        backgroundColor: "#EDEDED",
+                        borderWidth: 0,
+                        borderColor: Color.White,
+                      }}
+                    />
+                    <View
+                      style={{
+                        marginLeft: 12,
+                        flexDirection: "column",
                       }}
                     >
-                      +92 34 1234567
-                    </Text>
+                      <Text
+                        style={{
+                          fontFamily: "Roboto_500Medium",
+                          fontSize: 15,
+                          color: colors.text,
+                        }}
+                      >
+                        +92 34 1234567
+                      </Text>
+                    </View>
+                    <IconButton
+                      icon="chevron-right"
+                      color={Color.Black}
+                      size={25}
+                      style={{
+                        marginLeft: "auto",
+                        margin: 0,
+                        marginRight: 10,
+                        padding: 0,
+                      }}
+                    />
                   </View>
-                  <IconButton
-                    icon="chevron-right"
-                    color={Color.Black}
-                    size={25}
-                    style={{
-                      marginLeft: "auto",
-                      margin: 0,
-                      marginRight: 10,
-                      padding: 0,
-                    }}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={{ marginVertical: 30 }}>
-              <SubmitButton
-                width={Dimensions.get("screen").width * 0.5}
-                labelStyle={{ fontSize: 18, letterSpacing: 0.7 }}
+                </TouchableOpacity>
+              </View>
+              <View style={{ marginVertical: 30 }}>
+                <SubmitButton
+                  width={Dimensions.get("screen").width * 0.5}
+                  labelStyle={{ fontSize: 18, letterSpacing: 0.7 }}
+                  style={{
+                    alignSelf: "center",
+                    borderRadius: 8,
+                    backgroundColor: "#4582C3",
+                  }}
+                  onPress={() => {
+                    handleNavigateAdminChat();
+                  }}
+                >
+                  Chat Admin
+                </SubmitButton>
+              </View>
+              <View
                 style={{
-                  alignSelf: "center",
-                  borderRadius: 8,
-                  backgroundColor: "#4582C3",
-                }}
-                onPress={() => {
-                  handleNavigateAdminChat();
+                  backgroundColor: "#E4F1FF",
+                  marginHorizontal: 20,
+                  padding: 25,
                 }}
               >
-                Chat Admin
-              </SubmitButton>
-            </View>
+                <Text
+                  style={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: Color.Black,
+                  }}
+                >
+                  We will respond to emails in 24 hours. It might take 1 week
+                  because of COVID. We are doing our best to serve you. Thank
+                  you for your patience.
+                </Text>
+              </View>
+            </>
+          )}
+
+          {page === "FAQs" && (
             <View
               style={{
-                backgroundColor: "#E4F1FF",
-                marginHorizontal: 20,
-                padding: 25,
+                flex: 1,
+
+                flexDirection: "column",
+                width: "100%",
               }}
             >
-              <Text
-                style={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: Color.Black,
-                }}
-              >
-                We will respond to emails in 24 hours. It might take 1 week
-                because of COVID. We are doing our best to serve you. Thank you
-                for your patience.
-              </Text>
+              <List.AccordionGroup>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="1"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginBottom: 10,
+                    marginTop: 25,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="2"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="3"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="4"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="5"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="6"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+                <List.Accordion
+                  title=" What do you mean by a Service Provider?"
+                  id="7"
+                  style={{
+                    width: Dimensions.get("screen").width * 0.9,
+                    alignSelf: "center",
+                    marginVertical: 10,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 10,
+                  }}
+                  titleStyle={{
+                    fontFamily: "Roboto_500Medium",
+                    fontSize: 12,
+                    color: "#777777",
+                  }}
+                >
+                  <List.Item
+                    title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
+                    titleNumberOfLines={16}
+                    titleStyle={{
+                      fontFamily: "Roboto_400Regular",
+                      fontSize: 12,
+                    }}
+                    style={{ padding: 20, paddingVertical: 0 }}
+                  />
+                </List.Accordion>
+              </List.AccordionGroup>
             </View>
-          </>
-        )}
-
-        {page === "FAQs" && (
-          <View
-            style={{
-              flex: 1,
-
-              flexDirection: "column",
-              width: "100%",
-            }}
-          >
-            <List.AccordionGroup>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="1"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginBottom: 10,
-                  marginTop: 25,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="2"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="3"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="4"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="5"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="6"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-              <List.Accordion
-                title=" What do you mean by a Service Provider?"
-                id="7"
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  alignSelf: "center",
-                  marginVertical: 10,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 10,
-                }}
-                titleStyle={{
-                  fontFamily: "Roboto_500Medium",
-                  fontSize: 12,
-                  color: "#777777",
-                }}
-              >
-                <List.Item
-                  title="A Service Provider is someone who has a skill and is available for hire to lend you their services using their skill and talent. A Service can be Nursing service, Gardening service, Tution service, hence Nurses,"
-                  titleNumberOfLines={16}
-                  titleStyle={{
-                    fontFamily: "Roboto_400Regular",
-                    fontSize: 12,
-                  }}
-                  style={{ padding: 20, paddingVertical: 0 }}
-                />
-              </List.Accordion>
-            </List.AccordionGroup>
-          </View>
-        )}
-      </ScrollView>
-    </View>
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaProvider>
   );
 }
 export default Support;

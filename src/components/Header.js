@@ -6,12 +6,12 @@ import { useNavigation } from "@react-navigation/native";
 export default function Header(props) {
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>{props.title}</Text>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         {props.icon}
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 }
 

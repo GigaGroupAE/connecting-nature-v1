@@ -28,6 +28,8 @@ import * as Notifications from "expo-notifications";
 import { useUserState, useUserStateActions } from "../../slices/userSlice";
 import { BASE_URL } from "../../../CONSTANTS";
 import axios from "axios";
+import CustomStatsBar from "../../components/CustomStatsBar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -164,10 +166,12 @@ const Home = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+
       <View style={styles.pageContainer}>
         {HeaderComponent}
-        {campaign?.length !== 0 && <View>{ActivCampaignHeader}</View>}
+        {campaign && <View>{ActivCampaignHeader}</View>}
         {postsLoading ? (
           <PostSkeleton screen="home" />
         ) : (
@@ -201,8 +205,7 @@ const Home = () => {
         reload={() => console.log()}
         storyReload={() => console.log()}
       />
-      <StatusBar backgroundColor={Color.Blue} />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

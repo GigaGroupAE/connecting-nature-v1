@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,65 +9,67 @@ import {
   TouchableHighlight,
   Dimensions,
   Pressable,
-} from "react-native"
+} from "react-native";
 //icons import
-import { MaterialIcons, AntDesign } from "react-native-vector-icons"
-import * as FileSystem from "expo-file-system"
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
+import { MaterialIcons, AntDesign } from "react-native-vector-icons";
+import * as FileSystem from "expo-file-system";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
 //document picker
-import * as DocumentPicker from "expo-document-picker"
+import * as DocumentPicker from "expo-document-picker";
 
-import { useNavigation } from "@react-navigation/native"
-import axios from "axios"
-import { useUserState } from "./../../slices/userSlice"
-import { BASE_URL } from "../../../CONSTANTS.js"
-import { SafeAreaView } from "react-native-safe-area-context"
-import Color from "../../../assets/colors/Color.js"
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { useUserState } from "./../../slices/userSlice";
+import { BASE_URL } from "../../../CONSTANTS.js";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Color from "../../../assets/colors/Color.js";
 
-import { useStateContext } from "../../contexts/ContextProvider.js"
-import PostTypeModal from "../../components/PostTypeModal"
-import PostCampaignSelectModal from "../../components/PostCampaignSelectModal"
-import { axiosInstance } from "../../../axiosInstance"
+import { useStateContext } from "../../contexts/ContextProvider.js";
+import PostTypeModal from "../../components/PostTypeModal";
+import PostCampaignSelectModal from "../../components/PostCampaignSelectModal";
+import { axiosInstance } from "../../../axiosInstance";
+import CustomStatsBar from "../../components/CustomStatsBar";
+import { screenHeight, screenWidth } from "../../utils/ScreenDimensions";
 
 export default function NewPost(props) {
   //images
-  const [image, setImage] = useState(null) // this will be an array that will hold the uri's of images to post
-  const navigation = useNavigation()
-  const userState = useUserState()
-  const [description, setDescription] = useState("")
-  const [data, setData] = useState(null)
-  const [compressImg, setCompressImg] = useState(null)
-  const [modalCampaign, setmodalCampaign] = useState(false)
-  const [campaignsName, setcampaignsName] = useState("")
-  const [campaign, setcampaign] = useState([])
+  const [image, setImage] = useState(null); // this will be an array that will hold the uri's of images to post
+  const navigation = useNavigation();
+  const userState = useUserState();
+  const [description, setDescription] = useState("");
+  const [data, setData] = useState(null);
+  const [compressImg, setCompressImg] = useState(null);
+  const [modalCampaign, setmodalCampaign] = useState(false);
+  const [campaignsName, setcampaignsName] = useState("");
+  const [campaign, setcampaign] = useState([]);
 
-  const [postType, setpostType] = useState(false)
+  const [postType, setpostType] = useState(false);
 
-  const { loading, setLoading, showSnackbar, setStories } = useStateContext()
+  const { loading, setLoading, showSnackbar, setStories } = useStateContext();
   const handleonPost = async () => {
-    setpostType(false)
-    setmodalCampaign(false)
+    setpostType(false);
+    setmodalCampaign(false);
     if (!description) {
-      showSnackbar("You can't share empty Post")
-      return
+      showSnackbar("You can't share empty Post");
+      return;
     }
-    navigation.goBack()
+    navigation.goBack();
 
     //creating form data
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append("description", description)
-    formData.append("postedby", JSON.stringify(userState.id))
+    formData.append("description", description);
+    formData.append("postedby", JSON.stringify(userState.id));
 
     if (!image) {
-      formData.append("media", null)
+      formData.append("media", null);
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: data.uri,
         type: data.mimeType,
-      })
+      });
     }
     const config = {
       headers: {
@@ -75,7 +77,7 @@ export default function NewPost(props) {
         Accept: "application/json",
         "auth-token": userState.token,
       },
-    }
+    };
 
     try {
       if (props.route.params.origin === "post") {
@@ -83,26 +85,26 @@ export default function NewPost(props) {
           `${BASE_URL}/posts/addpost/`,
           formData,
           config
-        )
-        showSnackbar("Post created successfully")
+        );
+        showSnackbar("Post created successfully");
       } else {
         if (image !== null) {
           const { data } = await axios.post(
             `${BASE_URL}/story/addstory/`,
             formData,
             config
-          )
+          );
 
-          showSnackbar("Story created successfully")
-          setStories([data])
+          showSnackbar("Story created successfully");
+          setStories([data]);
         } else {
-          alert("Cannot create a story without an image")
+          alert("Cannot create a story without an image");
         }
       }
     } catch (error) {
-      console.log(error, "error is ")
+      console.log(error, "error is ");
     }
-  }
+  };
 
   const supportedImageFormats = [
     "image/jpeg",
@@ -110,76 +112,76 @@ export default function NewPost(props) {
     "image/gif",
     "image/bmp",
     "image/tiff",
-  ]
+  ];
 
   const pick = async () => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({})
+      let result = await DocumentPicker.getDocumentAsync({});
 
       if (!result.cancelled) {
-        setCompressImg(result.assets[0].uri)
-        setData(result.assets[0])
-        setImage([result.assets[0].uri])
+        setCompressImg(result.assets[0].uri);
+        setData(result.assets[0]);
+        setImage([result.assets[0].uri]);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
     }
-  }
+  };
 
   const handlePostType = () => {
     if (campaign?.length === 0) {
-      handleonPost()
+      handleonPost();
     } else if (props.route.params.origin === "post") {
-      setpostType(true)
+      setpostType(true);
     } else {
-      handleonPost()
+      handleonPost();
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
           "/campaigns/get-multiple-by-query?status=executed"
-        )
+        );
 
-        setcampaignsName(response?.data?.campaigns)
+        setcampaignsName(response?.data?.campaigns);
       } catch (error) {
-        console.log("Error:", error)
+        console.log("Error:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
-  console.log(data?.uri)
+  console.log(data?.uri);
 
   const handleCampaignPost = async (campaignId) => {
-    setpostType(false)
-    setmodalCampaign(false)
+    setpostType(false);
+    setmodalCampaign(false);
     if (!description) {
-      showSnackbar("You can't share empty Post")
-      return
+      showSnackbar("You can't share empty Post");
+      return;
     }
-    navigation.goBack()
+    navigation.goBack();
 
     //creating form data
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append("description", description)
+    formData.append("description", description);
     //since we cannot add object to formdata and userState is an object
     //so we will STRINGIFY the userState and parse it at the backend
-    formData.append("postedby", JSON.stringify(userState.id))
-    formData.append("ref", campaignId)
+    formData.append("postedby", JSON.stringify(userState.id));
+    formData.append("ref", campaignId);
     if (!image) {
-      formData.append("media", null)
+      formData.append("media", null);
     } else {
       formData.append("media", {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: data.uri,
         type: data.mimeType,
-      })
+      });
     }
     const config = {
       headers: {
@@ -187,7 +189,7 @@ export default function NewPost(props) {
         Accept: "application/json",
         "auth-token": userState.token,
       },
-    }
+    };
 
     //api call
     try {
@@ -195,39 +197,40 @@ export default function NewPost(props) {
         `${BASE_URL}/posts/addpost/`,
         formData,
         config
-      )
+      );
 
-      showSnackbar("Post created successfully")
-      props?.route?.params?.reload()
+      showSnackbar("Post created successfully");
+      props?.route?.params?.reload();
     } catch (error) {
-      console.log(error, "error is ")
+      console.log(error, "error is ");
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
           "/campaigns/mostrecentcampaign"
-        )
+        );
 
         if (response?.data?.campaigns) {
-          setcampaign(response?.data?.campaigns)
+          setcampaign(response?.data?.campaigns);
         }
       } catch (error) {
-        console.log("Error:", error)
+        console.log("Error:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <View style={styles.mainContainer}>
         <View style={styles.head}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack()
+              navigation.goBack();
             }}
           >
             <AntDesign name="arrowleft" size={28} color="#707070" />
@@ -314,8 +317,8 @@ export default function NewPost(props) {
           />
         </View>
       </View>
-    </SafeAreaView>
-  )
+    </SafeAreaProvider>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -325,6 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 19,
     paddingVertical: 10,
+    flex: 1,
   },
   storyButton: {
     marginRight: "30%",
@@ -353,7 +357,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: Color.White,
     fontFamily: "Roboto_500Medium",
-    fontSize: Dimensions.get("screen").height * 0.02,
+    fontSize: screenHeight * 0.02,
   },
   disabledPostButtonText: {
     paddingHorizontal: 10,
@@ -361,21 +365,20 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: Color.Grey,
     fontFamily: "Roboto_500Medium",
-    fontSize: Dimensions.get("screen").height * 0.02,
+    fontSize: screenHeight * 0.02,
   },
   head: {
-    marginTop: "2%",
     alignContent: "center",
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
   },
   headerAvatar: {
-    marginTop: 40,
+    marginTop: screenHeight * 0.02,
     alignSelf: "flex-start",
-    borderRadius: 100,
-    width: Dimensions.get("screen").height * 0.08,
-    height: Dimensions.get("screen").height * 0.08,
+    borderRadius: 35,
+    width: 70,
+    height: 70,
     backgroundColor: Color.VeryLightGrey,
   },
   postContent: {
@@ -384,20 +387,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputField: {
-    marginTop: 40,
+    marginTop: screenHeight * 0.02,
     alignSelf: "flex-start",
     paddingTop: 20,
     paddingHorizontal: 10,
     width: "80%",
+    height: "65%",
     maxHeight: "65%",
     fontSize: 14,
     fontFamily: "Roboto_400Regular",
     color: Color.Grey,
+    flex: 1,
   },
   selectedImagesContainer: {
     flex: 1,
     position: "absolute",
-    bottom: 19,
+    bottom: screenHeight * 0.06,
     left: 9,
     flexDirection: "row",
     flexWrap: "wrap",
@@ -408,4 +413,4 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginLeft: 10,
   },
-})
+});

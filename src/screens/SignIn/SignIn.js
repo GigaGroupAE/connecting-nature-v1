@@ -20,7 +20,8 @@ import Header from "../../components/Header.js";
 import InputText from "../../components/InputText.js";
 import ButtonMain from "../../components/ButtonMain.js";
 import { useUserState, useUserStateActions } from "../../slices/userSlice.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar.js";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
@@ -34,7 +35,7 @@ const SignIn = () => {
   const userState = useUserState();
   const [location, setLocation] = useState(null);
 
-  const onHandleClick = useCallback(() => {
+  const onHandleClick = () => {
     if (phoneNumber.length !== 11) {
       showSnackbar("Phone number should be 11 digits");
       return;
@@ -75,7 +76,7 @@ const SignIn = () => {
         setLoading(false);
         console.log(err);
       });
-  }, [phoneNumber, loading, setLoading, showSnackbar, navigation]);
+  };
 
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -94,7 +95,8 @@ const SignIn = () => {
   }, []);
 
   return (
-    <KeyboardAvoidingView style={styles.mainContainer}>
+    <SafeAreaProvider>
+      <CustomStatsBar backgroundColor={Color.White} />
       <Header title={"Sign In"} />
       <View style={styles.container}>
         <Image
@@ -103,13 +105,8 @@ const SignIn = () => {
         />
         <View style={styles.subHeaderTextContainer}>
           <Text style={styles.subHeaderText}>
-            Connecting Nature is a mobile social media
-          </Text>
-          <Text style={styles.subHeaderText}>
-            app that encourages users to plant trees
-          </Text>
-          <Text style={styles.subHeaderText}>
-            and share pictures of nature.
+            Connecting Nature is a mobile social media app that encourages users
+            to plant trees and share pictures of nature.
           </Text>
         </View>
         <InputText
@@ -130,9 +127,7 @@ const SignIn = () => {
           <Text style={styles.createNew}>Sign Up!</Text>
         </TouchableOpacity>
       </View>
-      <StatusBar backgroundColor={Color.Blue} />
-
-    </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 };
 export default SignIn;
@@ -164,6 +159,8 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     color: Color.Grey,
     fontSize: Height * 0.018,
+    textAlign: "center",
+    lineHeight: 23,
   },
   createNewContainer: {
     flexDirection: "row",

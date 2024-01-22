@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Pressable, Dimensions } from "react-native";
 import { FontAwesome, Ionicons } from "react-native-vector-icons";
 import Color from "../../assets/colors/Color";
+import { screenHeight, screenWidth } from "../utils/ScreenDimensions";
 
 export default function AddButton(props) {
   return (
@@ -44,9 +45,10 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     backgroundColor: Color.Blue,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    padding: 15,
-    width: Dimensions.get("screen").width * 0.15,
+    borderRadius: screenHeight * 0.1,
+    width: screenWidth * 0.15,
+    height: screenHeight * 0.07,
+    justifyContent: "center",
   },
   tabStyle: {
     alignContent: "center",

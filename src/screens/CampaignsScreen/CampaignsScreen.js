@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,42 +7,44 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
-} from "react-native"
-import HeaderBack from "../../components/HeaderBack"
-import CampaignCard from "./CampaignCard"
-import BottomTab from "../../components/BottomTab"
-import { useIsFocused, useNavigation } from "@react-navigation/native"
-import Color from "../../../assets/colors/Color"
-import { useStateContext } from "../../contexts/ContextProvider"
-import { scale } from "react-native-size-matters"
-import NoCampaignIndicater from "../../components/NoCampaignIndicater"
-import { fetchCampaigns } from "../../utils/CampaignsHelper"
-import { useQuery } from "react-query"
-import CampaignsSkeletn from "../../components/Skeletns/CampaignsSkeletn"
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+} from "react-native";
+import HeaderBack from "../../components/HeaderBack";
+import CampaignCard from "./CampaignCard";
+import BottomTab from "../../components/BottomTab";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import Color from "../../../assets/colors/Color";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { scale } from "react-native-size-matters";
+import NoCampaignIndicater from "../../components/NoCampaignIndicater";
+import { fetchCampaigns } from "../../utils/CampaignsHelper";
+import { useQuery } from "react-query";
+import CampaignsSkeletn from "../../components/Skeletns/CampaignsSkeletn";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
+const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get("screen").width;
 
 export default function CampaignsScreen() {
   const {
     data: campaigns,
     isLoading: campaignsLoading,
     refetch,
-  } = useQuery("campaigns", fetchCampaigns)
-  const navigation = useNavigation()
-  const isFocused = useIsFocused()
-  const { setreactions, setcomment } = useStateContext()
-  const scrollToTop = useCallback(() => {}, [])
+  } = useQuery("campaigns", fetchCampaigns);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const { setreactions, setcomment } = useStateContext();
+  const scrollToTop = useCallback(() => {}, []);
   useEffect(() => {
     if (isFocused) {
-      refetch()
+      refetch();
     }
-  }, [isFocused])
+  }, [isFocused]);
 
   const handleNavigation = (campaign) => {
-    setreactions(campaign?.reactions)
-    setcomment(campaign?.messages)
-    navigation.navigate("CampaignWithPosts", { campaign })
-  }
+    setreactions(campaign?.reactions);
+    setcomment(campaign?.messages);
+    navigation.navigate("CampaignWithPosts", { campaign });
+  };
   const renderItem = useCallback(
     ({ item }) => (
       <TouchableOpacity onPress={() => handleNavigation(item)}>
@@ -63,11 +65,11 @@ export default function CampaignsScreen() {
       </TouchableOpacity>
     ),
     []
-  )
+  );
 
   const renderCampaigns = () => {
     if (campaignsLoading) {
-      return <CampaignsSkeletn />
+      return <CampaignsSkeletn />;
     } else if (!campaigns?.length) {
       return (
         <View
@@ -79,7 +81,7 @@ export default function CampaignsScreen() {
         >
           <NoCampaignIndicater />
         </View>
-      )
+      );
     } else {
       return (
         <FlatList
@@ -88,12 +90,13 @@ export default function CampaignsScreen() {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
         />
-      )
+      );
     }
-  }
+  };
 
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue, height: "100%" }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <HeaderBack title={"Campaigns"} />
       <View style={styles.main}>
         <Text style={styles.screenTitle}>Live & Upcoming Events</Text>
@@ -101,8 +104,8 @@ export default function CampaignsScreen() {
         {renderCampaigns()}
       </View>
       <BottomTab activeMenu={"Campaign"} scrollToTop={scrollToTop} />
-    </SafeAreaView>
-  )
+    </SafeAreaProvider>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -173,4 +176,4 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_400Regular",
     color: Color.Blue,
   },
-})
+});

@@ -13,7 +13,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { List } from "react-native-paper";
 import AdminBottomTab from "../../components/AdminBottomTab";
 import { Ionicons, MaterialIcons } from "react-native-vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import * as Contacts from "expo-contacts";
 import { useUserState } from "./../../slices/userSlice";
@@ -29,6 +29,7 @@ import { scale } from "react-native-size-matters";
 import GroupMembersList from "../../components/GroupMembersList";
 import { axiosInstance } from "../../../axiosInstance";
 import { useQuery } from "react-query";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
@@ -270,7 +271,8 @@ export default function AdminHome(props) {
     setgroupDetails(group);
   };
   return (
-    <SafeAreaView>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <View
         style={{
           backgroundColor: Color.White,
@@ -309,7 +311,7 @@ export default function AdminHome(props) {
             <Text style={styles.groupHeading}>GROUPS</Text>
             <FlatList
               data={sections}
-              renderItem={({ item ,index}) => (
+              renderItem={({ item, index }) => (
                 <View key={index}>
                   <View style={styles.adminGroupListContainer}>
                     <List.Accordion
@@ -652,7 +654,6 @@ export default function AdminHome(props) {
                   </View>
                 </View>
               )}
-            
             />
           </View>
           <AdminHomeManegeTab loading={loading} />
@@ -664,7 +665,7 @@ export default function AdminHome(props) {
         containerStyle={containerStyle}
         hideModal={hideModal}
       />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -682,13 +683,16 @@ const styles = StyleSheet.create({
     borderColor: Color.LightGrey,
     backgroundColor: Color.White,
     shadowColor: Color.Black,
+
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 2,
     },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
     elevation: 4,
+
     position: "relative",
     zIndex: 900,
     width: "90%",
@@ -740,12 +744,14 @@ const styles = StyleSheet.create({
     borderColor: Color.LightGrey,
     backgroundColor: Color.White,
     shadowColor: Color.Black,
+
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 2,
     },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
     elevation: 4,
     position: "relative",
     zIndex: 900,
