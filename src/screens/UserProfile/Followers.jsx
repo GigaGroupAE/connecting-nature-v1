@@ -13,6 +13,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useUserState, useUserStateActions } from "../../slices/userSlice";
 import UserFollowers from "./UserFollowers";
 import NoFollower from "./NoFollower";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
@@ -45,112 +47,115 @@ const Followers = () => {
     setactiveFollowing(true);
   };
   return (
-    <View style={styles.container}>
-      <HeaderNormal title={user.fullName} />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={styles.container}>
+        <HeaderNormal title={user.fullName} />
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          width: "100%",
-          borderBottomWidth: 1,
-          borderBottomColor: Color.VeryLightGrey,
-          height: Height * 0.05,
-        }}
-      >
-        <TouchableOpacity
-          style={
-            activeFollowers ? styles.activeScreen : styles.followerContainer
-          }
-          onPress={handleActiveFollower}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            width: "100%",
+            borderBottomWidth: 1,
+            borderBottomColor: Color.VeryLightGrey,
+            height: Height * 0.05,
+          }}
         >
-          <Text style={styles.title}>{userFollowing?.followers?.length}</Text>
-          <Text style={styles.title}>followers</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            activeFollowing ? styles.activeScreen : styles.followerContainer
-          }
-          onPress={handleActiveFollowing}
-        >
-          <Text style={styles.title}>{userFollowing?.following?.length}</Text>
-          <Text style={styles.title}>following</Text>
-        </TouchableOpacity>
-        <TouchableOpacity></TouchableOpacity>
+          <TouchableOpacity
+            style={
+              activeFollowers ? styles.activeScreen : styles.followerContainer
+            }
+            onPress={handleActiveFollower}
+          >
+            <Text style={styles.title}>{userFollowing?.followers?.length}</Text>
+            <Text style={styles.title}>followers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={
+              activeFollowing ? styles.activeScreen : styles.followerContainer
+            }
+            onPress={handleActiveFollowing}
+          >
+            <Text style={styles.title}>{userFollowing?.following?.length}</Text>
+            <Text style={styles.title}>following</Text>
+          </TouchableOpacity>
+          <TouchableOpacity></TouchableOpacity>
+        </View>
+
+        {activeFollowers ? (
+          <View style={{ flex: 1 }}>
+            {userFollowing.followers.length === 0 ? (
+              <View>
+                {userFollowing.phoneNumber === userState.phoneNumber ? (
+                  <NoFollower
+                    titleMain="No Follower Currently"
+                    title="There are no users that followed you"
+                    subtitle="at the moment."
+                  />
+                ) : (
+                  <NoFollower
+                    titleMain="No Follower Currently"
+                    title="This user currently has no followers"
+                  />
+                )}
+              </View>
+            ) : (
+              <FlatList
+                data={userFollowing.followers}
+                renderItem={({ item }) =>
+                  renderItem(
+                    { item },
+                    screen,
+                    navigation,
+                    userState,
+                    user,
+                    userActions,
+                    setFollowing
+                  )
+                } // Pass 'screen' as a parameter
+                keyExtractor={(item) => Math.random()}
+              />
+            )}
+          </View>
+        ) : (
+          <View style={{ flex: 1 }}>
+            {userFollowing.following.length === 0 ? (
+              <View>
+                {userFollowing.phoneNumber === userState.phoneNumber ? (
+                  <NoFollower
+                    titleMain="You did not Followed anyone"
+                    title="There are no users that you followed"
+                    subtitle="at the moment."
+                  />
+                ) : (
+                  <NoFollower
+                    titleMain="No Followed Currently"
+                    title="This user is not following anyone at the moment"
+                  />
+                )}
+              </View>
+            ) : (
+              <FlatList
+                data={userFollowing.following}
+                renderItem={({ item }) =>
+                  renderItem(
+                    { item },
+                    screen,
+                    navigation,
+                    userState,
+                    user,
+                    userActions,
+                    setFollowing
+                  )
+                } // Pass 'screen' as a parameter
+                keyExtractor={(item) => Math.random()}
+              />
+            )}
+          </View>
+        )}
       </View>
-
-      {activeFollowers ? (
-        <View style={{ flex: 1 }}>
-          {userFollowing.followers.length === 0 ? (
-            <View>
-              {userFollowing.phoneNumber === userState.phoneNumber ? (
-                <NoFollower
-                  titleMain="No Follower Currently"
-                  title="There are no users that followed you"
-                  subtitle="at the moment."
-                />
-              ) : (
-                <NoFollower
-                  titleMain="No Follower Currently"
-                  title="This user currently has no followers"
-                />
-              )}
-            </View>
-          ) : (
-            <FlatList
-              data={userFollowing.followers}
-              renderItem={({ item }) =>
-                renderItem(
-                  { item },
-                  screen,
-                  navigation,
-                  userState,
-                  user,
-                  userActions,
-                  setFollowing
-                )
-              } // Pass 'screen' as a parameter
-              keyExtractor={(item) => Math.random()}
-            />
-          )}
-        </View>
-      ) : (
-        <View style={{ flex: 1 }}>
-          {userFollowing.following.length === 0 ? (
-            <View>
-              {userFollowing.phoneNumber === userState.phoneNumber ? (
-                <NoFollower
-                  titleMain="You did not Followed anyone"
-                  title="There are no users that you followed"
-                  subtitle="at the moment."
-                />
-              ) : (
-                <NoFollower
-                  titleMain="No Followed Currently"
-                  title="This user is not following anyone at the moment"
-                />
-              )}
-            </View>
-          ) : (
-            <FlatList
-              data={userFollowing.following}
-              renderItem={({ item }) =>
-                renderItem(
-                  { item },
-                  screen,
-                  navigation,
-                  userState,
-                  user,
-                  userActions,
-                  setFollowing
-                )
-              } // Pass 'screen' as a parameter
-              keyExtractor={(item) => Math.random()}
-            />
-          )}
-        </View>
-      )}
-    </View>
+    </SafeAreaProvider>
   );
 };
 

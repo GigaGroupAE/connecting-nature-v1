@@ -15,6 +15,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { BASE_URL } from "../../../CONSTANTS";
 import HeaderNormal from "../../components/HeaderNormal";
 import Color from "../../../assets/colors/Color";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 BASE_URL;
 export default function MultipleContactSelect(props) {
   const [users, setuser] = useState([]);
@@ -77,7 +79,8 @@ export default function MultipleContactSelect(props) {
     navigation.goBack();
   };
   return (
-    <>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <View>
         <HeaderNormal title="Add Participants" />
         <Pressable
@@ -183,7 +186,7 @@ export default function MultipleContactSelect(props) {
               })}
         </ScrollView>
       </View>
-    </>
+    </SafeAreaProvider>
   );
 }
 

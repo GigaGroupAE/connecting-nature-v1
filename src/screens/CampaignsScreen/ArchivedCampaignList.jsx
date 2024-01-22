@@ -6,20 +6,22 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-} from "react-native"
-import React, { memo, useCallback } from "react"
-import HeaderNormal from "../../components/HeaderNormal"
-import { useNavigation, useRoute } from "@react-navigation/native"
-import Color from "../../../assets/colors/Color"
-import { FontAwesome, MaterialIcons } from "react-native-vector-icons"
-import { scale } from "react-native-size-matters"
-import { calculateTimeDifference } from "../../utils/timeDifference"
-import { useStateContext } from "../../contexts/ContextProvider"
-import { fetchArchivedCampaigns } from "../../utils/CampaignsHelper"
-import { useQuery } from "react-query"
-import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan"
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+} from "react-native";
+import React, { memo, useCallback } from "react";
+import HeaderNormal from "../../components/HeaderNormal";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Color from "../../../assets/colors/Color";
+import { FontAwesome, MaterialIcons } from "react-native-vector-icons";
+import { scale } from "react-native-size-matters";
+import { calculateTimeDifference } from "../../utils/timeDifference";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { fetchArchivedCampaigns } from "../../utils/CampaignsHelper";
+import { useQuery } from "react-query";
+import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
+const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get("screen").width;
 const EmptyArchivedCampaigns = () => (
   <View style={styles.emptyContainer}>
     <View style={{ alignItems: "center" }}>
@@ -34,9 +36,9 @@ const EmptyArchivedCampaigns = () => (
       </Text>
     </View>
   </View>
-)
+);
 const ArchivedCampaignItem = memo(({ item, handleNavigation }) => {
-  const endTime = calculateTimeDifference(item?.endTime)
+  const endTime = calculateTimeDifference(item?.endTime);
 
   return (
     <TouchableOpacity
@@ -60,57 +62,60 @@ const ArchivedCampaignItem = memo(({ item, handleNavigation }) => {
         <MaterialIcons name="keyboard-arrow-right" style={styles.icon} />
       </View>
     </TouchableOpacity>
-  )
-})
+  );
+});
 
 const ArchivedCampaign = () => {
   const { data: archivedCampaigns, isLoading: isLoading } = useQuery(
     "archived",
     fetchArchivedCampaigns
-  )
-  const navigation = useNavigation()
-  const { setreactions, setcomment } = useStateContext()
+  );
+  const navigation = useNavigation();
+  const { setreactions, setcomment } = useStateContext();
 
   const handleNavigation = useCallback(
     (item) => {
-      setreactions(item?.reactions)
-      setcomment(item?.messages)
-      navigation.navigate("ArchivedCampaign", item)
+      setreactions(item?.reactions);
+      setcomment(item?.messages);
+      navigation.navigate("ArchivedCampaign", item);
     },
     [navigation, setreactions, setcomment]
-  )
+  );
   if (isLoading) {
     return (
       <View style={styles.container}>
         <HeaderNormal title="Archived Campaigns" />
         <ArchivedCampaignSkelentan />
       </View>
-    )
+    );
   }
   return (
-    <View style={styles.container}>
-      <HeaderNormal title="Archived Campaigns" />
-      <View>
-        {archivedCampaigns?.length === 0 ? (
-          <EmptyArchivedCampaigns />
-        ) : (
-          <FlatList
-            data={archivedCampaigns}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <ArchivedCampaignItem
-                item={item}
-                handleNavigation={handleNavigation}
-              />
-            )}
-          />
-        )}
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={styles.container}>
+        <HeaderNormal title="Archived Campaigns" />
+        <View>
+          {archivedCampaigns?.length === 0 ? (
+            <EmptyArchivedCampaigns />
+          ) : (
+            <FlatList
+              data={archivedCampaigns}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <ArchivedCampaignItem
+                  item={item}
+                  handleNavigation={handleNavigation}
+                />
+              )}
+            />
+          )}
+        </View>
       </View>
-    </View>
-  )
-}
+    </SafeAreaProvider>
+  );
+};
 
-export default ArchivedCampaign
+export default ArchivedCampaign;
 
 const styles = StyleSheet.create({
   container: {
@@ -200,4 +205,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: Height * 0.2,
   },
-})
+});

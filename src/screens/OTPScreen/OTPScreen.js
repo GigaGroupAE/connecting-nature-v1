@@ -16,6 +16,8 @@ import { useUserState, useUserStateActions } from "../../slices/userSlice";
 import { BASE_URL } from "../../../CONSTANTS";
 import Color from "../../../assets/colors/Color";
 import { useStateContext } from "../../contexts/ContextProvider";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 export default function OTPScreen(props) {
   const userActions = useUserStateActions();
   const { setLoading, showSnackbar, hideSnackbar } = useStateContext();
@@ -82,43 +84,46 @@ export default function OTPScreen(props) {
       .catch((e) => console.log(e));
   };
   return (
-    <View>
-      <Header title={"Enter OTP"} />
-      <View style={styles.contentContainer}>
-        <Image
-          style={styles.logo}
-          source={require("../../../assets/loginIcon.png")}
-        />
-        <OTPTextInput
-          style={styles.inputContainer}
-          handleTextChange={(e) => {
-            handleVerifyAuto(e);
-          }}
-        />
-        <View style={styles.resendOTP}>
-          <Text style={styles.resendOTPText}>Didn’t received an OTP? </Text>
-          <TouchableOpacity
-            onPress={() => {
-              handleResend();
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View>
+        <Header title={"Enter OTP"} />
+        <View style={styles.contentContainer}>
+          <Image
+            style={styles.logo}
+            source={require("../../../assets/loginIcon.png")}
+          />
+          <OTPTextInput
+            style={styles.inputContainer}
+            handleTextChange={(e) => {
+              handleVerifyAuto(e);
             }}
-          >
-            <Text
-              style={{
-                fontFamily: "Roboto_600SemiBold",
-                color: Color.Black,
+          />
+          <View style={styles.resendOTP}>
+            <Text style={styles.resendOTPText}>Didn’t received an OTP? </Text>
+            <TouchableOpacity
+              onPress={() => {
+                handleResend();
               }}
             >
-              {" " + " "}
-              Resend
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={{
+                  fontFamily: "Roboto_600SemiBold",
+                  color: Color.Black,
+                }}
+              >
+                {" " + " "}
+                Resend
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.buttonVerify}>
-          <ButtonMain title={"Verify"} callback={handleVerify} />
+          <View style={styles.buttonVerify}>
+            <ButtonMain title={"Verify"} callback={handleVerify} />
+          </View>
         </View>
       </View>
-    </View>
+    </SafeAreaProvider>
   );
 }
 
@@ -157,8 +162,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: Color.White,
     borderRadius: 8,
-    shadowColor: Color.Black,
-    elevation: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   logo: {
     width: 250,

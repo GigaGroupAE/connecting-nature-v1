@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CommentInput from "../../components/CommentInput";
@@ -340,106 +342,114 @@ const StoryComment = (props) => {
   const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
 
   return (
-    <View style={{ backgroundColor: Color.White, height: "100%" }}>
-      {/* Header */}
-      <HeaderNormal title={"Spotlight"} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* User Details */}
-        {modalVisible && modalComponent}
-        {StoryCommentHead}
-        {/* Post Description */}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : ""}
+      style={{ flex: 1 }}
+    >
+      <View style={{ backgroundColor: Color.White, height: "100%" }}>
+        {/* Header */}
+        <HeaderNormal title={"Spotlight"} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* User Details */}
+          {modalVisible && modalComponent}
+          {StoryCommentHead}
+          {/* Post Description */}
 
-        {StoryDescription}
+          {StoryDescription}
 
-        {/* Post Media */}
-        <View
-          style={{
-            flex: 0,
-            marginBottom: 10,
-          }}
-        >
-          <View>
-            {/* Video Player */}
+          {/* Post Media */}
+          <View
+            style={{
+              flex: 0,
+              marginBottom: 10,
+            }}
+          >
             <View>
-              {selectedStory.media?.type === "video/mp4" && (
-                <View>{ShowStoryVideo}</View>
-              )}
+              {/* Video Player */}
+              <View>
+                {selectedStory.media?.type === "video/mp4" && (
+                  <View>{ShowStoryVideo}</View>
+                )}
+              </View>
+
+              {/* Image */}
+              <View>
+                {supportedImageFormats.includes(selectedStory.media?.type) && (
+                  <View>{ShowStoryImage}</View>
+                )}
+              </View>
             </View>
 
-            {/* Image */}
-            <View>
-              {supportedImageFormats.includes(selectedStory.media?.type) && (
-                <View>{ShowStoryImage}</View>
-              )}
-            </View>
-          </View>
-
-          {/* Reaction Container */}
-          <View style={{ marginTop: height * 0.015 }}>
-            <View style={styles.topStoryMainContainer}>
-              <View style={styles.topStoryContainer}>
-                <TouchableOpacity style={styles.postLikes} onPress={handleLike}>
-                  {liked ? (
-                    <AntDesign
-                      name="heart"
-                      style={{ ...styles.icons, color: Color.Red }}
-                    />
-                  ) : (
-                    <AntDesign name="hearto" style={styles.icons} />
-                  )}
-                  <Text style={styles.comment}>{reactions.length}</Text>
-                </TouchableOpacity>
-                <Pressable
-                  android_ripple={{ color: Color.LightGrey }}
-                  style={styles.mainAction}
-                >
-                  <View style={styles.postLikes}>
+            {/* Reaction Container */}
+            <View style={{ marginTop: height * 0.015 }}>
+              <View style={styles.topStoryMainContainer}>
+                <View style={styles.topStoryContainer}>
+                  <TouchableOpacity
+                    style={styles.postLikes}
+                    onPress={handleLike}
+                  >
+                    {liked ? (
+                      <AntDesign
+                        name="heart"
+                        style={{ ...styles.icons, color: Color.Red }}
+                      />
+                    ) : (
+                      <AntDesign name="hearto" style={styles.icons} />
+                    )}
+                    <Text style={styles.comment}>{reactions.length}</Text>
+                  </TouchableOpacity>
+                  <Pressable
+                    android_ripple={{ color: Color.LightGrey }}
+                    style={styles.mainAction}
+                  >
+                    <View style={styles.postLikes}>
+                      <MaterialCommunityIcons
+                        name="comment-outline"
+                        style={styles.icons}
+                      />
+                      <Text style={styles.comment}>{comments.length}</Text>
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={handleonshare} style={styles.postLikes}>
                     <MaterialCommunityIcons
-                      name="comment-outline"
-                      style={styles.icons}
+                      name="share-variant-outline"
+                      style={[styles.icons, { paddingHorizontal: 5 }]}
                     />
-                    <Text style={styles.comment}>{comments.length}</Text>
-                  </View>
-                </Pressable>
-                <Pressable onPress={handleonshare} style={styles.postLikes}>
-                  <MaterialCommunityIcons
-                    name="share-variant-outline"
-                    style={[styles.icons, { paddingHorizontal: 5 }]}
-                  />
-                  <Text style={styles.comment}>{shares.length}</Text>
-                </Pressable>
+                    <Text style={styles.comment}>{shares.length}</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        {/* Comments */}
-        {/* Comments Container */}
-        <View style={{ marginBottom: height * 0.12 }}>
-          <FlatList
-            data={comments}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <CommentItem item={item} />}
-          />
-        </View>
-      </ScrollView>
+          {/* Comments */}
+          {/* Comments Container */}
+          <View style={{ marginBottom: height * 0.12 }}>
+            <FlatList
+              data={comments}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <CommentItem item={item} />}
+            />
+          </View>
+        </ScrollView>
 
-      {/* Comment Input */}
-      {selectedStory.media.type === "video/mp4" && showMiniWindow && (
-        <View style={styles.miniVideo}>
-          <MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />
-        </View>
-      )}
+        {/* Comment Input */}
+        {selectedStory.media.type === "video/mp4" && showMiniWindow && (
+          <View style={styles.miniVideo}>
+            <MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />
+          </View>
+        )}
 
-      <CommentInput
-        disabled={loading}
-        placeholder={"Write your comment"}
-        onPress={handlesend}
-        onchange={handlecommentinput}
-        onFocus={handleTextInputFocus}
-        onBlur={handleTextInputBlur}
-      />
-    </View>
+        <CommentInput
+          disabled={loading}
+          placeholder={"Write your comment"}
+          onPress={handlesend}
+          onchange={handlecommentinput}
+          onFocus={handleTextInputFocus}
+          onBlur={handleTextInputBlur}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -7,11 +7,7 @@ import {
 } from "react-native";
 import React from "react";
 import { Pressable } from "react-native";
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  AntDesign,
-} from "react-native-vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
@@ -120,10 +116,10 @@ const styles = StyleSheet.create({
     shadowColor: Color.Black,
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 2,
     },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
     elevation: 4,
     position: "relative",
     zIndex: 900,

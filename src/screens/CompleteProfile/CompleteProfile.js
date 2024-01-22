@@ -34,6 +34,8 @@ import { Modal } from "react-native";
 import AcceptPolicy from "./AcceptPolicy.jsx";
 import HeaderNormal from "../../components/HeaderNormal.js";
 import KeybordWrapper from "../../components/KeyboardWrappers.js";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar.js";
 
 const Height = Dimensions.get("screen").height;
 
@@ -204,7 +206,8 @@ export default function CompleteProfile() {
     }
   };
   return (
-    <SafeAreaView>
+    <SafeAreaProvider>
+      <CustomStatsBar backgroundColor={Color.White} />
       <Header title={"Sign Up"} />
       <KeyboardAvoidingView>
         {/* <HeaderNormal title="Sign Up" /> */}
@@ -332,7 +335,7 @@ export default function CompleteProfile() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

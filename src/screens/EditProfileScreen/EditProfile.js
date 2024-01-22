@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import HeaderNormal from "../../components/HeaderNormal";
 import Color from "../../../assets/colors/Color";
 import { BASE_URL } from "../../../CONSTANTS.js";
@@ -23,6 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 
 import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
+import CustomStatsBar from "../../components/CustomStatsBar";
 const EditProfile = () => {
   const userState = useUserState();
   const navigation = useNavigation();
@@ -97,12 +98,13 @@ const EditProfile = () => {
       })
       .catch((e) => {
         setLoading(false);
-        console.log(e)
+        console.log(e);
       });
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <HeaderNormal title="Edit Profile" />
       <View style={styles.mainContainer}>
         <Pressable onPress={pick}>
@@ -124,7 +126,7 @@ const EditProfile = () => {
           <ButtonMain title="Save Changes" callback={handlesubmit} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
