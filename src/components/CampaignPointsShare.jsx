@@ -75,7 +75,7 @@ const CampaignPointsShare = () => {
     }
   };
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <View style={{ backgroundColor: Color.LightBlue }}>
       <View style={styles.mainContainer}>
         <View style={styles.head}>
           <TouchableOpacity
@@ -150,7 +150,7 @@ const CampaignPointsShare = () => {
           ></Image>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

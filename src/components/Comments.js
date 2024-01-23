@@ -22,7 +22,7 @@ export default function Comments() {
     setTextInputFocused(false);
   };
   return (
-    <SafeAreaView>
+    <View>
       <View style={styles.main}>
         <View style={styles.header}>
           <Text style={styles.headerLikes}>2.3k</Text>
@@ -91,7 +91,7 @@ export default function Comments() {
           onBlur={handleTextInputBlur}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

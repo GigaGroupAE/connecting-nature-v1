@@ -108,7 +108,7 @@ export default function ChatList() {
   }, [Messages]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: Color.White, height: "100%" }}>
+    <View style={{ backgroundColor: Color.White, height: "100%" }}>
       <HeaderNormal
         title={"Chats"}
         onback={handleonbackpress}
@@ -236,7 +236,7 @@ export default function ChatList() {
       )}
 
       <BottomTab activeMenu={"Chat"} scrollToTop={scrollToTop} />
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

@@ -57,7 +57,7 @@ function ProfileSettings(props) {
     props.navigation.navigate("Support");
   };
   return (
-    <SafeAreaView style={styles.body}>
+    <View style={styles.body}>
       <HeaderNormal title="Profile Settings" />
       <ScrollView>
         <View style={styles.userInfoHeader}>
@@ -180,7 +180,7 @@ function ProfileSettings(props) {
           />
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

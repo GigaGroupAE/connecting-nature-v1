@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import MapView from "react-native-maps";
+import MapView, { Circle, Marker } from "react-native-maps";
 import { useUserState } from "./../../slices/userSlice";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -273,7 +273,7 @@ export default function Invitescreen({ route }) {
           initialRegion={region}
           provider="google"
         >
-          <MapView.Circle
+          <Circle
             center={circleOrigin}
             radius={Number(radius) * 1000}
             strokeWidth={2}
@@ -282,7 +282,7 @@ export default function Invitescreen({ route }) {
           />
 
           {/* //ORIGIN MARKER */}
-          <MapView.Marker
+          <Marker
             coordinate={region}
             title="event origin"
             draggable
@@ -290,14 +290,14 @@ export default function Invitescreen({ route }) {
               setCircleOrigin(e.nativeEvent.coordinate);
             }}
             pinColor={Color.Blue}
-          ></MapView.Marker>
+          ></Marker>
 
           {/* //USER MARKERS  */}
           {/* //MARKERS */}
           {users.map((user, idx) => {
             if (!user.location) return null;
             return (
-              <MapView.Marker
+              <Marker
                 coordinate={user.location}
                 key={idx}
                 title={user.fullName}
@@ -307,7 +307,7 @@ export default function Invitescreen({ route }) {
                   source={{ uri: `${BASE_URL}/images/${user.profile}` }}
                   style={{ height: 30, width: 30, borderRadius: 30 / 2 }}
                 />
-              </MapView.Marker>
+              </Marker>
             );
           })}
         </MapView>
