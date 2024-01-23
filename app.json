@@ -5,7 +5,7 @@
     "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/cn-icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "plugins": [
       [
         "expo-location",
@@ -31,7 +31,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/cn-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "bundleIdentifier": "com.notify.connectingnatureapp"
+      
     },
     "android": {
       "versionCode": 1,

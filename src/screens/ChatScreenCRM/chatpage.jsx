@@ -49,6 +49,8 @@ import { axiosInstance } from "../../../axiosInstance";
 import Members from "../DoDay/Members/Members";
 import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
 import VideoMessageCRM from "../../components/VideoMessage/VideoMessageCRM";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 const ChatPage = (props) => {
   const [isImage, setIsImage] = useState(false);
   const [showInput, setShowInput] = useState(false);
@@ -106,7 +108,7 @@ const ChatPage = (props) => {
     (member) => member.member
   );
 
-  const memberToNotify = members.filter((mem) => {
+  const memberToNotify = members?.filter((mem) => {
     return mem._id !== userState.id;
   });
 
@@ -615,274 +617,283 @@ const ChatPage = (props) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : ""}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <>
-          {!isLongPressed && group?.type === "campaign" ? (
-            <CampaignChatHeader
-              sendNotificationMessage={sendNotificationMessage}
-              socket={socket}
-              handleShowInput={handleShowInput}
-            />
-          ) : (
-            <>
-              {!isLongPressed ? (
-                <ChatScreenHeader handleShowInput={handleShowInput} />
-              ) : null}
-            </>
-          )}
-
-          {isLongPressed && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: "7.4%",
-                width: "100%",
-                backgroundColor: Color.Blue,
-                paddingHorizontal: 15,
-              }}
-            >
-              <Pressable
-                onPress={handlePressedCancel}
-                style={{ alignSelf: "center" }}
-              >
-                <Entypo
-                  name="cross"
-                  color={Color.White}
-                  size={25}
-                  style={{ marginTop: 0, paddingRight: "55%" }}
-                />
-              </Pressable>
-              <Pressable
-                android_ripple={{ color: Color.LightGrey, borderless: true }}
-                style={{ alignSelf: "center" }}
-                onPress={handleDeleteMessage}
-              >
-                <MaterialCommunityIcons
-                  name="delete"
-                  color={Color.White}
-                  size={25}
-                  style={{ marginTop: 0 }}
-                />
-              </Pressable>
-            </View>
-          )}
-
-          {showInput ? (
-            <View
-              style={{
-                backgroundColor: Color.White,
-
-                width: "100%",
-              }}
-            >
-              <View style={styles.chatSearchContainer}>
-                <TouchableOpacity onPress={() => setShowInput(false)}>
-                  <Entypo name="cross" size={28} color={Color.Grey} />
-                </TouchableOpacity>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    autoFocus
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    style={styles.textBox}
-                  />
-                </View>
-              </View>
-            </View>
-          ) : null}
-
-          <ImageBackground
-            source={require("../../../assets/chat-bg-light-blue.png")}
-            resizeMode="cover"
-            style={styles.container}
-          >
-            {showmembers && group?.type === "campaign" && (
-              <Members onCancel={hideMembers} closeModal={closeModal} />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.Blue} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : ""}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <>
+            {!isLongPressed && group?.type === "campaign" ? (
+              <CampaignChatHeader
+                sendNotificationMessage={sendNotificationMessage}
+                socket={socket}
+                handleShowInput={handleShowInput}
+              />
+            ) : (
+              <>
+                {!isLongPressed ? (
+                  <ChatScreenHeader handleShowInput={handleShowInput} />
+                ) : null}
+              </>
             )}
 
-            <View style={styles.container}>
-              {
-                <FlatList
-                  style={{
-                    marginHorizontal: 10,
-                  }}
-                  inverted={true}
-                  showsVerticalScrollIndicator={false}
-                  keyExtractor={(item) => item._id}
-                  extraData={chatMessages}
-                  data={
-                    searchQuery === ""
-                      ? chatMessages
-                      : chatMessages.filter((message, index) => {
-                          if (typeof message.content === "string") {
-                            if (message.content.match(searchQuery)) {
-                              return message;
-                            }
-                          } else return null;
-                        })
-                  }
-                  renderItem={({ item, index }) => {
-                    let timePassed = calculateTimeDifference(item.date);
+            {isLongPressed && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  height: "7.4%",
+                  width: "100%",
+                  backgroundColor: Color.Blue,
+                  paddingHorizontal: 15,
+                }}
+              >
+                <Pressable
+                  onPress={handlePressedCancel}
+                  style={{ alignSelf: "center" }}
+                >
+                  <Entypo
+                    name="cross"
+                    color={Color.White}
+                    size={25}
+                    style={{ marginTop: 0, paddingRight: "55%" }}
+                  />
+                </Pressable>
+                <Pressable
+                  android_ripple={{ color: Color.LightGrey, borderless: true }}
+                  style={{ alignSelf: "center" }}
+                  onPress={handleDeleteMessage}
+                >
+                  <MaterialCommunityIcons
+                    name="delete"
+                    color={Color.White}
+                    size={25}
+                    style={{ marginTop: 0 }}
+                  />
+                </Pressable>
+              </View>
+            )}
 
-                    return (
-                      <View>
+            {showInput ? (
+              <View
+                style={{
+                  backgroundColor: Color.White,
+
+                  width: "100%",
+                }}
+              >
+                <View style={styles.chatSearchContainer}>
+                  <TouchableOpacity onPress={() => setShowInput(false)}>
+                    <Entypo name="cross" size={28} color={Color.Grey} />
+                  </TouchableOpacity>
+                  <View style={styles.searchContainer}>
+                    <TextInput
+                      autoFocus
+                      placeholder="Search"
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      style={styles.textBox}
+                    />
+                  </View>
+                </View>
+              </View>
+            ) : null}
+
+            <ImageBackground
+              source={require("../../../assets/chat-bg-light-blue.png")}
+              resizeMode="cover"
+              style={styles.container}
+            >
+              {showmembers && group?.type === "campaign" && (
+                <Members onCancel={hideMembers} closeModal={closeModal} />
+              )}
+
+              <View style={styles.container}>
+                {
+                  <FlatList
+                    style={{
+                      marginHorizontal: 10,
+                    }}
+                    inverted={true}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item) => item._id}
+                    extraData={chatMessages}
+                    data={
+                      searchQuery === ""
+                        ? chatMessages
+                        : chatMessages.filter((message, index) => {
+                            if (typeof message.content === "string") {
+                              if (message.content.match(searchQuery)) {
+                                return message;
+                              }
+                            } else return null;
+                          })
+                    }
+                    renderItem={({ item, index }) => {
+                      let timePassed = calculateTimeDifference(item.date);
+
+                      return (
                         <View>
-                          {item.time < "24h ago" ? (
-                            <View
-                              style={{
-                                alignSelf: "center",
-                                backgroundColor: "white",
-                                borderRadius: 8,
-                                height: 30,
-                                width: 80,
-                                marginTop: 10,
-                                marginBottom: 10,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                elevation: 1,
-                              }}
-                            >
-                              <Text
+                          <View>
+                            {item.time < "24h ago" ? (
+                              <View
                                 style={{
-                                  fontFamily: "Roboto",
-                                  color: Color.Grey,
-                                  fontSize: 12,
+                                  alignSelf: "center",
+                                  backgroundColor: "white",
+                                  borderRadius: 8,
+                                  height: 30,
+                                  width: 80,
+                                  marginTop: 10,
+                                  marginBottom: 10,
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  elevation: 1,
                                 }}
                               >
-                                Today
-                              </Text>
-                            </View>
-                          ) : null}
-                        </View>
-                        <View>
-                          {item.type === "text" ? (
-                            <NormalMessage
-                              groupTitle={props.route?.params?.group?.title}
-                              longPress={handleDelete}
-                              image={""}
-                              socket={socket}
-                              onPress={() =>
-                                props.navigation.navigate("ViewImage", {
-                                  url: `${BASE_URL}/messageMedia/${item.content}`,
-                                  message: item.content,
-                                })
-                              }
-                              item={item}
-                            />
-                          ) : null}
+                                <Text
+                                  style={{
+                                    fontFamily: "Roboto",
+                                    color: Color.Grey,
+                                    fontSize: 12,
+                                  }}
+                                >
+                                  Today
+                                </Text>
+                              </View>
+                            ) : null}
+                          </View>
+                          <View>
+                            {item.type === "text" ? (
+                              <NormalMessage
+                                groupTitle={props.route?.params?.group?.title}
+                                longPress={handleDelete}
+                                image={""}
+                                socket={socket}
+                                onPress={() =>
+                                  props.navigation.navigate("ViewImage", {
+                                    url: `${BASE_URL}/messageMedia/${item.content}`,
+                                    message: item.content,
+                                  })
+                                }
+                                item={item}
+                              />
+                            ) : null}
 
-                          {item.type === "notification" ? (
-                            <NotificationType data={item.content} />
-                          ) : null}
-                          {item.type === "order" ? (
-                            <View style={isImage ? null : { marginBottom: 5 }}>
-                              <OrderMessage
-                                username={item.from.fullName}
+                            {item.type === "notification" ? (
+                              <NotificationType data={item.content} />
+                            ) : null}
+                            {item.type === "order" ? (
+                              <View
+                                style={isImage ? null : { marginBottom: 5 }}
+                              >
+                                <OrderMessage
+                                  username={item.from.fullName}
+                                  time={timePassed ? timePassed : "1h"}
+                                  image={`${BASE_URL}/images/${item.content.image}`}
+                                  onPress={() => {
+                                    updateMessage(item);
+                                  }}
+                                  status={
+                                    item.status === "pending"
+                                      ? "ACCEPT"
+                                      : "ACCEPTED"
+                                  }
+                                />
+                              </View>
+                            ) : null}
+                            {item.type === "image" ? (
+                              <View
+                                style={isImage ? null : { marginBottom: 5 }}
+                              >
+                                <ImageMessage
+                                  groupTitle={props.route?.params?.group?.title}
+                                  image={`${BASE_URL}/messageMedia/${item.content}`}
+                                  phoneNumber={item.from}
+                                  longPress={handleDelete}
+                                  socket={socket}
+                                  item={item}
+                                  onPress={() =>
+                                    props.navigation.navigate("ViewImage", {
+                                      url: `${BASE_URL}/messageMedia/${item.content}`,
+                                      message: item.content,
+                                    })
+                                  }
+                                />
+                              </View>
+                            ) : null}
+                            {item?.type === "video" ? (
+                              <View
+                                style={isImage ? null : { marginBottom: 5 }}
+                              >
+                                <VideoMessageCRM
+                                  groupTitle={props.route?.params?.group?.title}
+                                  image={`${BASE_URL}/messageMedia/${item.content}`}
+                                  phoneNumber={item.from}
+                                  longPress={handleDelete}
+                                  socket={socket}
+                                  item={item}
+                                  onPress={() =>
+                                    props.navigation.navigate("ViewImage", {
+                                      url: `${BASE_URL}/messageMedia/${item.content}`,
+                                      message: item.content,
+                                    })
+                                  }
+                                />
+                              </View>
+                            ) : null}
+                            {item?.type === "document" ? (
+                              <DocumentMessage
+                                groupTitle={props.route?.params?.group?.title}
                                 time={timePassed ? timePassed : "1h"}
-                                image={`${BASE_URL}/images/${item.content.image}`}
-                                onPress={() => {
-                                  updateMessage(item);
-                                }}
-                                status={
-                                  item.status === "pending"
-                                    ? "ACCEPT"
-                                    : "ACCEPTED"
-                                }
-                              />
-                            </View>
-                          ) : null}
-                          {item.type === "image" ? (
-                            <View style={isImage ? null : { marginBottom: 5 }}>
-                              <ImageMessage
-                                groupTitle={props.route?.params?.group?.title}
-                                image={`${BASE_URL}/messageMedia/${item.content}`}
-                                phoneNumber={item.from}
+                                title={"Select"}
+                                phoneNumber={item?.from}
                                 longPress={handleDelete}
                                 socket={socket}
                                 item={item}
-                                onPress={() =>
-                                  props.navigation.navigate("ViewImage", {
-                                    url: `${BASE_URL}/messageMedia/${item.content}`,
-                                    message: item.content,
-                                  })
-                                }
+                                sender={item.from._id}
                               />
-                            </View>
-                          ) : null}
-                          {item?.type === "video" ? (
-                            <View style={isImage ? null : { marginBottom: 5 }}>
-                              <VideoMessageCRM
-                                groupTitle={props.route?.params?.group?.title}
-                                image={`${BASE_URL}/messageMedia/${item.content}`}
-                                phoneNumber={item.from}
-                                longPress={handleDelete}
-                                socket={socket}
-                                item={item}
-                                onPress={() =>
-                                  props.navigation.navigate("ViewImage", {
-                                    url: `${BASE_URL}/messageMedia/${item.content}`,
-                                    message: item.content,
-                                  })
-                                }
-                              />
-                            </View>
-                          ) : null}
-                          {item?.type === "document" ? (
-                            <DocumentMessage
-                              groupTitle={props.route?.params?.group?.title}
-                              time={timePassed ? timePassed : "1h"}
-                              title={"Select"}
-                              phoneNumber={item?.from}
-                              longPress={handleDelete}
-                              socket={socket}
-                              item={item}
-                              sender={item.from._id}
-                            />
-                          ) : null}
+                            ) : null}
 
-                          {item.type === "audio" ? (
-                            <RecordingVoiceMessage
-                              time={timePassed ? timePassed : "1h"}
-                              groupTitle={props.route?.params?.group?.title}
-                              socket={socket}
-                              phoneNumber={item?.from}
-                              item={item}
-                              sender={item.from._id}
-                              longPress={handleDelete}
-                            />
-                          ) : null}
+                            {item.type === "audio" ? (
+                              <RecordingVoiceMessage
+                                time={timePassed ? timePassed : "1h"}
+                                groupTitle={props.route?.params?.group?.title}
+                                socket={socket}
+                                phoneNumber={item?.from}
+                                item={item}
+                                sender={item.from._id}
+                                longPress={handleDelete}
+                              />
+                            ) : null}
+                          </View>
                         </View>
-                      </View>
-                    );
-                  }}
-                />
-              }
+                      );
+                    }}
+                  />
+                }
 
-              <View style={{ marginLeft: "40%" }}>
-                {imgloading && (
-                  <ActivityIndicator size={"large"} color={Color.Blue} />
-                )}
+                <View style={{ marginLeft: "40%" }}>
+                  {imgloading && (
+                    <ActivityIndicator size={"large"} color={Color.Blue} />
+                  )}
+                </View>
+                <ChatBottomBar
+                  disabled={loading}
+                  pick={pick}
+                  pickDoc={pickDoc}
+                  startRecording={startRecording}
+                  stopRecording={stopRecording}
+                  handleCamera={handleCamera}
+                  sendtext={sendtext}
+                />
               </View>
-              <ChatBottomBar
-                disabled={loading}
-                pick={pick}
-                pickDoc={pickDoc}
-                startRecording={startRecording}
-                stopRecording={stopRecording}
-                handleCamera={handleCamera}
-                sendtext={sendtext}
-              />
-            </View>
-          </ImageBackground>
-        </>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+            </ImageBackground>
+          </>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 };
 

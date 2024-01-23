@@ -21,6 +21,8 @@ import { axiosInstance } from "../../../axiosInstance";
 import { useUserState } from "../../slices/userSlice";
 import { scale } from "react-native-size-matters";
 import { Portal, Modal } from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
@@ -250,75 +252,126 @@ const CheckList = ({ route }) => {
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        height: "100%",
-        backgroundColor: Color.White,
-      }}
-    >
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}></Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
-            // flex: 0.7,
-          }}
-        >
-          {!addTask && isCurrentUserAllowed && (
-            <TouchableOpacity
-              style={{
-                marginRight: Width * 0.022,
-              }}
-              onPress={() => setAddTask(!addTask)}
-            >
-              <Text style={styles.addbtn}> Add Task</Text>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: Color.White,
+        }}
+      >
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.headerTitle}></Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+              // flex: 0.7,
+            }}
+          >
+            {!addTask && isCurrentUserAllowed && (
+              <TouchableOpacity
+                style={{
+                  marginRight: Width * 0.022,
+                }}
+                onPress={() => setAddTask(!addTask)}
+              >
+                <Text style={styles.addbtn}> Add Task</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Entypo name="cross" color={Color.Black} size={26} />
             </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Entypo name="cross" color={Color.Black} size={26} />
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <FlatList
-        data={tasks}
-        keyExtractor={(item) => item._id}
-        renderItem={renderItem}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+        <FlatList
+          data={tasks}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
 
-      {/* <TouchableOpacity
+        {/* <TouchableOpacity
         style={styles.buttonContainer}
         onPress={() => setAddTask(true)}
       >
         <Text style={styles.buttonTitle}>Add Task</Text>
       </TouchableOpacity> */}
-      <Portal>
-        <Modal
-          visible={ModelConfrm}
-          onDismiss={handleDismissModal}
-          transparent={true}
-        >
-          <View style={styles.cmodel}>
-            <View>
-              <Text
-                style={{
-                  fontFamily: "Roboto_400Regular",
-                  fontWeight: "400",
-                }}
-              >
-                Do you really want to discard the task?
-              </Text>
+        <Portal>
+          <Modal
+            visible={ModelConfrm}
+            onDismiss={handleDismissModal}
+            transparent={true}
+          >
+            <View style={styles.cmodel}>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Roboto_400Regular",
+                    fontWeight: "400",
+                  }}
+                >
+                  Do you really want to discard the task?
+                </Text>
+              </View>
+              <View style={styles.model}>
+                <TouchableOpacity onPress={() => console.log("deleted")}>
+                  <Text style={styles.btn}>Yes Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleCancel()}>
+                  <Text
+                    style={{
+                      ...styles.btn,
+                      backgroundColor: Color.White,
+                      color: Color.Black,
+                      borderWidth: 1,
+                    }}
+                  >
+                    No, Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.model}>
-              <TouchableOpacity onPress={() => console.log("deleted")}>
-                <Text style={styles.btn}>Yes Delete</Text>
+          </Modal>
+        </Portal>
+
+        {addTask && (
+          <View style={{ ...styles.itemCard, flexDirection: "column" }}>
+            <TouchableOpacity onPress={() => setAddTask(!addTask)}>
+              <Entypo
+                name="cross"
+                color={Color.Black}
+                size={26}
+                style={{ position: "relative", right: Width * -0.85 }}
+              />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              onChangeText={settitle}
+              value={title}
+              placeholder="Task Title"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setdescription}
+              value={description}
+              placeholder="Description"
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                marginTop: Height * 0.03,
+              }}
+            >
+              <TouchableOpacity onPress={() => handleCreate()}>
+                <Text style={styles.btn}>Create/Assign</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleCancel()}>
+              <TouchableOpacity onPress={() => handleDiscard()}>
                 <Text
                   style={{
                     ...styles.btn,
@@ -327,62 +380,14 @@ const CheckList = ({ route }) => {
                     borderWidth: 1,
                   }}
                 >
-                  No, Cancel
+                  Discard
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
-      </Portal>
-
-      {addTask && (
-        <View style={{ ...styles.itemCard, flexDirection: "column" }}>
-          <TouchableOpacity onPress={() => setAddTask(!addTask)}>
-            <Entypo
-              name="cross"
-              color={Color.Black}
-              size={26}
-              style={{ position: "relative", right: Width * -0.85 }}
-            />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.input}
-            onChangeText={settitle}
-            value={title}
-            placeholder="Task Title"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setdescription}
-            value={description}
-            placeholder="Description"
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginTop: Height * 0.03,
-            }}
-          >
-            <TouchableOpacity onPress={() => handleCreate()}>
-              <Text style={styles.btn}>Create/Assign</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDiscard()}>
-              <Text
-                style={{
-                  ...styles.btn,
-                  backgroundColor: Color.White,
-                  color: Color.Black,
-                  borderWidth: 1,
-                }}
-              >
-                Discard
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </SafeAreaProvider>
   );
 };
 

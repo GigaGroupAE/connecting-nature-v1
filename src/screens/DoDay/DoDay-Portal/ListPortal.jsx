@@ -27,7 +27,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from "@tanstack/react-query";
+} from "react-query";
 
 const fetchBuckets = async () => {
   const { data } = await axiosInstance.get("/buckets/get");
