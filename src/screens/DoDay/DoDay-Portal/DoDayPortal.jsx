@@ -12,17 +12,22 @@ import WinerCard from "./WinerCard";
 import Color from "../../../../assets/colors/Color";
 
 import ListPortal from "./ListPortal";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../../components/CustomStatsBar";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
 const DoDayPortal = () => {
   return (
-    <View style={{ backgroundColor: Color.White, height: "100%" }}>
-      <HeaderList title="Do-Day Portal" />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={{ backgroundColor: Color.White, height: "100%" }}>
+        <HeaderList title="Do-Day Portal" />
 
-      <ListPortal />
-    </View>
+        <ListPortal />
+      </View>
+    </SafeAreaProvider>
   );
 };
 

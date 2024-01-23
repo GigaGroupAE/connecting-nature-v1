@@ -19,6 +19,8 @@ import {
 import BucketModel from "./BucketModel";
 import Color from "../../../assets/colors/Color";
 import AnnouncementModel from "./AnnouncementModel";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
@@ -48,83 +50,86 @@ const Setting = () => {
     setIsannouncement(false);
   };
   return (
-    <View style={{ height: "100%", backgroundColor: Color.White }}>
-      <HeaderNormal title="Settings" />
-      <View style={styles.mainContainer}>
-        <TouchableOpacity onPress={Showbusket} style={styles.listSeaction}>
-          <MaterialCommunityIcons name="flower-tulip" style={styles.icon} />
-          <Text style={styles.title}>Add New Bucket</Text>
-        </TouchableOpacity>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={{ height: "100%", backgroundColor: Color.White }}>
+        <HeaderNormal title="Settings" />
+        <View style={styles.mainContainer}>
+          <TouchableOpacity onPress={Showbusket} style={styles.listSeaction}>
+            <MaterialCommunityIcons name="flower-tulip" style={styles.icon} />
+            <Text style={styles.title}>Add New Bucket</Text>
+          </TouchableOpacity>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.listSeaction}>
-          <Ionicons name="newspaper" style={styles.icon} />
-          <Text style={styles.title}>Government Signed NOC</Text>
+        <View style={styles.mainContainer}>
+          <View style={styles.listSeaction}>
+            <Ionicons name="newspaper" style={styles.icon} />
+            <Text style={styles.title}>Government Signed NOC</Text>
+          </View>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
+        <View style={styles.mainContainer}>
+          <TouchableOpacity style={styles.listSeaction} onPress={showModal}>
+            <MaterialIcons name="announcement" style={styles.icon} />
+            <Text style={styles.title}>Announcement </Text>
+          </TouchableOpacity>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <TouchableOpacity style={styles.listSeaction} onPress={showModal}>
-          <MaterialIcons name="announcement" style={styles.icon} />
-          <Text style={styles.title}>Announcement </Text>
-        </TouchableOpacity>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
+        <View style={styles.mainContainer}>
+          <View style={styles.listSeaction}>
+            <MaterialCommunityIcons name="flower-tulip" style={styles.icon} />
+            <Text style={styles.title}>Leaderboard Winners</Text>
+          </View>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.listSeaction}>
-          <MaterialCommunityIcons name="flower-tulip" style={styles.icon} />
-          <Text style={styles.title}>Leaderboard Winners</Text>
+        <View style={styles.mainContainer}>
+          <View style={styles.listSeaction}>
+            <MaterialIcons name="campaign" style={styles.icon} />
+            <Text style={styles.title}>Campaigns History</Text>
+          </View>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
+        <View style={styles.mainContainer}>
+          <View style={styles.listSeaction}>
+            <EvilIcons name="user" style={styles.icon} />
+            <Text style={styles.title}>Invite Asst. Manager</Text>
+          </View>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.listSeaction}>
-          <MaterialIcons name="campaign" style={styles.icon} />
-          <Text style={styles.title}>Campaigns History</Text>
+        <View style={styles.mainContainer}>
+          <View style={styles.listSeaction}>
+            <Octicons name="feed-repo" style={styles.icon} />
+            <Text style={styles.title}>Report </Text>
+          </View>
+          <View>
+            <AntDesign name="right" style={styles.icon} />
+          </View>
         </View>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
-        </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.listSeaction}>
-          <EvilIcons name="user" style={styles.icon} />
-          <Text style={styles.title}>Invite Asst. Manager</Text>
-        </View>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
-        </View>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.listSeaction}>
-          <Octicons name="feed-repo" style={styles.icon} />
-          <Text style={styles.title}>Report </Text>
-        </View>
-        <View>
-          <AntDesign name="right" style={styles.icon} />
-        </View>
-      </View>
 
-      <BucketModel
-        visible={busketModel}
-        containerStyle={containerStyle}
-        hideModal={hidebusket}
-      />
-      {/* 
+        <BucketModel
+          visible={busketModel}
+          containerStyle={containerStyle}
+          hideModal={hidebusket}
+        />
+        {/* 
       <AnnouncementModel
         modalVisible={Isannouncement}
         setModalVisible={setIsannouncement}
       /> */}
-    </View>
+      </View>
+    </SafeAreaProvider>
   );
 };
 

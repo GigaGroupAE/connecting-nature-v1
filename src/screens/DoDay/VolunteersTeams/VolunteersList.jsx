@@ -13,6 +13,9 @@ import HeaderList from "./HeaderList";
 import VolunteersListCard from "./VolunteersListCard";
 import { axiosInstance } from "../../../../axiosInstance";
 import { useStateContext } from "../../../contexts/ContextProvider";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../../components/CustomStatsBar";
+import Color from "../../../../assets/colors/Color";
 
 const VolunteersList = () => {
   const { activeCampaign } = useStateContext();
@@ -28,15 +31,18 @@ const VolunteersList = () => {
     );
   };
   return (
-    <View style={{ flex: 1 }}>
-      <HeaderList title="Volunteers" />
-      <FlatList
-        data={activeCampaign?.volunteers}
-        renderItem={renderItem}
-        keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
-    </View>
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View style={{ flex: 1 }}>
+        <HeaderList title="Volunteers" />
+        <FlatList
+          data={activeCampaign?.volunteers}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      </View>
+    </SafeAreaProvider>
   );
 };
 

@@ -13,6 +13,8 @@ import ListCard from "./ListCard";
 import { useStateContext } from "../../../contexts/ContextProvider";
 import { axiosInstance } from "../../../../axiosInstance";
 import UserListHeader from "./UserListHeader";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../../components/CustomStatsBar";
 
 const Width = Dimensions.get("screen").width;
 const Height = Dimensions.get("screen").height;
@@ -111,67 +113,70 @@ const UserList = () => {
     return null;
   };
   return (
-    <View>
-      <View style={styles.container}>
-        <UserListHeader campaign={campaign} />
-        <View style={styles.listContainer}>
-          <Pressable
-            onPress={AllUser}
-            style={HomePage ? styles.active : styles.disable}
-          >
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View>
+        <View style={styles.container}>
+          <UserListHeader campaign={campaign} />
+          <View style={styles.listContainer}>
+            <Pressable
+              onPress={AllUser}
+              style={HomePage ? styles.active : styles.disable}
             >
-              <Text style={styles.Heading}>
-                All Users ({volunteers?.length})
-              </Text>
-            </View>
-          </Pressable>
-          <TouchableOpacity
-            onPress={Accepted}
-            style={Accepte ? styles.active : styles.disable}
-          >
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <Text style={styles.Heading}>
+                  All Users ({volunteers?.length})
+                </Text>
+              </View>
+            </Pressable>
+            <TouchableOpacity
+              onPress={Accepted}
+              style={Accepte ? styles.active : styles.disable}
             >
-              <Text style={styles.Heading}>
-                Accepted ({counts?.acceptedCount})
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={Pending}
-            style={pending ? styles.active : styles.disable}
-          >
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <Text style={styles.Heading}>
+                  Accepted ({counts?.acceptedCount})
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={Pending}
+              style={pending ? styles.active : styles.disable}
             >
-              <Text style={styles.Heading}>
-                Pending ({counts?.pendingCount})
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <Text style={styles.Heading}>
+                  Pending ({counts?.pendingCount})
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-        <FlatList
-          data={volunteers}
-          keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-        />
+          <FlatList
+            data={volunteers}
+            keyExtractor={(item) => item._id}
+            renderItem={renderItem}
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaProvider>
   );
 };
 
