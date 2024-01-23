@@ -144,7 +144,7 @@ export default function CreateCampaignPost() {
     }
   };
   return (
-    <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+    <View style={{ backgroundColor: Color.LightBlue }}>
       <View style={styles.mainContainer}>
         <View style={styles.head}>
           <TouchableOpacity
@@ -232,7 +232,7 @@ export default function CreateCampaignPost() {
             ))}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

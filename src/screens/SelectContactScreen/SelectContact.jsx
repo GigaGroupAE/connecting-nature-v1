@@ -74,7 +74,7 @@ export default function SelectContact(props) {
   };
 
   return (
-    <SafeAreaView style={styles.body}>
+    <View style={styles.body}>
       <View style={isSearch ? styles.searchHeader : styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={28} color={Color.Black} />
@@ -245,7 +245,7 @@ export default function SelectContact(props) {
               }
             })}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -102,6 +102,8 @@ import Animation from "./src/screens/Animation";
 import LivePointsComment from "./src/components/LivePointsComment";
 import CreateCampaignPost from "./src/components/CreateCampaignPost";
 import PostSkeleton from "./src/components/PostSkeleton";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "./src/components/CustomStatsBar";
 let customFonts = {
   Roboto_300Light: require("./assets/fonts/Roboto-Light.ttf"),
   Roboto_400Regular: require("./assets/fonts/Roboto-Regular.ttf"),
@@ -257,7 +259,10 @@ export default function App() {
         <PaperProvider>
           <ContextProvider>
             <QueryClientProvider client={queryClient}>
-              <Main />
+              <SafeAreaProvider>
+                <CustomStatsBar backgroundColor={Color.White} />
+                <Main />
+              </SafeAreaProvider>
             </QueryClientProvider>
           </ContextProvider>
         </PaperProvider>
