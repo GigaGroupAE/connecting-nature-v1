@@ -39,10 +39,10 @@ const ChatScreenHeader = (props) => {
   };
 
   useEffect(() => {
-    if (group.type === "individual" || group.type === "Admin") {
-      if (group.members !== undefined) {
-        let member = group.members.filter((member) => {
-          return member.member.phoneNumber !== userState.phoneNumber;
+    if (group?.type === "individual" || group?.type === "Admin") {
+      if (group?.members !== undefined) {
+        let member = group?.members?.filter((member) => {
+          return member?.member?.phoneNumber !== userState.phoneNumber;
         });
 
         let memb = member[0];
@@ -56,7 +56,7 @@ const ChatScreenHeader = (props) => {
       setPhoto(`${BASE_URL}/images/${groupState.groupPic}`);
       settitle(group.title);
       let tempsubtitle = "";
-      group.members.map((m, index) => {
+      group?.members?.map((m, index) => {
         if (index != group.members.length - 1) {
           tempsubtitle = tempsubtitle + m.member?.fullName + " , ";
         } else {

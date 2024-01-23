@@ -15,6 +15,8 @@ import List from "./List";
 import HeaderList from "./HeaderList";
 import { useStateContext } from "../../../contexts/ContextProvider";
 import { axiosInstance } from "../../../../axiosInstance";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../../components/CustomStatsBar";
 
 const Width = Dimensions.get("screen").width;
 const Height = Dimensions.get("screen").height;
@@ -75,120 +77,127 @@ const TeamVolunteers = () => {
     );
   };
   return (
-    <View>
-      <View style={styles.container}>
-        <HeaderList title="Teams" currentPage={currentPage} />
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <View>
+        <View style={styles.container}>
+          <HeaderList title="Teams" currentPage={currentPage} />
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            width: "100%",
-            borderBottomWidth: 1,
-            borderBottomColor: Color.VeryLightGrey,
-            height: Height * 0.05,
-          }}
-        >
-          <TouchableOpacity
-            style={HomePage ? styles.activeScreen : styles.followerContainer}
-            onPress={ATeam}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              width: "100%",
+              borderBottomWidth: 1,
+              borderBottomColor: Color.VeryLightGrey,
+              height: Height * 0.05,
+            }}
           >
-            <Text style={styles.title}>
-              Team A({activeCampaign?.teamA?.points})
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={TeamB ? styles.activeScreen : styles.followerContainer}
-            onPress={BTeam}
-          >
-            <Text style={styles.title}>
-              Team B ({activeCampaign?.teamB?.points})
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity></TouchableOpacity>
+            <TouchableOpacity
+              style={HomePage ? styles.activeScreen : styles.followerContainer}
+              onPress={ATeam}
+            >
+              <Text style={styles.title}>
+                Team A({activeCampaign?.teamA?.points})
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={TeamB ? styles.activeScreen : styles.followerContainer}
+              onPress={BTeam}
+            >
+              <Text style={styles.title}>
+                Team B ({activeCampaign?.teamB?.points})
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity></TouchableOpacity>
+          </View>
+
+          {currentPage === "Team A" && (
+            <View>
+              {activeCampaign?.teamA?.members?.length === 0 ? (
+                <View
+                  style={{
+                    paddingVertical: Height * 0.1,
+                    marginTop: Height * 0.2,
+                    alignSelf: "center",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    source={require("../../../../assets/BlockedUserIcon.png")}
+                  />
+                  <Text
+                    style={{
+                      fontSize: Height * 0.023,
+                      fontWeight: "700",
+                      // backgroundColor: "#E5F2FF",/
+                      paddingHorizontal: Width * 0.062,
+                      paddingVertical: Height * 0.02,
+                      borderRadius: Height * 0.001,
+                      color: Color.DarkGrey,
+                    }}
+                  >
+                    This team has no Volunteers
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  data={activeCampaign?.teamA?.members}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item._id}
+                  ItemSeparatorComponent={() => (
+                    <View style={styles.separator} />
+                  )}
+                />
+              )}
+            </View>
+          )}
+          {currentPage === "Team B" && (
+            <View>
+              {activeCampaign?.teamB?.members?.length === 0 ? (
+                <View
+                  style={{
+                    paddingVertical: Height * 0.1,
+                    marginTop: Height * 0.2,
+                    alignSelf: "center",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    source={require("../../../../assets/BlockedUserIcon.png")}
+                  />
+                  <Text
+                    style={{
+                      fontSize: Height * 0.023,
+                      fontWeight: "700",
+
+                      paddingHorizontal: Width * 0.062,
+                      paddingVertical: Height * 0.02,
+                      borderRadius: Height * 0.001,
+                      color: Color.DarkGrey,
+                    }}
+                  >
+                    This team has no Volunteers
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  data={activeCampaign?.teamB?.members}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item._id}
+                  ItemSeparatorComponent={() => (
+                    <View style={styles.separator} />
+                  )}
+                  style={{ zIndex: 1 }}
+                />
+              )}
+            </View>
+          )}
         </View>
-
-        {currentPage === "Team A" && (
-          <View>
-            {activeCampaign?.teamA?.members?.length === 0 ? (
-              <View
-                style={{
-                  paddingVertical: Height * 0.1,
-                  marginTop: Height * 0.2,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  source={require("../../../../assets/BlockedUserIcon.png")}
-                />
-                <Text
-                  style={{
-                    fontSize: Height * 0.023,
-                    fontWeight: "700",
-                    // backgroundColor: "#E5F2FF",/
-                    paddingHorizontal: Width * 0.062,
-                    paddingVertical: Height * 0.02,
-                    borderRadius: Height * 0.001,
-                    color: Color.DarkGrey,
-                  }}
-                >
-                  This team has no Volunteers
-                </Text>
-              </View>
-            ) : (
-              <FlatList
-                data={activeCampaign?.teamA?.members}
-                renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-              />
-            )}
-          </View>
-        )}
-        {currentPage === "Team B" && (
-          <View>
-            {activeCampaign?.teamB?.members?.length === 0 ? (
-              <View
-                style={{
-                  paddingVertical: Height * 0.1,
-                  marginTop: Height * 0.2,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  source={require("../../../../assets/BlockedUserIcon.png")}
-                />
-                <Text
-                  style={{
-                    fontSize: Height * 0.023,
-                    fontWeight: "700",
-
-                    paddingHorizontal: Width * 0.062,
-                    paddingVertical: Height * 0.02,
-                    borderRadius: Height * 0.001,
-                    color: Color.DarkGrey,
-                  }}
-                >
-                  This team has no Volunteers
-                </Text>
-              </View>
-            ) : (
-              <FlatList
-                data={activeCampaign?.teamB?.members}
-                renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                style={{ zIndex: 1 }}
-              />
-            )}
-          </View>
-        )}
       </View>
-    </View>
+    </SafeAreaProvider>
   );
 };
 

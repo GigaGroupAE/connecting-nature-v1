@@ -11,7 +11,7 @@ import Btn from "../Btn";
 import logo from "../../../assets/cn-icon.png";
 import { theme } from "../../../theme";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { axiosInstance } from "../../../axiosInstance";
 
 const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
@@ -28,7 +28,6 @@ const mutation = async (params) => {
 const CampaignNotification = ({ data, startAnimation }) => {
   const queryClient = useQueryClient();
 
-
   // this function will first make api call to update the volunteer status to either "accepted" or "rejected"
   // then it will make request to change the notification to "campaign-invite-accepted" or "campaign-invite-rejected"
   //the updateNotifications  will force a refetch of notifications
@@ -44,8 +43,6 @@ const CampaignNotification = ({ data, startAnimation }) => {
       //TODO: REMOVE THE COMMENT FOR THE ANIMATIONS.
       //startAnimation()
     }
-
-    
   };
 
   const InviteHandlerMutation = useMutation({

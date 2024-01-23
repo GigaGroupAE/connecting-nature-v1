@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useState } from "react";
 import Header from "../../components/Header";
@@ -26,6 +28,8 @@ import KeybordWrapper from "../../components/KeyboardWrappers";
 import * as Location from "expo-location";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { scale } from "react-native-size-matters";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 //Responsive Width and Height
 const Width = Dimensions.get("screen").width;
@@ -57,6 +61,7 @@ export default function DoDay() {
   let minimumDate = new Date();
 
   const showDatePicker = () => {
+    console.log("press");
     setDatePickerVisibility(true);
   };
 
@@ -65,6 +70,7 @@ export default function DoDay() {
   };
 
   const showEndTimer = () => {
+    console.log("press");
     setEndTimerVisible(true);
   };
 
@@ -98,6 +104,7 @@ export default function DoDay() {
 
     if (!userState.location) {
       handleUserLocation();
+      console.log("locations error ");
       return;
     }
     const doday = {
@@ -105,7 +112,7 @@ export default function DoDay() {
       radius: radius,
       startTime: date,
       description: description,
-      location: "SomeLocation",
+      location: userState?.location,
       volunteers: [],
       volunteersRequired: numberOfVolunteers,
       searchTag: searchCampaign,
@@ -113,8 +120,9 @@ export default function DoDay() {
       endTime,
       venue,
     };
-
+    console.log(doday, "doday");
     const dodayJson = JSON.stringify(doday); // Convert doday object to JSON
+    console.log(dodayJson, "json");
     navigation.navigate("Invite", { dodayJson, userState });
   };
 
@@ -124,28 +132,26 @@ export default function DoDay() {
     }
   }, []);
 
-  const handleUserLocation = () => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        showSnackbar("Permission to access location was denied");
-        Alert.alert(
-          "Permission Required",
-          "To create the campaign, we need your location permission.",
-          [
-            {
-              text: "OK",
-              onPress: getUserLocation,
-            },
-          ]
-        );
-        return;
-      }
+  const handleUserLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      showSnackbar("Permission to access location was denied");
+      Alert.alert(
+        "Permission Required",
+        "To create the campaign, we need your location permission.",
+        [
+          {
+            text: "OK",
+            onPress: getUserLocation,
+          },
+        ]
+      );
+      return;
+    }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location.coords);
-      userActions.setLocation(location?.coords);
-    })();
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location.coords);
+    userActions.setLocation(location?.coords);
   };
 
   const getUserLocation = () => {
@@ -164,110 +170,121 @@ export default function DoDay() {
   };
 
   return (
-    <KeybordWrapper>
-      <View>
-        <Header
-          title={"Create Do-Day"}
-          icon={
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <Entypo name="cross" color={"#707070"} size={30} />
-            </TouchableOpacity>
-          }
-        />
-
-        <Text style={styles.noteText}>
-          <Text style={styles.important}>Important! </Text> Fill out the Form
-          carefully. The data will be shown upon your radius selection.{" "}
-        </Text>
-        <View style={styles.formContainer}>
-          <InputText title={"Campaign Name"} onchange={setName} value={name} />
-          <InputTextLarge
-            title={"Description"}
-            onchange={setDescription}
-            value={description}
+    <SafeAreaProvider style={styles.container}>
+      <CustomStatsBar backgroundColor={Color.White} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : ""}
+        style={{ flex: 1 }}
+      >
+        <View style={{ flex: 1 }}>
+          <Header
+            title={"Create Do-Day"}
+            icon={
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              >
+                <Entypo name="cross" color={"#707070"} size={30} />
+              </TouchableOpacity>
+            }
           />
-          <Pressable onPress={showDatePicker}>
+
+          <Text style={styles.noteText}>
+            <Text style={styles.important}>Important! </Text> Fill out the Form
+            carefully. The data will be shown upon your radius selection.{" "}
+          </Text>
+          <View style={styles.formContainer}>
             <InputText
-              title={"Start Date"}
-              onchange={setDate}
-              value={date.toLocaleString()}
-              edit={false}
+              title={"Campaign Name"}
+              onchange={setName}
+              value={name}
             />
-          </Pressable>
-
-          <Pressable onPress={showEndTimer}>
-            <InputText
-              title={"End Date"}
-              onchange={setEndTime}
-              value={endTime.toLocaleString()}
-              edit={false}
+            <InputTextLarge
+              title={"Description"}
+              onchange={setDescription}
+              value={description}
             />
-          </Pressable>
+            <Pressable onPress={showDatePicker}>
+              <InputText
+                title={"Start Date"}
+                onchange={setDate}
+                value={date.toLocaleString()}
+                edit={false}
+              />
+            </Pressable>
 
-          <InputText
-            title={"Radius in "}
-            value={radius}
-            onchange={setRadius}
-            keyboardType="number-pad"
-          />
-          <InputText
-            title={"Campaign Venue Name"}
-            value={venue}
-            onchange={setVenue}
-          />
-          <Pressable>
+            <Pressable onPress={showEndTimer}>
+              <InputText
+                title={"End Date"}
+                onchange={setEndTime}
+                value={endTime.toLocaleString()}
+                edit={false}
+              />
+            </Pressable>
+
             <InputText
-              title={"No of Volunteers Required"}
-              onchange={setNumberOfVolunteers}
-              value={numberOfVolunteers}
+              title={"Radius in "}
+              value={radius}
+              onchange={setRadius}
               keyboardType="number-pad"
             />
-          </Pressable>
-          <Pressable>
             <InputText
-              title={"#Search Campaign"}
-              onchange={setSearchCampaign}
-              value={searchCampaign}
+              title={"Campaign Venue Name"}
+              value={venue}
+              onchange={setVenue}
             />
-          </Pressable>
+            <Pressable>
+              <InputText
+                title={"No of Volunteers Required"}
+                onchange={setNumberOfVolunteers}
+                value={numberOfVolunteers}
+                keyboardType="number-pad"
+              />
+            </Pressable>
+            <Pressable>
+              <InputText
+                title={"#Search Campaign"}
+                onchange={setSearchCampaign}
+                value={searchCampaign}
+              />
+            </Pressable>
 
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={handleCreate}
-          >
-            <Text style={styles.buttonTitle}>Create & Find Volunteer</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={handleCreate}
+            >
+              <Text style={styles.buttonTitle}>Create & Find Volunteer</Text>
+            </TouchableOpacity>
 
-          {/* <ButtonLarge title={"Create & Find Volunteer"} click={handleCreate} /> */}
+            {/* <ButtonLarge title={"Create & Find Volunteer"} click={handleCreate} /> */}
+          </View>
+
+          {/* {CAPMAIGN START DATE AND TIME} */}
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="datetime"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+            minimumDate={minimumDate}
+          />
+
+          {/* // CAMPAIGN END TIMER  */}
+          <DateTimePickerModal
+            isVisible={endTimerVisible}
+            mode="datetime"
+            onConfirm={handleConfirmEndTime}
+            onCancel={hideEndTimer}
+            minimumDate={minimumDate}
+          />
         </View>
-
-        {/* {CAPMAIGN START DATE AND TIME} */}
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="datetime"
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
-          minimumDate={minimumDate}
-        />
-
-        {/* // CAMPAIGN END TIMER  */}
-        <DateTimePickerModal
-          isVisible={endTimerVisible}
-          mode="datetime"
-          onConfirm={handleConfirmEndTime}
-          onCancel={hideEndTimer}
-          minimumDate={minimumDate}
-        />
-      </View>
-    </KeybordWrapper>
+      </KeyboardAvoidingView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   formContainer: {
     // flex: 1,
     paddingHorizontal: Width * 0.045,

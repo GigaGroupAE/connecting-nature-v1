@@ -18,20 +18,17 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from "@tanstack/react-query";
+} from "react-query";
 import { axiosInstance } from "../../../axiosInstance";
 import { useStateContext } from "../../contexts/ContextProvider";
-
-
-
 
 const Height = Dimensions.get("screen").height;
 const Width = Dimensions.get("screen").width;
 
 const mutation = async (payload) => {
-  const { data } = await axiosInstance.post("/buckets/create", payload)
-  return data
-}
+  const { data } = await axiosInstance.post("/buckets/create", payload);
+  return data;
+};
 
 const BucketModel = (props) => {
   const navigation = useNavigation();
@@ -41,22 +38,24 @@ const BucketModel = (props) => {
   const [points, setpoints] = useState("");
   const queryClient = useQueryClient();
 
-  const { setLoading } = useStateContext()
+  const { setLoading } = useStateContext();
 
   const AddBucketMutation = useMutation({
     mutationFn: mutation,
-    onSuccess: (data) => { queryClient.invalidateQueries(["Buckets"]) }
-  })
-
-
-
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["Buckets"]);
+    },
+  });
 
   const handleAddBucket = async () => {
     const response = await AddBucketMutation.mutateAsync({
-      bucketName, points, plantName, numOfPlants
-    })
-    props.hideModal()
-  }
+      bucketName,
+      points,
+      plantName,
+      numOfPlants,
+    });
+    props.hideModal();
+  };
 
   return (
     <Provider>
@@ -79,8 +78,7 @@ const BucketModel = (props) => {
               }}
               textAlignVertical="center"
               value={bucketName}
-              onChange={(value) => setbucketName(value.nativeEvent.text)
-              }
+              onChange={(value) => setbucketName(value.nativeEvent.text)}
             />
           </View>
           <View style={styles.bodyContainer}>
@@ -94,7 +92,7 @@ const BucketModel = (props) => {
               textAlignVertical="center"
               value={plantName}
               onChange={(value) => {
-                setplantName(value.nativeEvent.text)
+                setplantName(value.nativeEvent.text);
               }}
             />
           </View>
@@ -118,8 +116,7 @@ const BucketModel = (props) => {
                 }}
                 textAlignVertical="center"
                 value={numOfPlants}
-                onChange={(value) => setnoOfPlant(value.nativeEvent.text)
-                }
+                onChange={(value) => setnoOfPlant(value.nativeEvent.text)}
                 keyboardType="number-pad"
               />
             </View>
@@ -133,8 +130,7 @@ const BucketModel = (props) => {
                 }}
                 textAlignVertical="center"
                 value={points}
-                onChange={(value) => setpoints(value.nativeEvent.text)
-                }
+                onChange={(value) => setpoints(value.nativeEvent.text)}
                 keyboardType="number-pad"
               />
             </View>
