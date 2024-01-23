@@ -167,8 +167,6 @@ const Home = () => {
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <CustomStatsBar backgroundColor={Color.White} />
-
       <View style={styles.pageContainer}>
         {HeaderComponent}
         {campaign && <View>{ActivCampaignHeader}</View>}

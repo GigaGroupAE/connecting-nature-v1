@@ -174,7 +174,7 @@ export default function DirectChat(props, { route }) {
   let messageTye;
 
   return (
-    <SafeAreaView
+    <View
       style={{
         height: "100%",
       }}
@@ -346,7 +346,7 @@ export default function DirectChat(props, { route }) {
           }
         />
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

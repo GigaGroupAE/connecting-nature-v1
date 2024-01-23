@@ -257,7 +257,7 @@ export default function Comments(props) {
       behavior={Platform.OS === "ios" ? "padding" : ""}
       style={{ flex: 1 }}
     >
-      <SafeAreaView style={{ backgroundColor: Color.LightBlue }}>
+      <View style={{ backgroundColor: Color.LightBlue }}>
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.headText}>Most Recent Comments</Text>
@@ -306,7 +306,7 @@ export default function Comments(props) {
           onFocus={handleTextInputFocus}
           onBlur={handleTextInputBlur}
         />
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 }

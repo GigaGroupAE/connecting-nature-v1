@@ -46,6 +46,8 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useStateContext } from "../../contexts/ContextProvider.js";
 import { axiosInstance } from "../../../axiosInstance";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomStatsBar from "../../components/CustomStatsBar";
 
 const VolunteersScreen = ({ route }) => {
   const campaignId = route.params.campaignId;
@@ -87,8 +89,9 @@ const VolunteersScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar translucent backgroundColor={Color.Blue}></StatusBar>
+    <SafeAreaProvider>
+      <CustomStatsBar backgroundColor={Color.White} />
+
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.header}>
@@ -218,7 +221,7 @@ const VolunteersScreen = ({ route }) => {
           })}
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
