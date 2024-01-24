@@ -8,12 +8,14 @@
     "userInterfaceStyle": "automatic",
     "plugins": [
       [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(CONNECTING_NATURE) to use your location."
-        }
-  
+        "expo-build-properties",
+      {
+       "android": {
+            "usesCleartextTraffic":true
+          }
+      }
       ]
+  
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -33,7 +35,6 @@
         "backgroundColor": "#FFFFFF"
       },
       "bundleIdentifier": "com.notify.connectingnatureapp"
-      
     },
     "android": {
       "versionCode": 1,
