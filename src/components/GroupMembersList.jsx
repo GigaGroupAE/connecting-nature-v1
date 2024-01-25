@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { scale } from "react-native-size-matters";
 import Color from "../../assets/colors/Color";
 import { Octicons } from "react-native-vector-icons";
@@ -16,54 +16,28 @@ import { useUserState } from "../slices/userSlice";
 import { useNavigation } from "@react-navigation/native";
 import { useStateContext } from "../contexts/ContextProvider";
 import { ActivityIndicator } from "react-native-paper";
+import { axiosInstance } from "../../axiosInstance";
+import { useQuery } from "react-query";
+
+const fetchMessages = async () => {
+  try {
+    const { data } = await axiosInstance.get("/groups/getcrmmessages");
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const GroupMembersList = ({ group }) => {
   const userState = useUserState();
   const navigation = useNavigation();
-  const [Messages, setMessages] = useState([]);
   const { setgroup, showSnackbar } = useStateContext();
-  const [refresh, setRefresh] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`${BASE_URL}/groups/getgroups`, {
-          headers: {
-            "auth-token": userState.token,
-          },
-        });
+  const { data: Messages = [], isLoading: loading } = useQuery(
+    "crmmessages",
+    fetchMessages
+  );
 
-        let groups = res.data.filter((group) => {
-          const currentuser = group.members.filter((m) => {
-            return m.member?.phoneNumber === userState.phoneNumber;
-          });
-          return currentuser.length !== 0;
-        });
-
-        let individualGroups = groups.filter((group) => {
-          return group.type === "individual";
-        });
-
-        setMessages([...individualGroups]);
-        setLoading(false);
-        setRefresh(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
-    const unsubscribe = navigation.addListener("focus", () => {
-      setRefresh(true);
-    });
-
-    fetchData();
-
-    return () => {
-      unsubscribe();
-    };
-  }, [navigation, refresh]);
   const selectcontact = (props) => {
     let first = false;
     let second = false;
@@ -112,7 +86,7 @@ const GroupMembersList = ({ group }) => {
         })
         .then((response) => {
           axios
-            .get(`${BASE_URL}/groups/getgroups`, {
+            .get(`${BASE_URL}/groups/getcrmmessages`, {
               headers: {
                 "auth-token": userState.token,
               },

@@ -433,7 +433,7 @@ function Support(props) {
                 <Text
                   style={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: Color.Black,
                   }}
                 >
@@ -468,7 +468,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -477,7 +477,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -494,7 +494,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -503,7 +503,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -520,7 +520,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -529,7 +529,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -546,7 +546,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -555,7 +555,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -572,7 +572,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -581,7 +581,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -598,7 +598,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -607,7 +607,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
@@ -624,7 +624,7 @@ function Support(props) {
                   }}
                   titleStyle={{
                     fontFamily: "Roboto_500Medium",
-                    fontSize: 12,
+                    fontSize: 14,
                     color: "#777777",
                   }}
                 >
@@ -633,7 +633,7 @@ function Support(props) {
                     titleNumberOfLines={16}
                     titleStyle={{
                       fontFamily: "Roboto_400Regular",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                     style={{ padding: 20, paddingVertical: 0 }}
                   />
