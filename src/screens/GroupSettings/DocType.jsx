@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   FlatList,
   Linking,
@@ -6,14 +6,14 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
-import { BASE_URL } from "../../../CONSTANTS";
-import { Entypo } from "react-native-vector-icons";
-import { scale } from "react-native-size-matters";
-import MessageType from "../../components/DocumentMessage/MessageType";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
+} from 'react-native';
+import { BASE_URL } from '../../../CONSTANTS';
+import { Entypo } from 'react-native-vector-icons';
+import { scale } from 'react-native-size-matters';
+import MessageType from '../../components/DocumentMessage/MessageType';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
 const DocType = ({ data }) => {
   const handleDocumentPress = (item) => {
     Linking.openURL(`${BASE_URL}/images/messageMedia/${item?.content?.path}`);
@@ -22,7 +22,7 @@ const DocType = ({ data }) => {
   const userState = useUserState();
 
   return (
-    <View style={{ position: "relative", zIndex: 100, flex: 1 }}>
+    <View style={{ position: 'relative', zIndex: 100, flex: 1 }}>
       <FlatList
         data={data}
         keyExtractor={(item) => {
@@ -31,7 +31,7 @@ const DocType = ({ data }) => {
         renderItem={({ item }) => {
           let removeLineBreak = item?.content?.name;
           if (removeLineBreak?.length > 40) {
-            removeLineBreak = removeLineBreak.slice(0, 37) + "...";
+            removeLineBreak = removeLineBreak.slice(0, 37) + '...';
           }
           let timePassed = calculateTimeDifference(item?.updatedAt);
 
@@ -63,18 +63,18 @@ const DocType = ({ data }) => {
                         {item?.content?.size
                           ? item?.content?.size >= 1000000
                             ? item?.content?.size / 1000000 +
-                              " " +
-                              "MB" +
-                              " " +
-                              "-" +
-                              " "
+                              ' ' +
+                              'MB' +
+                              ' ' +
+                              '-' +
+                              ' '
                             : item?.content?.size / 1000 +
-                              " " +
-                              "kB" +
-                              " " +
-                              "-" +
-                              " "
-                          : "somesize"}
+                              ' ' +
+                              'kB' +
+                              ' ' +
+                              '-' +
+                              ' '
+                          : 'somesize'}
                       </Text>
                     </View>
                     <Text style={styles.timepass}>{timePassed}</Text>
@@ -95,12 +95,11 @@ const styles = StyleSheet.create({
   documentContainer: {
     backgroundColor: Color.White,
     width: scale(320),
-    alignSelf: "center",
+    alignSelf: 'center',
     marginVertical: scale(5),
-    position: "relative",
+    position: 'relative',
     top: scale(10),
     flex: 1,
-    position: "relative",
     zIndex: 100,
   },
   documentPressable: {
@@ -119,41 +118,41 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   senderCon: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: scale(2),
   },
   sender: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
   },
   senderName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     paddingHorizontal: scale(10),
   },
   fileCon: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: scale(3),
   },
   fileName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(13),
     paddingHorizontal: scale(10),
   },
   timeCon: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: scale(2),
   },
   timepass: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(11),
     color: Color.Grey,
   },
   size: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(11),
   },
 });

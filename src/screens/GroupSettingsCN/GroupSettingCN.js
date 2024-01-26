@@ -4,30 +4,15 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Platform,
   TouchableOpacity,
-  Linking,
   Pressable,
-} from "react-native";
-import React, { useState } from "react";
-import {
-  useTheme,
-  Appbar,
-  IconButton,
-  Button,
-  Avatar,
-  Portal,
-  Modal,
-  Snackbar,
-  Dialog,
-} from "react-native-paper";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { useUserState } from "../../slices/userSlice";
-import { useEffect } from "react";
-import { BASE_URL } from "./../../../CONSTANTS";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import HeaderNormal from "../../components/HeaderNormal";
+} from 'react-native';
+import React, { useState } from 'react';
+import { IconButton, Button, Avatar, Portal, Modal } from 'react-native-paper';
+import { useUserState } from '../../slices/userSlice';
+import { BASE_URL } from './../../../CONSTANTS';
+import { useNavigation } from '@react-navigation/native';
+import HeaderNormal from '../../components/HeaderNormal';
 function GroupSettingsCN(props) {
   const [groupState, setgroup] = useState({
     level: props.route.params.groupState.type,
@@ -38,48 +23,38 @@ function GroupSettingsCN(props) {
   const userState = useUserState();
 
   const [profile, setProfile] = useState(
-    `${BASE_URL}/images/${groupState.groupPic}`
+    `${BASE_URL}/images/${groupState.groupPic}`,
   );
   const navigation = useNavigation();
 
   const styles = StyleSheet.create({
     body: {
       flex: 1,
-      flexDirection: "column",
-      backgroundColor: "#fff",
-      alignItems: "center",
-      justifyContent: "flex-start",
+      flexDirection: 'column',
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
     },
     // use this attribute with View to create a new row
     row: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     btnNormal: {
-      backgroundColor: "#4582C3",
+      backgroundColor: '#4582C3',
     },
     btnPress: {
-      backgroundColor: "grey",
+      backgroundColor: 'grey',
     },
   });
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 5,
-    width: "90%",
-    marginLeft: "5%",
+    width: '90%',
+    marginLeft: '5%',
   };
-
-  const [visible2, setVisible2] = useState(false);
-
-  const [visible3, setVisible3] = useState(false);
-
-  const hideDialog = () => setVisible3(false);
-
-  const [visible4, setVisible4] = useState(false);
-
-  const onToggleComingSoon = () => setVisible4(!visible2);
 
   // disband group modal
 
@@ -90,24 +65,24 @@ function GroupSettingsCN(props) {
   return (
     // Using ScrollView to dismiss keyboard when user clicks anywhere on the screen.
     <View style={[styles.body]}>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: '100%' }}>
         <HeaderNormal title="Group Setting" />
       </View>
       <ScrollView
         style={{
           flex: 1,
-          width: "100%",
+          width: '100%',
         }}
         contentContainerStyle={{
-          alignItems: "center",
+          alignItems: 'center',
         }}
       >
         <View
           style={[
             {
-              width: "100%",
-              backgroundColor: "white",
-              alignItems: "center",
+              width: '100%',
+              backgroundColor: 'white',
+              alignItems: 'center',
             },
           ]}
         >
@@ -117,14 +92,14 @@ function GroupSettingsCN(props) {
               {
                 marginTop: 25,
                 paddingBottom: 25,
-                width: "90%",
-                justifyContent: "flex-start",
+                width: '90%',
+                justifyContent: 'flex-start',
               },
             ]}
             onPress={() => {
               groupState.members.map((user) => {
                 if (userState.phoneNumber !== user.phoneNumber) {
-                  navigation.navigate("UserProfile", {
+                  navigation.navigate('UserProfile', {
                     userPhoneNumber: user.phoneNumber,
                   });
                 }
@@ -134,14 +109,14 @@ function GroupSettingsCN(props) {
             <Pressable>
               <Avatar.Image
                 size={60}
-                style={{ backgroundColor: "#707070" }}
+                style={{ backgroundColor: '#707070' }}
                 source={
                   profile
                     ? {
                         uri: groupState.groupPic,
                       }
                     : {
-                        uri: "https://firebasestorage.googleapis.com/v0/b/giga-intranet.appspot.com/o/default%2Fgroup.png?alt=media&token=e26513b2-3ac3-4f77-8ab6-be92e2d45c79",
+                        uri: 'https://firebasestorage.googleapis.com/v0/b/giga-intranet.appspot.com/o/default%2Fgroup.png?alt=media&token=e26513b2-3ac3-4f77-8ab6-be92e2d45c79',
                       }
                 }
               />
@@ -154,8 +129,8 @@ function GroupSettingsCN(props) {
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  width: "80%",
+                  flexDirection: 'row',
+                  width: '80%',
                 }}
               >
                 <Text
@@ -164,12 +139,12 @@ function GroupSettingsCN(props) {
                   style={{
                     //  fontFamily: "Roboto_500Medium",
                     fontSize: 15,
-                    color: "#4582C3",
-                    width: "100%",
+                    color: '#4582C3',
+                    width: '100%',
                   }}
                 >
-                  {groupState.level === "individual" ||
-                  groupState.level === "Admin"
+                  {groupState.level === 'individual' ||
+                  groupState.level === 'Admin'
                     ? groupState.name
                     : groupState.name}
                 </Text>
@@ -189,13 +164,13 @@ function GroupSettingsCN(props) {
                   style={{
                     //  fontFamily: "Roboto_400Regular",
                     fontSize: 12,
-                    color: "#4582C3",
+                    color: '#4582C3',
                   }}
                 >
-                  {groupState.level !== "individual" &&
-                  groupState.level !== "Admin"
+                  {groupState.level !== 'individual' &&
+                  groupState.level !== 'Admin'
                     ? groupState.members.map((user) => {
-                        if (user.type === "Lead") {
+                        if (user.type === 'Lead') {
                           return user.name;
                         }
                       })
@@ -203,8 +178,8 @@ function GroupSettingsCN(props) {
                         if (userState.phoneNumber !== user.phoneNumber) {
                           return user.phoneNumber;
                         }
-                      })}{" "}
-                  &#8226;{" "}
+                      })}{' '}
+                  &#8226;{' '}
                   <Text
                     style={
                       {
@@ -214,8 +189,8 @@ function GroupSettingsCN(props) {
                   >
                     {groupState.members.map((user) => {
                       if (userState.phoneNumber !== user.phoneNumber) {
-                        if (groupState.level === "Admin") {
-                          return "CEO";
+                        if (groupState.level === 'Admin') {
+                          return 'CEO';
                         } else {
                           return user.type;
                         }
@@ -442,9 +417,9 @@ function GroupSettingsCN(props) {
             {
               // marginTop: 10,
               marginBottom: 30,
-              width: "85%",
-              justifyContent: "flex-start",
-              alignSelf: "center",
+              width: '85%',
+              justifyContent: 'flex-start',
+              alignSelf: 'center',
             },
           ]}
         >
@@ -453,7 +428,7 @@ function GroupSettingsCN(props) {
             color="#E70000"
             size={20}
             style={{
-              backgroundColor: "#FFE1E1",
+              backgroundColor: '#FFE1E1',
               margin: 0,
               marginRight: 10,
             }}
@@ -467,7 +442,7 @@ function GroupSettingsCN(props) {
             labelStyle={{
               // fontFamily: "Roboto_500Medium",
               fontSize: 16,
-              color: "#E70000",
+              color: '#E70000',
 
               letterSpacing: 0.1,
             }}
@@ -487,7 +462,7 @@ function GroupSettingsCN(props) {
               style={[
                 styles.row,
                 {
-                  width: "100%",
+                  width: '100%',
                 },
               ]}
             >
@@ -495,8 +470,8 @@ function GroupSettingsCN(props) {
                 style={{
                   //   fontFamily: "Roboto_400Regular",
                   fontSize: 16,
-                  color: "#4582C3",
-                  textAlign: "center",
+                  color: '#4582C3',
+                  textAlign: 'center',
                 }}
               >
                 Are you sure you want to Block This User?
@@ -506,9 +481,9 @@ function GroupSettingsCN(props) {
               style={[
                 styles.row,
                 {
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   marginVertical: 20,
                 },
               ]}
@@ -516,18 +491,18 @@ function GroupSettingsCN(props) {
               <Button
                 uppercase={false}
                 style={{
-                  width: "35%",
-                  backgroundColor: "#E70000",
+                  width: '35%',
+                  backgroundColor: '#E70000',
                   marginRight: 12,
                 }}
                 labelStyle={{
                   // fontFamily: "Roboto_400Regular",
                   fontSize: 16,
-                  color: "white",
+                  color: 'white',
                   letterSpacing: 0.1,
                 }}
                 contentStyle={{
-                  justifyContent: "center",
+                  justifyContent: 'center',
                 }}
               >
                 Block
@@ -536,17 +511,17 @@ function GroupSettingsCN(props) {
                 uppercase={false}
                 style={{
                   marginLeft: 12,
-                  width: "35%",
-                  backgroundColor: "#4582C3",
+                  width: '35%',
+                  backgroundColor: '#4582C3',
                 }}
                 labelStyle={{
                   // fontFamily: "Roboto_400Regular",
                   fontSize: 16,
-                  color: "white",
+                  color: 'white',
                   letterSpacing: 0.1,
                 }}
                 contentStyle={{
-                  justifyContent: "center",
+                  justifyContent: 'center',
                 }}
                 onPress={() => {
                   onDismissBlockModal();

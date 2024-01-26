@@ -1,20 +1,14 @@
-import React, { useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
-import GestureRecognizer from "react-native-swipe-gestures";
-import { useNavigation } from "@react-navigation/native";
-import VideoPlayer from "expo-video-player";
-import { useStateContext } from "../../contexts/ContextProvider";
+import React, { useRef, useEffect } from 'react';
+import { View, Text, ImageBackground, Dimensions } from 'react-native';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import { useNavigation } from '@react-navigation/native';
+import VideoPlayer from 'expo-video-player';
+import { useStateContext } from '../../contexts/ContextProvider';
 export default function PostView(props) {
   const video = useRef(null);
   const navigation = useNavigation();
-  let deviceHeight = Dimensions.get("screen").height;
-  let deviceWidth = Dimensions.get("screen").width;
+  const deviceHeight = Dimensions.get('screen').height;
+  const deviceWidth = Dimensions.get('screen').width;
   const {
     setVideoURI,
     setShowMiniWindow,
@@ -29,9 +23,9 @@ export default function PostView(props) {
   return (
     <View>
       <View>
-        {props.route.params.mediatype === "video" ? (
+        {props.route.params.mediatype === 'video' ? (
           <View>
-            {props.route.params.screen === "message" ? (
+            {props.route.params.screen === 'message' ? (
               <GestureRecognizer
                 onSwipeDown={() => {
                   navigation.goBack();
@@ -39,13 +33,13 @@ export default function PostView(props) {
               >
                 <VideoPlayer
                   style={{
-                    height: Dimensions.get("screen").height,
-                    width: Dimensions.get("screen").width,
+                    height: Dimensions.get('screen').height,
+                    width: Dimensions.get('screen').width,
                   }}
-                  fullscreen={true}
-                  defaultControlsVisible={true}
+                  fullscreen
+                  defaultControlsVisible
                   timeVisible={false}
-                  slider={true}
+                  slider
                   videoProps={{
                     isLooping: false,
                     ref: video,
@@ -53,7 +47,7 @@ export default function PostView(props) {
                       uri: props.route.params.url,
                     },
                     shouldPlay: true,
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               </GestureRecognizer>
@@ -69,8 +63,8 @@ export default function PostView(props) {
               >
                 <VideoPlayer
                   style={{
-                    height: Dimensions.get("screen").height,
-                    width: Dimensions.get("screen").width,
+                    height: Dimensions.get('screen').height,
+                    width: Dimensions.get('screen').width,
                   }}
                   fullscreen={true}
                   defaultControlsVisible={true}
@@ -83,7 +77,7 @@ export default function PostView(props) {
                       uri: props.route.params.url,
                     },
                     shouldPlay: true,
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               </GestureRecognizer>

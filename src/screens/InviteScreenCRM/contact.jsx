@@ -4,29 +4,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import React, { useState } from "react";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { Modal, Portal, Menu, Button } from "react-native-paper";
-import axios from "axios";
-import ButtonLarge from "../../components/ButtonLarge";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "./../../slices/userSlice";
-import InputText from "../../components/InputText";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import React, { useState } from 'react';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { Modal, Portal, Menu, Button } from 'react-native-paper';
+import axios from 'axios';
+import ButtonLarge from '../../components/ButtonLarge';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from './../../slices/userSlice';
+import InputText from '../../components/InputText';
+import Color from '../../../assets/colors/Color';
 export default function Contact(props) {
   const item = props.item;
-  let height = Dimensions.get("screen").height;
-  let width = Dimensions.get("screen").width;
+  const height = Dimensions.get('screen').height;
+  const width = Dimensions.get('screen').width;
   const [visible, setVisible] = useState(false);
   const [menuvisible, setmenuVisible] = useState(true);
-  const [userName, setuserName] = useState("");
+  const [userName, setuserName] = useState('');
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const userState = useUserState();
-  const [desingation, setdesignation] = useState("Select Designation");
+  const [desingation, setdesignation] = useState('Select Designation');
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
     height: height * 0.5,
   };
@@ -34,22 +34,21 @@ export default function Contact(props) {
     const formData = new FormData();
 
     //place profile pic her
-    formData.append("fullName", userName);
-    formData.append("phoneNumber", item.phoneNumber);
-    formData.append("type", desingation);
+    formData.append('fullName', userName);
+    formData.append('phoneNumber', item.phoneNumber);
+    formData.append('type', desingation);
 
     axios
       .post(`${BASE_URL}/user/register`, formData, {
         headers: {
-          "auth-token": userState.token,
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
+          'auth-token': userState.token,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
         },
       })
       .then((res) => {
-        console.log(res.data);
         hideModal();
-        alert("User has been Invited");
+        alert('User has been Invited');
 
         // comment this code on 10-27-23 due to Sms api restriction will remove when clear
         // const sms = {
@@ -67,7 +66,7 @@ export default function Contact(props) {
         //   })
         //   .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
   return (
     <View>
@@ -77,9 +76,9 @@ export default function Contact(props) {
             styles.row,
             {
               paddingHorizontal: 10,
-              backgroundColor: "white",
-              width: "93%",
-              alignSelf: "center",
+              backgroundColor: 'white',
+              width: '93%',
+              alignSelf: 'center',
               borderRadius: 7,
               paddingVertical: 6,
               marginVertical: 5,
@@ -95,31 +94,31 @@ export default function Contact(props) {
               flex: 1,
             }}
           >
-            {item.phoneNumber !== "" ? item.phoneNumber : "No Phone Number"}
+            {item.phoneNumber !== '' ? item.phoneNumber : 'No Phone Number'}
             <Text
               style={{
                 color: Color.Black,
                 fontSize: 12,
               }}
             >
-              {"   ~ "}
+              {'   ~ '}
               {item.name}
             </Text>
           </Text>
           {
             <BouncyCheckbox
-              disabled={true}
+              disabled
               size={25}
               fillColor="#4582C3"
               style={{
-                marginLeft: "auto",
+                marginLeft: 'auto',
                 borderRadius: 25,
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 elevation: 0,
               }}
               contentStyle={{ paddingHorizontal: 3, height: 35 }}
               labelStyle={{
-                color: "#4582C3",
+                color: '#4582C3',
                 //  fontFamily: "Poppins_600SemiBold",
                 fontSize: 12,
               }}
@@ -141,11 +140,11 @@ export default function Contact(props) {
           <View>
             <Text
               style={{
-                color: "#4582C3",
-                fontFamily: "Roboto_400Regular",
+                color: '#4582C3',
+                fontFamily: 'Roboto_400Regular',
                 fontSize: 16,
                 letterSpacing: 0.7,
-                textAlign: "center",
+                textAlign: 'center',
                 paddingVertical: 8,
               }}
             >
@@ -157,23 +156,23 @@ export default function Contact(props) {
               anchor={
                 <Button
                   labelStyle={{
-                    color: "#4582C3",
-                    fontFamily: "Roboto_400Regular",
+                    color: '#4582C3',
+                    fontFamily: 'Roboto_400Regular',
                     fontSize: 16,
                     letterSpacing: 0.7,
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
                   contentStyle={{
-                    justifyContent: "flex-start",
+                    justifyContent: 'flex-start',
                     paddingTop: 4,
                   }}
                   style={{
-                    backgroundColor: "white",
+                    backgroundColor: 'white',
                     width: width * 0.87,
                     height: 50,
                     elevation: 4,
-                    justifyContent: "center",
-                    alignSelf: "center",
+                    justifyContent: 'center',
+                    alignSelf: 'center',
                   }}
                   uppercase={false}
                   onPress={() => setmenuVisible(true)}
@@ -182,56 +181,56 @@ export default function Contact(props) {
                 </Button>
               }
               style={{
-                width: "78%",
-                marginLeft: "9%",
+                width: '78%',
+                marginLeft: '9%',
               }}
             >
               <Menu.Item
                 style={{
-                  maxWidth: "100%",
+                  maxWidth: '100%',
                 }}
                 onPress={() => {
-                  setdesignation("Manager");
+                  setdesignation('Manager');
                   setmenuVisible(false);
                 }}
                 title="Manager"
               />
               <Menu.Item
                 style={{
-                  maxWidth: "100%",
+                  maxWidth: '100%',
                 }}
                 onPress={() => {
-                  setdesignation("Assistant Manager");
+                  setdesignation('Assistant Manager');
                   setmenuVisible(false);
                 }}
                 title="Assistant Manager"
               />
               <Menu.Item
                 style={{
-                  maxWidth: "100%",
+                  maxWidth: '100%',
                 }}
                 onPress={() => {
-                  setdesignation("Admin");
+                  setdesignation('Admin');
                   setmenuVisible(false);
                 }}
                 title="Admin"
               />
               <Menu.Item
                 style={{
-                  maxWidth: "100%",
+                  maxWidth: '100%',
                 }}
                 onPress={() => {
-                  setdesignation("Super Admin");
+                  setdesignation('Super Admin');
                   setmenuVisible(false);
                 }}
                 title="Super Admin"
               />
               <Menu.Item
                 style={{
-                  maxWidth: "100%",
+                  maxWidth: '100%',
                 }}
                 onPress={() => {
-                  setdesignation("Operations");
+                  setdesignation('Operations');
                   setmenuVisible(false);
                 }}
                 title="Operations"
@@ -239,12 +238,12 @@ export default function Contact(props) {
             </Menu>
           </View>
           <InputText
-            title={"User Name"}
+            title="User Name"
             value={userName}
             onchange={setuserName}
             maxLength={30}
           />
-          <ButtonLarge title={"Invite"} click={handleOnCreate} />
+          <ButtonLarge title="Invite" click={handleOnCreate} />
         </Modal>
       </Portal>
     </View>
@@ -253,21 +252,21 @@ export default function Contact(props) {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   // use this attribute with View to create a new row
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnNormal: {
-    backgroundColor: "aqua",
+    backgroundColor: 'aqua',
   },
   btnPress: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   },
 });

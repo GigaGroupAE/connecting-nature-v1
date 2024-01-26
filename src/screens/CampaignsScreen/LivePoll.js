@@ -53,7 +53,7 @@ export default function LivePoll(props) {
   const timeLeft = routerr?.params?.countDown;
   let date = moment().utcOffset("+05:00");
   const [Messages, setMessages] = useState(
-    props.route.params.campaign.messages
+    props.route.params.campaign.messages,
   );
   const [tempComment, setTempComment] = useState("");
   const [leadingTeam, setleadingTeam] = useState("");
@@ -145,7 +145,7 @@ export default function LivePoll(props) {
     setliked(
       Messages.likes?.some((user) => {
         return user === userState.id;
-      })
+      }),
     );
   }, []);
   useEffect(() => {
@@ -242,7 +242,7 @@ export default function LivePoll(props) {
   const handleEndCampaign = async () => {
     try {
       const res = await axiosInstance.patch(
-        `/archives/addArchiveCampaign/${campaign._id}`
+        `/archives/addArchiveCampaign/${campaign._id}`,
       );
 
       if (res.data) {
@@ -287,10 +287,10 @@ export default function LivePoll(props) {
       const { data } = await axios.post(
         `${BASE_URL}/story/addstory/`,
         formData,
-        config
+        config,
       );
       showSnackbar(
-        "The campaign time is over. Thank you for your participation"
+        "The campaign time is over. Thank you for your participation",
       );
       handleEndCampaign();
       navigation.navigate("Home");
@@ -323,7 +323,7 @@ export default function LivePoll(props) {
             headers: {
               "auth-token": userState.token,
             },
-          }
+          },
         )
         .then((res) => {
           setMessages(res.data.messages);
@@ -332,7 +332,7 @@ export default function LivePoll(props) {
     } else {
       let newcomments = [...Messages];
       newcomments[index].likes = Messages[index]?.likes?.filter(
-        (like) => like != userState.id
+        (like) => like != userState.id,
       );
       axios
         .patch(
@@ -342,7 +342,7 @@ export default function LivePoll(props) {
             headers: {
               "auth-token": userState.token,
             },
-          }
+          },
         )
         .then((res) => {
           setMessages(res.data.messages);
@@ -362,7 +362,7 @@ export default function LivePoll(props) {
           headers: {
             "auth-token": userState.token,
           },
-        }
+        },
       )
       .then((res) => {
         setreactions(res.data.reactions);
@@ -379,7 +379,7 @@ export default function LivePoll(props) {
           headers: {
             "auth-token": userState.token,
           },
-        }
+        },
       )
       .then((res) => {
         setMessages(res.data.messages);

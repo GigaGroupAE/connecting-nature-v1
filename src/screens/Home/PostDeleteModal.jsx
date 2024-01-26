@@ -1,11 +1,4 @@
-import {
-  Dimensions,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useCallback } from "react";
 import { useUserState } from "../../slices/userSlice";
 import { BASE_URL } from "../../../CONSTANTS";
@@ -18,9 +11,6 @@ import {
   MaterialIcons,
   MaterialCommunityIcons,
 } from "react-native-vector-icons";
-
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
 
 const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
   const userState = useUserState();
@@ -36,7 +26,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
             headers: {
               "auth-token": userState.token,
             },
-          }
+          },
         );
 
         if (response.data.success) {
@@ -51,7 +41,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
         // setmodalVisible(false);
       }
     },
-    [handleApiError]
+    [handleApiError],
   );
 
   const blockUser = useCallback(
@@ -65,7 +55,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
         const { data } = await axios.patch(
           `${BASE_URL}/user/block-user/${post.postedby._id}`,
           {},
-          config
+          config,
         );
 
         if (data.success) {
@@ -80,7 +70,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
         // setmodalVisible(false);
       }
     },
-    [handleApiError]
+    [handleApiError],
   );
 
   // const handleCancel = useCallback(() => {
@@ -91,7 +81,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
     (errorMessage) => {
       showSnackbar(errorMessage);
     },
-    [showSnackbar]
+    [showSnackbar],
   );
 
   return (

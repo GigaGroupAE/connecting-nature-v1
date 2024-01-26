@@ -1,68 +1,55 @@
 import {
   Dimensions,
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Alert,
   ScrollView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import HeaderList from "../VolunteersTeams/HeaderList";
-import WinerCard from "./WinerCard";
-import Color from "../../../../assets/colors/Color";
-import { RadioButton } from "react-native-paper";
-import { axiosInstance } from "../../../../axiosInstance";
+} from 'react-native';
+import React, { useState } from 'react';
+import WinerCard from './WinerCard';
+import Color from '../../../../assets/colors/Color';
+import { RadioButton } from 'react-native-paper';
+import { axiosInstance } from '../../../../axiosInstance';
+import { useStateContext } from '../../../contexts/ContextProvider';
 
-import { AntDesign } from "react-native-vector-icons";
+import { useQuery } from 'react-query';
+import { AntDesign } from 'react-native-vector-icons';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
-
-import { useStateContext } from "../../../contexts/ContextProvider";
-
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const fetchBuckets = async () => {
-  const { data } = await axiosInstance.get("/buckets/get");
+  const { data } = await axiosInstance.get('/buckets/get');
   return data.buckets;
 };
 
 const ListPortal = () => {
-  const queryClient = useQueryClient();
   const {
     data: bucketsData,
     isLoading: bucketsLoading,
     error: bucketsError,
   } = useQuery({
-    queryKey: ["Buckets"],
+    queryKey: ['Buckets'],
     queryFn: fetchBuckets,
     staleTime: 1000 * 10, //data will go stale after 10 secs
   });
-  const [checked, setChecked] = useState("teamA");
-  const [showCompaign, setshowCompaign] = useState(false);
+  const [checked, setChecked] = useState('teamA');
   const [bucket, setBucket] = useState(false);
   const [bucketCount, setBucketCount] = useState(1);
-  const [buckets, setBuckets] = useState("");
   const [bucketId, setBucketId] = useState(null);
-  const [teamName, setTeamName] = useState("");
-  const [bucketName, setbucketName] = useState("Select Bucket");
+  const [teamName, setTeamName] = useState('');
+  const [bucketName, setbucketName] = useState('Select Bucket');
   const { setLoading, activeCampaign, globalSocket, group } = useStateContext();
 
   const handleUpdate = () => {
     setTeamName(checked);
     if (!bucketId) {
-      console.log("select a bucket id first ");
       return;
     }
 
-    globalSocket.emit("update_points", {
+    globalSocket.emit('update_points', {
       group: group._id,
       teamName: checked,
       bucketId,
@@ -70,7 +57,7 @@ const ListPortal = () => {
       campaignId: activeCampaign._id,
     });
 
-    setbucketName("Select Bucket");
+    setbucketName('Select Bucket');
     setBucketCount(1);
     setBucketId(null);
   };
@@ -93,14 +80,13 @@ const ListPortal = () => {
 
   if (bucketsLoading)
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading....</Text>
       </View>
     );
 
   if (bucketsError) {
-    console.log("error is ", bucketsError.response.data);
-    Alert.alert("error", bucketsError.response.data.message);
+    Alert.alert('error', bucketsError.response.data.message);
     return;
   }
   return (
@@ -117,34 +103,34 @@ const ListPortal = () => {
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
             width: Width * 0.9,
-            alignSelf: "center",
-            justifyContent: "space-around",
+            alignSelf: 'center',
+            justifyContent: 'space-around',
             marginVertical: Height * 0.014,
           }}
         >
-          <View style={{ ...styles.bodyContainer, width: "45%" }}>
+          <View style={{ ...styles.bodyContainer, width: '45%' }}>
             <View style={styles.upgradReq}>
               <Text style={styles.reqText}>Team A</Text>
               <TouchableOpacity>
                 <RadioButton
                   value="teamA"
-                  status={checked === "teamA" ? "checked" : "unchecked"}
-                  onPress={() => setChecked("teamA")}
+                  status={checked === 'teamA' ? 'checked' : 'unchecked'}
+                  onPress={() => setChecked('teamA')}
                   color="#3970AA"
                 />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ ...styles.bodyContainer, width: "45%" }}>
+          <View style={{ ...styles.bodyContainer, width: '45%' }}>
             <View style={styles.upgradReq}>
               <Text style={styles.reqText}>Team B</Text>
               <TouchableOpacity>
                 <RadioButton
                   value="second"
-                  status={checked === "teamB" ? "checked" : "unchecked"}
-                  onPress={() => setChecked("teamB")}
+                  status={checked === 'teamB' ? 'checked' : 'unchecked'}
+                  onPress={() => setChecked('teamB')}
                   color="#3970AA"
                 />
               </TouchableOpacity>
@@ -165,9 +151,9 @@ const ListPortal = () => {
         {bucket && (
           <View
             style={{
-              width: "88%",
-              alignSelf: "center",
-              overflow: "hidden",
+              width: '88%',
+              alignSelf: 'center',
+              overflow: 'hidden',
               // flexWrap: "wrap",
             }}
           >
@@ -176,8 +162,8 @@ const ListPortal = () => {
                 <View key={item._id}>
                   <TouchableOpacity
                     style={{
-                      flexDirection: "row",
-                      flexWrap: "wrap",
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
                     }}
                     onPress={() => handleBucketName(item)}
                   >
@@ -185,7 +171,7 @@ const ListPortal = () => {
                       style={{
                         paddingVertical: Height * 0.01,
                         fontSize: Height * 0.02,
-                        flexWrap: "wrap",
+                        flexWrap: 'wrap',
                       }}
                     >
                       {item.bucketName}
@@ -221,7 +207,7 @@ const ListPortal = () => {
                       style={{
                         paddingVertical: Height * 0.01,
                         fontSize: Height * 0.02,
-                        fontWeight: "700",
+                        fontWeight: '700',
                         paddingHorizontal: Width * 0.018,
                       }}
                     >
@@ -235,16 +221,16 @@ const ListPortal = () => {
         )}
         <View
           style={{
-            width: "88%",
-            alignSelf: "center",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
+            width: '88%',
+            alignSelf: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             marginTop: Height * 0.014,
           }}
         >
           <View>
-            <Text style={{ fontWeight: "700", fontSize: Height * 0.02 }}>
+            <Text style={{ fontWeight: '700', fontSize: Height * 0.02 }}>
               No of Bucket
             </Text>
             <Text>Points will be calculate</Text>
@@ -253,17 +239,17 @@ const ListPortal = () => {
             <View
               style={{
                 ...styles.bodyContainer,
-                width: "55%",
+                width: '55%',
                 backgroundColor: Color.Disable,
               }}
             >
               <TouchableOpacity
-                style={{ alignSelf: "center" }}
+                style={{ alignSelf: 'center' }}
                 onPress={handleDecreament}
               >
                 <AntDesign
                   name="left"
-                  style={{ fontSize: 20, alignSelf: "center" }}
+                  style={{ fontSize: 20, alignSelf: 'center' }}
                 />
               </TouchableOpacity>
               <View
@@ -273,17 +259,17 @@ const ListPortal = () => {
                   paddingHorizontal: Width * 0.062,
                 }}
               >
-                <Text style={{ fontWeight: "400", fontSize: Height * 0.02 }}>
+                <Text style={{ fontWeight: '400', fontSize: Height * 0.02 }}>
                   {bucketCount}
                 </Text>
               </View>
               <TouchableOpacity
-                style={{ alignSelf: "center" }}
+                style={{ alignSelf: 'center' }}
                 onPress={handleIncreament}
               >
                 <AntDesign
                   name="right"
-                  style={{ fontSize: 20, alignSelf: "center" }}
+                  style={{ fontSize: 20, alignSelf: 'center' }}
                 />
               </TouchableOpacity>
             </View>
@@ -291,9 +277,9 @@ const ListPortal = () => {
         </View>
         <View
           style={{
-            width: "100%",
-            alignSelf: "center",
-            alignItems: "center",
+            width: '100%',
+            alignSelf: 'center',
+            alignItems: 'center',
             marginVertical: Height * 0.013,
             flex: 1,
           }}
@@ -321,25 +307,25 @@ export default ListPortal;
 
 const styles = StyleSheet.create({
   upgradReq: {
-    flexDirection: "row",
-    alignSelf: "center",
-    width: "100%",
+    flexDirection: 'row',
+    alignSelf: 'center',
+    width: '100%',
     paddingHorizontal: Width * 0.025,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   reqText: {
     paddingVertical: Height * 0.02,
     marginLeft: Width * 0.025,
     fontSize: Height * 0.02,
-    fontWeight: "400",
-    fontFamily: "Roboto_500Medium",
+    fontWeight: '400',
+    fontFamily: 'Roboto_500Medium',
     flex: 1,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Grey,
   },
   bodyContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: Height * 0.006,
     backgroundColor: Color.White,
     borderRadius: 8,
@@ -351,8 +337,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 4,
-    justifyContent: "space-between",
-    width: "88%",
-    alignSelf: "center",
+    justifyContent: 'space-between',
+    width: '88%',
+    alignSelf: 'center',
   },
 });

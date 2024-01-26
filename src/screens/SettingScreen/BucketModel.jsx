@@ -1,49 +1,31 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Dimensions,
-  TextInput,
-} from "react-native";
-import { Modal, Portal, Button, Provider } from "react-native-paper";
-import { FontAwesome5, Entypo, Ionicons } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, TextInput } from 'react-native';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import Color from '../../../assets/colors/Color';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
-import { axiosInstance } from "../../../axiosInstance";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useMutation, useQueryClient } from 'react-query';
+import { axiosInstance } from '../../../axiosInstance';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const mutation = async (payload) => {
-  const { data } = await axiosInstance.post("/buckets/create", payload);
+  const { data } = await axiosInstance.post('/buckets/create', payload);
   return data;
 };
 
 const BucketModel = (props) => {
-  const navigation = useNavigation();
-  const [bucketName, setbucketName] = useState("");
-  const [plantName, setplantName] = useState("");
-  const [numOfPlants, setnoOfPlant] = useState("");
-  const [points, setpoints] = useState("");
+  const [bucketName, setbucketName] = useState('');
+  const [plantName, setplantName] = useState('');
+  const [numOfPlants, setnoOfPlant] = useState('');
+  const [points, setpoints] = useState('');
   const queryClient = useQueryClient();
-
-  const { setLoading } = useStateContext();
 
   const AddBucketMutation = useMutation({
     mutationFn: mutation,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["Buckets"]);
+      queryClient.invalidateQueries(['Buckets']);
     },
   });
 
@@ -98,14 +80,14 @@ const BucketModel = (props) => {
           </View>
           <View
             style={{
-              width: "90%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              alignSelf: "center",
+              width: '90%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              alignSelf: 'center',
             }}
           >
-            <View style={{ ...styles.bodyContainer, width: "50%" }}>
+            <View style={{ ...styles.bodyContainer, width: '50%' }}>
               <TextInput
                 placeholder="No of Plants in Bucket"
                 style={{
@@ -120,7 +102,7 @@ const BucketModel = (props) => {
                 keyboardType="number-pad"
               />
             </View>
-            <View style={{ ...styles.bodyContainer, width: "45%" }}>
+            <View style={{ ...styles.bodyContainer, width: '45%' }}>
               <TextInput
                 placeholder="Points"
                 style={{
@@ -137,11 +119,11 @@ const BucketModel = (props) => {
           </View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
+              flexDirection: 'row',
+              justifyContent: 'space-around',
               marginTop: Height * 0.03,
-              width: "90%",
-              alignSelf: "center",
+              width: '90%',
+              alignSelf: 'center',
             }}
           >
             <TouchableOpacity onPress={handleAddBucket}>
@@ -177,24 +159,24 @@ const BucketModel = (props) => {
 const styles = StyleSheet.create({
   subTitle: {
     color: Color.Grey,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.017,
   },
   title: {
     color: Color.Black,
-    fontFamily: "Roboto_600SemiBold",
-    width: "100%",
-    fontWeight: "600",
+    fontFamily: 'Roboto_600SemiBold',
+    width: '100%',
+    fontWeight: '600',
     fontSize: Height * 0.02,
   },
   buttonWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Width * 0.06,
     paddingVertical: Height * 0.015,
   },
   icon: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.045,
     color: Color.Black,
     fontSize: Height * 0.028,
@@ -211,8 +193,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 8,
     // paddingVertical: Height * 0.045,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
     height: Height * 0.18,
   },
   textInput: {
@@ -221,28 +203,28 @@ const styles = StyleSheet.create({
     width: 318,
     height: 150,
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
   title: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: Height * 0.021,
     marginLeft: Width * 0.036,
-    fontFamily: "Roboto",
-    alignSelf: "center",
+    fontFamily: 'Roboto',
+    alignSelf: 'center',
     paddingVertical: Height * 0.018,
   },
   btn: {
     paddingVertical: Height * 0.012,
     backgroundColor: Color.Blue,
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "600",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '600',
     borderRadius: Height * 0.01,
     paddingHorizontal: Width * 0.09,
   },
 
   bodyContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: Height * 0.01,
     backgroundColor: Color.White,
     borderRadius: 8,
@@ -254,9 +236,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 4,
-    justifyContent: "space-between",
-    width: "90%",
-    alignSelf: "center",
+    justifyContent: 'space-between',
+    width: '90%',
+    alignSelf: 'center',
   },
 });
 

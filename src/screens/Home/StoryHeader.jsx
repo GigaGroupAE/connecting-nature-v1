@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,20 +7,20 @@ import {
   FlatList,
   ActivityIndicator,
   Dimensions,
-} from "react-native"
-import { useIsFocused, useNavigation } from "@react-navigation/native"
-import { useInfiniteQuery } from "react-query"
-import Color from "../../../assets/colors/Color"
-import StoryCard from "../../components/StoryCard"
-import { fetchStories } from "../../Api/GetPost"
+} from "react-native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useInfiniteQuery } from "react-query";
+import Color from "../../../assets/colors/Color";
+import StoryCard from "../../components/StoryCard";
+import { fetchStories } from "../../Api/GetPost";
 
 const StoryHeader = () => {
-  const navigation = useNavigation()
-  const isFocused = useIsFocused()
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const {
     data: storiesData,
-    isLoading: storyLoading,
+
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -30,29 +30,29 @@ const StoryHeader = () => {
       if (lastPage?.currentPage && lastPage?.totalPages) {
         return lastPage.currentPage < lastPage.totalPages
           ? lastPage.currentPage + 1
-          : null
+          : null;
       }
-      return null
+      return null;
     },
     refetchOnWindowFocus: false,
     cacheTime: 1000 * 60 * 5,
-  })
+  });
   const refetchStories = () => {
-    refetch()
-  }
+    refetch();
+  };
   useEffect(() => {
     if (isFocused) {
-      refetchStories()
+      refetchStories();
     }
-  }, [isFocused])
+  }, [isFocused]);
 
   const handleStoryNavigation = () => {
-    navigation.navigate("StoriesPosts")
-  }
+    navigation.navigate("StoriesPosts");
+  };
 
   const renderStoryCard = ({ item }) => {
-    return <StoryCard story={item} />
-  }
+    return <StoryCard story={item} />;
+  };
 
   return (
     <View style={styles.container}>
@@ -66,21 +66,21 @@ const StoryHeader = () => {
       <FlatList
         data={storiesData?.pages.flatMap((page) => page?.stories) || []}
         keyExtractor={(item) => item._id}
-        horizontal={true}
+        horizontal
         initialNumToRender={10}
         renderItem={renderStoryCard}
         showsHorizontalScrollIndicator={false}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
           if (!isFetchingNextPage && hasNextPage) {
-            fetchNextPage()
+            fetchNextPage();
           }
         }}
         ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -103,6 +103,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Roboto_400Regular",
   },
-})
+});
 
-export default StoryHeader
+export default StoryHeader;

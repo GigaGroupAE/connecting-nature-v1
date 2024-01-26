@@ -4,9 +4,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import HeaderNormal from "../../components/HeaderNormal";
+} from 'react-native';
+import React, { useState } from 'react';
+import HeaderNormal from '../../components/HeaderNormal';
 import {
   MaterialCommunityIcons,
   AntDesign,
@@ -14,45 +14,36 @@ import {
   MaterialIcons,
   EvilIcons,
   Octicons,
-} from "react-native-vector-icons";
+} from 'react-native-vector-icons';
 
-import BucketModel from "./BucketModel";
-import Color from "../../../assets/colors/Color";
-import AnnouncementModel from "./AnnouncementModel";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import BucketModel from './BucketModel';
+import Color from '../../../assets/colors/Color';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const Setting = () => {
-  const [visible, setVisible] = useState(false);
   const [busketModel, setbusketModel] = useState(false);
   const [Isannouncement, setIsannouncement] = useState(false);
 
   const showModal = () => setIsannouncement(true);
-  const hideModal = () => setVisible(false);
 
   const Showbusket = () => setbusketModel(true);
   const hidebusket = () => setbusketModel(false);
 
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: Height * 0.01,
     paddingVertical: Height * 0.015,
     marginHorizontal: Width * 0.04,
   };
 
-  const handleShowAnnouncement = () => {
-    setIsannouncement(true);
-  };
-  const handleHideAnnouncement = () => {
-    setIsannouncement(false);
-  };
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
-      <View style={{ height: "100%", backgroundColor: Color.White }}>
+      <View style={{ height: '100%', backgroundColor: Color.White }}>
         <HeaderNormal title="Settings" />
         <View style={styles.mainContainer}>
           <TouchableOpacity onPress={Showbusket} style={styles.listSeaction}>
@@ -137,19 +128,19 @@ export default Setting;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.02,
   },
   listSeaction: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
     fontSize: Height * 0.021,
     marginLeft: Width * 0.036,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
   icon: { fontSize: Height * 0.028 },
 });

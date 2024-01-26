@@ -5,18 +5,17 @@ import {
   StyleSheet,
   Pressable,
   Dimensions,
-} from "react-native";
-import React from "react";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import { Entypo } from "react-native-vector-icons";
-import { IconButton, Button, Avatar } from "react-native-paper";
-import { useUserState, useUserStateActions } from "./../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import HeaderNormal from "../../components/HeaderNormal.js";
-import Color from "../../../assets/colors/Color";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useCartStateActions } from "../../slices/cartSlice.js";
-import axios from "axios";
+} from 'react-native';
+import React from 'react';
+import { BASE_URL } from '../../../CONSTANTS.js';
+import { Entypo } from 'react-native-vector-icons';
+import { IconButton, Avatar } from 'react-native-paper';
+import { useUserState, useUserStateActions } from './../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import HeaderNormal from '../../components/HeaderNormal.js';
+import Color from '../../../assets/colors/Color';
+import { useCartStateActions } from '../../slices/cartSlice.js';
+import axios from 'axios';
 function ProfileSettings(props) {
   const userState = useUserState();
   const navigation = useNavigation();
@@ -29,32 +28,30 @@ function ProfileSettings(props) {
     //delete the expo token from database
     const config = {
       headers: {
-        "auth-token": userstate.token,
+        'auth-token': userstate.token,
       },
     };
     axios
       .put(
         `${BASE_URL}/user/updateUserExpoToken`,
         { expoPushToken: null },
-        config
+        config,
       )
       .then((res) => {
         userActions.resetState();
         CartActions.resetState();
         navigation.reset({
           index: 0,
-          routes: [{ name: "SignIn" }],
+          routes: [{ name: 'SignIn' }],
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
   const handleNotification = () => {
-    navigation.navigate("NotificationsScreen");
+    navigation.navigate('NotificationsScreen');
   };
   const handleSupport = () => {
-    props.navigation.navigate("Support");
+    props.navigation.navigate('Support');
   };
   return (
     <View style={styles.body}>
@@ -63,7 +60,7 @@ function ProfileSettings(props) {
         <View style={styles.userInfoHeader}>
           <View style={styles.headerRow}>
             <Avatar.Image
-              size={Dimensions.get("screen").height * 0.075}
+              size={Dimensions.get('screen').height * 0.075}
               source={
                 userState.profile
                   ? { uri: `${BASE_URL}/images/${userState.profile}` }
@@ -71,7 +68,7 @@ function ProfileSettings(props) {
               }
             />
             <View style={{ marginLeft: 12 }}>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.userName}>{userState.fullName}</Text>
                 <Pressable
                   android_ripple={{ color: Color.LightGrey, borderless: true }}
@@ -91,17 +88,17 @@ function ProfileSettings(props) {
               )}
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                 }}
               >
                 <Text style={styles.phoneNumberText}>
-                  {"+92" + userState.phoneNumber}
+                  {'+92' + userState.phoneNumber}
                 </Text>
                 <Pressable>
                   <Text
                     style={{
-                      fontFamily: "Roboto_600SemiBold",
+                      fontFamily: 'Roboto_600SemiBold',
                       fontSize: 14,
                       color: Color.Blue,
                       paddingHorizontal: 8,
@@ -145,7 +142,6 @@ function ProfileSettings(props) {
             icon="headset"
             color={Color.Black}
             size={20}
-            onPress={() => console.log("Pressed")}
             style={styles.leftIcons}
           />
           <View>
@@ -187,66 +183,66 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: Color.White,
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
   },
   userInfoHeader: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   userName: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 18,
     color: Color.Black,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   editIcon: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   userType: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: 14,
     color: Color.Blue,
   },
   phoneNumberText: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: 15,
     color: Color.Blue,
-    textDecorationLine: "underline",
+    textDecorationLine: 'underline',
     textDecorationColor: Color.Blue,
-    width: "60%",
+    width: '60%',
   },
   headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 20,
     paddingHorizontal: 15,
-    width: "100%",
-    justifyContent: "flex-start",
+    width: '100%',
+    justifyContent: 'flex-start',
     backgroundColor: Color.LightBg,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 15,
     marginTop: 15,
-    width: "100%",
-    justifyContent: "flex-start",
+    width: '100%',
+    justifyContent: 'flex-start',
   },
   btnNormal: {
-    backgroundColor: "#4582C3",
+    backgroundColor: '#4582C3',
   },
   btnPress: {
-    backgroundColor: "grey",
+    backgroundColor: 'grey',
   },
   chevronIcon: {
-    position: "absolute",
+    position: 'absolute',
     right: 15,
   },
   listText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: 15,
     color: Color.Black,
     marginLeft: 5,

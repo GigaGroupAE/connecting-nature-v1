@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,38 +6,35 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  StatusBar,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import Color from "../../../assets/colors/Color.js";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import * as Location from "expo-location";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { BASE_URL } from '../../../CONSTANTS.js';
+import Color from '../../../assets/colors/Color.js';
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import * as Location from 'expo-location';
 
-import Header from "../../components/Header.js";
-import InputText from "../../components/InputText.js";
-import ButtonMain from "../../components/ButtonMain.js";
-import { useUserState, useUserStateActions } from "../../slices/userSlice.js";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar.js";
+import Header from '../../components/Header.js';
+import InputText from '../../components/InputText.js';
+import ButtonMain from '../../components/ButtonMain.js';
+import { useUserState, useUserStateActions } from '../../slices/userSlice.js';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar.js';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const SignIn = () => {
   const navigation = useNavigation();
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
   // state context
   const { loading, setLoading, showSnackbar } = useStateContext();
   const userActions = useUserStateActions();
-  const userState = useUserState();
   const [location, setLocation] = useState(null);
 
   const onHandleClick = () => {
     if (phoneNumber.length !== 11) {
-      showSnackbar("Phone number should be 11 digits");
+      showSnackbar('Phone number should be 11 digits');
       return;
     }
 
@@ -53,9 +50,8 @@ const SignIn = () => {
             .post(`${BASE_URL}/user/otp`, { phoneNumber })
             .then((response) => {
               if (response.data.status === 200) {
-                console.log("token is ", res.headers.auth_token);
                 setLoading(false);
-                navigation.navigate("OtpScreen", {
+                navigation.navigate('OtpScreen', {
                   otp: response.data.message,
                   token: res.headers.auth_token,
                   user: res.data,
@@ -65,26 +61,21 @@ const SignIn = () => {
             })
             .catch((e) => {
               setLoading(false);
-              console.log(e);
             });
         } else {
           showSnackbar(res.data.message);
         }
       })
       .catch((err) => {
-        console.log("error is ", err);
         setLoading(false);
-        console.log(err);
       });
   };
-
-  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        showSnackbar("Permission to access location was denied");
+      if (status !== 'granted') {
+        showSnackbar('Permission to access location was denied');
         return;
       }
 
@@ -97,11 +88,11 @@ const SignIn = () => {
   return (
     <SafeAreaProvider>
       <CustomStatsBar backgroundColor={Color.White} />
-      <Header title={"Sign In"} />
+      <Header title={'Sign In'} />
       <View style={styles.container}>
         <Image
           style={styles.logo}
-          source={require("../../../assets/loginIcon.png")}
+          source={require('../../../assets/loginIcon.png')}
         />
         <View style={styles.subHeaderTextContainer}>
           <Text style={styles.subHeaderText}>
@@ -110,20 +101,20 @@ const SignIn = () => {
           </Text>
         </View>
         <InputText
-          title={"Phone Number"}
+          title={'Phone Number'}
           onchange={setPhoneNumber}
           value={phoneNumber}
-          keyboardType={"number-pad"}
+          keyboardType={'number-pad'}
         />
         <ButtonMain
-          title={"Sign In"}
+          title={'Sign In'}
           callback={onHandleClick}
           disabled={loading}
         />
       </View>
       <View style={styles.createNewContainer}>
         <Text style={styles.createNewText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.createNew}>Sign Up!</Text>
         </TouchableOpacity>
       </View>
@@ -138,8 +129,8 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: Color.White,
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     height: Height,
   },
   logo: {
@@ -147,36 +138,36 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     width: Width * 0.9,
     height: Height * 0.18,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   subHeaderTextContainer: {
     width: Width * 0.8,
-    position: "relative",
-    alignItems: "center",
+    position: 'relative',
+    alignItems: 'center',
     top: -20,
   },
   subHeaderText: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
     fontSize: Height * 0.018,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 23,
   },
   createNewContainer: {
-    flexDirection: "row",
-    alignSelf: "center",
-    position: "absolute",
-    bottom: "4%",
+    flexDirection: 'row',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: '4%',
   },
   createNewText: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
   },
   createNew: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 14,
     color: Color.Blue,
     marginLeft: 8,
-    textDecorationLine: "underline",
+    textDecorationLine: 'underline',
   },
 });

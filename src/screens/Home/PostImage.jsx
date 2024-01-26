@@ -1,21 +1,12 @@
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import React, { useCallback } from "react"
-import { BASE_URL } from "../../../CONSTANTS"
-import { useNavigation } from "@react-navigation/native"
-
-const height = Dimensions.get("screen").height
+import { Image, TouchableOpacity } from "react-native";
+import React from "react";
+import { BASE_URL } from "../../../CONSTANTS";
+import { useNavigation } from "@react-navigation/native";
 
 const PostImage = (props) => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
-  const { post, imageStyle } = props
+  const { post, imageStyle } = props;
 
   const handleNavigation = () => {
     navigation.navigate("FullPostView", {
@@ -23,8 +14,8 @@ const PostImage = (props) => {
       message: "",
       post: post,
       screen: "home",
-    })
-  }
+    });
+  };
 
   return (
     <TouchableOpacity key={post?._id} onPress={handleNavigation}>
@@ -35,9 +26,7 @@ const PostImage = (props) => {
         }}
       />
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default PostImage
-
-const styles = StyleSheet.create({})
+export default PostImage;

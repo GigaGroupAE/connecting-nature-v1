@@ -3,24 +3,20 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Platform,
   Dimensions,
   TextInput,
   Pressable,
-} from "react-native";
-import { useTheme, Appbar, Searchbar } from "react-native-paper";
-import React, { useEffect, useState } from "react";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import axios from "axios";
-import { useUserState } from "./../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "../../../CONSTANTS";
-import { AntDesign, Ionicons, Entypo } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import axios from 'axios';
+import { useUserState } from './../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../../../CONSTANTS';
+import { AntDesign, Ionicons, Entypo } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-BASE_URL;
 export default function SelectContact(props) {
   const [isSearch, setIsSearch] = useState(false);
 
@@ -29,7 +25,7 @@ export default function SelectContact(props) {
   };
 
   const handleCancel = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     setIsSearch(false);
   };
 
@@ -37,37 +33,37 @@ export default function SelectContact(props) {
   const userState = useUserState();
   const navigation = useNavigation();
   const onChangeSearch = (query) => setSearchQuery(query);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     axios
       .get(`${BASE_URL}/user/new-chat-contacts`, {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       })
       .then((res) => {
         //now we have to exculde the loggedIn user and also those users that have blocked each other
         //1- EXCLUDING LOGGED IN USER
-        let tempUsers = res.data.contacts.filter(
-          (user) => user.phoneNumber !== userState.phoneNumber
+        const tempUsers = res.data.contacts.filter(
+          (user) => user.phoneNumber !== userState.phoneNumber,
         );
         let users = tempUsers;
-        if (props.route.params.IntranetChat === "Intranet") {
+        if (props.route.params.IntranetChat === 'Intranet') {
           users = tempUsers.filter((user) => {
             return (
-              user.type === "Manager" ||
-              user.type === "Assistant Manager" ||
-              user.type === "Operations" ||
-              user.type === "Super Admin" ||
-              user.type === "Admin"
+              user.type === 'Manager' ||
+              user.type === 'Assistant Manager' ||
+              user.type === 'Operations' ||
+              user.type === 'Super Admin' ||
+              user.type === 'Admin'
             );
           });
         }
         setuser([...users]);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   }, []);
-  let render = true;
+  const render = true;
   const handleOnCheck = (user) => {
     navigation.goBack();
     props.route.params.selectedContact(user);
@@ -84,12 +80,12 @@ export default function SelectContact(props) {
         {isSearch && (
           <TextInput
             style={{
-              width: "80%",
+              width: '80%',
               // height: 15,
-              backgroundColor: "#F1F1F1",
+              backgroundColor: '#F1F1F1',
               paddingVertical: 5,
               paddingHorizontal: 20,
-              borderRadius: Dimensions.get("screen").height * 0.1,
+              borderRadius: Dimensions.get('screen').height * 0.1,
             }}
             placeholder="Search"
             onChangeText={onChangeSearch}
@@ -130,23 +126,23 @@ export default function SelectContact(props) {
             paddingVertical: 10,
             marginTop: 5,
             fontSize: 18,
-            fontWeight: "bold",
+            fontWeight: 'bold',
             color: Color.Black,
           }}
         >
           Recent Contact
         </Text>
-        {searchQuery === ""
+        {searchQuery === ''
           ? render === true
             ? users.map((user, index) => {
                 return (
                   <View
                     style={{
                       paddingHorizontal: 17,
-                      backgroundColor: "white",
-                      width: "100%",
-                      flexDirection: "row",
-                      alignItems: "center",
+                      backgroundColor: 'white',
+                      width: '100%',
+                      flexDirection: 'row',
+                      alignItems: 'center',
                       marginTop: 5,
                     }}
                   >
@@ -155,15 +151,15 @@ export default function SelectContact(props) {
                         backgroundColor: Color.LightBlue,
                         // paddingHorizontal: 15,
                         paddingVertical: 7,
-                        width: Dimensions.get("screen").height * 0.04,
-                        height: Dimensions.get("screen").height * 0.04,
+                        width: Dimensions.get('screen').height * 0.04,
+                        height: Dimensions.get('screen').height * 0.04,
                         borderRadius: 100,
                       }}
                     >
                       <Text
                         style={{
-                          alignSelf: "center",
-                          fontWeight: "bold",
+                          alignSelf: 'center',
+                          fontWeight: 'bold',
                           color: Color.Blue,
                         }}
                       >
@@ -171,13 +167,13 @@ export default function SelectContact(props) {
                       </Text>
                     </View>
                     <View
-                      key={"contact-" + index}
+                      key={'contact-' + index}
                       style={[
                         styles.row,
                         {
                           paddingHorizontal: 15,
-                          backgroundColor: "white",
-                          width: "100%",
+                          backgroundColor: 'white',
+                          width: '100%',
                           // alignSelf: "center",
                           borderRadius: 7,
                           paddingVertical: 10,
@@ -189,14 +185,14 @@ export default function SelectContact(props) {
                         numberOfLines={1}
                         ellipsizeMode="tail"
                         style={{
-                          fontFamily: "Roboto_500Medium",
+                          fontFamily: 'Roboto_500Medium',
                           color: Color.Black,
                           flex: 1,
                         }}
                       >
                         {props?.route?.params?.IntranetChat ===
-                        "IntranetChat" ? (
-                          <Text>{user?.phoneNumber || "No Phone Number"}</Text>
+                        'IntranetChat' ? (
+                          <Text>{user?.phoneNumber || 'No Phone Number'}</Text>
                         ) : null}
 
                         <Text
@@ -205,8 +201,8 @@ export default function SelectContact(props) {
                             fontSize: 12,
                           }}
                         >
-                          {" "}
-                          {"     ~"}
+                          {' '}
+                          {'     ~'}
                           {user.fullName}
                         </Text>
                       </Text>
@@ -221,14 +217,14 @@ export default function SelectContact(props) {
                           }}
                           style={{
                             // marginLeft: "auto",
-                            borderRadius: Dimensions.get("screen").height * 0.1,
-                            backgroundColor: "white",
+                            borderRadius: Dimensions.get('screen').height * 0.1,
+                            backgroundColor: 'white',
                             elevation: 0,
                           }}
                           contentStyle={{ paddingHorizontal: 3, height: 35 }}
                           labelStyle={{
-                            color: "#4582C3",
-                            fontFamily: "Roboto_600SemiBold",
+                            color: '#4582C3',
+                            fontFamily: 'Roboto_600SemiBold',
                             fontSize: 12,
                           }}
                           mode="contained"
@@ -257,44 +253,44 @@ const styles = StyleSheet.create({
   },
   // use this attribute with View to create a new row
   header: {
-    width: "100%",
-    flexDirection: "row",
+    width: '100%',
+    flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 14,
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderBottomWidth: 1.5,
     borderColor: Color.VeryLightGrey,
   },
   searchHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: 5.5,
     paddingHorizontal: 14,
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderBottomWidth: 1.5,
     borderColor: Color.VeryLightGrey,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   btnNormal: {
     backgroundColor: Color.Blue,
   },
   btnPress: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   },
   title: {
-    width: "82%",
+    width: '82%',
     // color: Color.Grey,
     fontSize: 20,
     lineHeight: 30,
     marginTop: 2,
     marginLeft: 10,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
   },
 });

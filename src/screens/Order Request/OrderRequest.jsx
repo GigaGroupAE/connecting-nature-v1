@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import axios from "axios";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { SimpleLineIcons } from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import { useStateContext } from "../../contexts/ContextProvider";
-import OrderItem from "./OrderItem";
+} from 'react-native';
+import axios from 'axios';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import { SimpleLineIcons } from 'react-native-vector-icons';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from '../../slices/userSlice';
+import { useStateContext } from '../../contexts/ContextProvider';
+import OrderItem from './OrderItem';
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+const height = Dimensions.get('screen').height;
+const width = Dimensions.get('screen').width;
 
 const UserList = () => {
   const [data, setData] = useState([]);
@@ -32,13 +32,12 @@ const UserList = () => {
 
         const tempResponse = await axios.get(`${BASE_URL}/order/get`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         });
 
         setData(tempResponse.data.orders);
       } catch (error) {
-        console.log("error in orderrequest", error);
       } finally {
         setLoading(false);
       }
@@ -53,11 +52,11 @@ const UserList = () => {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "processing":
+      case 'processing':
         return styles.processing;
-      case "shipped":
+      case 'shipped':
         return styles.shipped;
-      case "delivered":
+      case 'delivered':
         return styles.delivered;
       default:
         return {};
@@ -84,13 +83,13 @@ const UserList = () => {
                 name="notebook"
                 size={22}
                 color={Color.Grey}
-                style={{ position: "absolute", right: 100, bottom: -20 }}
+                style={{ position: 'absolute', right: 100, bottom: -20 }}
               />
               <SimpleLineIcons
                 name="share"
                 size={22}
                 color={Color.Grey}
-                style={{ position: "absolute", right: 25, bottom: -20 }}
+                style={{ position: 'absolute', right: 25, bottom: -20 }}
               />
             </TouchableOpacity>
           </View>
@@ -111,25 +110,25 @@ const UserList = () => {
                   style={{
                     fontSize: 18,
                     marginBottom: 14,
-                    fontWeight: "800",
+                    fontWeight: '800',
                     color: Color.Grey,
                   }}
                 >
                   Order Detail
                 </Text>
                 {[
-                  { title: "Total Charges:", value: item.totalPrice },
-                  { title: "Username:", value: item.shippingAddress.fullName },
-                  { title: "Email:", value: item.shippingAddress.email },
+                  { title: 'Total Charges:', value: item.totalPrice },
+                  { title: 'Username:', value: item.shippingAddress.fullName },
+                  { title: 'Email:', value: item.shippingAddress.email },
                   {
-                    title: "Phone No:",
+                    title: 'Phone No:',
                     value: item.shippingAddress.phoneNumber,
                   },
-                  { title: "Address:", value: item.shippingAddress.address },
-                  { title: "City:", value: item.shippingAddress.city },
-                  { title: "Payment Methods:", value: item.paymentMode },
+                  { title: 'Address:', value: item.shippingAddress.address },
+                  { title: 'City:', value: item.shippingAddress.city },
+                  { title: 'Payment Methods:', value: item.paymentMode },
                   {
-                    title: "Delivery Instructions:",
+                    title: 'Delivery Instructions:',
                     value: item.deliveryInstructions,
                   },
                 ].map((data, idx) => (
@@ -191,39 +190,39 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   user: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: height * 0.05,
   },
   userImage: {
     width: width * 0.13,
     height: height * 0.06,
     borderRadius: 36,
-    resizeMode: "contain",
-    position: "absolute",
+    resizeMode: 'contain',
+    position: 'absolute',
     left: 15,
     top: 7,
   },
   userName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 16,
     color: Color.Grey,
-    position: "absolute",
+    position: 'absolute',
     left: 75,
     top: 18,
     // alignSelf: "center",
   },
   userRole: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 16,
     color: Color.Blue,
-    position: "absolute",
+    position: 'absolute',
     left: 75,
     top: 28,
   },
   processing: {
     backgroundColor: Color.Blue,
     top: 0,
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 5,
@@ -233,9 +232,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   shipped: {
-    backgroundColor: "#333",
+    backgroundColor: '#333',
     top: 0,
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 5,
@@ -245,9 +244,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   delivered: {
-    backgroundColor: "#2A8841",
+    backgroundColor: '#2A8841',
     top: 0,
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 5,
@@ -264,23 +263,23 @@ const styles = StyleSheet.create({
     width: width * 0.13,
     height: height * 0.07,
     borderRadius: 10,
-    resizeMode: "cover",
-    position: "absolute",
+    resizeMode: 'cover',
+    position: 'absolute',
     left: 15,
     top: 7,
   },
   ItemName: {
-    position: "absolute",
-    left: "36.87%",
-    top: "15.87%",
+    position: 'absolute',
+    left: '36.87%',
+    top: '15.87%',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Color.Grey,
   },
   ItemQuantity: {
-    position: "absolute",
-    left: "36.13%",
-    top: "42.4%",
+    position: 'absolute',
+    left: '36.13%',
+    top: '42.4%',
     color: Color.Grey,
     fontSize: 14,
   },
@@ -294,24 +293,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
     color: Color.Grey,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   ItemName: {
     fontSize: 17,
     color: Color.Grey,
     paddingRight: 10,
-    fontWeight: "700",
+    fontWeight: '700',
     lineHeight: 21,
   },
   ItemContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   DeliveryInfo: {
     fontSize: 16,
     color: Color.Grey,
     marginTop: 5,
     lineHeight: 22,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
 });
 

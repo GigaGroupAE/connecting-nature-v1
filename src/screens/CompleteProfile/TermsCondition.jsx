@@ -5,14 +5,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { Entypo } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace";
+} from 'react-native';
+import React from 'react';
+import { Entypo } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const TermsCondition = ({ setmodalTerms }) => {
   return (
@@ -40,8 +39,8 @@ const TermsCondition = ({ setmodalTerms }) => {
 
         <Text style={styles.subHeading}>
           Please read these Terms and Conditions ("Terms") carefully before
-          using the App operated by{" "}
-          <Text style={{ fontWeight: "900", color: "#000" }}>
+          using the App operated by{' '}
+          <Text style={{ fontWeight: '900', color: '#000' }}>
             Connecting Nature Management
           </Text>
           ("us", "we", or "our").
@@ -161,7 +160,7 @@ const TermsCondition = ({ setmodalTerms }) => {
           <Text style={styles.subHeading}>
             If you have any questions about these Terms, please contact us;
           </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={styles.title}>Email:</Text>
             <Text style={styles.email}>support@connectingnature.com</Text>
           </View>
@@ -178,36 +177,36 @@ export default TermsCondition;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.01,
   },
 
   headerTitle: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: Height * 0.025,
   },
   headerSubtitle: {
-    fontFamily: "Roboto_400Regular",
-    color: "#999999",
+    fontFamily: 'Roboto_400Regular',
+    color: '#999999',
     fontSize: Height * 0.015,
   },
   closeICon: {
     fontSize: Height * 0.035,
   },
   subHeading: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.015,
     paddingVertical: Height * 0.016,
   },
   title: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: Height * 0.019,
   },
   email: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
   },
   button: {
@@ -222,6 +221,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Width * 0.09,
     paddingVertical: Height * 0.015,
     fontSize: Height * 0.02,
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
   },
 });

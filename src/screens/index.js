@@ -62,7 +62,6 @@ export { default as Followers } from "./UserProfile/Followers";
 export { default as TopStories } from "./TopStories/TopStories";
 export { default as StoryComment } from "./TopStories/StoryComment";
 export { default as StoriesPosts } from "./TopStories/StoriesPosts";
-export { default as ExpandedPost } from "./TopStories/ExpandedPost";
 export { default as Welcome } from "./Intranet/Welcome";
 export { default as PostsLike } from "./Home/PostsLikes";
 export { default as PostViewNotify } from "../screens/notification/PostView";

@@ -4,17 +4,17 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import Color from "../../../../assets/colors/Color";
-import { AntDesign, Entypo } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../../../slices/userSlice";
-import { Portal, Modal } from "react-native-paper";
-import { scale } from "react-native-size-matters";
+} from 'react-native';
+import React, { useState } from 'react';
+import Color from '../../../../assets/colors/Color';
+import { AntDesign, Entypo } from 'react-native-vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../../../slices/userSlice';
+import { Portal, Modal } from 'react-native-paper';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const UserListHeader = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,12 +23,12 @@ const UserListHeader = (props) => {
 
   const handleOrgUser = () => {};
   const hanldeCnUser = () => {
-    let doday = { radius: props.campaign.radius };
-    let dodayJson = JSON.stringify(doday);
-    let volunteersIds = props.campaign.volunteers.map((v) => v.user?._id);
-    let campaign = { volunteersIds, campaignId: props.campaign._id };
-    let action = "update";
-    navigation.navigate("Invite", { dodayJson, userState, campaign, action });
+    const doday = { radius: props.campaign.radius };
+    const dodayJson = JSON.stringify(doday);
+    const volunteersIds = props.campaign.volunteers.map((v) => v.user?._id);
+    const campaign = { volunteersIds, campaignId: props.campaign._id };
+    const action = 'update';
+    navigation.navigate('Invite', { dodayJson, userState, campaign, action });
     setModalVisible(false);
   };
 
@@ -40,10 +40,10 @@ const UserListHeader = (props) => {
     <View style={styles.container}>
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
+          display: 'flex',
+          flexDirection: 'row',
           flex: 2,
-          alignItems: "center",
+          alignItems: 'center',
         }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -59,13 +59,13 @@ const UserListHeader = (props) => {
       </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           flex: 1,
-          justifyContent: "space-between",
+          justifyContent: 'space-between',
         }}
       >
         <Text
-          style={{ color: Color.Blue, fontWeight: "600", fontFamily: "Roboto" }}
+          style={{ color: Color.Blue, fontWeight: '600', fontFamily: 'Roboto' }}
         >
           Invite Users
         </Text>
@@ -79,7 +79,7 @@ const UserListHeader = (props) => {
       <Portal>
         <Modal
           animationType="fade"
-          transparent={true}
+          transparent
           visible={modalVisible}
           onDismiss={hideModal}
           onRequestClose={() => {
@@ -94,14 +94,11 @@ const UserListHeader = (props) => {
               paddingHorizontal: Width * 0.042,
               borderRadius: Height * 0.01,
               elevation: 4,
-              position: "relative",
+              position: 'relative',
               top: scale(-270),
               right: scale(-130),
             }}
           >
-            <TouchableOpacity
-              onPress={() => setModalVisible(!modalVisible)}
-            ></TouchableOpacity>
             <TouchableOpacity onPress={() => hanldeCnUser()}>
               <Text style={styles.ModelTitile}>Invite CN Users</Text>
             </TouchableOpacity>
@@ -120,28 +117,28 @@ export default UserListHeader;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    alignContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 17,
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderColor: Color.VeryLightGrey,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   title: {
     color: Color.Black,
     fontSize: 18,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     marginLeft: 10,
     // marginTop: 2,
     lineHeight: 30,
-    textAlignVertical: "center",
+    textAlignVertical: 'center',
   },
   ModelTitile: {
     fontSize: Height * 0.018,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "500",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '500',
     marginVertical: Height * 0.01,
   },
 });

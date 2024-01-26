@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import Color from "../../../assets/colors/Color";
+import { FontAwesome } from "react-native-vector-icons";
 
 const PostAction = () => {
   return (
@@ -8,7 +10,7 @@ const PostAction = () => {
         <Pressable
           android_ripple={{ color: Color.LightGrey }}
           style={styles.mainAction}
-          onPress={handleLike}
+          // onPress={handleLike}
         >
           {liked ? (
             <FontAwesome

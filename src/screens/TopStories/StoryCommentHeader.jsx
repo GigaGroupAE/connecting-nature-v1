@@ -19,9 +19,17 @@ const width = Dimensions.get("screen").width;
 const StoryCommentHeader = ({ setmodalVisible }) => {
   const { selectedStory } = useStateContext();
 
-  let timePassed = calculateTimeDifference(selectedStory.createdAT);
+  const timePassed = calculateTimeDifference(selectedStory.createdAT);
 
   const navigation = useNavigation();
+  const userRole = [
+    "Operations",
+    "Admin",
+    "Manager",
+    "Assistant Manager",
+    "Super Admin",
+    "celebrity",
+  ];
 
   return (
     <View>
@@ -70,12 +78,8 @@ const StoryCommentHeader = ({ setmodalVisible }) => {
               <Text style={styles.userName}>
                 {selectedStory?.postedby?.fullName}
               </Text>
-              {(selectedStory?.postedby?.type === "Operations" ||
-                selectedStory?.postedby?.type === "Admin" ||
-                selectedStory?.postedby?.type === "Manager" ||
-                selectedStory?.postedby?.type === "Assistant Manager" ||
-                selectedStory?.postedby?.type === "Super Admin" ||
-                selectedStory?.postedby?.type === "celebrity") && (
+
+              {userRole?.includes(selectedStory?.postedby?.type) && (
                 <MaterialCommunityIcons
                   name="check-decagram"
                   style={styles.adminIcon}
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
   userName: {
     fontWeight: "bold",
     color: Color.Black,
-    paddingRight: width * 0.03,
+    paddingRight: width * 0.01,
   },
   userNameContainer: {
     flexDirection: "row",
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
   },
   adminIcon: {
     alignSelf: "center",
-    fontSize: height * 0.018,
+    fontSize: height * 0.015,
     color: Color.Blue,
   },
 });

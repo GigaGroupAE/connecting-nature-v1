@@ -1,35 +1,34 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Dimensions,
   FlatList,
-} from "react-native";
-import HeaderBack from "../../components/HeaderBack";
-import CampaignCard from "./CampaignCard";
-import BottomTab from "../../components/BottomTab";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { scale } from "react-native-size-matters";
-import NoCampaignIndicater from "../../components/NoCampaignIndicater";
-import { fetchCampaigns } from "../../utils/CampaignsHelper";
-import { useQuery } from "react-query";
-import CampaignsSkeletn from "../../components/Skeletns/CampaignsSkeletn";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+} from 'react-native';
+import HeaderBack from '../../components/HeaderBack';
+import CampaignCard from './CampaignCard';
+import BottomTab from '../../components/BottomTab';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import Color from '../../../assets/colors/Color';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { scale } from 'react-native-size-matters';
+import NoCampaignIndicater from '../../components/NoCampaignIndicater';
+import { fetchCampaigns } from '../../utils/CampaignsHelper';
+import { useQuery } from 'react-query';
+import CampaignsSkeletn from '../../components/Skeletns/CampaignsSkeletn';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 export default function CampaignsScreen() {
   const {
     data: campaigns,
     isLoading: campaignsLoading,
     refetch,
-  } = useQuery("campaigns", fetchCampaigns);
+  } = useQuery('campaigns', fetchCampaigns);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { setreactions, setcomment } = useStateContext();
@@ -42,8 +41,8 @@ export default function CampaignsScreen() {
 
   const handleNavigation = (campaign) => {
     setreactions(campaign?.reactions);
-    setcomment(campaign?.messages);
-    navigation.navigate("CampaignWithPosts", { campaign });
+    setcomment(campaign?.comments);
+    navigation.navigate('CampaignWithPosts', { campaign });
   };
   const renderItem = useCallback(
     ({ item }) => (
@@ -52,7 +51,7 @@ export default function CampaignsScreen() {
           title={item?.campaignName}
           leaderA={item?.teamA?.leader?.fullName}
           leaderB={item?.teamB?.leader?.fullName}
-          location={item?.venue || "Coming Soon..."}
+          location={item?.venue || 'Coming Soon...'}
           date={item?.date}
           mainBg={styles.cardBg}
           countA={item?.teamA?.members?.length}
@@ -64,7 +63,7 @@ export default function CampaignsScreen() {
         />
       </TouchableOpacity>
     ),
-    []
+    [],
   );
 
   const renderCampaigns = () => {
@@ -74,8 +73,8 @@ export default function CampaignsScreen() {
       return (
         <View
           style={{
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: 'center',
+            justifyContent: 'center',
             paddingVertical: Height * 0.2,
           }}
         >
@@ -97,13 +96,13 @@ export default function CampaignsScreen() {
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
-      <HeaderBack title={"Campaigns"} />
+      <HeaderBack title="Campaigns" />
       <View style={styles.main}>
         <Text style={styles.screenTitle}>Live & Upcoming Events</Text>
         <Text style={styles.description}>Are you ready for it?</Text>
         {renderCampaigns()}
       </View>
-      <BottomTab activeMenu={"Campaign"} scrollToTop={scrollToTop} />
+      <BottomTab activeMenu="Campaign" scrollToTop={scrollToTop} />
     </SafeAreaProvider>
   );
 }
@@ -117,43 +116,43 @@ const styles = StyleSheet.create({
   },
   cardBg: {
     paddingVertical: 15,
-    backgroundColor: "red",
+    backgroundColor: 'red',
     marginTop: Height * 0.022,
     borderRadius: Height * 0.01,
     paddingHorizontal: Width * 0.045,
   },
   scrollView: {
-    marginBottom: "24%",
+    marginBottom: '24%',
   },
   screenTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: Height * 0.032,
     color: Color.Black,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   description: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.019,
     color: Color.Black,
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Grey,
     fontSize: Height * 0.016,
     width: scale(270),
     lineHeight: scale(17),
-    textAlign: "center",
+    textAlign: 'center',
   },
   bellIcon: {
     width: Width * 0.3,
     height: Height * 0.13,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -163,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.02,
   },
@@ -173,7 +172,7 @@ const styles = StyleSheet.create({
   },
   archiveText: {
     fontSize: scale(18),
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
   },
 });

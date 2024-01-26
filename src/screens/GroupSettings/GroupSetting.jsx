@@ -10,8 +10,8 @@ import {
   Dimensions,
   Pressable,
   Image,
-} from "react-native";
-import React, { useState } from "react";
+} from 'react-native';
+import React, { useState } from 'react';
 import {
   Appbar,
   IconButton,
@@ -19,25 +19,24 @@ import {
   Avatar,
   Portal,
   Modal,
-  Snackbar,
   Dialog,
-} from "react-native-paper";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "./../../../CONSTANTS";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import MemberRow from "./MemberRow";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import Color from "../../../assets/colors/Color";
-import { scale } from "react-native-size-matters";
-import * as ImagePicker from "expo-image-picker";
+} from 'react-native-paper';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useUserState } from '../../slices/userSlice';
+import { BASE_URL } from './../../../CONSTANTS';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import MemberRow from './MemberRow';
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import Color from '../../../assets/colors/Color';
+import { scale } from 'react-native-size-matters';
+import * as ImagePicker from 'expo-image-picker';
 
-const ALLOWED_ROLES = ["Owner"];
+// const ALLOWED_ROLES = ['Owner'];
 
 function GroupSettings(props) {
   const { group, currentUserprivilege, showSnackbar } = useStateContext();
-  const isCurrentUserAllowed = ALLOWED_ROLES.includes(currentUserprivilege);
+  // const isCurrentUserAllowed = ALLOWED_ROLES.includes(currentUserprivilege);
 
   const [groupState, setgroup] = useState({
     type: group?.type,
@@ -49,24 +48,24 @@ function GroupSettings(props) {
   const userState = useUserState();
   const [groupImage, setgroupImage] = useState(null);
 
-  let userDetails = group?.members.filter(
-    (m) => m.member.phoneNumber !== userState.phoneNumber
-  );
+  // let userDetails = group?.members.filter(
+  //   (m) => m.member.phoneNumber !== userState.phoneNumber,
+  // );
 
   const [groups, setgroups] = useState([]);
   const [modalProfile, setmodalProfile] = useState(false);
-  const [photo, setphoto] = useState(
-    `${BASE_URL}/images/${groupState.groupPic}`
-  );
+  // const [photo, setphoto] = useState(
+  //   `${BASE_URL}/images/${groupState.groupPic}`,
+  // );
 
   const navigation = useNavigation();
 
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 5,
-    width: "90%",
-    marginLeft: "5%",
+    width: '90%',
+    marginLeft: '5%',
   };
   const RemoveMember = async (member) => {
     try {
@@ -77,33 +76,31 @@ function GroupSettings(props) {
         { memberId: memberId },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       );
 
       const updatedGroup = response.data.group;
       setgroup(updatedGroup);
-      alert("Member Removed Successfully");
-    } catch (error) {
-      console.error("Error removing member:", error.message);
-    }
+      alert('Member Removed Successfully');
+    } catch (error) {}
   };
 
   const selectedcontacts = (members) => {
-    let getIdFromMembers = members.map((m) => {
+    const getIdFromMembers = members.map((m) => {
       return {
         member: m._id,
         privilege: m.privilege,
       };
     });
-    let getIdFromExistingMembers = groupState?.members?.map((m) => {
+    const getIdFromExistingMembers = groupState?.members?.map((m) => {
       return {
         member: m.member._id,
         privilege: m.privilege,
       };
     });
-    let tempmembers = [...getIdFromExistingMembers, ...getIdFromMembers];
+    const tempmembers = [...getIdFromExistingMembers, ...getIdFromMembers];
 
     axios
       .patch(
@@ -111,15 +108,15 @@ function GroupSettings(props) {
         { members: tempmembers },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       )
       .then((res) => {
         setgroup(res.data);
-        alert("Members Added Successfully");
+        alert('Members Added Successfully');
       })
-      .catch((e) => console.log(e, "here"));
+      .catch((e) => {});
   };
   const [visible2, setVisible2] = useState(false);
 
@@ -141,18 +138,18 @@ function GroupSettings(props) {
   const disbandGroup = async () => {
     const config = {
       headers: {
-        "auth-token": userState.token,
+        'auth-token': userState.token,
       },
     };
     //do api request here
     const { data } = await axios.post(
       `${BASE_URL}/archives/disband-group/${groupState.groupId}`,
       {},
-      config
+      config,
     );
     if (data.success) {
-      alert("group disbanded successfully");
-      navigation.navigate("AdminHome");
+      alert('group disbanded successfully');
+      navigation.navigate('AdminHome');
     } else {
     }
   };
@@ -165,9 +162,9 @@ function GroupSettings(props) {
     if (currentUserprivilege) {
       setmodalProfile(true);
     } else {
-      navigation.navigate("ViewImage", {
+      navigation.navigate('ViewImage', {
         url: `${BASE_URL}/${groupState?.groupPic}`,
-        message: "",
+        message: '',
       });
     }
   };
@@ -177,7 +174,7 @@ function GroupSettings(props) {
   };
 
   const handlePick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       quality: 1,
     });
@@ -190,10 +187,10 @@ function GroupSettings(props) {
     const formData = new FormData();
 
     if (groupImage !== null) {
-      formData.append("groupPic", {
+      formData.append('groupPic', {
         name: `${userState.phoneNumber}.jpg`,
         uri: groupImage,
-        type: "image/jpg",
+        type: 'image/jpg',
       });
     }
     try {
@@ -202,18 +199,16 @@ function GroupSettings(props) {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
-        }
+        },
       );
 
-      showSnackbar("Your group image has been updated.");
+      showSnackbar('Your group image has been updated.');
       setgroup(res.data);
       setgroupImage(null);
-    } catch (error) {
-      console.log(error, "error updateing group image");
-    }
+    } catch (error) {}
   };
 
   return (
@@ -222,7 +217,7 @@ function GroupSettings(props) {
       <Appbar.Header
         style={{
           marginTop: 0,
-          width: "100%",
+          width: '100%',
           backgroundColor: Color.White,
           borderBottomWidth: 1,
           borderColor: Color.VeryLightGrey,
@@ -234,14 +229,14 @@ function GroupSettings(props) {
         />
         <Appbar.Content
           title={
-            groupState.type === "individual" ||
-            groupState.type === "Admin" ||
-            groupState.type === "user"
-              ? "Profile Settings"
-              : "Group Settings"
+            groupState.type === 'individual' ||
+            groupState.type === 'Admin' ||
+            groupState.type === 'user'
+              ? 'Profile Settings'
+              : 'Group Settings'
           }
           titleStyle={{
-            fontFamily: "Roboto_600SemiBold",
+            fontFamily: 'Roboto_600SemiBold',
             fontSize: 20,
           }}
           color={Color.Black}
@@ -286,19 +281,19 @@ function GroupSettings(props) {
       <ScrollView
         style={{
           flex: 1,
-          width: "100%",
+          width: '100%',
         }}
         contentContainerStyle={{
-          alignItems: "center",
+          alignItems: 'center',
         }}
       >
         {/* Profile Header Avatar, Name, Phone Number and Type --- Start */}
         <View
           style={[
             {
-              width: "100%",
-              backgroundColor: "white",
-              alignItems: "center",
+              width: '100%',
+              backgroundColor: 'white',
+              alignItems: 'center',
               marginBottom: 10,
             },
           ]}
@@ -310,8 +305,8 @@ function GroupSettings(props) {
                 marginTop: 15,
                 paddingBottom: 15,
                 paddingHorizontal: 15,
-                width: "100%",
-                alignContent: "center",
+                width: '100%',
+                alignContent: 'center',
               },
             ]}
             onPress={handleProfile}
@@ -319,8 +314,8 @@ function GroupSettings(props) {
             {/* Profile Header Avatar --- Start */}
 
             <Avatar.Image
-              size={Dimensions.get("screen").height * 0.13}
-              style={{ backgroundColor: "#707070" }}
+              size={Dimensions.get('screen').height * 0.13}
+              style={{ backgroundColor: '#707070' }}
               source={
                 groupImage === null
                   ? {
@@ -333,18 +328,18 @@ function GroupSettings(props) {
           </TouchableOpacity>
           {/* Profile Header Full Name --- Start */}
 
-          <View style={{ justifyContent: "center" }}>
+          <View style={{ justifyContent: 'center' }}>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{
-                fontFamily: "Roboto_600SemiBold",
+                fontFamily: 'Roboto_600SemiBold',
                 fontSize: 18,
                 color: Color.Black,
-                width: "100%",
+                width: '100%',
               }}
             >
-              {groupState?.type !== "individual" && groupState?.type !== "Admin"
+              {groupState?.type !== 'individual' && groupState?.type !== 'Admin'
                 ? groupState?.members.map((user) => {
                     if (userState.phoneNumber !== user.phoneNumber) {
                       return user.name;
@@ -359,7 +354,7 @@ function GroupSettings(props) {
           </View>
           {/* Profile Header Full Name --- End */}
           {/* Profile Header Phone Number and Type --- Start */}
-          {groupState.title !== "test" && (
+          {groupState.title !== 'test' && (
             <Text style={{ ...styles.groupLevel, color: Color.Black }}>
               {groupState.title}
             </Text>
@@ -402,11 +397,11 @@ function GroupSettings(props) {
           {/* Profile Header Phone Number and Type --- End */}
         </View>
 
-        <View style={{ width: "100%" }}>
+        <View style={{ width: '100%' }}>
           <Pressable
             android_ripple={{ color: Color.LightGrey }}
             onPress={() =>
-              navigation.navigate("MediaScreen", {
+              navigation.navigate('MediaScreen', {
                 data: group?.messages,
                 groupTitle: group?.title,
               })
@@ -419,8 +414,8 @@ function GroupSettings(props) {
                   padding: 10,
                   paddingHorizontal: 15,
                   borderRadius: 5,
-                  width: "100%",
-                  justifyContent: "flex-start",
+                  width: '100%',
+                  justifyContent: 'flex-start',
                 },
               ]}
             >
@@ -434,25 +429,25 @@ function GroupSettings(props) {
                 }}
               >
                 <Image
-                  source={require("../../../assets/pdfIcon.png")}
+                  source={require('../../../assets/pdfIcon.png')}
                   style={{
                     width: scale(18),
                     height: scale(18),
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               </View>
               <View
                 style={{
                   marginLeft: 12,
-                  flexDirection: "column",
+                  flexDirection: 'column',
                 }}
               >
                 <Text
                   style={{
                     // fontFamily: "Poppins_500Medium",
                     fontSize: 15,
-                    color: "#4582C3",
+                    color: '#4582C3',
                   }}
                 >
                   Media, Docs, Links
@@ -463,7 +458,7 @@ function GroupSettings(props) {
                 color="#C8C8C8"
                 size={25}
                 style={{
-                  marginLeft: "auto",
+                  marginLeft: 'auto',
                   margin: 0,
                   marginRight: -10,
                   padding: 0,
@@ -477,22 +472,22 @@ function GroupSettings(props) {
         <View
           style={[
             {
-              width: "100%",
-              alignItems: "center",
+              width: '100%',
+              alignItems: 'center',
             },
           ]}
         >
-          {groupState.type !== "individual" && groupState.type !== "Admin" ? (
+          {groupState.type !== 'individual' && groupState.type !== 'Admin' ? (
             <Pressable
               android_ripple={{ color: Color.LightGrey }}
               onPress={() =>
-                navigation.navigate("MultiContactSelect", {
+                navigation.navigate('MultiContactSelect', {
                   selectedContacts: selectedcontacts,
                   currentMembers: groupState?.members,
                 })
               }
             >
-              {currentUser[0]?.privilege !== "member" && (
+              {currentUser[0]?.privilege !== 'member' && (
                 <View
                   style={[
                     styles.row,
@@ -500,8 +495,8 @@ function GroupSettings(props) {
                       padding: 10,
                       paddingHorizontal: 15,
                       borderRadius: 5,
-                      width: "100%",
-                      justifyContent: "flex-start",
+                      width: '100%',
+                      justifyContent: 'flex-start',
                       // backgroundColor: "white",
                     },
                   ]}
@@ -511,22 +506,22 @@ function GroupSettings(props) {
                     color="#777CE4"
                     size={20}
                     style={{
-                      backgroundColor: "#E1E2FF",
+                      backgroundColor: '#E1E2FF',
                       borderWidth: 0,
-                      borderColor: "white",
+                      borderColor: 'white',
                     }}
                   />
                   <View
                     style={{
                       marginLeft: 12,
-                      flexDirection: "column",
+                      flexDirection: 'column',
                     }}
                   >
                     <Text
                       style={{
                         // fontFamily: "Poppins_500Medium",
                         fontSize: 15,
-                        color: "#4582C3",
+                        color: '#4582C3',
                       }}
                     >
                       Add Participant
@@ -537,7 +532,7 @@ function GroupSettings(props) {
                     color="#C8C8C8"
                     size={25}
                     style={{
-                      marginLeft: "auto",
+                      marginLeft: 'auto',
                       margin: 0,
                       marginRight: -10,
                       padding: 0,
@@ -552,8 +547,8 @@ function GroupSettings(props) {
               onPress={() => onToggleComingSoon()}
               style={[
                 {
-                  width: "100%",
-                  alignItems: "center",
+                  width: '100%',
+                  alignItems: 'center',
                 },
               ]}
             >
@@ -564,8 +559,8 @@ function GroupSettings(props) {
                     padding: 10,
                     paddingHorizontal: 15,
                     borderRadius: 5,
-                    width: "100%",
-                    justifyContent: "flex-start",
+                    width: '100%',
+                    justifyContent: 'flex-start',
                   },
                 ]}
               >
@@ -573,24 +568,23 @@ function GroupSettings(props) {
                   icon="share"
                   color="#4582C3"
                   size={20}
-                  onPress={() => console.log("Pressed")}
                   style={{
-                    backgroundColor: "#E4F1FF",
+                    backgroundColor: '#E4F1FF',
                     borderWidth: 0,
-                    borderColor: "white",
+                    borderColor: 'white',
                   }}
                 />
                 <View
                   style={{
                     marginLeft: 12,
-                    flexDirection: "column",
+                    flexDirection: 'column',
                   }}
                 >
                   <Text
                     style={{
                       //fontFamily: "Roboto_500Medium",
                       fontSize: 15,
-                      color: "#4582C3",
+                      color: '#4582C3',
                     }}
                   >
                     Share Profile
@@ -600,9 +594,8 @@ function GroupSettings(props) {
                   icon="chevron-right"
                   color="#C8C8C8"
                   size={25}
-                  onPress={() => console.log("Pressed")}
                   style={{
-                    marginLeft: "auto",
+                    marginLeft: 'auto',
                     margin: 0,
                     marginRight: -10,
                     padding: 0,
@@ -618,8 +611,8 @@ function GroupSettings(props) {
             {
               marginTop: 20,
               marginBottom: 10,
-              width: "90%",
-              justifyContent: "flex-start",
+              width: '90%',
+              justifyContent: 'flex-start',
             },
           ]}
         >
@@ -627,23 +620,23 @@ function GroupSettings(props) {
             style={{
               //fontFamily: "Roboto_500Medium",
               fontSize: 16,
-              color: "gray",
+              color: 'gray',
             }}
           >
-            {groupState.type !== "individual" && groupState.type !== "Admin"
-              ? "Group Members"
-              : "Groups In Common"}
+            {groupState.type !== 'individual' && groupState.type !== 'Admin'
+              ? 'Group Members'
+              : 'Groups In Common'}
           </Text>
         </View>
-        {groupState.type !== "individual" && groupState.type !== "Admin"
+        {groupState.type !== 'individual' && groupState.type !== 'Admin'
           ? groupState?.members.map((member, index) => {
               return (
                 <View
                   key={(member, index)}
                   style={[
                     {
-                      width: "100%",
-                      alignItems: "center",
+                      width: '100%',
+                      alignItems: 'center',
                     },
                   ]}
                 >
@@ -657,9 +650,9 @@ function GroupSettings(props) {
                         paddingTop: 5,
                         paddingBottom: 5,
                         borderRadius: 5,
-                        width: "90%",
-                        justifyContent: "flex-start",
-                        backgroundColor: "white",
+                        width: '90%',
+                        justifyContent: 'flex-start',
+                        backgroundColor: 'white',
                       },
                     ]}
                   >
@@ -668,8 +661,8 @@ function GroupSettings(props) {
                       mode="text"
                       uppercase={false}
                       style={{
-                        color: "#4582C3",
-                        marginLeft: "auto",
+                        color: '#4582C3',
+                        marginLeft: 'auto',
                         marginRight: -15,
                       }}
                       labelStyle={{
@@ -683,19 +676,19 @@ function GroupSettings(props) {
                               member.member.phoneNumber ===
                               userState.phoneNumber
                             );
-                          }
+                          },
                         );
 
                         if (
                           currentMember &&
-                          currentMember.privilege === "Owner"
+                          currentMember.privilege === 'Owner'
                         ) {
                           if (member.phoneNumber === userState.phoneNumber) {
-                            alert("You cannot remove yourself from the group");
+                            alert('You cannot remove yourself from the group');
                           } else if (groupState.members.length <= 2) {
                             Alert.alert(
-                              "Cannot Remove Member",
-                              "A group must have at least two members."
+                              'Cannot Remove Member',
+                              'A group must have at least two members.',
                             );
                           } else {
                             RemoveMember(member);
@@ -708,110 +701,112 @@ function GroupSettings(props) {
                       )
                         ? "remove"
                         : null} */}
-                      {currentUser[0]?.privilege === "Owner" ? "remove" : null}
+                      {currentUser[0]?.privilege === 'Owner' ? 'remove' : null}
                     </Button>
                   </View>
                 </View>
               );
             })
           : groups !== undefined
-          ? groups?.map((group, index) => {
-              if (group.type !== "individual" && group.type !== "Admin") {
-                for (let j = 0; j < group?.members.length; j++) {
-                  if (group?.members[j].phoneNumber === userState.phoneNumber) {
+            ? groups?.map((group, index) => {
+                if (group.type !== 'individual' && group.type !== 'Admin') {
+                  for (let j = 0; j < group?.members.length; j++) {
                     if (
                       group?.members[j].phoneNumber === userState.phoneNumber
                     ) {
-                      return (
-                        <View
-                          key={group + index}
-                          style={[
-                            {
-                              width: "100%",
-                              alignItems: "center",
-                            },
-                          ]}
-                        >
+                      if (
+                        group?.members[j].phoneNumber === userState.phoneNumber
+                      ) {
+                        return (
                           <View
+                            key={group + index}
                             style={[
-                              styles.row,
                               {
-                                marginTop: 5,
-                                marginBottom: 5,
-                                padding: 10,
-                                paddingTop: 5,
-                                paddingBottom: 5,
-                                borderRadius: 5,
-                                width: "90%",
-                                justifyContent: "flex-start",
-                                backgroundColor: "white",
+                                width: '100%',
+                                alignItems: 'center',
                               },
                             ]}
                           >
-                            <TouchableWithoutFeedback
-                              onPress={() => navigation.navigate("Chat")}
-                              style={[styles.row]}
+                            <View
+                              style={[
+                                styles.row,
+                                {
+                                  marginTop: 5,
+                                  marginBottom: 5,
+                                  padding: 10,
+                                  paddingTop: 5,
+                                  paddingBottom: 5,
+                                  borderRadius: 5,
+                                  width: '90%',
+                                  justifyContent: 'flex-start',
+                                  backgroundColor: 'white',
+                                },
+                              ]}
                             >
-                              <Avatar.Image
-                                size={50}
-                                source={
-                                  group.photo
-                                    ? {
-                                        uri: group.photo,
-                                      }
-                                    : {
-                                        uri: require("../../../assets/no-profile-picture-placeholder.png"),
-                                      }
-                                }
-                              />
-                              <View
-                                style={{
-                                  marginLeft: 12,
-                                  flexDirection: "column",
-                                }}
+                              <TouchableWithoutFeedback
+                                onPress={() => navigation.navigate('Chat')}
+                                style={[styles.row]}
                               >
-                                <Text
+                                <Avatar.Image
+                                  size={50}
+                                  source={
+                                    group.photo
+                                      ? {
+                                          uri: group.photo,
+                                        }
+                                      : {
+                                          uri: require('../../../assets/no-profile-picture-placeholder.png'),
+                                        }
+                                  }
+                                />
+                                <View
                                   style={{
-                                    // fontFamily: "Roboto_600SemiBold",
-                                    fontSize: 14,
-                                    color: "#707070",
+                                    marginLeft: 12,
+                                    flexDirection: 'column',
                                   }}
                                 >
-                                  {group.title}
-                                </Text>
-                                <Text
-                                  style={{
-                                    //  fontFamily: "Roboto_400Regular",
-                                    fontSize: 12,
-                                    color: "#707070",
-                                  }}
-                                >
-                                  {group.type}
-                                </Text>
-                              </View>
-                            </TouchableWithoutFeedback>
+                                  <Text
+                                    style={{
+                                      // fontFamily: "Roboto_600SemiBold",
+                                      fontSize: 14,
+                                      color: '#707070',
+                                    }}
+                                  >
+                                    {group.title}
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      //  fontFamily: "Roboto_400Regular",
+                                      fontSize: 12,
+                                      color: '#707070',
+                                    }}
+                                  >
+                                    {group.type}
+                                  </Text>
+                                </View>
+                              </TouchableWithoutFeedback>
+                            </View>
                           </View>
-                        </View>
-                      );
+                        );
+                      }
                     }
                   }
                 }
-              }
-            })
-          : null}
+              })
+            : null}
         <TouchableOpacity
           onPressOut={() => {
             if (
-              groupState.type !== "individual" &&
-              groupState.type !== "Admin"
+              groupState.type !== 'individual' &&
+              groupState.type !== 'Admin'
             ) {
               const currentmember = groupState?.members.filter((member) => {
                 return member.member.phoneNumber === userState.phoneNumber;
               });
-              if (currentmember[0].privilege === "Owner") {
+              if (currentmember[0].privilege === 'Owner') {
                 disbandGroup();
               } else {
-                alert("You dont have the permission to disband group");
+                alert('You dont have the permission to disband group');
               }
 
               //here do the api call
@@ -819,7 +814,6 @@ function GroupSettings(props) {
 
               //onToggleDisband();
             } else {
-              console.log("blocked pressed");
               // onToggleBlockModal();
             }
           }}
@@ -828,8 +822,8 @@ function GroupSettings(props) {
             {
               marginTop: 10,
               marginBottom: 30,
-              width: "90%",
-              justifyContent: "flex-start",
+              width: '90%',
+              justifyContent: 'flex-start',
             },
           ]}
         >
@@ -838,7 +832,7 @@ function GroupSettings(props) {
             color="#E70000"
             size={20}
             style={{
-              backgroundColor: "#FFE1E1",
+              backgroundColor: '#FFE1E1',
               margin: 0,
               marginRight: 10,
             }}
@@ -846,19 +840,19 @@ function GroupSettings(props) {
           <Button
             mode="text"
             uppercase={false}
-            compact={true}
+            compact
             style={{ marginLeft: -5 }}
             color="#E70000"
             labelStyle={{
               fontSize: 16,
-              color: "#E70000",
+              color: '#E70000',
 
               letterSpacing: 0.1,
             }}
           >
-            {groupState.type === "individual" || groupState.type === "Admin"
-              ? "Block User"
-              : "Disband Group"}
+            {groupState.type === 'individual' || groupState.type === 'Admin'
+              ? 'Block User'
+              : 'Disband Group'}
           </Button>
         </TouchableOpacity>
 
@@ -873,7 +867,7 @@ function GroupSettings(props) {
               style={[
                 styles.row,
                 {
-                  width: "100%",
+                  width: '100%',
                 },
               ]}
             >
@@ -881,8 +875,8 @@ function GroupSettings(props) {
                 style={{
                   //   fontFamily: "Poppins_400Regular",
                   fontSize: 16,
-                  color: "#4582C3",
-                  textAlign: "center",
+                  color: '#4582C3',
+                  textAlign: 'center',
                 }}
               >
                 Are you sure you want to Block This User?
@@ -892,9 +886,9 @@ function GroupSettings(props) {
               style={[
                 styles.row,
                 {
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   marginVertical: 20,
                 },
               ]}
@@ -902,18 +896,18 @@ function GroupSettings(props) {
               <Button
                 uppercase={false}
                 style={{
-                  width: "35%",
-                  backgroundColor: "#E70000",
+                  width: '35%',
+                  backgroundColor: '#E70000',
                   marginRight: 12,
                 }}
                 labelStyle={{
                   // fontFamily: "Roboto_400Regular",
                   fontSize: 16,
-                  color: "white",
+                  color: 'white',
                   letterSpacing: 0.1,
                 }}
                 contentStyle={{
-                  justifyContent: "center",
+                  justifyContent: 'center',
                 }}
               >
                 Block
@@ -922,16 +916,16 @@ function GroupSettings(props) {
                 uppercase={false}
                 style={{
                   marginLeft: 12,
-                  width: "35%",
-                  backgroundColor: "#4582C3",
+                  width: '35%',
+                  backgroundColor: '#4582C3',
                 }}
                 labelStyle={{
                   fontSize: 16,
-                  color: "white",
+                  color: 'white',
                   letterSpacing: 0.1,
                 }}
                 contentStyle={{
-                  justifyContent: "center",
+                  justifyContent: 'center',
                 }}
                 onPress={() => {
                   onDismissBlockModal();
@@ -949,7 +943,7 @@ function GroupSettings(props) {
               <Dialog.Title
                 style={{
                   // fontFamily: "Poppins_500Medium",
-                  color: "grey",
+                  color: 'grey',
                 }}
               >
                 Warning
@@ -959,7 +953,7 @@ function GroupSettings(props) {
                   style={{
                     lineHeight: 20,
                     // fontFamily: "Poppins_400Regular",
-                    color: "#4582C3",
+                    color: '#4582C3',
                   }}
                 >
                   This user is the Co-Lead of this group. Performing this action
@@ -970,10 +964,10 @@ function GroupSettings(props) {
                 <Button
                   onPress={hideDialog}
                   uppercase={false}
-                  color={"#4582C3"}
+                  color={'#4582C3'}
                   labelStyle={{
                     // fontFamily: "Poppins_400Regular",
-                    color: "#4582C3",
+                    color: '#4582C3',
                     fontSize: 16,
                     letterSpacing: 0.1,
                   }}
@@ -983,10 +977,10 @@ function GroupSettings(props) {
                 <Button
                   onPress={hideDialog}
                   uppercase={false}
-                  color={"#4582C3"}
+                  color="#4582C3"
                   labelStyle={{
                     // fontFamily: "Poppins_400Regular",
-                    color: "#4582C3",
+                    color: '#4582C3',
                     fontSize: 16,
                     letterSpacing: 0.1,
                   }}
@@ -1004,9 +998,9 @@ function GroupSettings(props) {
               <TouchableOpacity
                 onPress={() => {
                   setmodalProfile(false),
-                    navigation.navigate("ViewImage", {
+                    navigation.navigate('ViewImage', {
                       url: `${BASE_URL}/${groupState?.groupPic}`,
-                      message: "",
+                      message: '',
                     });
                 }}
               >
@@ -1028,38 +1022,38 @@ export default GroupSettings;
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   // use this attribute with View to create a new row
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnNormal: {
     backgroundColor: Color.Blue,
   },
   btnPress: {
-    backgroundColor: "grey",
+    backgroundColor: 'grey',
   },
   groupLevel: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Blue,
     fontSize: 16,
   },
   profileContainer: {
     backgroundColor: Color.White,
     width: scale(300),
-    alignSelf: "center",
+    alignSelf: 'center',
     borderRadius: scale(8),
     paddingHorizontal: scale(14),
     paddingVertical: scale(10),
   },
   profileTitle: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(14),
     paddingVertical: scale(8),
   },
@@ -1072,7 +1066,7 @@ const styles = StyleSheet.create({
   },
   updateTitle: {
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(13),
   },
 });
