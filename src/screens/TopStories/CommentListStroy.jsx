@@ -5,17 +5,17 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { screenHeight, screenWidth } from "../../utils/ScreenDimensions";
-import { BASE_URL } from "../../../CONSTANTS";
-import { MaterialCommunityIcons, AntDesign } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import DeleteCommentModal from "../../components/DeleteCommentModal";
-import { axiosInstance } from "../../../axiosInstance";
-import { useStateContext } from "../../contexts/ContextProvider";
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import { BASE_URL } from '../../../CONSTANTS';
+import { MaterialCommunityIcons, AntDesign } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
+import DeleteCommentModal from '../../components/DeleteCommentModal';
+import { axiosInstance } from '../../../axiosInstance';
+import { useStateContext } from '../../contexts/ContextProvider';
 
 const CommentListStroy = ({ item, setcomments }) => {
   const timePassed = calculateTimeDifference(item.date);
@@ -35,18 +35,18 @@ const CommentListStroy = ({ item, setcomments }) => {
   }, []);
 
   const userType = [
-    "Operations",
-    "Admin",
-    "Manager",
-    "Assistant Manager",
-    "Super Admin",
-    "celebrity",
+    'Operations',
+    'Admin',
+    'Manager',
+    'Assistant Manager',
+    'Super Admin',
+    'celebrity',
   ];
 
   const handleDelete = async (commenendId) => {
     try {
       const { data } = await axiosInstance.patch(
-        "/story/delete-story-comment",
+        '/story/delete-story-comment',
         {
           comment: `${commenendId}`,
           StoryId: `${selectedStory?._id}`,
@@ -57,7 +57,7 @@ const CommentListStroy = ({ item, setcomments }) => {
       // props?.route?.params?.setcomment(res?.data?.comments);
     } catch (error) {
       const errorMessage =
-        error?.response?.data?.error || "An unexpected error occurred.";
+        error?.response?.data?.error || 'An unexpected error occurred.';
       showSnackbar(errorMessage);
     }
   };
@@ -90,7 +90,7 @@ const CommentListStroy = ({ item, setcomments }) => {
         {
           likes: liked,
           commentId: item?._id,
-          type: "like",
+          type: 'like',
         },
       );
       setcommentsLikes(response?.data?.likes);
@@ -132,7 +132,7 @@ const CommentListStroy = ({ item, setcomments }) => {
             onPress={() => handleLike(item)}
           >
             <AntDesign
-              name={isLike ? "like1" : "like2"}
+              name={isLike ? 'like1' : 'like2'}
               size={16}
               color={isLike ? Color.Blue : Color.Black}
             />
@@ -158,28 +158,28 @@ export default CommentListStroy;
 const styles = StyleSheet.create({
   commentTextContainer: {
     marginLeft: screenWidth * 0.04,
-    alignItems: "baseline",
-    alignSelf: "flex-start",
-    backgroundColor: "#F5F6FA",
+    alignItems: 'baseline',
+    alignSelf: 'flex-start',
+    backgroundColor: '#F5F6FA',
     paddingHorizontal: screenWidth * 0.04,
     paddingVertical: screenHeight * 0.013,
     borderRadius: 15,
-    marginRight: "15%",
-    marginTop: "2.5%",
+    marginRight: '15%',
+    marginTop: '2.5%',
   },
 
   commentMainContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingHorizontal: screenHeight * 0.02,
     marginBottom: screenHeight * 0.01,
   },
 
   nameFollow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   userName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Color.Black,
     paddingRight: screenWidth * 0.01,
   },
@@ -192,14 +192,14 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   action: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginLeft: screenWidth * 0.19,
     marginTop: screenHeight * 0.006,
   },
   time: {
     fontSize: 13,
-    fontWeight: "500",
-    color: "#585858",
+    fontWeight: '500',
+    color: '#585858',
     lineHeight: 21,
     marginRight: screenWidth * 0.04,
   },
@@ -207,49 +207,49 @@ const styles = StyleSheet.create({
   userImg: {
     width: 40,
     height: 40,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     borderRadius: screenHeight * 0.1,
   },
   userContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     paddingVertical: 2,
   },
   userNameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   postDuration: {
     fontSize: 14,
-    fontWeight: "400",
-    fontFamily: "Roboto_400Regular",
+    fontWeight: '400',
+    fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
   },
   postDescr: {
     fontSize: 13,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     lineHeight: 20,
     paddingHorizontal: screenWidth * 0.04,
     paddingVertical: screenHeight * 0.015,
   },
   adminIcon: {
     // marginLeft: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: screenHeight * 0.015,
     color: Color.Blue,
   },
   actionComment: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginLeft: screenWidth * 0.052,
     marginTop: 5,
   },
   likeButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 3,
   },
 });

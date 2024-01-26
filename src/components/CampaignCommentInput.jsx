@@ -1,46 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
   TextInput,
   TouchableOpacity,
-  Text,
   ScrollView,
-  Dimensions,
-} from "react-native";
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
-import Color from "../../assets/colors/Color";
-import LivepollComments from "../LivepollComments";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
+import Color from '../../assets/colors/Color';
+import LivepollComments from '../LivepollComments';
 
 const comments = [
-  "Great job!",
-  "I love it!",
-  "Awesome work!",
-  "Keep it up!",
-  "Fantastic!",
-  "Impressive!",
-  "Well done!",
-  "Amazing!",
-  "You nailed it!",
-  "Bravo!",
-  "Excellent!",
-  "Superb!",
-  "Incredible!",
-  "Outstanding!",
-  "WOW!",
-  "Very impressive!",
-  "Thumbs up!",
-  "Go Teams 🚀",
-  "Go Team A🚀",
-  "Go Team B 🚀",
-  "Hurrah!",
-  "Good bro 🔥",
+  'Great job!',
+  'I love it!',
+  'Awesome work!',
+  'Keep it up!',
+  'Fantastic!',
+  'Impressive!',
+  'Well done!',
+  'Amazing!',
+  'You nailed it!',
+  'Bravo!',
+  'Excellent!',
+  'Superb!',
+  'Incredible!',
+  'Outstanding!',
+  'WOW!',
+  'Very impressive!',
+  'Thumbs up!',
+  'Go Teams 🚀',
+  'Go Team A🚀',
+  'Go Team B 🚀',
+  'Hurrah!',
+  'Good bro 🔥',
 ];
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+
 export default function CampaignCommentInput(props) {
-  const [value, setvalue] = useState("");
+  const [value, setvalue] = useState('');
   const [suggsComments, setSuggesComments] = useState([]);
   useEffect(() => {
     const shuffledComments = comments.sort(() => 0.5 - Math.random());
@@ -48,16 +47,11 @@ export default function CampaignCommentInput(props) {
     setSuggesComments(selectedComments);
   }, []);
 
-  const handleSuggestionComment = (item) => {
-    props.onchange(item);
-    props.onPress();
-  };
-
   return (
-    <View style={styles.main}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'height' : ''}>
       <ScrollView
         horizontal
-        style={{ flexDirection: "row", backgroundColor: Color.White }}
+        style={{ flexDirection: 'row', backgroundColor: Color.White }}
         showsHorizontalScrollIndicator={false}
       >
         <LivepollComments id={props?.id} screen="comment" />
@@ -74,12 +68,12 @@ export default function CampaignCommentInput(props) {
             props.onchange(e);
             setvalue(e);
           }}
-          multiline={true}
+          multiline
         />
         <TouchableOpacity
           disabled={props.disabled}
           onPress={() => {
-            setvalue("");
+            setvalue('');
             props.onPress();
           }}
         >
@@ -91,30 +85,29 @@ export default function CampaignCommentInput(props) {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1,
-    position: "absolute",
-    bottom: 10,
-    alignItems: "center",
-    alignContent: "center",
-    width: "100%",
-    // height: 65,
-    // paddingHorizontal: 19,
-    backgroundColor: Color.White,
+    // flex: 1,
+    // position: 'absolute',
+    // bottom: 10,
+    // alignItems: 'center',
+    // alignContent: 'center',
+    // width: '100%',
+    // // height: 65,
+    // // paddingHorizontal: 19,
+    // backgroundColor: Color.White,
   },
   container: {
     marginTop: 3,
-    justifyContent: "space-between",
-    flexDirection: "row",
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     borderRadius: 8,
     paddingLeft: 17,
-    // paddingVertical: 14,
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.White,
     shadowColor: Color.Black,
     shadowOffset: {
@@ -126,7 +119,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   input: {
-    width: "80%",
+    width: '80%',
     fontSize: 16,
   },
   sendIcon: {

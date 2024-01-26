@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
   Dimensions,
   Pressable,
-} from "react-native";
-import { calculateTimeDifference } from "../utils/timeDifference";
-import { AntDesign } from "react-native-vector-icons";
-import { BASE_URL } from "../../CONSTANTS";
-import Color from "../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
-import DeleteCommentModal from "./DeleteCommentModal";
-import { useUserState } from "../slices/userSlice";
-import { axiosInstance } from "../../axiosInstance";
+} from 'react-native';
+import { calculateTimeDifference } from '../utils/timeDifference';
+import { AntDesign } from 'react-native-vector-icons';
+import { BASE_URL } from '../../CONSTANTS';
+import Color from '../../assets/colors/Color';
+import { useNavigation } from '@react-navigation/native';
+import DeleteCommentModal from './DeleteCommentModal';
+import { useUserState } from '../slices/userSlice';
+import { axiosInstance } from '../../axiosInstance';
 export default function Comment({
   comment,
   handleDelete,
@@ -47,7 +47,7 @@ export default function Comment({
         {
           likes: liked,
           commentId: item?._id,
-          type: "like",
+          type: 'like',
         },
       );
 
@@ -100,7 +100,7 @@ export default function Comment({
             <View style={styles.nameFollow}>
               <Pressable
                 onPress={() => {
-                  navigation.navigate("UserProfile", {
+                  navigation.navigate('UserProfile', {
                     userPhoneNumber: commented_by?.phoneNumber,
                   });
                 }}
@@ -121,7 +121,7 @@ export default function Comment({
             onPress={() => handleLike(comment)}
           >
             <AntDesign
-              name={isLike ? "like1" : "like2"}
+              name={isLike ? 'like1' : 'like2'}
               size={16}
               color={isLike ? Color.Blue : Color.Black}
             />
@@ -147,35 +147,35 @@ const styles = StyleSheet.create({
   main: {
     paddingHorizontal: 15,
     borderRadius: 20,
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   commentMainContainer: {
     marginTop: 10,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   commentTextContainer: {
     marginLeft: 15,
-    alignItems: "baseline",
-    alignSelf: "flex-start",
-    backgroundColor: "#F5F6FA",
+    alignItems: 'baseline',
+    alignSelf: 'flex-start',
+    backgroundColor: '#F5F6FA',
     padding: 7,
     borderRadius: 15,
-    marginRight: "15%",
+    marginRight: '15%',
   },
   avatar: {
-    alignSelf: "flex-start",
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: Dimensions.get("screen").height * 0.06,
-    height: Dimensions.get("screen").height * 0.06,
+    alignSelf: 'flex-start',
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: Dimensions.get('screen').height * 0.06,
+    height: Dimensions.get('screen').height * 0.06,
   },
   nameFollow: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   userName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Color.Black,
   },
   follow: {
@@ -187,33 +187,33 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   action: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginLeft: 65,
     marginTop: 5,
   },
   time: {
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: '500',
     color: Color.Black,
     lineHeight: 21,
     marginRight: 15,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
   },
   like: {
     fontSize: 13,
     color: Color.Black,
-    fontWeight: "500",
+    fontWeight: '500',
     lineHeight: 21,
   },
   liked: {
     fontSize: 13,
     color: Color.Blue,
-    fontWeight: "500",
+    fontWeight: '500',
     lineHeight: 21,
   },
   likeButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 2,
   },
 });

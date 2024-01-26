@@ -7,21 +7,21 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-} from "react-native";
-import React, { useMemo, useRef, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import CampaignHeader from "../../components/CampaignHeader";
-import { scale } from "react-native-size-matters";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import CampaignHeader from '../../components/CampaignHeader';
+import { scale } from 'react-native-size-matters';
+import Color from '../../../assets/colors/Color';
 
-import LivePointsTeamMember from "../../components/LivePointsTeamMember";
-import LivePointsTeamPoints from "../../components/LivePointsTeamPoints";
-import CampaignPosts from "./CampaignPosts";
+import LivePointsTeamMember from '../../components/LivePointsTeamMember';
+import LivePointsTeamPoints from '../../components/LivePointsTeamPoints';
+import CampaignPosts from './CampaignPosts';
 
-import LivePointsAction from "../../components/LivePointsAction";
-import CampaignTimeLeft from "../../components/CampaignTimeLeft";
-import * as Sharing from "expo-sharing";
-import LottieView from "lottie-react-native";
+import LivePointsAction from '../../components/LivePointsAction';
+import CampaignTimeLeft from '../../components/CampaignTimeLeft';
+import * as Sharing from 'expo-sharing';
+import LottieView from 'lottie-react-native';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -31,34 +31,34 @@ import Animated, {
   FadeOutUp,
   BounceIn,
   BounceOut,
-} from "react-native-reanimated";
-import DoDayPointsLIveShot from "../../DoDayPointsLIveShot";
-import LivepollComments from "../../LivepollComments";
-import CampaignShare from "../../components/CampaignShare";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { fetchPostsByCampaign } from "../../Api/GetPost";
-import { useInfiniteQuery } from "react-query";
-import PostSkeleton from "../../components/PostSkeleton";
+} from 'react-native-reanimated';
+import DoDayPointsLIveShot from '../../DoDayPointsLIveShot';
+import LivepollComments from '../../LivepollComments';
+import CampaignShare from '../../components/CampaignShare';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { fetchPostsByCampaign } from '../../Api/GetPost';
+import { useInfiniteQuery } from 'react-query';
+import PostSkeleton from '../../components/PostSkeleton';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const EmptyState = ({ navigation }) => (
   <View
     style={{
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
+      height: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
       backgroundColor: Color.White,
     }}
   >
     <View
       style={{
-        alignItems: "center",
+        alignItems: 'center',
       }}
     >
       <Image
-        source={require("../../../assets/newPost.png")}
+        source={require('../../../assets/newPost.png')}
         style={styles.bellIcon}
       />
       <Text style={styles.heading}>Currently No Post Shared</Text>
@@ -79,8 +79,8 @@ const CampaignsWithPost = () => {
   const animation = useRef(null);
   const route = useRoute();
   const { campaignViewShortImage } = useStateContext();
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
+  const [teamAuser, setteamAuser] = useState('');
+  const [teamBuser, setteamBuser] = useState('');
   const [likeAnimation, setlikeAnimation] = useState(false);
   const [showShareModal, setshowShareModal] = useState(false);
   const campaign = route?.params?.campaign;
@@ -106,7 +106,7 @@ const CampaignsWithPost = () => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery(
-    ["campaignPosts", campaign?._id],
+    ['campaignPosts', campaign?._id],
     ({ pageParam = 1 }) =>
       fetchPostsByCampaign({ pageParam, campaignId: campaign?._id }),
     {
@@ -128,9 +128,9 @@ const CampaignsWithPost = () => {
   };
 
   const handleComment = () => {
-    navigation.navigate("CampaignComments", {
+    navigation.navigate('CampaignComments', {
       campaign: campaign,
-      screen: "",
+      screen: '',
     });
   };
   const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true);
@@ -183,13 +183,13 @@ const CampaignsWithPost = () => {
   const handleShareExternal = async () => {
     // Share the captured image
     await Sharing.shareAsync(campaignViewShortImage, {
-      mimeType: "image/jpeg",
-      dialogTitle: "Share this image",
-      UTI: "public.jpeg",
+      mimeType: 'image/jpeg',
+      dialogTitle: 'Share this image',
+      UTI: 'public.jpeg',
     });
   };
   const handlePointsShareFeed = async () => {
-    navigation.navigate("PointsSharePost", campaignViewShortImage);
+    navigation.navigate('PointsSharePost', campaignViewShortImage);
   };
 
   const handleEndReached = () => {
@@ -209,12 +209,12 @@ const CampaignsWithPost = () => {
       <View style={styles.scoreCard}>
         <CampaignTimeLeft campaign={campaign} />
         {newImageVisible && (
-          <Animated.View style={[{ width: "100%" }, animatedLeftStyle]}>
+          <Animated.View style={[{ width: '100%' }, animatedLeftStyle]}>
             <LivePointsTeamPoints campaign={campaign} />
           </Animated.View>
         )}
         {!newImageVisible && (
-          <Animated.View style={[{ width: "100%" }, animatedTimeLeftStyle]}>
+          <Animated.View style={[{ width: '100%' }, animatedTimeLeftStyle]}>
             <DoDayPointsLIveShot doday={campaign} loading={isLoading} />
           </Animated.View>
         )}
@@ -228,7 +228,7 @@ const CampaignsWithPost = () => {
           <Animated.View
             entering={BounceIn}
             exiting={BounceOut.delay(100)}
-            style={{ position: "absolute", top: Height * 0.09 }}
+            style={{ position: 'absolute', top: Height * 0.09 }}
           >
             <LottieView
               autoPlay
@@ -237,7 +237,7 @@ const CampaignsWithPost = () => {
                 width: 100,
                 height: 100,
               }}
-              source={require("../../../assets/Animation/Animation - 1700745291097.json")}
+              source={require('../../../assets/Animation/Animation - 1700745291097.json')}
             />
           </Animated.View>
         )}
@@ -274,7 +274,7 @@ const CampaignsWithPost = () => {
         )}
         {!isLoading &&
           campaignPosts?.pages.flatMap((item) => item?.posts.length) < 1 && (
-            <EmptyState navigation={() => navigation.navigate("Home")} />
+            <EmptyState navigation={() => navigation.navigate('Home')} />
           )}
         {!isLoading && (
           <View style={{ marginTop: 10 }}>
@@ -319,54 +319,54 @@ const styles = StyleSheet.create({
   scoreCard: {
     backgroundColor: Color.LightBg,
     // height: scale(155),
-    alignItems: "center",
-    overflow: "hidden",
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   pointsContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
     paddingVertical: scale(10),
     paddingHorizontal: scale(16),
   },
   countDown: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   time: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: scale(12),
     paddingHorizontal: scale(4),
   },
   lead: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   subTitle: {
     fontSize: scale(12),
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
   postContainer: {
     flex: 1,
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: Height * 0.016,
     width: Width * 0.7,
-    textAlign: "center",
+    textAlign: 'center',
   },
   bellIcon: {
     width: Width * 0.26,
     height: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.019,
   },

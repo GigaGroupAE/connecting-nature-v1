@@ -10,37 +10,37 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
-import CommentInput from "../../components/CommentInput";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import CommentInput from '../../components/CommentInput';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
 
-import { useStateContext } from "../../contexts/ContextProvider";
+import { useStateContext } from '../../contexts/ContextProvider';
 
-import { BASE_URL } from "../../../CONSTANTS";
+import { BASE_URL } from '../../../CONSTANTS';
 
-import { AntDesign, MaterialCommunityIcons } from "react-native-vector-icons";
-import { useUserState } from "../../slices/userSlice";
-import axios from "axios";
-import { io } from "socket.io-client";
-import moment from "moment";
-import { useNavigation } from "@react-navigation/native";
-import MiniVideoPlayer from "../../components/MiniVideoPlayer";
-import StoryCommentHeader from "./StoryCommentHeader";
-import PostDescription from "../../components/PostDesciption";
+import { AntDesign, MaterialCommunityIcons } from 'react-native-vector-icons';
+import { useUserState } from '../../slices/userSlice';
+import axios from 'axios';
+import { io } from 'socket.io-client';
+import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
+import MiniVideoPlayer from '../../components/MiniVideoPlayer';
+import StoryCommentHeader from './StoryCommentHeader';
+import PostDescription from '../../components/PostDesciption';
 
-import StoryVideo from "../../components/StoryVideo";
-import StoryImage from "../../components/StoryImage";
-import StoryDeleteModal from "./StoryDeleteModal";
-import CommentListStroy from "./CommentListStroy";
+import StoryVideo from '../../components/StoryVideo';
+import StoryImage from '../../components/StoryImage';
+import StoryDeleteModal from './StoryDeleteModal';
+import CommentListStroy from './CommentListStroy';
 
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
+const width = Dimensions.get('screen').width;
+const height = Dimensions.get('screen').height;
 const socket = io.connect(`${BASE_URL}/CN`);
 
 const StoryComment = (props) => {
-  const date = moment().utcOffset("+05:00");
+  const date = moment().utcOffset('+05:00');
   const {
     loading,
     setLoading,
@@ -64,9 +64,9 @@ const StoryComment = (props) => {
     }),
   );
 
-  let tempcomment = "";
+  let tempcomment = '';
   const handlecommentinput = (props) => {
-    if (props !== "") {
+    if (props !== '') {
       tempcomment = props;
     }
   };
@@ -78,7 +78,7 @@ const StoryComment = (props) => {
         { reactions: likes },
         {
           headers: {
-            "auth-token": userstate.token,
+            'auth-token': userstate.token,
           },
         },
       )
@@ -92,7 +92,7 @@ const StoryComment = (props) => {
   const handlesend = async () => {
     setLoading(true);
     Keyboard.dismiss();
-    if (tempcomment !== "") {
+    if (tempcomment !== '') {
       const newcomments = comments;
       newcomments.push({
         description: tempcomment,
@@ -106,27 +106,27 @@ const StoryComment = (props) => {
           { comments: comments },
           {
             headers: {
-              "auth-token": userstate.token,
+              'auth-token': userstate.token,
             },
           },
         );
         setLoading(false);
         if (data) {
-          socket.emit("send_comments_story", data);
+          socket.emit('send_comments_story', data);
           setLoading(false);
         }
       } catch (error) {
         setLoading(false);
       }
     } else {
-      alert("Cannot post an empty Comment");
+      alert('Cannot post an empty Comment');
       setLoading(false);
     }
   };
 
   useEffect(() => {
     try {
-      socket.on("receive_comments_story", (data) => {
+      socket.on('receive_comments_story', (data) => {
         setcomments(data);
       });
     } catch (e) {}
@@ -140,33 +140,33 @@ const StoryComment = (props) => {
       tempshares.push(userstate.id);
 
       const formData = new FormData();
-      ["shares", "comments", "reactions"].forEach((e) =>
+      ['shares', 'comments', 'reactions'].forEach((e) =>
         formData.append(e, JSON.stringify([])),
       );
-      formData.append("description", selectedStory.description);
-      formData.append("postedby", JSON.stringify(userstate.id));
+      formData.append('description', selectedStory.description);
+      formData.append('postedby', JSON.stringify(userstate.id));
 
       if (selectedStory.media) {
-        formData.append("media", {
+        formData.append('media', {
           name: selectedStory.media.name,
           uri: `${BASE_URL}/images/${selectedStory.media.name}`,
           type: selectedStory.media.type,
         });
       } else {
-        formData.append("media", null);
+        formData.append('media', null);
       }
 
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-          "auth-token": userstate.token,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          'auth-token': userstate.token,
         },
       };
 
       // Create the new story
       await axios.post(`${BASE_URL}/story/addstory/`, formData, config);
-      showSnackbar("The story has been shared");
+      showSnackbar('The story has been shared');
 
       // Update the shares count for the selected story
       const res = await axios.patch(
@@ -174,7 +174,7 @@ const StoryComment = (props) => {
         { shares: tempshares },
         {
           headers: {
-            "auth-token": userstate.token,
+            'auth-token': userstate.token,
           },
         },
       );
@@ -258,14 +258,14 @@ const StoryComment = (props) => {
     [modalVisible, selectedStory],
   );
 
-  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
+  const supportedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : ""}
+      behavior={Platform.OS === 'ios' ? 'padding' : ''}
       style={{ flex: 1 }}
     >
-      <View style={{ backgroundColor: Color.White, height: "100%" }}>
+      <View style={{ backgroundColor: Color.White, height: '100%' }}>
         {/* Header */}
         <HeaderNormal title="Spotlight" />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -286,7 +286,7 @@ const StoryComment = (props) => {
             <View>
               {/* Video Player */}
               <View>
-                {selectedStory.media?.type === "video/mp4" && (
+                {selectedStory.media?.type === 'video/mp4' && (
                   <View>{ShowStoryVideo}</View>
                 )}
               </View>
@@ -355,7 +355,7 @@ const StoryComment = (props) => {
         </ScrollView>
 
         {/* Comment Input */}
-        {selectedStory.media.type === "video/mp4" && showMiniWindow && (
+        {selectedStory.media.type === 'video/mp4' && showMiniWindow && (
           <View style={styles.miniVideo}>
             <MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />
           </View>
@@ -377,13 +377,13 @@ export default StoryComment;
 const styles = StyleSheet.create({
   postLikes: {
     fontSize: 21,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   comment: {
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "400",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '400',
     color: Color.Black,
   },
   icons: {
@@ -396,27 +396,27 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
     shadowColor: Color.DarkGrey,
     borderWidth: 0.8,
-    borderColor: "#DADADA",
+    borderColor: '#DADADA',
   },
   topStoryContainer: {
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     borderColor: Color.White,
     paddingVertical: height * 0.0095,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
 
   image: {
     height: height * 0.25,
     marginTop: 5,
-    width: "100%",
-    resizeMode: "cover",
+    width: '100%',
+    resizeMode: 'cover',
   },
   miniVideo: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 200,
-    width: "100%",
-    height: "9%",
+    width: '100%',
+    height: '9%',
     bottom: height * 0.07,
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
 });

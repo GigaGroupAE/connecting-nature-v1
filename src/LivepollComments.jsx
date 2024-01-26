@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -6,19 +6,18 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-} from "react-native";
-import Color from "../assets/colors/Color";
-import { useUserState } from "./slices/userSlice";
-import moment from "moment";
-import { axiosInstance } from "../axiosInstance";
-import { io } from "socket.io-client";
-import { BASE_URL } from "../CONSTANTS";
-import { useStateContext } from "./contexts/ContextProvider";
+} from 'react-native';
+import Color from '../assets/colors/Color';
+import { useUserState } from './slices/userSlice';
+import moment from 'moment';
+import { axiosInstance } from '../axiosInstance';
+import { io } from 'socket.io-client';
+import { BASE_URL } from '../CONSTANTS';
+import { useStateContext } from './contexts/ContextProvider';
 
 const socket = io.connect(`${BASE_URL}/CN`);
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 const truncateDescription = (description) => {
   if (description.length > 15) {
@@ -31,32 +30,37 @@ const LivepollComments = ({ id, screen }) => {
   const { comment, setcomment } = useStateContext();
 
   const commentsToShuffle = comment;
-  let date = moment().utcOffset("+05:00");
+  const date = moment().utcOffset('+05:00');
   const shuffledComments = commentsToShuffle.slice(0, 8);
   const userState = useUserState();
 
   const handleComment = (item) => {
-    let newcomments = comment;
+    const newcomments = comment;
     newcomments.push({
-      description: item?.description,
-      postedby: userState.phoneNumber,
-      type: userState.type,
-      fullName: userState.fullName,
-      profile: userState.profile,
-      date: date,
+      description: item.description,
+      commented_by: userState.id,
+      date,
     });
-
+    const data = {
+      _id: id,
+    };
     axiosInstance
       .patch(`/campaigns/update/${id}`, {
-        messages: newcomments,
+        comments: newcomments,
       })
       .then((res) => {
-        socket.emit("send_message", res.data.messages);
-        setcomment(res?.data?.messages);
+        socket.emit('send_comments_campaign', data);
+        setcomment(res?.data?.comments);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   };
-
+  useEffect(() => {
+    try {
+      socket.on('receive_comments_campaign', (data) => {
+        setcomment(data);
+      });
+    } catch (e) {}
+  }, [socket]);
   const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity>
@@ -64,11 +68,11 @@ const LivepollComments = ({ id, screen }) => {
           style={styles.buttonContainer}
           onPress={() => handleComment(item)}
         >
-          {screen !== "comment" && (
+          {screen !== 'comment' && (
             <Image
               source={{
-                uri: `${BASE_URL}/${item?.profile}`,
-                cache: "force-cache",
+                uri: `${BASE_URL}/${item?.commented_by.profile}`,
+                cache: 'force-cache',
               }}
               style={styles.userImage}
             />
@@ -89,7 +93,7 @@ const LivepollComments = ({ id, screen }) => {
       renderItem={renderItem}
       keyExtractor={(item, index) => index.toString()}
       style={{
-        flexDirection: "row",
+        flexDirection: 'row',
         backgroundColor: Color.White,
         paddingVertical: Height * 0.005,
       }}
@@ -102,25 +106,25 @@ export default LivepollComments;
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    backgroundColor: "#EBF5FF",
+    backgroundColor: '#EBF5FF',
     paddingHorizontal: Width * 0.04,
     paddingVertical: Height * 0.008,
     borderRadius: Height * 0.1,
     marginHorizontal: Width * 0.012,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   userImage: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     backgroundColor: Color.Disable,
   },
   comment: {
     fontSize: Height * 0.018,
     marginHorizontal: Width * 0.012,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });

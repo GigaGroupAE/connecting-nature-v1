@@ -1,12 +1,12 @@
-import * as Clipboard from "expo-clipboard";
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { scale } from "react-native-size-matters";
-import { AntDesign, FontAwesome } from "react-native-vector-icons";
-import Color from "../../assets/colors/Color";
+import * as Clipboard from 'expo-clipboard';
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { scale } from 'react-native-size-matters';
+import { AntDesign, FontAwesome } from 'react-native-vector-icons';
+import Color from '../../assets/colors/Color';
 
-import { Portal, Modal } from "react-native-paper";
-import { useUserState } from "../slices/userSlice";
+import { Portal, Modal } from 'react-native-paper';
+import { useUserState } from '../slices/userSlice';
 
 const DeleteCommentModal = ({
   modalVisible,
@@ -73,24 +73,24 @@ export default DeleteCommentModal;
 
 const styles = StyleSheet.create({
   modal: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalContainer: {
     width: scale(300),
     backgroundColor: Color.White,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderRadius: scale(10),
     paddingVertical: scale(10),
   },
   contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: scale(20),
     paddingVertical: scale(12),
   },
   title: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(17),
     paddingHorizontal: scale(12),
   },
@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
     fontSize: scale(18),
   },
   crossIcon: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: scale(10),
     width: scale(60),
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
   cross: {
     fontSize: scale(20),

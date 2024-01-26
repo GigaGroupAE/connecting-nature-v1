@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: Height * 0.015,
     color: Color.Blue,
-    marginTop: Height * 0.005,
+    marginTop: Height * 0.002,
   },
 });
