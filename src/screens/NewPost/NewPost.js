@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import * as DocumentPicker from 'expo-document-picker';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,44 +11,40 @@ import {
   TouchableHighlight,
   Dimensions,
   Pressable,
-} from "react-native";
+} from 'react-native';
 //icons import
-import { MaterialIcons, AntDesign } from "react-native-vector-icons";
-import * as FileSystem from "expo-file-system";
-import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
-
+import { MaterialIcons, AntDesign } from 'react-native-vector-icons';
 //document picker
-import * as DocumentPicker from "expo-document-picker";
+import axios from 'axios';
 
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { useUserState } from "./../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../../assets/colors/Color.js";
+import { useUserState } from './../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS.js';
 
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import PostTypeModal from "../../components/PostTypeModal";
-import PostCampaignSelectModal from "../../components/PostCampaignSelectModal";
-import { axiosInstance } from "../../../axiosInstance";
-import CustomStatsBar from "../../components/CustomStatsBar";
-import { screenHeight, screenWidth } from "../../utils/ScreenDimensions";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import Color from '../../../assets/colors/Color.js';
+import PostCampaignSelectModal from '../../components/PostCampaignSelectModal';
+import PostTypeModal from '../../components/PostTypeModal';
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import CustomStatsBar from '../../components/CustomStatsBar';
+import { axiosInstance } from '../../../axiosInstance';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 export default function NewPost(props) {
   //images
   const [image, setImage] = useState(null); // this will be an array that will hold the uri's of images to post
   const navigation = useNavigation();
   const userState = useUserState();
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
   const [data, setData] = useState(null);
   const [compressImg, setCompressImg] = useState(null);
   const [modalCampaign, setmodalCampaign] = useState(false);
-  const [campaignsName, setcampaignsName] = useState("");
+  const [campaignsName, setcampaignsName] = useState('');
   const [campaign, setcampaign] = useState([]);
 
   const [postType, setpostType] = useState(false);
 
-  const { loading, setLoading, showSnackbar, setStories } = useStateContext();
+  const { loading, showSnackbar, setStories } = useStateContext();
   const handleonPost = async () => {
     setpostType(false);
     setmodalCampaign(false);
@@ -59,13 +57,13 @@ export default function NewPost(props) {
     //creating form data
     const formData = new FormData();
 
-    formData.append("description", description);
-    formData.append("postedby", JSON.stringify(userState.id));
+    formData.append('description', description);
+    formData.append('postedby', JSON.stringify(userState.id));
 
     if (!image) {
-      formData.append("media", null);
+      formData.append('media', null);
     } else {
-      formData.append("media", {
+      formData.append('media', {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: data.uri,
         type: data.mimeType,
@@ -73,50 +71,36 @@ export default function NewPost(props) {
     }
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-        "auth-token": userState.token,
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        'auth-token': userState.token,
       },
     };
 
     try {
-      if (props.route.params.origin === "post") {
-        const { data } = await axios.post(
-          `${BASE_URL}/posts/addpost/`,
-          formData,
-          config
-        );
-        showSnackbar("Post created successfully");
+      if (props.route.params.origin === 'post') {
+        await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
+        showSnackbar('Post created successfully');
       } else {
         if (image !== null) {
           const { data } = await axios.post(
             `${BASE_URL}/story/addstory/`,
             formData,
-            config
+            config,
           );
 
-          showSnackbar("Story created successfully");
+          showSnackbar('Story created successfully');
           setStories([data]);
         } else {
-          alert("Cannot create a story without an image");
+          alert('Cannot create a story without an image');
         }
       }
-    } catch (error) {
-      console.log(error, "error is ");
-    }
+    } catch (error) {}
   };
-
-  const supportedImageFormats = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/bmp",
-    "image/tiff",
-  ];
 
   const pick = async () => {
     try {
-      let result = await DocumentPicker.getDocumentAsync({});
+      const result = await DocumentPicker.getDocumentAsync({});
 
       if (!result.cancelled) {
         setCompressImg(result.assets[0].uri);
@@ -124,15 +108,13 @@ export default function NewPost(props) {
         setImage([result.assets[0].uri]);
       }
     } catch (error) {
-      console.log(error);
     } finally {
     }
   };
-
   const handlePostType = () => {
     if (campaign?.length === 0) {
       handleonPost();
-    } else if (props.route.params.origin === "post") {
+    } else if (props.route.params.origin === 'post') {
       setpostType(true);
     } else {
       handleonPost();
@@ -143,19 +125,15 @@ export default function NewPost(props) {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
-          "/campaigns/get-multiple-by-query?status=executed"
+          '/campaigns/get-multiple-by-query?status=executed',
         );
 
         setcampaignsName(response?.data?.campaigns);
-      } catch (error) {
-        console.log("Error:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
-
-  console.log(data?.uri);
 
   const handleCampaignPost = async (campaignId) => {
     setpostType(false);
@@ -169,15 +147,15 @@ export default function NewPost(props) {
     //creating form data
     const formData = new FormData();
 
-    formData.append("description", description);
+    formData.append('description', description);
     //since we cannot add object to formdata and userState is an object
     //so we will STRINGIFY the userState and parse it at the backend
-    formData.append("postedby", JSON.stringify(userState.id));
-    formData.append("ref", campaignId);
+    formData.append('postedby', JSON.stringify(userState.id));
+    formData.append('ref', campaignId);
     if (!image) {
-      formData.append("media", null);
+      formData.append('media', null);
     } else {
-      formData.append("media", {
+      formData.append('media', {
         name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
         uri: data.uri,
         type: data.mimeType,
@@ -185,40 +163,32 @@ export default function NewPost(props) {
     }
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-        "auth-token": userState.token,
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        'auth-token': userState.token,
       },
     };
 
     //api call
     try {
-      const { data } = await axios.post(
-        `${BASE_URL}/posts/addpost/`,
-        formData,
-        config
-      );
+      await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
 
-      showSnackbar("Post created successfully");
+      showSnackbar('Post created successfully');
       props?.route?.params?.reload();
-    } catch (error) {
-      console.log(error, "error is ");
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(
-          "/campaigns/mostrecentcampaign"
+          '/campaigns/mostrecentcampaign',
         );
 
         if (response?.data?.campaigns) {
           setcampaign(response?.data?.campaigns);
         }
-      } catch (error) {
-        console.log("Error:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -236,9 +206,9 @@ export default function NewPost(props) {
             <AntDesign name="arrowleft" size={28} color="#707070" />
           </TouchableOpacity>
           <Text style={styles.storyButton}>
-            {props.route.params.origin === "story"
-              ? "Create Story"
-              : "Create Post"}
+            {props.route.params.origin === 'story'
+              ? 'Create Story'
+              : 'Create Post'}
           </Text>
           <Pressable
             onPress={handlePostType}
@@ -281,9 +251,9 @@ export default function NewPost(props) {
             style={[
               styles.selectedImages,
               {
-                backgroundColor: "#F5F5F5",
-                alignItems: "center",
-                justifyContent: "center",
+                backgroundColor: '#F5F5F5',
+                alignItems: 'center',
+                justifyContent: 'center',
               },
             ]}
           >
@@ -323,17 +293,17 @@ export default function NewPost(props) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
     paddingHorizontal: 19,
     paddingVertical: 10,
     flex: 1,
   },
   storyButton: {
-    marginRight: "30%",
+    marginRight: '30%',
     bottom: -2,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Grey,
     fontSize: 18,
   },
@@ -341,75 +311,75 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     width: 80,
     borderRadius: 6,
-    alignItems: "center",
-    marginRight: "3%",
+    alignItems: 'center',
+    marginRight: '3%',
   },
   disabledPostButtonContainer: {
     backgroundColor: Color.VeryLightGrey,
     width: 80,
     borderRadius: 6,
-    alignItems: "center",
-    marginRight: "3%",
+    alignItems: 'center',
+    marginRight: '3%',
   },
   postButtonText: {
     paddingHorizontal: 10,
     paddingVertical: 3,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: screenHeight * 0.02,
   },
   disabledPostButtonText: {
     paddingHorizontal: 10,
     paddingVertical: 3,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Grey,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: screenHeight * 0.02,
   },
   head: {
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   headerAvatar: {
     marginTop: screenHeight * 0.02,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     borderRadius: 35,
     width: 70,
     height: 70,
     backgroundColor: Color.VeryLightGrey,
   },
   postContent: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   inputField: {
     marginTop: screenHeight * 0.02,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     paddingTop: 20,
     paddingHorizontal: 10,
-    width: "80%",
-    height: "65%",
-    maxHeight: "65%",
+    width: '80%',
+    height: '65%',
+    maxHeight: '65%',
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
     flex: 1,
   },
   selectedImagesContainer: {
     flex: 1,
-    position: "absolute",
+    position: 'absolute',
     bottom: screenHeight * 0.06,
     left: 9,
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   selectedImages: {
-    width: Dimensions.get("screen").height * 0.14,
-    height: Dimensions.get("screen").height * 0.14,
+    width: Dimensions.get('screen').height * 0.14,
+    height: Dimensions.get('screen').height * 0.14,
     borderRadius: 8,
     marginLeft: 10,
   },

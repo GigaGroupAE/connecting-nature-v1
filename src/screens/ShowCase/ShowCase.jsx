@@ -1,30 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   View,
   FlatList,
-  Image,
   Text,
-  Dimensions,
-  TouchableOpacity,
-  Alert
-} from "react-native";
-import Color from "../../../assets/colors/Color";
-import { MaterialIcons } from "react-native-vector-icons";
-import HeaderNormal from "../../components/HeaderNormal";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import { useCartStateActions } from "../../slices/cartSlice";
-import ShopItem from "../../components/ShopItem";
-import { useGetProductsQuery } from "../../slices/ProductsApi";
+  Alert,
+} from 'react-native';
+import Color from '../../../assets/colors/Color';
+import HeaderNormal from '../../components/HeaderNormal';
+import { useUserState } from '../../slices/userSlice';
+import { useCartStateActions } from '../../slices/cartSlice';
+import ShopItem from '../../components/ShopItem';
+import { useGetProductsQuery } from '../../slices/ProductsApi';
 
 const App = () => {
-
-  const userState = useUserState()
-  const CartActions = useCartStateActions()
-  const [products, setProducts] = useState(null)
+  const userState = useUserState();
   // useEffect(() => {
   //   const getData = async () => {
   //     const { data } = await axios.get(`${BASE_URL}/product/get`, {
@@ -37,23 +28,22 @@ const App = () => {
   //   getData()
   // }, [])
 
-  const { data, isLoading, error, isFetching } = useGetProductsQuery(userState.token)
+  const { data, isLoading, error, isFetching } = useGetProductsQuery(
+    userState.token,
+  );
 
   if (isLoading)
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading....</Text>
       </View>
     );
 
   if (error) {
-    console.log("error is ", error);
-    Alert.alert("error", error.data);
+    Alert.alert('error', error.data);
 
     return;
   }
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -132,18 +122,18 @@ export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "white",
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   imageThumbnail: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 100,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
   Title: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.LightGrey,
   },
 });

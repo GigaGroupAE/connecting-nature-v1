@@ -1,22 +1,15 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Platform,
-  Pressable,
-} from "react-native";
-import { Searchbar } from "react-native-paper";
-import React, { useEffect, useState } from "react";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import axios from "axios";
-import { useUserState } from "./../../slices/userSlice";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { BASE_URL } from "../../../CONSTANTS";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { Searchbar } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import axios from 'axios';
+import { useUserState } from './../../slices/userSlice';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { BASE_URL } from '../../../CONSTANTS';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 BASE_URL;
 export default function MultipleContactSelect(props) {
   const [users, setuser] = useState([]);
@@ -24,7 +17,7 @@ export default function MultipleContactSelect(props) {
   const navigation = useNavigation();
   const [checked, setchecked] = useState([]);
   const onChangeSearch = (query) => setSearchQuery(query);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const route = useRoute();
 
   const data = route.params?.currentMembers;
@@ -34,7 +27,7 @@ export default function MultipleContactSelect(props) {
     axios
       .get(`${BASE_URL}/user/getusers`, {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       })
       .then((res) => {
@@ -51,9 +44,9 @@ export default function MultipleContactSelect(props) {
   }, []);
   let render = true;
   const handleOnCheck = (user, action) => {
-    if (action === "unselect") {
+    if (action === 'unselect') {
       setchecked((prev) =>
-        prev.filter((u) => u.phoneNumber !== user.phoneNumber)
+        prev.filter((u) => u.phoneNumber !== user.phoneNumber),
       );
     } else {
       setchecked((prev) => [
@@ -63,7 +56,7 @@ export default function MultipleContactSelect(props) {
           type: user.type,
           photo: user.profile,
           phoneNumber: user.phoneNumber,
-          privilege: "member",
+          privilege: 'member',
           _id: user._id,
         },
       ]);
@@ -85,7 +78,7 @@ export default function MultipleContactSelect(props) {
         <HeaderNormal title="Add Participants" />
         <Pressable
           style={{
-            position: "absolute",
+            position: 'absolute',
             right: 20,
             top: 15,
           }}
@@ -93,7 +86,7 @@ export default function MultipleContactSelect(props) {
         >
           <Text
             style={{
-              fontFamily: "Roboto_500Medium",
+              fontFamily: 'Roboto_500Medium',
               fontSize: 18,
               color: Color.Blue,
             }}
@@ -109,19 +102,19 @@ export default function MultipleContactSelect(props) {
             onChangeText={onChangeSearch}
             value={searchQuery}
           />
-          {searchQuery === ""
+          {searchQuery === ''
             ? render === true
               ? users.map((user, index) => {
                   return (
                     <View
-                      key={"contact-" + index}
+                      key={'contact-' + index}
                       style={[
                         styles.row,
                         {
                           paddingHorizontal: 10,
-                          backgroundColor: "white",
-                          width: "93%",
-                          alignSelf: "center",
+                          backgroundColor: 'white',
+                          width: '93%',
+                          alignSelf: 'center',
                           borderRadius: 7,
                           paddingVertical: 6,
                           marginVertical: 5,
@@ -132,20 +125,20 @@ export default function MultipleContactSelect(props) {
                         numberOfLines={1}
                         ellipsizeMode="tail"
                         style={{
-                          fontFamily: "Roboto_500Medium",
-                          color: "#606060",
+                          fontFamily: 'Roboto_500Medium',
+                          color: '#606060',
                           flex: 1,
                         }}
                       >
-                        {user?.phoneNumber || "No Phone Number"}
+                        {user?.phoneNumber || 'No Phone Number'}
                         <Text
                           style={{
-                            color: "#909090",
+                            color: '#909090',
                             fontSize: 12,
                           }}
                         >
-                          {" "}
-                          {"     ~"}
+                          {' '}
+                          {'     ~'}
                           {user.fullName}
                         </Text>
                       </Text>
@@ -155,21 +148,21 @@ export default function MultipleContactSelect(props) {
                           fillColor="#4582C3"
                           onPress={(isChecked) => {
                             if (isChecked === true) {
-                              handleOnCheck(user, "select");
+                              handleOnCheck(user, 'select');
                             } else {
-                              handleOnCheck(user, "unselect");
+                              handleOnCheck(user, 'unselect');
                             }
                           }}
                           style={{
-                            marginLeft: "auto",
+                            marginLeft: 'auto',
                             borderRadius: 25,
-                            backgroundColor: "white",
+                            backgroundColor: 'white',
                             elevation: 0,
                           }}
                           contentStyle={{ paddingHorizontal: 3, height: 35 }}
                           labelStyle={{
-                            color: "#4582C3",
-                            fontFamily: "Roboto_600SemiBold",
+                            color: '#4582C3',
+                            fontFamily: 'Roboto_600SemiBold',
                             fontSize: 12,
                           }}
                           mode="contained"
@@ -193,21 +186,21 @@ export default function MultipleContactSelect(props) {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   // use this attribute with View to create a new row
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnNormal: {
-    backgroundColor: "aqua",
+    backgroundColor: 'aqua',
   },
   btnPress: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   },
 });

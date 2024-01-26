@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,21 +7,20 @@ import {
   Modal,
   Dimensions,
   FlatList,
-} from "react-native";
-import { Entypo } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../../assets/colors/Color";
-import { Pressable } from "react-native";
-import CurrentMember from "./CurrentMember";
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { axiosInstance } from "../../../../axiosInstance";
+  Pressable,
+} from 'react-native';
+import { Entypo } from 'react-native-vector-icons';
+import Color from '../../../../assets/colors/Color';
+import CurrentMember from './CurrentMember';
+import { useStateContext } from '../../../contexts/ContextProvider';
+import { axiosInstance } from '../../../../axiosInstance';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const Members = (props) => {
   // const navigation = useNavigation();
-  const [currentPage, setCurrentPage] = useState("Team A");
+  const [currentPage, setCurrentPage] = useState('Team A');
   const [HomePage, setHomePage] = useState(true);
   const [TeamB, setTeamB] = useState(false);
   const [users, setUsers] = useState(null);
@@ -29,18 +28,18 @@ const Members = (props) => {
   const { group, setLoading } = useStateContext();
 
   const ATeam = () => {
-    setCurrentPage("Team A");
+    setCurrentPage('Team A');
     setHomePage(true);
     setTeamB(false);
   };
   const BTeam = () => {
-    setCurrentPage("Team B");
+    setCurrentPage('Team B');
     setHomePage(false);
     setTeamB(true);
   };
 
   const renderItem = ({ item }) => {
-    const data = currentPage === "Team A" ? item.member : item;
+    const data = currentPage === 'Team A' ? item.member : item;
     return (
       <View>
         <CurrentMember data={data} CurrentPage={currentPage} />
@@ -52,11 +51,11 @@ const Members = (props) => {
     const fetchUsers = async () => {
       setLoading(true);
       const { data } = await axiosInstance.get(
-        "/user/get-by-query?type=Manager"
+        '/user/get-by-query?type=Manager',
       );
       //filtering out those who are already the part of group
 
-      let groupMembers = group?.members?.map((m) => m.member?._id);
+      const groupMembers = group?.members?.map((m) => m.member?._id);
 
       const filteredUsers = data?.users?.filter((user) => {
         return !groupMembers.includes(user._id);
@@ -68,13 +67,13 @@ const Members = (props) => {
   }, [group]);
 
   return (
-    <Modal animationType="slide" transparent={true}>
+    <Modal animationType="slide" transparent>
       <View
         style={{
-          height: "100%",
-          width: "100%",
+          height: '100%',
+          width: '100%',
           //   paddingHorizontal: 17,
-          marginTop: "20%",
+          marginTop: '20%',
           borderTopLeftRadius: Height * 0.02,
           borderTopRightRadius: Height * 0.02,
           backgroundColor: Color.White,
@@ -91,7 +90,7 @@ const Members = (props) => {
       >
         <TouchableOpacity
           onPress={() => props.onCancel()}
-          style={{ alignSelf: "flex-end", marginRight: Width * 0.03 }}
+          style={{ alignSelf: 'flex-end', marginRight: Width * 0.03 }}
         >
           <Entypo name="cross" color={Color.Black} size={30} />
         </TouchableOpacity>
@@ -120,7 +119,7 @@ const Members = (props) => {
           </View>
         </View>
         <View>
-          {currentPage === "Team A" && (
+          {currentPage === 'Team A' && (
             <FlatList
               data={group?.members}
               renderItem={renderItem}
@@ -129,7 +128,7 @@ const Members = (props) => {
               style={{ zIndex: 1 }}
             />
           )}
-          {currentPage === "Team B" && (
+          {currentPage === 'Team B' && (
             <FlatList
               data={users}
               renderItem={renderItem}
@@ -147,12 +146,12 @@ const Members = (props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    height: "100%",
+    height: '100%',
   },
   listContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
 
     borderBottomWidth: 0.5,
     borderBottomColor: Color.Grey,
@@ -160,32 +159,30 @@ const styles = StyleSheet.create({
   },
 
   active: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
 
     borderBottomColor: Color.Blue,
     borderBottomWidth: 2,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   disable: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
+    justifyContent: 'center',
   },
   Heading: {
-    alignSelf: "center",
-    fontFamily: "Roboto_500Medium",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_500Medium',
     fontSize: 14,
-    fontWeight: "6",
-    fontSize: Height * 0.018,
+    fontWeight: '6',
   },
   HeadingActive: {
-    alignSelf: "center",
-    fontFamily: "Roboto_500Medium",
-    fontSize: 14,
-    fontWeight: "6",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '6',
     // color: Color.Blue,
     fontSize: Height * 0.018,
   },

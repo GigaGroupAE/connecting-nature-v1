@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Dimensions,
   FlatList,
@@ -64,7 +63,7 @@ export default function CampaignsScreen() {
         />
       </TouchableOpacity>
     ),
-    []
+    [],
   );
 
   const renderCampaigns = () => {
@@ -97,13 +96,13 @@ export default function CampaignsScreen() {
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
-      <HeaderBack title={"Campaigns"} />
+      <HeaderBack title="Campaigns" />
       <View style={styles.main}>
         <Text style={styles.screenTitle}>Live & Upcoming Events</Text>
         <Text style={styles.description}>Are you ready for it?</Text>
         {renderCampaigns()}
       </View>
-      <BottomTab activeMenu={"Campaign"} scrollToTop={scrollToTop} />
+      <BottomTab activeMenu="Campaign" scrollToTop={scrollToTop} />
     </SafeAreaProvider>
   );
 }

@@ -3,56 +3,54 @@ import {
   Text,
   TouchableWithoutFeedback,
   StyleSheet,
-  Dimensions,
   Pressable,
-} from "react-native";
-import React, { useState } from "react";
-import { Avatar, Portal, Button, Modal } from "react-native-paper";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "./../../slices/userSlice";
-import axios from "axios";
+} from 'react-native';
+import React, { useState } from 'react';
+import { Avatar, Portal, Button, Modal } from 'react-native-paper';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from './../../slices/userSlice';
+import axios from 'axios';
 export default function MemberRow(props) {
-  let member = props.member;
-  let groupState = props.groupState;
+  const member = props.member;
+  const groupState = props.groupState;
   const userState = useUserState();
   const [privmodal, setprivmodal] = useState(false);
   const styles = StyleSheet.create({
     row: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 5,
-    width: "90%",
-    marginLeft: "5%",
+    width: '90%',
+    marginLeft: '5%',
   };
   const [memberModal, setMemberModal] = useState(false);
   const handlechangeprivilige = (props) => {
-    let tempmembers = groupState.members.filter((user) => {
+    const tempmembers = groupState.members.filter((user) => {
       return user.phoneNumber !== member.phoneNumber;
     });
     member.privilege = props;
     tempmembers.push(member);
-    console.log(groupState);
     axios
       .patch(
         `${BASE_URL}/groups/updategroup/${groupState.groupId}`,
         { members: tempmembers },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       )
       .then((res) => {
         setMemberModal(false);
-        alert("Operation SuccessFull");
+        alert('Operation SuccessFull');
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   };
   return (
     <View>
@@ -60,35 +58,35 @@ export default function MemberRow(props) {
         <View style={[styles.row]}>
           <Avatar.Image
             size={50}
-            style={{ backgroundColor: "#707070" }}
+            style={{ backgroundColor: '#707070' }}
             source={
               member.member.profile
                 ? {
                     uri: `${BASE_URL}/images/${member.member.profile}`,
                   }
-                : require("../../../assets/no-profile-picture-placeholder.png")
+                : require('../../../assets/no-profile-picture-placeholder.png')
             }
           />
           <View
             style={{
               marginLeft: 12,
-              flexDirection: "column",
+              flexDirection: 'column',
             }}
           >
             <Text
               style={{
                 //  fontFamily: "Roboto_600SemiBold",
                 fontSize: 14,
-                color: "#4582C3",
+                color: '#4582C3',
               }}
             >
-              {member.member.fullName} &#8226;{" "}
+              {member.member.fullName} &#8226;{' '}
             </Text>
             <Text
               style={{
                 //  fontFamily: "Roboto_400Regular",
                 fontSize: 12,
-                color: "#4582C3",
+                color: '#4582C3',
               }}
             >
               {member.type}
@@ -97,7 +95,7 @@ export default function MemberRow(props) {
               style={{
                 //  fontFamily: "Roboto_400Regular",
                 fontSize: 13,
-                color: "#4582C3",
+                color: '#4582C3',
               }}
             >
               {props.groupState.members.map((user) => {
@@ -122,7 +120,7 @@ export default function MemberRow(props) {
               style={[
                 styles.row,
                 {
-                  width: "100%",
+                  width: '100%',
                 },
               ]}
             >
@@ -130,8 +128,8 @@ export default function MemberRow(props) {
                 style={{
                   //   fontFamily: "Roboto_400Regular",
                   fontSize: 16,
-                  color: "#4582C3",
-                  textAlign: "center",
+                  color: '#4582C3',
+                  textAlign: 'center',
                 }}
               >
                 Change {member.name}'s privilege
@@ -141,7 +139,7 @@ export default function MemberRow(props) {
             <View>
               <Pressable
                 onPress={() => {
-                  handlechangeprivilige("Lead");
+                  handlechangeprivilige('Lead');
                   setprivmodal(false);
                 }}
               >
@@ -149,7 +147,7 @@ export default function MemberRow(props) {
                   style={[
                     styles.row,
                     {
-                      width: "100%",
+                      width: '100%',
                       marginBottom: 5,
                     },
                   ]}
@@ -158,8 +156,8 @@ export default function MemberRow(props) {
                     style={{
                       //   fontFamily: "Roboto_400Regular",
                       fontSize: 20,
-                      color: "#4582C3",
-                      textAlign: "center",
+                      color: '#4582C3',
+                      textAlign: 'center',
                     }}
                   >
                     Make {member.name} Lead
@@ -168,7 +166,7 @@ export default function MemberRow(props) {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  handlechangeprivilige("Co-Lead");
+                  handlechangeprivilige('Co-Lead');
                   setprivmodal(false);
                 }}
               >
@@ -176,7 +174,7 @@ export default function MemberRow(props) {
                   style={[
                     styles.row,
                     {
-                      width: "100%",
+                      width: '100%',
                     },
                   ]}
                 >
@@ -184,8 +182,8 @@ export default function MemberRow(props) {
                     style={{
                       //   fontFamily: "Roboto_400Regular",
                       fontSize: 20,
-                      color: "#4582C3",
-                      textAlign: "center",
+                      color: '#4582C3',
+                      textAlign: 'center',
                     }}
                   >
                     Make {member.name} Co-Lead
@@ -198,9 +196,9 @@ export default function MemberRow(props) {
             style={[
               styles.row,
               {
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
                 marginVertical: 20,
               },
             ]}
@@ -209,18 +207,18 @@ export default function MemberRow(props) {
               uppercase={false}
               onPress={() => setprivmodal(true)}
               style={{
-                width: "35%",
-                backgroundColor: "#E70000",
+                width: '35%',
+                backgroundColor: '#E70000',
                 marginRight: 12,
               }}
               labelStyle={{
                 // fontFamily: "Roboto_400Regular",
                 fontSize: 16,
-                color: "white",
+                color: 'white',
                 letterSpacing: 0.1,
               }}
               contentStyle={{
-                justifyContent: "center",
+                justifyContent: 'center',
               }}
             >
               Confirm
@@ -229,17 +227,17 @@ export default function MemberRow(props) {
               uppercase={false}
               style={{
                 marginLeft: 12,
-                width: "35%",
-                backgroundColor: "#4582C3",
+                width: '35%',
+                backgroundColor: '#4582C3',
               }}
               labelStyle={{
                 // fontFamily: "Roboto_400Regular",
                 fontSize: 16,
-                color: "white",
+                color: 'white',
                 letterSpacing: 0.1,
               }}
               contentStyle={{
-                justifyContent: "center",
+                justifyContent: 'center',
               }}
               onPress={() => {
                 setMemberModal(false);

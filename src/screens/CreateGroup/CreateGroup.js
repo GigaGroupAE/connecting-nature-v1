@@ -1,59 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   Dimensions,
   KeyboardAvoidingView,
-} from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import HeaderNormal from "../../components/HeaderNormal";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import InputText from "../../components/InputText";
-import AddGroupLeaderBtn from "../../components/AddGroupLeaderBtn";
-import ButtonLarge from "../../components/ButtonLarge";
-import * as ImagePicker from "expo-image-picker";
-import axios from "axios";
-import { useUserState } from "./../../slices/userSlice";
-import SelectList from "react-native-dropdown-select-list";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import CustomStatsBar from "../../components/CustomStatsBar";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import HeaderNormal from '../../components/HeaderNormal';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import InputText from '../../components/InputText';
+import AddGroupLeaderBtn from '../../components/AddGroupLeaderBtn';
+import ButtonLarge from '../../components/ButtonLarge';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import { useUserState } from './../../slices/userSlice';
+import SelectList from 'react-native-dropdown-select-list';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { BASE_URL } from '../../../CONSTANTS';
+import Color from '../../../assets/colors/Color';
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import CustomStatsBar from '../../components/CustomStatsBar';
 export default function CreateGroup() {
   const [loading, setLoading] = useState(false);
 
   // const route = useRoute();
   const { showSnackbar } = useStateContext();
-  let height = Dimensions.get("screen").height;
-  let width = Dimensions.get("screen").width;
+  const height = Dimensions.get('screen').height;
+  const width = Dimensions.get('screen').width;
   const userState = useUserState();
   const navigation = useNavigation();
   const groupType = [
-    { key: "1", value: "Managerial Groups" },
-    { key: "2", value: "Departmental Groups" },
-    { key: "3", value: "Social Groups" },
-    { key: "4", value: "Outsource Groups" },
+    { key: '1', value: 'Managerial Groups' },
+    { key: '2', value: 'Departmental Groups' },
+    { key: '3', value: 'Social Groups' },
+    { key: '4', value: 'Outsource Groups' },
   ];
 
-  const normalUserGroup = [{ key: "3", value: "Social Groups" }];
+  const normalUserGroup = [{ key: '3', value: 'Social Groups' }];
   const [selected, setSelected] = useState(null);
   // Image Picker Code Start -------------------------------------------------
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
-  const [cameraPermission, setCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
     (async () => {
       const galleryStatus =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setHasGalleryPermission(galleryStatus.status === "granted");
+      setHasGalleryPermission(galleryStatus.status === 'granted');
     })();
   }, []);
 
@@ -75,22 +72,22 @@ export default function CreateGroup() {
   const handlebackpress = () => {
     navigation.goBack();
   };
-  const getdesignation = (props) => {};
+
   const handleOnCreate = async () => {
     setLoading(true);
-    let type = "";
+    let type = '';
     if (selected == 1) {
-      type = "Managerial";
+      type = 'Managerial';
     } else if (selected == 2) {
-      type = "Departmental";
+      type = 'Departmental';
     } else if (selected == 3) {
-      type = "Social";
+      type = 'Social';
     } else {
-      type = "Outsource";
+      type = 'Outsource';
     }
-    let members = [
-      { member: userState.id, privilege: "Owner" },
-      { member: groupLeader._id, privilege: "Lead" },
+    const members = [
+      { member: userState.id, privilege: 'Owner' },
+      { member: groupLeader._id, privilege: 'Lead' },
     ];
 
     // members.push({
@@ -107,25 +104,25 @@ export default function CreateGroup() {
     //   photo: groupLeader.profile,
     //   privilege: "Lead",
     // });
-    console.log(members);
+
     //creating form here
     const formData = new FormData();
-    formData.append("name", userState.fullName);
-    formData.append("type", type);
-    formData.append("title", title);
-    formData.append("members", JSON.stringify(members));
+    formData.append('name', userState.fullName);
+    formData.append('type', type);
+    formData.append('title', title);
+    formData.append('members', JSON.stringify(members));
     if (image !== null) {
-      formData.append("groupPic", {
+      formData.append('groupPic', {
         name: `groupPic.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
         uri: image,
-        type: "image/jpg",
+        type: 'image/jpg',
       });
     }
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-        "auth-token": userState.token,
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        'auth-token': userState.token,
       },
     };
 
@@ -135,26 +132,23 @@ export default function CreateGroup() {
       const { data } = await axios.post(
         `${BASE_URL}/groups/creategroup`,
         formData,
-        config
+        config,
       );
-      console.log("data from creategroup request :: ", data);
+
       navigation.goBack();
       setLoading(false);
-      showSnackbar("Group Created Successfully");
-    } catch (error) {
-      console.log(error);
-    }
+      showSnackbar('Group Created Successfully');
+    } catch (error) {}
   };
   const [groupLeader, setgroupLeader] = useState(null);
   const selectedcontact = (props) => {
-    console.log(props);
     setgroupLeader(props);
   };
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
       <View style={styles.main}>
-        <HeaderNormal title={"Create Profile"} onback={handlebackpress} />
+        <HeaderNormal title="Create Profile" onback={handlebackpress} />
         <KeyboardAvoidingView behavior="padding">
           <View>
             <TouchableOpacity
@@ -163,21 +157,21 @@ export default function CreateGroup() {
             >
               <Image
                 style={{
-                  justifyContent: "center",
-                  alignSelf: "center",
+                  justifyContent: 'center',
+                  alignSelf: 'center',
                   borderRadius: height * 0.1,
                   width: height * 0.16,
                   height: height * 0.16,
                 }}
-                source={require("../../../assets/avatar-placeholder.png")}
+                source={require('../../../assets/avatar-placeholder.png')}
               />
               {image && (
                 <Image
                   source={{ uri: image }}
                   style={{
-                    position: "absolute",
-                    justifyContent: "center",
-                    alignSelf: "center",
+                    position: 'absolute',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
                     borderRadius: height * 0.1,
                     width: height * 0.16,
                     height: height * 0.16,
@@ -189,49 +183,45 @@ export default function CreateGroup() {
 
           <View style={styles.inputContainer}>
             <InputText
-              title={"Group Name"}
+              title="Group Name"
               value={title}
               onchange={setTitle}
               maxLength={30}
             />
-            {userState.type === "Admin" ? (
+            {userState.type === 'Admin' ? (
               <SelectList
                 onSelect={() => selected}
-                placeholder={"Group Type"}
+                placeholder="Group Type"
                 setSelected={(val) => {
                   setSelected(val);
                 }}
                 save="value"
                 data={groupType}
                 arrowicon={
-                  <FontAwesome
-                    name="chevron-down"
-                    size={14}
-                    color={"#707070"}
-                  />
+                  <FontAwesome name="chevron-down" size={14} color="#707070" />
                 }
                 searchicon={
-                  <FontAwesome name="search" size={14} color={"#707070"} />
+                  <FontAwesome name="search" size={14} color="#707070" />
                 }
                 search={false}
                 boxStyles={{
                   marginTop: 15,
                   borderRadius: 8,
-                  backgroundColor: "white",
+                  backgroundColor: 'white',
                   borderWidth: 0,
                   elevation: 8,
-                  shadowColor: "#707070",
+                  shadowColor: '#707070',
                   paddingVertical: 15,
-                  color: "#707070",
+                  color: '#707070',
                 }} //override default styles
                 inputStyles={{
-                  color: "#707070",
-                  fontFamily: "Roboto",
+                  color: '#707070',
+                  fontFamily: 'Roboto',
                   marginLeft: -4,
                 }}
                 dropdownStyles={{
                   borderWidth: 0,
-                  backgroundColor: "#f4f4f4",
+                  backgroundColor: '#f4f4f4',
                 }}
                 defaultOption={
                   {
@@ -243,41 +233,37 @@ export default function CreateGroup() {
             ) : (
               <SelectList
                 onSelect={() => selected}
-                placeholder={"Group Type"}
+                placeholder="Group Type"
                 setSelected={(val) => {
                   setSelected(val);
                 }}
                 save="value"
                 data={normalUserGroup}
                 arrowicon={
-                  <FontAwesome
-                    name="chevron-down"
-                    size={14}
-                    color={"#707070"}
-                  />
+                  <FontAwesome name="chevron-down" size={14} color="#707070" />
                 }
                 searchicon={
-                  <FontAwesome name="search" size={14} color={"#707070"} />
+                  <FontAwesome name="search" size={14} color="#707070" />
                 }
                 search={false}
                 boxStyles={{
                   marginTop: 15,
                   borderRadius: 8,
-                  backgroundColor: "white",
+                  backgroundColor: 'white',
                   borderWidth: 0,
                   elevation: 8,
-                  shadowColor: "#707070",
+                  shadowColor: '#707070',
                   paddingVertical: 15,
-                  color: "#707070",
+                  color: '#707070',
                 }} //override default styles
                 inputStyles={{
-                  color: "#707070",
-                  fontFamily: "Roboto",
+                  color: '#707070',
+                  fontFamily: 'Roboto',
                   marginLeft: -4,
                 }}
                 dropdownStyles={{
                   borderWidth: 0,
-                  backgroundColor: "#f4f4f4",
+                  backgroundColor: '#f4f4f4',
                 }}
                 defaultOption={
                   {
@@ -291,9 +277,9 @@ export default function CreateGroup() {
             <View style={{ marginTop: height * 0.025 }}>
               <AddGroupLeaderBtn
                 onPress={() =>
-                  navigation.navigate("SelectContact", {
+                  navigation.navigate('SelectContact', {
                     selectedContact: selectedcontact,
-                    IntranetChat: "Intranet",
+                    IntranetChat: 'Intranet',
                   })
                 }
               />
@@ -303,21 +289,21 @@ export default function CreateGroup() {
                     marginTop: 10,
                     padding: 20,
                     borderRadius: 5,
-                    justifyContent: "center",
-                    alignSelf: "center",
+                    justifyContent: 'center',
+                    alignSelf: 'center',
                     width: width * 0.8,
                   }}
                 >
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: 'row',
                     }}
                   >
                     <Text
                       style={{
-                        fontFamily: "Roboto_500Medium",
+                        fontFamily: 'Roboto_500Medium',
                         fontSize: 14,
-                        color: "blue",
+                        color: 'blue',
                       }}
                     >
                       {groupLeader.fullName}
@@ -325,15 +311,15 @@ export default function CreateGroup() {
                   </View>
                   <View
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
+                      flexDirection: 'row',
+                      alignItems: 'center',
                     }}
                   >
                     <Text
                       style={{
-                        fontFamily: "Roboto_400Regular",
+                        fontFamily: 'Roboto_400Regular',
                         fontSize: 12,
-                        color: "grey",
+                        color: 'grey',
                       }}
                     >
                       {groupLeader.phoneNumber}
@@ -341,17 +327,16 @@ export default function CreateGroup() {
 
                     <Text
                       style={{
-                        fontFamily: "Roboto_400Regular",
+                        fontFamily: 'Roboto_400Regular',
                         fontSize: 14,
-                        textDecorationLine: "underline",
-                        color: "blue",
-                        marginLeft: "auto",
+                        textDecorationLine: 'underline',
+                        color: 'blue',
+                        marginLeft: 'auto',
                       }}
                       onPress={() => {
-                        console.log("Change Pressed");
-                        navigation.navigate("SelectContact", {
+                        navigation.navigate('SelectContact', {
                           selectedContact: selectedcontact,
-                          IntranetChat: "Intranet",
+                          IntranetChat: 'Intranet',
                         });
                       }}
                     >
@@ -363,7 +348,7 @@ export default function CreateGroup() {
             </View>
 
             <ButtonLarge
-              title={"Create Group"}
+              title="Create Group"
               click={handleOnCreate}
               disabled={loading}
             />
@@ -376,13 +361,13 @@ export default function CreateGroup() {
 
 const styles = StyleSheet.create({
   main: {
-    width: "100%",
-    backgroundColor: "white",
+    width: '100%',
+    backgroundColor: 'white',
   },
   inputContainer: {
     paddingHorizontal: 27,
     marginTop: 15,
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
 });

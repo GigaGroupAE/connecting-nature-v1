@@ -1,28 +1,15 @@
-import * as React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Dimensions,
-  TextInput,
-} from "react-native";
-import { Modal, Portal, Button, Provider } from "react-native-paper";
-import { FontAwesome5, Entypo, Ionicons } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { scale } from "react-native-size-matters";
+import * as React from 'react';
+import { View, Text, StyleSheet, Dimensions, TextInput } from 'react-native';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import Color from '../../../assets/colors/Color';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const AnnouncementModel = ({ modalVisible, setModalVisible }) => {
-  const navigation = useNavigation();
-  const [description, setdescription] = React.useState("");
-
-  const handleDelete = () => {};
-  const handleCancel = () => {};
+  const [description, setdescription] = React.useState('');
 
   const handleDismiss = () => {
     setModalVisible(false);
@@ -46,7 +33,7 @@ const AnnouncementModel = ({ modalVisible, setModalVisible }) => {
                     paddingHorizontal: Width * 0.03,
                   }}
                   textAlignVertical="top"
-                  multiline={true}
+                  multiline
                   // maxLength={200}aaaaaaaa
                   value={description}
                   onChangeText={(text) => setdescription(text)}
@@ -69,7 +56,6 @@ const AnnouncementModel = ({ modalVisible, setModalVisible }) => {
                   Discard
                 </Text>
               </TouchableOpacity>
-              <View></View>
             </View>
           </View>
         </Modal>
@@ -81,24 +67,24 @@ const AnnouncementModel = ({ modalVisible, setModalVisible }) => {
 const styles = StyleSheet.create({
   subTitle: {
     color: Color.Grey,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.017,
   },
   title: {
     color: Color.Black,
-    fontFamily: "Roboto_600SemiBold",
-    width: "100%",
-    fontWeight: "600",
+    fontFamily: 'Roboto_600SemiBold',
+    width: '100%',
+    fontWeight: '600',
     fontSize: Height * 0.02,
   },
   buttonWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Width * 0.06,
     paddingVertical: Height * 0.015,
   },
   icon: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.045,
     color: Color.Black,
     fontSize: Height * 0.028,
@@ -115,8 +101,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 8,
     // paddingVertical: Height * 0.045,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
     height: Height * 0.18,
   },
   textInput: {
@@ -125,14 +111,14 @@ const styles = StyleSheet.create({
     width: 318,
     height: 150,
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
   title: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: Height * 0.021,
     marginLeft: Width * 0.036,
-    fontFamily: "Roboto",
-    alignSelf: "center",
+    fontFamily: 'Roboto',
+    alignSelf: 'center',
     paddingVertical: Height * 0.018,
   },
   btn: {
@@ -140,23 +126,23 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     paddingHorizontal: Width * 0.07,
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "600",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '600',
     borderRadius: Height * 0.01,
   },
   modalContainer: {
     backgroundColor: Color.White,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
     borderRadius: scale(10),
     paddingVertical: scale(10),
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: Height * 0.03,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     paddingHorizontal: scale(15),

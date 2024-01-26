@@ -36,7 +36,7 @@ const HomeHeader = () => {
     "Manager",
     "Assistant Manager",
     "Super Admin",
-    "Operations"
+    "Operations",
   );
   return (
     <View style={styles.headContainer}>

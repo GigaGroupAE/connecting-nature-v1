@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { FlatList } from "react-native";
-import { scale } from "react-native-size-matters";
-import Color from "../../../assets/colors/Color";
-import HeaderNormal from "../../components/HeaderNormal";
-import FileMedia from "./FIleMedia";
-import DocType from "./DocType";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+  FlatList,
+} from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { scale } from 'react-native-size-matters';
+import Color from '../../../assets/colors/Color';
+import HeaderNormal from '../../components/HeaderNormal';
+import FileMedia from './FIleMedia';
+import DocType from './DocType';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
 const MediaScreen = () => {
   const route = useRoute();
@@ -33,10 +33,10 @@ const MediaScreen = () => {
   };
 
   const docData = route?.params?.data.filter(
-    (item) => item?.type === "document"
+    (item) => item?.type === 'document',
   );
   const imageData = route?.params?.data.filter(
-    (item) => item?.type !== "audio" && item?.type !== "document"
+    (item) => item?.type !== 'audio' && item?.type !== 'document',
   );
 
   return (
@@ -47,9 +47,9 @@ const MediaScreen = () => {
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            width: "100%",
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '100%',
             borderBottomWidth: 1,
             borderBottomColor: Color.VeryLightGrey,
             height: scale(40),
@@ -67,7 +67,6 @@ const MediaScreen = () => {
           >
             <Text style={styles.title}>Doc</Text>
           </TouchableOpacity>
-          <TouchableOpacity></TouchableOpacity>
         </View>
         <ScrollView style={styles.content}>
           {isActiveDoc ? (
@@ -83,7 +82,7 @@ const MediaScreen = () => {
               renderItem={({ item }) => {
                 return (
                   <View>
-                    {item?.type !== "audio" && (
+                    {item?.type !== 'audio' && (
                       <FileMedia
                         data={item}
                         key={item._id}
@@ -113,31 +112,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(12),
     paddingHorizontal: scale(4),
   },
   activeScreen: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
     borderBottomColor: Color.Blue,
     borderBottomWidth: 2,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   mediaContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
-    display: "flex",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
+    display: 'flex',
+    justifyContent: 'center',
   },
   docContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
-    display: "flex",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
+    display: 'flex',
+    justifyContent: 'center',
   },
   docs: {
     flex: 1,

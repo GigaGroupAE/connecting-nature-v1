@@ -23,7 +23,7 @@ export default function Comment({
   updatereactions,
   postid,
 }) {
-  let timePassed = calculateTimeDifference(comment?.date);
+  const timePassed = calculateTimeDifference(comment?.date);
   const userState = useUserState();
 
   const [modalVisible, setmodalVisible] = useState(false);
@@ -36,7 +36,7 @@ export default function Comment({
     setisLike(
       commentsLikes?.some((user) => {
         return user === userState.id;
-      })
+      }),
     );
   }, [comment]);
 
@@ -47,14 +47,12 @@ export default function Comment({
         {
           likes: liked,
           commentId: item?._id,
-          type:"like"
-        }
+          type: "like",
+        },
       );
 
       setcommentsLikes(response?.data?.likes);
-    } catch (error) {
-      console.log(error, "error while updated reactions");
-    }
+    } catch (error) {}
   };
 
   const commented_by = comment?.commented_by;
@@ -65,7 +63,7 @@ export default function Comment({
 
   const handleLike = (item) => {
     if (!isLike) {
-      let templike = [...commentsLikes];
+      const templike = [...commentsLikes];
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
@@ -131,7 +129,6 @@ export default function Comment({
               <Text style={styles.time}>{commentsLikes?.length}</Text>
             )}
           </TouchableOpacity>
-  
         </View>
       </View>
       <DeleteCommentModal

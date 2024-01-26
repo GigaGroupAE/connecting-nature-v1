@@ -6,46 +6,45 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import Color from "../../../../assets/colors/Color";
-import ListCard from "./ListCard";
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { axiosInstance } from "../../../../axiosInstance";
-import UserListHeader from "./UserListHeader";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../../components/CustomStatsBar";
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import Color from '../../../../assets/colors/Color';
+import ListCard from './ListCard';
+import { useStateContext } from '../../../contexts/ContextProvider';
+import { axiosInstance } from '../../../../axiosInstance';
+import UserListHeader from './UserListHeader';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../../components/CustomStatsBar';
 
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Height = Dimensions.get('screen').height;
 
 const UserList = () => {
-  const [currentPage, setCurrentPage] = useState("All User");
+  const [currentPage, setCurrentPage] = useState('All User');
   const [HomePage, setHomePage] = useState(true);
   const [Accepte, setAccept] = useState(false);
   const [pending, setPending] = useState(false);
   const [volunteers, setVolunteers] = useState([]);
   const [campaign, setCampaign] = useState({});
   const [counts, setCounts] = useState({ acceptedCount: 0, pendingCount: 0 });
-  const { group, loading, setLoading } = useStateContext();
+  const { group, setLoading } = useStateContext();
 
   const [refetch, setRefetch] = useState(null);
 
   const AllUser = () => {
-    setCurrentPage("All User");
+    setCurrentPage('All User');
     setHomePage(true);
     setPending(false);
     setAccept(false);
   };
   const Accepted = () => {
-    setCurrentPage("accepted");
+    setCurrentPage('accepted');
     setHomePage(false);
     setPending(false);
     setAccept(true);
   };
 
   const Pending = () => {
-    setCurrentPage("sent");
+    setCurrentPage('sent');
     setHomePage(false);
     setPending(true);
     setAccept(false);
@@ -58,7 +57,7 @@ const UserList = () => {
         setLoading(true);
 
         const { data } = await axiosInstance.get(
-          `/campaigns/get-by-query?group=${group._id}`
+          `/campaigns/get-by-query?group=${group._id}`,
         );
         if (data.success) {
           setVolunteers(data?.campaign?.volunteers);
@@ -67,7 +66,6 @@ const UserList = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        console.log(error);
       }
     };
     fetchData();
@@ -76,21 +74,21 @@ const UserList = () => {
   useEffect(() => {
     const counts = volunteers.reduce(
       (acc, item) => {
-        if (item.status === "accepted") {
+        if (item.status === 'accepted') {
           acc.acceptedCount++;
         }
-        if (item.status === "sent") {
+        if (item.status === 'sent') {
           acc.pendingCount++;
         }
         return acc;
       },
-      { acceptedCount: 0, pendingCount: 0 }
+      { acceptedCount: 0, pendingCount: 0 },
     );
     setCounts(counts);
   }, [volunteers]);
 
   const renderItem = ({ item }) => {
-    if (currentPage === "All User") {
+    if (currentPage === 'All User') {
       return (
         <ListCard
           user={item.user}
@@ -125,9 +123,9 @@ const UserList = () => {
             >
               <View
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
                 }}
               >
                 <Text style={styles.Heading}>
@@ -141,9 +139,9 @@ const UserList = () => {
             >
               <View
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
                 }}
               >
                 <Text style={styles.Heading}>
@@ -157,9 +155,9 @@ const UserList = () => {
             >
               <View
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%",
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
                 }}
               >
                 <Text style={styles.Heading}>
@@ -185,32 +183,32 @@ export default UserList;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    height: "100%",
+    height: '100%',
   },
   listContainer: {
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
     // paddingHorizontal: 10,
     height: Height * 0.055,
   },
 
   active: {
-    flexDirection: "row",
-    width: "30%",
+    flexDirection: 'row',
+    width: '30%',
     borderBottomColor: Color.Blue,
     borderBottomWidth: 2,
-    height: "100%",
+    height: '100%',
   },
   disable: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "30%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '30%',
   },
   Heading: {
-    alignSelf: "center",
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "6",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '6',
     fontSize: Height * 0.016,
   },
 });

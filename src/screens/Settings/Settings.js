@@ -1,21 +1,19 @@
-import React from "react";
-import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
-import HeaderNormal from "../../components/HeaderNormal";
-import { Entypo } from "react-native-vector-icons";
-import { useUserStateActions } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import { useUserState } from "../../slices/userSlice";
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import HeaderNormal from '../../components/HeaderNormal';
+import { Entypo } from 'react-native-vector-icons';
+import { useUserStateActions, useUserState } from '../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { BASE_URL } from '../../../CONSTANTS.js';
 
-import Color from "../../../assets/colors/Color";
-import axios from "axios";
-import { useCartStateActions } from "../../slices/cartSlice";
-import { SETTINGS_DATA } from "./settingsData";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import Color from '../../../assets/colors/Color';
+import axios from 'axios';
+import { useCartStateActions } from '../../slices/cartSlice';
+import { SETTINGS_DATA } from './settingsData';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
 export default function Settings() {
-  const userState = useUserState();
   const CartActions = useCartStateActions();
 
   const userActions = useUserStateActions();
@@ -26,40 +24,38 @@ export default function Settings() {
     //delete the expo token from database
     const config = {
       headers: {
-        "auth-token": userstate.token,
+        'auth-token': userstate.token,
       },
     };
     axios
       .put(
         `${BASE_URL}/user/updateUserExpoToken`,
         { expoPushToken: null },
-        config
+        config,
       )
       .then((res) => {
         userActions.resetState();
         CartActions.resetState();
         navigation.reset({
           index: 0,
-          routes: [{ name: "SignIn" }],
+          routes: [{ name: 'SignIn' }],
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const onSettingPressed = (setting) => {
     if (setting.screenToNavigate) {
       navigation.navigate(setting.screenToNavigate);
     }
-    if (setting.title === "Logout") {
+    if (setting.title === 'Logout') {
       Logout();
     }
   };
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
-      <HeaderNormal title={"Settings"} />
+      <HeaderNormal title="Settings" />
       <View>
         <View style={styles.mainListItems}>
           {SETTINGS_DATA.map((setting, idx) => {
@@ -91,55 +87,55 @@ const styles = StyleSheet.create({
   },
   profileHead: {
     paddingVertical: 15,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   avatar: {
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: Dimensions.get("screen").height * 0.09,
-    height: Dimensions.get("screen").height * 0.09,
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: Dimensions.get('screen').height * 0.09,
+    height: Dimensions.get('screen').height * 0.09,
   },
   userNameContainer: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 18,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
-    alignSelf: "center",
+    alignSelf: 'center',
     marginLeft: 15,
   },
   userCategory: {
     marginLeft: 15,
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.White,
   },
   mainTextContainer: {
     marginLeft: 15,
   },
   profileContainerText: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'flex-end',
   },
   category: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 12,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 21,
-    color: "white",
+    color: 'white',
     marginLeft: 11,
   },
   phoneNumber: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 12,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 21,
-    color: "white",
+    color: 'white',
   },
   arrowIcon: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     width: 6,
     height: 10,
@@ -148,28 +144,28 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     // paddingHorizontal: 17,
     backgroundColor: Color.White,
-    height: Dimensions.get("screen").height,
+    height: Dimensions.get('screen').height,
   },
   listItem: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: 15,
     paddingHorizontal: 17,
   },
   itemText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: 14,
     lineHeight: 21,
     color: Color.Black,
     marginLeft: 15,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   arrowIconDark: {
-    position: "absolute",
+    position: 'absolute',
     right: 17,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   sectionHeading: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     paddingVertical: 22,
     marginLeft: 17,
     fontSize: 13,

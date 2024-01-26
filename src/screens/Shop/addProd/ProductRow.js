@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -10,19 +9,16 @@ import {
   Pressable,
   Dimensions,
   Alert,
-} from "react-native";
-import axios from "axios";
-import Color from "../../../../assets/colors/Color";
-import HeaderNormal from "../../../components/HeaderNormal";
-import { Entypo } from "react-native-vector-icons";
-import ButtonMain from "../../../components/ButtonMain";
-import { useNavigation } from "@react-navigation/native";
-import { BASE_URL } from "../../../../CONSTANTS";
-import { useDeleteProductMutation } from "../../../slices/ProductsApi";
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { useUserState } from "../../../slices/userSlice";
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+} from 'react-native';
+import Color from '../../../../assets/colors/Color';
+import { Entypo } from 'react-native-vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../../../../CONSTANTS';
+import { useDeleteProductMutation } from '../../../slices/ProductsApi';
+import { useStateContext } from '../../../contexts/ContextProvider';
+import { useUserState } from '../../../slices/userSlice';
+const height = Dimensions.get('screen').height;
+const width = Dimensions.get('screen').width;
 
 const ProductRow = (props) => {
   const item = props.item.item;
@@ -42,7 +38,6 @@ const ProductRow = (props) => {
       setLoading(true);
       await deleteProduct({ token: userState.token, id: item._id });
     } catch (error) {
-      console.log("error while deleting product is ", error);
       Alert.alert(error.message);
     } finally {
       setLoading(false);
@@ -54,10 +49,10 @@ const ProductRow = (props) => {
       <View>
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
+            Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}
         >
@@ -77,9 +72,9 @@ const ProductRow = (props) => {
               </Pressable>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "flex-end",
-                  justifyContent: "space-around",
+                  flexDirection: 'row',
+                  alignItems: 'flex-end',
+                  justifyContent: 'space-around',
                   marginTop: 60,
                 }}
               >
@@ -90,11 +85,11 @@ const ProductRow = (props) => {
                   ]}
                   onPress={() =>
                     navigation.navigate(
-                      "AddProduct",
+                      'AddProduct',
                       {
                         product: JSON.parse(JSON.stringify(props.item)),
                       },
-                      setModalVisible(false)
+                      setModalVisible(false),
                     )
                   }
                 >
@@ -103,7 +98,7 @@ const ProductRow = (props) => {
                 <Text
                   style={[
                     styles.btn,
-                    { backgroundColor: "#DEDEDE", color: Color.Grey },
+                    { backgroundColor: '#DEDEDE', color: Color.Grey },
                   ]}
                   onPress={deleteHandler}
                 >
@@ -120,7 +115,7 @@ const ProductRow = (props) => {
       >
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
             // paddingVertical: 12,
           }}
         >
@@ -151,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
   },
   listContainer: {
-    width: "100%",
+    width: '100%',
   },
   userContainer: {
     width: width * 0.9,
@@ -167,31 +162,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 8,
-    overflow: "hidden",
-    alignSelf: "center",
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
   userImage: {
     width: width * 0.13,
     height: height * 0.06,
     borderRadius: 10,
-    resizeMode: "contain",
-    alignSelf: "center",
+    resizeMode: 'contain',
+    alignSelf: 'center',
     // marginTop: 3,
     margin: 5,
   },
   Productname: {
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     margin: 6,
     width: width / 3.4,
-    backgroundColor: "#8329 ",
+    backgroundColor: '#8329 ',
     color: Color.Grey,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 17,
   },
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 22,
   },
   modalView: {
@@ -214,15 +209,15 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     marginTop: 42,
-    alignItems: "center",
+    alignItems: 'center',
     width: 120,
     height: 48,
     borderRadius: 6,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
 
   buttonClose: {
-    position: "absolute",
+    position: 'absolute',
     right: 5,
     top: 5,
   },
@@ -231,10 +226,10 @@ const styles = StyleSheet.create({
     width: width * 0.3,
     height: height * 0.05,
     borderRadius: 8,
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 8,
     fontSize: 20,
-    fontWeight: "500",
+    fontWeight: '500',
   },
 });
 

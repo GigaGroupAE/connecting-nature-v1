@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React, { memo, useCallback } from "react";
 import HeaderNormal from "../../components/HeaderNormal";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Color from "../../../assets/colors/Color";
 import { FontAwesome, MaterialIcons } from "react-native-vector-icons";
 import { scale } from "react-native-size-matters";
@@ -66,9 +66,9 @@ const ArchivedCampaignItem = memo(({ item, handleNavigation }) => {
 });
 
 const ArchivedCampaign = () => {
-  const { data: archivedCampaigns, isLoading: isLoading } = useQuery(
+  const { data: archivedCampaigns, isLoading } = useQuery(
     "archived",
-    fetchArchivedCampaigns
+    fetchArchivedCampaigns,
   );
   const navigation = useNavigation();
   const { setreactions, setcomment } = useStateContext();
@@ -79,7 +79,7 @@ const ArchivedCampaign = () => {
       setcomment(item?.messages);
       navigation.navigate("ArchivedCampaign", item);
     },
-    [navigation, setreactions, setcomment]
+    [navigation, setreactions, setcomment],
   );
   if (isLoading) {
     return (

@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   Image,
@@ -11,84 +11,84 @@ import {
   View,
   StatusBar,
   ScrollView, // Import View component
-} from "react-native";
+} from 'react-native';
 //TODO :: UNINSTALL BELOW PKG
 
-import Color from "../../../assets/colors/Color";
-import { BASE_URL, OUTSOURC_GROUP } from "../../../CONSTANTS";
-import HeaderNormal from "../../components/HeaderNormal";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useUserState } from "../../slices/userSlice";
+import Color from '../../../assets/colors/Color';
+import { BASE_URL, OUTSOURC_GROUP } from '../../../CONSTANTS';
+import HeaderNormal from '../../components/HeaderNormal';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { useUserState } from '../../slices/userSlice';
 
 //make sure backend can handle all these categories
 const categories = [
-  { id: 1, name: "Campaigns Volunteering" },
-  { id: 2, name: "Order Volunteering" },
-  { id: 3, name: "Bonus" },
-  { id: 4, name: "Posts" },
+  { id: 1, name: 'Campaigns Volunteering' },
+  { id: 2, name: 'Order Volunteering' },
+  { id: 3, name: 'Bonus' },
+  { id: 4, name: 'Posts' },
 ];
 
 const users = [
   {
-    id: "1",
-    name: "John Doe",
-    role: "Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    id: '1',
+    name: 'John Doe',
+    role: 'Developer',
+    image: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: "2",
-    name: "Jane Smith",
-    role: "Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    id: '2',
+    name: 'Jane Smith',
+    role: 'Designer',
+    image: 'https://randomuser.me/api/portraits/women/2.jpg',
   },
   // Add more users here
   {
-    id: "1",
-    name: "John Doe",
-    role: "Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    id: '1',
+    name: 'John Doe',
+    role: 'Developer',
+    image: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: "kaljfd",
-    name: "Jane Smith",
-    role: "Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    id: 'kaljfd',
+    name: 'Jane Smith',
+    role: 'Designer',
+    image: 'https://randomuser.me/api/portraits/women/2.jpg',
   },
   {
-    id: "asdfafa",
-    name: "John Doe",
-    role: "Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    id: 'asdfafa',
+    name: 'John Doe',
+    role: 'Developer',
+    image: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: "asfdadf",
-    name: "Jane Smith",
-    role: "Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    id: 'asfdadf',
+    name: 'Jane Smith',
+    role: 'Designer',
+    image: 'https://randomuser.me/api/portraits/women/2.jpg',
   },
   {
-    id: "   we",
-    name: "John Doe",
-    role: "Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    id: '   we',
+    name: 'John Doe',
+    role: 'Developer',
+    image: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: "dsaf",
-    name: "Jane Smith",
-    role: "Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    id: 'dsaf',
+    name: 'Jane Smith',
+    role: 'Designer',
+    image: 'https://randomuser.me/api/portraits/women/2.jpg',
   },
   {
-    id: "   adfaf",
-    name: "John Doe",
-    role: "Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    id: '   adfaf',
+    name: 'John Doe',
+    role: 'Developer',
+    image: 'https://randomuser.me/api/portraits/men/1.jpg',
   },
   {
-    id: "afdq",
-    name: "Jane Smith",
-    role: "Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    id: 'afdq',
+    name: 'Jane Smith',
+    role: 'Designer',
+    image: 'https://randomuser.me/api/portraits/women/2.jpg',
   },
 ];
 
@@ -117,7 +117,7 @@ const ManagePointsScreen = () => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    setSelectedCategory("");
+    setSelectedCategory('');
   };
 
   const renderUserItem = ({ item }) => (
@@ -125,7 +125,7 @@ const ManagePointsScreen = () => {
   );
 
   //categories
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const handleCategorySelect = (id) => {
     setSelectedCategory(id);
@@ -143,18 +143,16 @@ const ManagePointsScreen = () => {
         },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       );
       if (data.success) {
         showSnackbar(data.message);
       }
-
     } catch (error) {
-      
-      showSnackbar(error.message)
-      console.log("error is ", error.message);
+      showSnackbar(error.message);
+      console.log('error is ', error.message);
     } finally {
       setLoading(false);
     }
@@ -166,9 +164,9 @@ const ManagePointsScreen = () => {
         `${BASE_URL}/groups/getgroupbyid/${OUTSOURC_GROUP}`,
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       );
 
       setUsersData(data.members);
@@ -180,7 +178,7 @@ const ManagePointsScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar translucent backgroundColor={Color.Blue} />
       <View style={{ marginTop: StatusBar.currentHeight }}>
-        <HeaderNormal title={"Award Points"} />
+        <HeaderNormal title={'Award Points'} />
       </View>
 
       <FlatList
@@ -258,13 +256,13 @@ const styles = StyleSheet.create({
   },
   userItemContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
     marginHorizontal: 8,
     marginVertical: 8,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 16,
-    maxWidth: "50%",
+    maxWidth: '50%',
   },
   userItemImage: {
     width: 80,
@@ -273,66 +271,66 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   userItemName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 4,
   },
   userItemRole: {
     fontSize: 14,
-    color: "#777",
+    color: '#777',
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
   },
   blurrePortion: {
     flex: 1,
   },
   contentPortion: {
     //backgroundColor: "white",
-    height: "50%",
+    height: '50%',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 16,
   },
   categoryButton: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
   },
   categoryText: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
   },
   selectedCategoryButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: '#3498db',
   },
   selectedCategoryText: {
-    color: "#fff",
+    color: '#fff',
   },
   submitButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: '#3498db',
     borderRadius: 16,
     paddingVertical: 16,
-    alignItems: "center",
+    alignItems: 'center',
   },
   submitButtonText: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
+    fontWeight: 'bold',
+    color: '#fff',
   },
   disabledSubmitButton: {
-    backgroundColor: "#bdc3c7",
+    backgroundColor: '#bdc3c7',
   },
 });
 

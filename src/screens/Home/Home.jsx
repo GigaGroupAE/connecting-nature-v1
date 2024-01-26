@@ -17,9 +17,9 @@ import {
   registerForPushNotificationsAsync,
 } from "../../Api/GetPost";
 import PostSkeleton from "../../components/PostSkeleton";
-import { SafeAreaView } from "react-native";
+
 import HomeHeader from "./HomeHeader";
-import { StatusBar } from "react-native";
+
 import { useStateContext } from "../../contexts/ContextProvider";
 import MiniVideoPlayer from "../../components/MiniVideoPlayer";
 import StoryHeader from "./StoryHeader";
@@ -28,7 +28,7 @@ import * as Notifications from "expo-notifications";
 import { useUserState, useUserStateActions } from "../../slices/userSlice";
 import { BASE_URL } from "../../../CONSTANTS";
 import axios from "axios";
-import CustomStatsBar from "../../components/CustomStatsBar";
+
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 Notifications.setNotificationHandler({
@@ -72,12 +72,12 @@ const Home = () => {
       },
       refetchOnWindowFocus: false,
       cacheTime: 1000 * 60 * 5,
-    }
+    },
   );
 
   const { data: campaign } = useQuery(
     "mostRecentCampaigns",
-    fetchRecentCampaigns
+    fetchRecentCampaigns,
   );
   useEffect(() => {
     if (isFocused) {
@@ -121,14 +121,12 @@ const Home = () => {
               .put(
                 `${BASE_URL}/user/updateUserExpoToken`,
                 { expoPushToken: `${token}` },
-                config
+                config,
               )
               .then((res) => {
                 userActions.setExpoPushToken(res.data.expoPushToken);
               })
-              .catch((err) => {
-                console.log(err, "error");
-              });
+              .catch((err) => {});
           }
         });
 
@@ -138,13 +136,11 @@ const Home = () => {
         });
 
       responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
-        });
+        Notifications.addNotificationResponseReceivedListener((response) => {});
 
       return () => {
         Notifications.removeNotificationSubscription(
-          notificationListener.current
+          notificationListener.current,
         );
         Notifications.removeNotificationSubscription(responseListener.current);
       };
@@ -153,17 +149,19 @@ const Home = () => {
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
   const VideoMiniPlayer = useMemo(
-    () => (
-      (<MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />),
-      [videoURI]
-    )
+    () =>
+      (<MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />)[
+        videoURI
+      ],
   );
 
   const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories]);
   const ActivCampaignHeader = useMemo(
     () => <HeaderForCampaign campaign={campaign} />,
-    [campaign]
+    [campaign],
   );
+
+  const scrollToTop = () => {};
 
   return (
     <SafeAreaProvider style={styles.container}>
@@ -197,12 +195,7 @@ const Home = () => {
         <View style={styles.showMiniVideo}>{VideoMiniPlayer}</View>
       )}
 
-      <BottomTab
-        activeMenu={"Home"}
-        scrollToTop={() => console.log()}
-        reload={() => console.log()}
-        storyReload={() => console.log()}
-      />
+      <BottomTab activeMenu="Home" scrollToTop={scrollToTop} reload={refetch} />
     </SafeAreaProvider>
   );
 };

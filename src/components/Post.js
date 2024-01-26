@@ -1,59 +1,58 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   Dimensions,
   Pressable,
-} from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import axios from "axios"
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 //Icons import
-import { FontAwesome, AntDesign } from "react-native-vector-icons"
-import { useUserState } from "./../slices/userSlice"
+import { FontAwesome, AntDesign } from "react-native-vector-icons";
+import { useUserState } from "./../slices/userSlice";
 //HOST NAME
-import { BASE_URL } from "../../CONSTANTS"
-import Color from "../../assets/colors/Color"
+import { BASE_URL } from "../../CONSTANTS";
+import Color from "../../assets/colors/Color";
 
-import BottomSheetForPost from "./BottomSheetForPost"
-import moment from "moment"
-import PostHeader from "../screens/Home/PostHeader"
-import PostDeleteModal from "../screens/Home/PostDeleteModal"
-import PostVideo from "../screens/Home/PostVideo"
-import { useStateContext } from "../contexts/ContextProvider"
-import PostImage from "../screens/Home/PostImage"
-import PostSharedHeader from "./PostSharedHeader"
+import BottomSheetForPost from "./BottomSheetForPost";
+import moment from "moment";
+import PostHeader from "../screens/Home/PostHeader";
+import PostDeleteModal from "../screens/Home/PostDeleteModal";
+import PostVideo from "../screens/Home/PostVideo";
+
+import PostImage from "../screens/Home/PostImage";
+import PostSharedHeader from "./PostSharedHeader";
 
 export default function Post(props, postId) {
-  var date = moment().utcOffset("+05:00")
-  const [visible, setVisible] = useState(false)
-  const [modalVisible, setmodalVisible] = useState(false)
+  const date = moment().utcOffset("+05:00");
+  const [visible, setVisible] = useState(false);
+  const [modalVisible, setmodalVisible] = useState(false);
   const toggleBottomNavigationView = () => {
-    setVisible(!visible)
-  }
-  const navigation = useNavigation()
-  const userState = useUserState()
+    setVisible(!visible);
+  };
+  const navigation = useNavigation();
+  const userState = useUserState();
 
-  const route = `${BASE_URL}/posts/updateposts/${props.post._id}`
-  const [reactions, setreactions] = useState(props?.post?.reactions)
-  const [comment, setcomment] = useState(props?.post?.comments)
-  const [liked, setliked] = useState(false)
+  const route = `${BASE_URL}/posts/updateposts/${props.post._id}`;
+  const [reactions, setreactions] = useState(props?.post?.reactions);
+  const [comment, setcomment] = useState(props?.post?.comments);
+  const [liked, setliked] = useState(false);
 
   useEffect(() => {
-    setreactions(props?.post?.reactions)
+    setreactions(props?.post?.reactions);
     setliked(
       reactions.some((user) => {
-        return user._id === userState.id
-      })
-    )
-  }, [props?.post?.reactions])
+        return user._id === userState.id;
+      }),
+    );
+  }, [props?.post?.reactions]);
 
   useEffect(() => {
-    setcomment(props?.post?.comments)
-  }, [props?.post?.comments])
+    setcomment(props?.post?.comments);
+  }, [props?.post?.comments]);
 
   const modalComponent = useMemo(
     () => (
@@ -63,8 +62,8 @@ export default function Post(props, postId) {
         setmodalVisible={setmodalVisible}
       />
     ),
-    [modalVisible, props?.post, props?.reload]
-  )
+    [modalVisible, props?.post, props?.reload],
+  );
 
   const handleOnClickComment = () => {
     navigation.navigate("Comments", {
@@ -74,10 +73,9 @@ export default function Post(props, postId) {
       data: props?.data,
       expoPushToken: props?.post?.postedby?.expoPushToken,
       setcomment: setcomment,
-    })
-  }
+    });
+  };
 
-  const [shares, setshares] = useState([...props.post.shares])
   //notify shall be true in case of like action
   //notify shall be false in case of unlike action
   //so that the user shall not receive notification when the user has unliked
@@ -90,8 +88,8 @@ export default function Post(props, postId) {
           headers: {
             "auth-token": userState.token,
           },
-        }
-        const { data } = await axios.post(
+        };
+        await axios.post(
           `${BASE_URL}/notify/commentNotification/${props.post._id}`,
           {
             user: userState.phoneNumber,
@@ -109,8 +107,8 @@ export default function Post(props, postId) {
               content: props.post._id,
             },
           },
-          config
-        )
+          config,
+        );
       }
     }
 
@@ -122,85 +120,51 @@ export default function Post(props, postId) {
           headers: {
             "auth-token": userState.token,
           },
-        }
+        },
       )
       .then((res) => {
-        setreactions(res.data.reactions)
+        setreactions(res.data.reactions);
       })
-      .catch((e) => console.log(e))
-  }
+      .catch((e) => console.log(e));
+  };
   const handleonshare = async (post) => {
-    navigation.navigate("postShare", { post: post, reload: props.reload })
-  }
+    navigation.navigate("postShare", { post: post, reload: props.reload });
+  };
 
-  const handleLocalNotification = async () => {
-    try {
-      const config = {
-        headers: {
-          "auth-token": userState.token,
-        },
-      }
-      const notification = await axios.post(
-        `${BASE_URL}/notify/commentNotification/${props.post._id}`,
-        {
-          user: userState.phoneNumber,
-          body: {
-            date: date,
-
-            user: {
-              profile: userState.profile,
-              fullName: userState.fullName,
-              type: userState.type,
-              expoPushToken: props?.post?.postedby?.expoPushToken,
-            },
-          },
-
-          data: {
-            title: "post-share",
-            content: props.post._id,
-          },
-        },
-        config
-      )
-    } catch (error) {
-      console.log("error in local notofications", error)
-    }
-  }
-  const handlePostView = (props) => {
-    navigation.navigate("PostView", {
-      url: `${BASE_URL}/images/${props.post.media.name}`,
-      message: props.post.description,
-    })
-  }
   const handlePostsLike = (item) => {
-    navigation.navigate("PostsLike", { item })
-  }
+    navigation.navigate("PostsLike", { item });
+  };
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions]
+      const templike = [...reactions];
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      }
-      templike.push(newLikes)
-      updatereactions(templike, true)
-      setliked(true)
+      };
+      templike.push(newLikes);
+      updatereactions(templike, true);
+      setliked(true);
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id
-      })
-      updatereactions(newlikes, false)
-      setliked(false)
+        return reaction._id !== userState.id;
+      });
+      updatereactions(newlikes, false);
+      setliked(false);
     }
-  }
+  };
 
-  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"]
-  const supportedFormats = ["image/jpeg", "image/png", "image/jpg", "video/mp4"]
-  const isImageOrVideo = supportedFormats.includes(props.post.media?.type)
+  const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
+  const supportedFormats = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "video/mp4",
+  ];
+  const isImageOrVideo = supportedFormats.includes(props.post.media?.type);
 
   // Include data in the dependency array if you want this to run when data changes
   return (
@@ -348,7 +312,7 @@ export default function Post(props, postId) {
         )}
       </View>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -471,4 +435,4 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontSize: 21,
   },
-})
+});

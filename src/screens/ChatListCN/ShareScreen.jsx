@@ -6,27 +6,25 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import HeaderNormal from "../../components/HeaderNormal";
-import UserImg from "../../../assets/user.jpg";
-import Color from "../../../assets/colors/Color";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import { FlatList } from "react-native";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useNavigation, useRoute } from "@react-navigation/native";
+  FlatList,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import axios from 'axios';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from '../../slices/userSlice';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const ShareScreen = (props) => {
-  const { loading, setLoading } = useStateContext();
+  const { setLoading } = useStateContext();
 
   const route = useRoute();
-  const { forwardFrom, forwardChat, forwardType, forwardContent, socket } =
-    route.params;
+  const { forwardFrom, forwardType, forwardContent, socket } = route.params;
 
   const userState = useUserState();
 
@@ -41,19 +39,19 @@ const ShareScreen = (props) => {
       try {
         const response = await axios.get(`${BASE_URL}/user/new-chat-contacts`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         });
 
-        let tempUsers = response.data.contacts.filter(
-          (user) => user.phoneNumber !== userState.phoneNumber
+        const tempUsers = response.data.contacts.filter(
+          (user) => user.phoneNumber !== userState.phoneNumber,
         );
 
         let normalUser = [];
 
-        if (userState.type === "user") {
+        if (userState.type === 'user') {
           normalUser = tempUsers.filter(
-            (typeUser) => typeUser.type !== "celebrity"
+            (typeUser) => typeUser.type !== 'celebrity',
           );
         } else {
           normalUser = tempUsers;
@@ -61,7 +59,6 @@ const ShareScreen = (props) => {
 
         setuser([...normalUser]);
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     };
@@ -75,14 +72,12 @@ const ShareScreen = (props) => {
       try {
         const res = await axios.get(`${BASE_URL}/chat/get-my-chats`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         });
-
         setMessages([...res.data.myChats]);
         setLoading(false);
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     };
@@ -95,13 +90,13 @@ const ShareScreen = (props) => {
     (contactlist) =>
       !messages.some((chatuser) =>
         chatuser.members.some(
-          (member) => member.phoneNumber === contactlist.phoneNumber
-        )
-      )
+          (member) => member.phoneNumber === contactlist.phoneNumber,
+        ),
+      ),
   );
 
   const handleForward = (item) => {
-    socket.emit("send_messageCN", {
+    socket.emit('send_messageCN', {
       from: forwardFrom,
       chat: item._id,
       type: forwardType,
@@ -120,14 +115,14 @@ const ShareScreen = (props) => {
 
       const response = await axios.post(`${BASE_URL}/chat/createchat`, data, {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       });
 
       if (response.status === 200) {
         const chatId = response.data._id;
 
-        socket.emit("send_messageCN", {
+        socket.emit('send_messageCN', {
           from: forwardFrom,
           chat: chatId,
           type: forwardType,
@@ -136,9 +131,7 @@ const ShareScreen = (props) => {
 
         navigation.goBack();
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
 
   const renderItem = ({ item }) => {
@@ -154,7 +147,7 @@ const ShareScreen = (props) => {
               style={{
                 marginTop: Height * 0.008,
                 flex: 0,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
             >
               <Text style={styles.userName}>{item.fullName}</Text>
@@ -188,7 +181,7 @@ const ShareScreen = (props) => {
               style={{
                 marginTop: Height * 0.008,
                 flex: 0,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
             >
               <Text style={styles.userName}>
@@ -237,35 +230,35 @@ export default ShareScreen;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: Height * 0.009,
-    alignContent: "center",
+    alignContent: 'center',
 
-    paddingHorizontal: "3%",
+    paddingHorizontal: '3%',
     borderBottomColor: Color.LightGrey,
     borderBottomWidth: 0.7,
   },
   userImg: {
     borderRadius: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     height: 50,
     width: 50,
   },
   userName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     marginLeft: Width * 0.02,
     fontSize: Height * 0.017,
   },
   userRole: {
     marginLeft: Width * 0.02,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Blue,
-    marginTop: "-1.5%",
+    marginTop: '-1.5%',
   },
   contactTitle: {
     paddingHorizontal: Width * 0.06,
     paddingVertical: Height * 0.01,
     fontSize: Height * 0.022,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });

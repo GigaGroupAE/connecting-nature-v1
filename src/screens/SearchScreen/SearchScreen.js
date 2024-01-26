@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,34 +9,33 @@ import {
   Image,
   Dimensions,
   TextInput,
-} from "react-native";
+} from 'react-native';
 import {
   AntDesign,
   Ionicons,
   Entypo,
   MaterialCommunityIcons,
-} from "react-native-vector-icons";
-import axios from "axios";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import Post from "../../components/Post";
-import { theme } from "../../../theme";
-import { usePostState } from "../../slices/postsSlice";
-import Color from "./../../../assets/colors/Color";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
-import { axiosInstance } from "../../../axiosInstance";
-import _debounce from "lodash.debounce";
+} from 'react-native-vector-icons';
+import axios from 'axios';
+import { useUserState } from '../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS';
+import Post from '../../components/Post';
+import { theme } from '../../../theme';
+import { usePostState } from '../../slices/postsSlice';
+import Color from './../../../assets/colors/Color';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { axiosInstance } from '../../../axiosInstance';
+import _debounce from 'lodash.debounce';
 
 const SearchScreen = () => {
   const navigation = useNavigation();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const userstate = useUserState();
   const [user, setuser] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("post");
-  const [loading, setloading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('post');
   const handleCross = () => {
-    setSearchQuery("");
+    setSearchQuery('');
   };
   const [posts, setposts] = useState([]);
   const postState = usePostState();
@@ -44,18 +43,18 @@ const SearchScreen = () => {
     axios
       .get(`${BASE_URL}/user/new-chat-contacts`, {
         headers: {
-          "auth-token": userstate.token,
+          'auth-token': userstate.token,
         },
       })
       .then((res) => {
         //1- EXCLUDING LOGGED IN USER
-        let tempUsers = res.data.contacts.filter(
-          (user) => user.phoneNumber !== userstate.phoneNumber
+        const tempUsers = res.data.contacts.filter(
+          (user) => user.phoneNumber !== userstate.phoneNumber,
         );
 
         setuser([...tempUsers]);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   }, []);
 
   const handlebackpress = () => {
@@ -64,16 +63,14 @@ const SearchScreen = () => {
   const debouncedSearch = _debounce(async (query) => {
     try {
       const response = await axiosInstance.get(
-        `/posts/search-post?search=${query}`
+        `/posts/search-post?search=${query}`,
       );
       setposts(response?.data?.searchResult);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }, 1000);
   const onChangeSearch = (query) => {
     setSearchQuery(query);
-    if (activeFilter === "post" || "hashtag") {
+    if (activeFilter === 'post' || 'hashtag') {
       debouncedSearch(query);
     }
   };
@@ -95,7 +92,7 @@ const SearchScreen = () => {
               placeholderTextColor={Color.Black}
             />
             <Pressable onPress={handleCross}>
-              {searchQuery === "" ? (
+              {searchQuery === '' ? (
                 <Ionicons name="search" size={20} color={Color.Black} />
               ) : (
                 <Entypo name="cross" size={20} color={Color.Black} />
@@ -108,16 +105,16 @@ const SearchScreen = () => {
           <>
             <View
               style={
-                activeFilter === "post" ? styles.activeTagMain : styles.tagMain
+                activeFilter === 'post' ? styles.activeTagMain : styles.tagMain
               }
             >
               <Pressable
-                onPress={() => setActiveFilter("post")}
+                onPress={() => setActiveFilter('post')}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
                 <Text
                   style={
-                    activeFilter === "post"
+                    activeFilter === 'post'
                       ? styles.activeTagText
                       : styles.tagText
                   }
@@ -128,16 +125,16 @@ const SearchScreen = () => {
             </View>
             <View
               style={
-                activeFilter === "users" ? styles.activeTagMain : styles.tagMain
+                activeFilter === 'users' ? styles.activeTagMain : styles.tagMain
               }
             >
               <Pressable
-                onPress={() => setActiveFilter("users")}
+                onPress={() => setActiveFilter('users')}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
                 <Text
                   style={
-                    activeFilter === "users"
+                    activeFilter === 'users'
                       ? styles.activeTagText
                       : styles.tagText
                   }
@@ -148,18 +145,18 @@ const SearchScreen = () => {
             </View>
             <View
               style={
-                activeFilter === "hashtag"
+                activeFilter === 'hashtag'
                   ? styles.activeTagMain
                   : styles.tagMain
               }
             >
               <Pressable
-                onPress={() => setActiveFilter("hashtag")}
+                onPress={() => setActiveFilter('hashtag')}
                 style={({ pressed }) => pressed && styles.pressedItem}
               >
                 <Text
                   style={
-                    activeFilter === "hashtag"
+                    activeFilter === 'hashtag'
                       ? styles.activeTagText
                       : styles.tagText
                   }
@@ -171,30 +168,30 @@ const SearchScreen = () => {
           </>
         </ScrollView>
 
-        {searchQuery === ""
+        {searchQuery === ''
           ? null
-          : activeFilter === "post" &&
+          : activeFilter === 'post' &&
             posts
               .filter((post) =>
                 post.description
                   .toLowerCase()
-                  .includes(searchQuery.toLowerCase())
+                  .includes(searchQuery.toLowerCase()),
               )
               .map((post, index) => <Post post={post} key={index} />)}
 
-        {searchQuery === ""
+        {searchQuery === ''
           ? null
-          : activeFilter === "hashtag" &&
+          : activeFilter === 'hashtag' &&
             posts
               .filter((post) =>
                 post.description
                   .toLowerCase()
-                  .includes(searchQuery.toLowerCase())
+                  .includes(searchQuery.toLowerCase()),
               )
               .map((post, index) => <Post post={post} key={index} />)}
-        {searchQuery === ""
+        {searchQuery === ''
           ? null
-          : activeFilter === "users" &&
+          : activeFilter === 'users' &&
             user.map((u, idx) => {
               if (u.fullName.match(searchQuery)) {
                 return (
@@ -202,7 +199,7 @@ const SearchScreen = () => {
                     android_ripple={{ color: Color.VeryLightGrey }}
                     style={styles.personCard}
                     onPress={() =>
-                      navigation.navigate("UserProfile", {
+                      navigation.navigate('UserProfile', {
                         userPhoneNumber: u?.phoneNumber,
                       })
                     }
@@ -210,39 +207,39 @@ const SearchScreen = () => {
                   >
                     {/* //IMAGE HERE */}
                     <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
                     >
                       {u.profile ? (
                         <View
                           style={{
-                            flexDirection: "row",
+                            flexDirection: 'row',
                           }}
                         >
                           <Image
                             source={{ uri: `${BASE_URL}/images/${u.profile}` }}
                             style={{
-                              height: Dimensions.get("screen").height * 0.05,
-                              width: Dimensions.get("screen").height * 0.05,
+                              height: Dimensions.get('screen').height * 0.05,
+                              width: Dimensions.get('screen').height * 0.05,
                               borderRadius:
-                                Dimensions.get("screen").height * 0.1,
+                                Dimensions.get('screen').height * 0.1,
                               backgroundColor: Color.VeryLightGrey,
                             }}
                           />
                           <View
                             style={{
-                              marginLeft: "9%",
-                              flexDirection: "row",
-                              alignItems: "center",
-                              marginTop: "-7%",
+                              marginLeft: '9%',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginTop: '-7%',
                             }}
                           >
                             <Text style={styles.name}>{u.fullName}</Text>
-                            {(u.type === "Operations" ||
-                              u.type === "Admin" ||
-                              u.type === "Manager" ||
-                              u.type === "Assistant Manager" ||
-                              u.type === "Super Admin" ||
-                              u.type === "celebrity") && (
+                            {(u.type === 'Operations' ||
+                              u.type === 'Admin' ||
+                              u.type === 'Manager' ||
+                              u.type === 'Assistant Manager' ||
+                              u.type === 'Super Admin' ||
+                              u.type === 'celebrity') && (
                               <MaterialCommunityIcons
                                 name="check-decagram"
                                 style={styles.adminIcon}
@@ -261,7 +258,7 @@ const SearchScreen = () => {
                     {/* //arrow */}
                     <View
                       style={{
-                        alignItems: "center",
+                        alignItems: 'center',
                       }}
                     >
                       <AntDesign
@@ -276,12 +273,12 @@ const SearchScreen = () => {
                 return null;
               }
             })}
-        {searchQuery === ""
+        {searchQuery === ''
           ? null
-          : activeFilter === "videos" &&
+          : activeFilter === 'videos' &&
             postState.posts.map((post, index) => {
               if (post.description.match(searchQuery)) {
-                if (post.media.type === "video/mp4") {
+                if (post.media.type === 'video/mp4') {
                   return <Post post={post} key={index} />;
                 }
               } else {
@@ -303,63 +300,63 @@ const SearchScreen = () => {
 export default SearchScreen;
 const styles = StyleSheet.create({
   filter: {
-    flexDirection: "row",
+    flexDirection: 'row',
     backgroundColor: Color.White,
-    height: Dimensions.get("screen").height * 0.08,
-    paddingVertical: Dimensions.get("screen").height * 0.02,
-    justifyContent: "space-evenly",
+    height: Dimensions.get('screen').height * 0.08,
+    paddingVertical: Dimensions.get('screen').height * 0.02,
+    justifyContent: 'space-evenly',
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: Color.LightGrey,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   mainContainer: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 10,
     marginHorizontal: 10,
   },
   btn: {
-    height: "100%",
-    width: "20%",
+    height: '100%',
+    width: '20%',
   },
   verticleLine: {
-    height: "100%",
+    height: '100%',
     width: 1,
-    backgroundColor: "#909090",
+    backgroundColor: '#909090',
   },
   pressed: {
     opacity: 0.5,
   },
   activeFilter: {
     color: Color.Blue,
-    width: "100%",
+    width: '100%',
     fontSize: 20,
   },
   inactiveFilter: {
     color: Color.LightGrey,
-    width: "100%",
+    width: '100%',
     fontSize: 20,
   },
   personCard: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderColor: "rgba(154, 154, 154, 0.5)",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderColor: 'rgba(154, 154, 154, 0.5)',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    alignItems: "center",
+    alignItems: 'center',
   },
   icon: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Grey,
-    marginRight: "3%",
+    marginRight: '3%',
   },
   name: {
     color: Color.Black,
     fontSize: 14,
-    fontFamily: "Roboto_600SemiBold",
-    alignSelf: "center",
+    fontFamily: 'Roboto_600SemiBold',
+    alignSelf: 'center',
   },
   type: {
     fontFamily: theme.fonts.family.regular,
@@ -369,15 +366,15 @@ const styles = StyleSheet.create({
   tagMain: {
     backgroundColor: Color.White,
     elevation: 4,
-    flexDirection: "row",
+    flexDirection: 'row',
     marginRight: 5,
     marginLeft: 5,
     marginTop: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    borderRadius: Dimensions.get('screen').height * 0.1,
     marginBottom: 10,
   },
   tagText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: 13,
     color: Color.Black,
     paddingVertical: 5,
@@ -387,15 +384,15 @@ const styles = StyleSheet.create({
   activeTagMain: {
     backgroundColor: Color.LightBlue,
     elevation: 4,
-    flexDirection: "row",
+    flexDirection: 'row',
     marginRight: 5,
     marginLeft: 5,
     marginTop: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    borderRadius: Dimensions.get('screen').height * 0.1,
     marginBottom: 10,
   },
   activeTagText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 13,
     color: Color.Black,
     paddingVertical: 5,
@@ -408,31 +405,31 @@ const styles = StyleSheet.create({
   },
   allResult: {
     color: Color.Blue,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: 13,
     paddingHorizontal: 15,
     marginTop: 10,
   },
   adminIcon: {
     marginLeft: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 14,
     color: Color.Blue,
   },
   searchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginLeft: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    backgroundColor: "#F1F1F1",
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    backgroundColor: '#F1F1F1',
   },
   textInput: {
     fontSize: 14,
     marginTop: 3,
-    fontFamily: "Roboto_400Regular",
-    width: "82%",
+    fontFamily: 'Roboto_400Regular',
+    width: '82%',
   },
 });

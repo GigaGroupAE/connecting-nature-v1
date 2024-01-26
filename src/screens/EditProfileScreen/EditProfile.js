@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,23 +7,22 @@ import {
   Dimensions,
   TouchableOpacity,
   Pressable,
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { BASE_URL } from "../../../CONSTANTS.js";
-import { useUserState } from "../../slices/userSlice";
-import InputText from "../../components/InputText";
-import ButtonMain from "../../components/ButtonMain";
-import axios from "axios";
-import { useUserStateActions } from "../../slices/userSlice";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+} from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import { BASE_URL } from '../../../CONSTANTS.js';
+import InputText from '../../components/InputText';
+import ButtonMain from '../../components/ButtonMain';
+import axios from 'axios';
+import { useUserStateActions, useUserState } from '../../slices/userSlice';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
-import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { SaveFormat, manipulateAsync } from 'expo-image-manipulator';
+import CustomStatsBar from '../../components/CustomStatsBar';
 const EditProfile = () => {
   const userState = useUserState();
   const navigation = useNavigation();
@@ -34,23 +33,22 @@ const EditProfile = () => {
   const [image, setimage] = useState(null);
   const [userToken, setuserToken] = useState(userState.token);
   const [imageUri, setImageUri] = useState(
-    `${BASE_URL}/images/${userState.profile}`
+    `${BASE_URL}/images/${userState.profile}`,
   );
   const handleChanges = (props) => {
     setChanges(props);
-    console.log(changes);
   };
 
-  const supportedImageFormats = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/bmp",
-    "image/tiff",
-  ];
+  // const supportedImageFormats = [
+  //   'image/jpeg',
+  //   'image/png',
+  //   'image/gif',
+  //   'image/bmp',
+  //   'image/tiff',
+  // ];
 
   const pick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
@@ -58,7 +56,7 @@ const EditProfile = () => {
     let compressImage;
     let manipResult;
     if (!result.cancelled) {
-      if ((result.type = "image")) {
+      if ((result.type = 'image')) {
         manipResult = await manipulateAsync(result.uri, [], {
           compress: 0.3,
           format: SaveFormat.JPEG,
@@ -75,10 +73,10 @@ const EditProfile = () => {
     const formData = new FormData();
     formData.append(changes);
     if (image !== null) {
-      formData.append("profile", {
+      formData.append('profile', {
         name: `${userState.phoneNumber}.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
         uri: image.uri,
-        type: "image/jpg",
+        type: 'image/jpg',
       });
     }
     setLoading(true);
@@ -86,8 +84,8 @@ const EditProfile = () => {
     axios
       .patch(`${BASE_URL}/user/updateUser/${userState.id}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
         },
       })
       .then((res) => {
@@ -98,7 +96,6 @@ const EditProfile = () => {
       })
       .catch((e) => {
         setLoading(false);
-        console.log(e);
       });
   };
 
@@ -119,10 +116,10 @@ const EditProfile = () => {
         </Pressable>
         <InputText
           value={changes}
-          editable={true}
+          editable
           onchange={(val) => handleChanges(val)}
         />
-        <TouchableOpacity style={{ alignSelf: "center" }}>
+        <TouchableOpacity style={{ alignSelf: 'center' }}>
           <ButtonMain title="Save Changes" callback={handlesubmit} />
         </TouchableOpacity>
       </View>
@@ -134,29 +131,29 @@ const styles = StyleSheet.create({
   mainContainer: {
     paddingHorizontal: 19,
     backgroundColor: Color.White,
-    height: Dimensions.get("screen").height,
+    height: Dimensions.get('screen').height,
   },
   profileHead: {
     paddingVertical: 15,
-    alignItems: "center",
+    alignItems: 'center',
   },
   avatar: {
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: Dimensions.get("screen").height * 0.15,
-    height: Dimensions.get("screen").height * 0.15,
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: Dimensions.get('screen').height * 0.15,
+    height: Dimensions.get('screen').height * 0.15,
     backgroundColor: Color.VeryLightGrey,
   },
   userName: {
     marginTop: 15,
     fontSize: 18,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   userCategory: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
   },
 });

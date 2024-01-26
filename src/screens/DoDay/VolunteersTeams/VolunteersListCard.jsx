@@ -6,21 +6,19 @@ import {
   View,
   Pressable,
   TouchableOpacity,
-} from "react-native";
+} from 'react-native';
 
-import React, { useEffect, useState } from "react";
-import User from "../../../../assets/user.jpg";
-import Color from "../../../../assets/colors/Color";
-import { AntDesign, Entypo } from "react-native-vector-icons";
-import { fonts } from "react-native-elements/dist/config";
-import { BASE_URL } from "../../../../CONSTANTS";
-import { axiosInstance } from "../../../../axiosInstance";
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { Portal, Modal } from "react-native-paper";
-import { scale } from "react-native-size-matters";
+import React, { useEffect, useState } from 'react';
+import Color from '../../../../assets/colors/Color';
+import { Entypo } from 'react-native-vector-icons';
+import { BASE_URL } from '../../../../CONSTANTS';
+import { axiosInstance } from '../../../../axiosInstance';
+import { useStateContext } from '../../../contexts/ContextProvider';
+import { Portal, Modal } from 'react-native-paper';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const VolunteersListCard = ({ data }) => {
   const [userData, setUserData] = useState([]);
@@ -33,12 +31,11 @@ const VolunteersListCard = ({ data }) => {
       setLoading(true);
       const { data } = await axiosInstance.patch(
         `/campaigns/add-volunteer/${activeCampaign._id}`,
-        { teamName, volunteer }
+        { teamName, volunteer },
       );
       setActiveCampaign(data?.updatedCampaign);
       setLoading(false);
     } catch (error) {
-      console.log("error is ", error?.response?.data?.message);
       setLoading(false);
     }
   };
@@ -46,18 +43,6 @@ const VolunteersListCard = ({ data }) => {
   useEffect(() => {
     setUserData(data);
   }, []);
-  const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {
-    backgroundColor: Color.White,
-    zIndex: 2,
-    position: "absolute",
-    right: Width * 0.06,
-    paddingHorizontal: Width * 0.05,
-    paddingVertical: Height * 0.018,
-    flex: 1,
-  };
 
   const handleHideModal = () => {
     setModalVisible(false);
@@ -85,8 +70,8 @@ const VolunteersListCard = ({ data }) => {
           >
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
               <Text style={styles.userName}>{data?.user?.fullName}</Text>
@@ -94,16 +79,16 @@ const VolunteersListCard = ({ data }) => {
             </View>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
+                  flexDirection: 'row',
+                  alignItems: 'center',
                   width: Width * 0.2,
-                  justifyContent: "space-between",
+                  justifyContent: 'space-between',
                 }}
               >
                 <Text style={styles.pts}>pts</Text>
@@ -118,13 +103,12 @@ const VolunteersListCard = ({ data }) => {
               <Entypo name="dots-three-vertical" size={18} />
             </Pressable>
           </View>
-          <View style={styles.centeredView}></View>
         </View>
 
         <Portal>
           <Modal
             animationType="slide"
-            transparent={true}
+            transparent
             visible={modalVisible}
             onDismiss={handleHideModal}
             onRequestClose={() => {
@@ -134,14 +118,14 @@ const VolunteersListCard = ({ data }) => {
             <View style={styles.model}>
               <View>
                 <TouchableOpacity
-                  onPress={() => moveToTeam("teamA", data?.user?._id)}
+                  onPress={() => moveToTeam('teamA', data?.user?._id)}
                 >
                   <Text style={styles.moveTeam}>Move to Team A</Text>
                 </TouchableOpacity>
               </View>
               <View>
                 <TouchableOpacity
-                  onPress={() => moveToTeam("teamB", data?.user?._id)}
+                  onPress={() => moveToTeam('teamB', data?.user?._id)}
                   style={{ paddingVertical: Height * 0.01 }}
                 >
                   <Text style={styles.moveTeam}>Move to Team B</Text>
@@ -159,7 +143,7 @@ export default VolunteersListCard;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: Height * 0.009,
 
     backgroundColor: Color.White,
@@ -172,90 +156,90 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 2,
-    justifyContent: "space-between",
-    width: "95%",
-    alignSelf: "center",
+    justifyContent: 'space-between',
+    width: '95%',
+    alignSelf: 'center',
     // zIndex: 0,
   },
   contentContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: Height * 0.007,
-    alignContent: "center",
+    alignContent: 'center',
     marginLeft: Width * 0.03,
-    justifyContent: "space-around",
-    alignItems: "center",
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   userImg: {
     borderRadius: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     width: 50,
     height: 50,
   },
   userName: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   userRole: {
     marginLeft: Width * 0.02,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Blue,
     // marginTop: "-1.5%",
     fontSize: 10,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   userPoints: {
-    position: "absolute",
+    position: 'absolute',
     left: Width * 0.43,
-    alignSelf: "center",
+    alignSelf: 'center',
 
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 10,
   },
   pts: {
     color: Color.Black,
-    fontFamily: "Roboto",
-    fontWeight: "500",
+    fontFamily: 'Roboto',
+    fontWeight: '500',
   },
   points: {
     color: Color.Black,
-    fontFamily: "Roboto",
-    fontWeight: "900",
+    fontFamily: 'Roboto',
+    fontWeight: '900',
     fontSize: 14,
   },
   btnContainer: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginRight: Width * 0.03,
   },
   btn: {
-    textAlign: "center",
+    textAlign: 'center',
     color: Color.White,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     paddingHorizontal: Width * 0.07,
     paddingVertical: Height * 0.0055,
     backgroundColor: Color.Blue,
     borderRadius: 8,
   },
   invitation: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: '500',
     marginLeft: Width * 0.02,
     color: Color.DarkGrey,
   },
   modelTitle: {
     fontSize: Height * 0.018,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.DarkGrey,
   },
   model: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: Height * 0.01,
     paddingVertical: scale(15),
     paddingHorizontal: scale(15),
     zIndex: 1,
     width: Width * 0.8,
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: Color.White,
     borderRadius: 8,
     shadowColor: Color.Grey,
@@ -267,10 +251,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 2,
     paddingHorizontal: Width * 0.02,
-    justifyContent: "space-evenly",
+    justifyContent: 'space-evenly',
   },
   moveTeam: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(14),
     paddingVertical: scale(5),
     paddingHorizontal: scale(10),

@@ -1,27 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
-import { scale } from "react-native-size-matters";
 import * as Clipboard from "expo-clipboard";
-import {
-  AntDesign,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "react-native-vector-icons";
+import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { scale } from "react-native-size-matters";
+import { AntDesign, FontAwesome } from "react-native-vector-icons";
 import Color from "../../assets/colors/Color";
 
 import { Portal, Modal } from "react-native-paper";
 import { useUserState } from "../slices/userSlice";
-import { axiosInstance } from "../../axiosInstance";
 
 const DeleteCommentModal = ({
   modalVisible,
   setModalVisible,
   comment,
   handleDelete,
-  updatereactions,
-  index,
 }) => {
-  const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
   const userState = useUserState();
   const handleCopy = async () => {
@@ -41,10 +33,10 @@ const DeleteCommentModal = ({
         onDismiss={hideModal}
         animationType="slide"
         style={styles.modal}
-        transparent={true}
+        transparent
       >
         <View style={styles.modalContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.contentContainer}
             // onPress={handleDownloadFile}
             onPress={() => updatereactions(comment, index)}
@@ -54,7 +46,7 @@ const DeleteCommentModal = ({
               style={styles.icon}
             />
             <Text style={styles.title}>Reply</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.contentContainer}
             onPress={handleCopy}
@@ -84,15 +76,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  module: {
-    height: "30%",
-  },
   modalContainer: {
-    height: scale(170),
     width: scale(300),
     backgroundColor: Color.White,
     justifyContent: "center",
     borderRadius: scale(10),
+    paddingVertical: scale(10),
   },
   contentContainer: {
     flexDirection: "row",

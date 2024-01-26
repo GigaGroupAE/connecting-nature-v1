@@ -6,9 +6,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { FlatList } from "react-native";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import HeaderNormal from "../../components/HeaderNormal";
@@ -23,6 +23,15 @@ const renderItem = ({ item, navigation }) => {
       userPhoneNumber: number,
     });
   };
+
+  const userRole = [
+    "Operations",
+    "Admin",
+    "Manager",
+    "Assistant Manager",
+    "Super Admin",
+    "celebrity",
+  ];
   return (
     <View style={styles.followerCard}>
       <View style={styles.imageContainer}>
@@ -42,12 +51,15 @@ const renderItem = ({ item, navigation }) => {
         >
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.userName}>{item.fullName}</Text>
-            {(item.type === "Operations" ||
+            {/* {(item.type === "Operations" ||
               item.type === "Admin" ||
               item.type === "Manager" ||
               item.type === "Assistant Manager" ||
               item.type === "Super Admin" ||
               item.type === "celebrity") && (
+            
+            )} */}
+            {userRole?.includes(item?.type) && (
               <MaterialCommunityIcons
                 name="check-decagram"
                 style={styles.adminIcon}
@@ -140,9 +152,9 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   adminIcon: {
-    marginLeft: 5,
+    marginLeft: 3,
     alignSelf: "center",
-    fontSize: Height * 0.018,
+    fontSize: Height * 0.015,
     color: Color.Blue,
   },
 });

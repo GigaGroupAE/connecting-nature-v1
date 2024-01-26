@@ -1,31 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { Appbar, Searchbar } from "react-native-paper";
+import React, { useState } from 'react';
+import { Searchbar } from 'react-native-paper';
 
 import {
   View,
-  Text,
   ScrollView,
   StyleSheet,
-  Platform,
   FlatList,
-  TouchableOpacity,
-  TextInput,
   Dimensions,
-} from "react-native";
+} from 'react-native';
 
-import { useNavigation } from "@react-navigation/native";
-import { useContactState } from "./../../slices/contactslice";
-import Color from "../../../assets/colors/Color";
-import Contact from "./contact";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Entypo } from "react-native-vector-icons";
-import HeaderNormal from "../../components/HeaderNormal";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { useNavigation } from '@react-navigation/native';
+import { useContactState } from './../../slices/contactslice';
+import Color from '../../../assets/colors/Color';
+import Contact from './contact';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import HeaderNormal from '../../components/HeaderNormal';
+import CustomStatsBar from '../../components/CustomStatsBar';
 export default function Invite() {
   //const contactstate = useContactsState();
-  const navigation = useNavigation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showInput, setShowInput] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const onChangeSearch = (query) => setSearchQuery(query);
   const contactstate = useContactState();
@@ -34,23 +27,22 @@ export default function Invite() {
   let userstoinvite = [];
   let checkedusers = [];
   const handleOnCheck = (prop) => {
-    console.log(prop);
     if (prop !== null) {
       checkedusers.push(prop);
-      let userdir = "user/" + prop.phoneNumber;
+      let userdir = 'user/' + prop.phoneNumber;
       postUsers.push({
-        color: "#00FFFF",
-        privilege: "user",
+        color: '#00FFFF',
+        privilege: 'user',
         uid: prop.phoneNumber,
         user: userdir,
       });
       userstoinvite.push({
-        designation: "",
+        designation: '',
         displayName: prop.name,
         isAdmin: false,
         phoneNumber: prop.phoneNumber,
-        photoURL: "",
-        status: "invited",
+        photoURL: '',
+        status: 'invited',
       });
     } else {
       postUsers.pop();
@@ -101,7 +93,7 @@ export default function Invite() {
             onChangeText={onChangeSearch}
             value={searchQuery}
           />
-          {searchQuery === "" ? (
+          {searchQuery === '' ? (
             <FlatList
               data={contactstate.resolvedContacts}
               keyExtractor={(item) => item.id}
@@ -126,44 +118,44 @@ const styles = StyleSheet.create({
   body: {
     //this flex : 1 was causing the invisibility of contacts
     //flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     backgroundColor: Color.White,
-    alignItems: "center",
-    justifyContent: "flex-start",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   // use this attribute with View to create a new row
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnNormal: {
-    backgroundColor: "aqua",
+    backgroundColor: 'aqua',
   },
   btnPress: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   },
   chatSearchContainer: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 10,
     marginHorizontal: 10,
   },
   searchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginLeft: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    backgroundColor: "#F1F1F1",
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    backgroundColor: '#F1F1F1',
   },
   textBox: {
     fontSize: 14,
     marginTop: 3,
-    fontFamily: "Roboto_400Regular",
-    width: "82%",
+    fontFamily: 'Roboto_400Regular',
+    width: '82%',
   },
 });

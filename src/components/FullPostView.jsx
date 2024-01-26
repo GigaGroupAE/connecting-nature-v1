@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react"
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,84 +6,85 @@ import {
   Dimensions,
   StyleSheet,
   Pressable,
-  Alert,
-} from "react-native"
-import GestureRecognizer from "react-native-swipe-gestures"
-import { useNavigation, useRoute } from "@react-navigation/native"
-import VideoPlayer from "expo-video-player"
-import { scale } from "react-native-size-matters"
-import { AntDesign, FontAwesome, Entypo } from "react-native-vector-icons"
-import axios from "axios"
-import * as MediaLibrary from "expo-media-library"
-import moment from "moment"
-import { useUserState } from "../slices/userSlice"
-import { BASE_URL } from "../../CONSTANTS"
-import { useStateContext } from "../contexts/ContextProvider"
-import DescriptionText from "./DescriptionText"
-import Color from "../../assets/colors/Color"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import * as Permissions from "expo-permissions"
-import * as FileSystem from "expo-file-system"
-import PostShareModal from "./PostShareModal"
-let deviceHeight = Dimensions.get("screen").height
-let deviceWidth = Dimensions.get("screen").width
+} from 'react-native';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import VideoPlayer from 'expo-video-player';
+import { scale } from 'react-native-size-matters';
+import {
+  AntDesign,
+  FontAwesome,
+  Entypo,
+  MaterialCommunityIcons,
+} from 'react-native-vector-icons';
+import axios from 'axios';
+import moment from 'moment';
+import { useUserState } from '../slices/userSlice';
+import { BASE_URL } from '../../CONSTANTS';
+import { useStateContext } from '../contexts/ContextProvider';
+import DescriptionText from './DescriptionText';
+import Color from '../../assets/colors/Color';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import PostShareModal from './PostShareModal';
+const deviceHeight = Dimensions.get('screen').height;
+const deviceWidth = Dimensions.get('screen').width;
 export default function FullPostView(props) {
-  const video = useRef(null)
-  const [modalVisible, setmodalVisible] = useState(false)
-  const userState = useUserState()
-  const route = useRoute()
+  const video = useRef(null);
+  const [modalVisible, setmodalVisible] = useState(false);
+  const userState = useUserState();
+  const route = useRoute();
   const {
     url,
     post,
 
     screen,
-  } = route.params
-  const Apiroute = `${BASE_URL}/posts/updateposts/${post?._id}`
+  } = route.params;
+  const Apiroute = `${BASE_URL}/posts/updateposts/${post?._id}`;
   const [liked, setliked] = useState(
     post?.reactions?.some((user) => {
-      return user._id === userState.id
-    })
-  )
+      return user._id === userState.id;
+    }),
+  );
 
-  const [likeCount, setlikeCount] = useState(post?.reactions?.length)
-  var date = moment().utcOffset("+05:00")
+  const [likeCount, setlikeCount] = useState(post?.reactions?.length);
+  const date = moment().utcOffset('+05:00');
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const {
     setVideoURI,
     setShowMiniWindow,
     setVideoDescriptionHandler,
     setvideoAutherName,
-    showSnackbar,
-  } = useStateContext()
+  } = useStateContext();
 
   useEffect(() => {
-    setShowMiniWindow(false)
-  }, [])
+    setShowMiniWindow(false);
+  }, []);
   const handleLike = () => {
     if (!liked) {
-      let templike = [...post?.reactions]
+      const templike = [...post?.reactions];
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      }
-      templike.push(newLikes)
-      setlikeCount()
-      updatereactions(templike, true)
-      setlikeCount(likeCount + 1)
+      };
+      templike.push(newLikes);
+      setlikeCount();
+      updatereactions(templike, true);
+      setlikeCount(likeCount + 1);
       // The true parameter indicates a like action.
     } else {
       const newlikes = post?.reactions.filter((reaction) => {
-        return reaction._id !== userState.id
-      })
-      setlikeCount(likeCount - 1)
+        return reaction._id !== userState.id;
+      });
+      setlikeCount(likeCount - 1);
 
-      updatereactions(newlikes, false)
+      updatereactions(newlikes, false);
     }
-  }
+  };
 
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
@@ -91,9 +92,9 @@ export default function FullPostView(props) {
         // notifications
         const config = {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        };
         const { data } = await axios.post(
           `${BASE_URL}/notify/commentNotification/${post._id}`,
           {
@@ -108,12 +109,12 @@ export default function FullPostView(props) {
               },
             },
             data: {
-              title: "post-like",
+              title: 'post-like',
               content: post._id,
             },
           },
-          config
-        )
+          config,
+        );
       }
     }
 
@@ -123,69 +124,65 @@ export default function FullPostView(props) {
         { reactions: likes },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       )
       .then((res) => {
-        setliked(!liked)
+        setliked(!liked);
       })
-      .catch((e) => console.log(e))
-  }
+      .catch((e) => {});
+  };
 
   // const handleDownlaod = () => {
   //   const documentDirectory = FileSystem.documentDirectory + url;
   //   Sharing.shareAsync(documentDirectory);
   // };
 
-  const imageUrl = {
-    uri: `${url}`,
-  }
+  // const handleDownload = async () => {
+  //   let date = moment().format('YYYYMMDDhhmmss');
+  //   let fileUri = FileSystem.documentDirectory + `${date}.jpg`;
+  //   try {
+  //     const res = await FileSystem.downloadAsync(imageUrl.uri, fileUri);
+  //     saveFile(res.uri);
+  //   } catch (err) {
+  //     console.log('FS Err: ', err);
+  //   }
+  // };
 
-  const handleDownload = async () => {
-    let date = moment().format("YYYYMMDDhhmmss")
-    let fileUri = FileSystem.documentDirectory + `${date}.jpg`
-    try {
-      const res = await FileSystem.downloadAsync(imageUrl.uri, fileUri)
-      saveFile(res.uri)
-    } catch (err) {
-      console.log("FS Err: ", err)
-    }
-  }
-
-  const saveFile = async () => {
-    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
-    if (status === "granted") {
-      try {
-        const asset = await MediaLibrary.createAssetAsync(post?.media?.name)
-        const album = await MediaLibrary.getAlbumAsync("Download")
-        if (album == null) {
-          await MediaLibrary.createAlbumAsync("Download", asset, false)
-          console.log("donwloaded ")
-        } else {
-          await MediaLibrary.addAssetsToAlbumAsync([asset], album, false)
-        }
-        console.log("save")
-        showSnackbar("Save file")
-      } catch (err) {
-        console.log("Save err: ", err)
-      }
-    } else if (status === "denied") {
-      alert("please allow permissions to download")
-    }
-  }
+  // const saveFile = async () => {
+  //   const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+  //   if (status === 'granted') {
+  //     try {
+  //       const asset = await MediaLibrary.createAssetAsync(post?.media?.name);
+  //       const album = await MediaLibrary.getAlbumAsync('Download');
+  //       if (album == null) {
+  //         await MediaLibrary.createAlbumAsync('Download', asset, false);
+  //         console.log('donwloaded ');
+  //       } else {
+  //         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+  //       }
+  //       console.log('save');
+  //       showSnackbar('Save file');
+  //     } catch (err) {
+  //       console.log('Save err: ', err);
+  //     }
+  //   } else if (status === 'denied') {
+  //     alert('please allow permissions to download');
+  //   }
+  // };
 
   const handleOnClickComment = () => {
-    navigation.navigate("Comments", {
+    navigation.navigate('Comments', {
       comments: post?.comments,
       id: post?._id,
       postedBy: post?.postedby?._id,
       data: props?.data,
       expoPushToken: post?.postedby?.expoPushToken,
-    })
-  }
+    });
+  };
   const handleonshare = async () => {
-    navigation.navigate("postShare", { post: post })
+    navigation.navigate('postShare', { post: post });
 
     // try {
     //   let tempshares = [...shares];
@@ -242,41 +239,41 @@ export default function FullPostView(props) {
     //   );
     //   console.log(error);
     // }
-  }
+  };
 
-  const handleLocalNotification = async () => {
-    try {
-      const config = {
-        headers: {
-          "auth-token": userState.token,
-        },
-      }
-      const notification = await axios.post(
-        `${BASE_URL}/notify/commentNotification/${post?._id}`,
-        {
-          user: userState.phoneNumber,
-          body: {
-            date: date,
+  // const handleLocalNotification = async () => {
+  //   try {
+  //     const config = {
+  //       headers: {
+  //         'auth-token': userState.token,
+  //       },
+  //     };
+  //     const notification = await axios.post(
+  //       `${BASE_URL}/notify/commentNotification/${post?._id}`,
+  //       {
+  //         user: userState.phoneNumber,
+  //         body: {
+  //           date: date,
 
-            user: {
-              profile: userState.profile,
-              fullName: userState.fullName,
-              type: userState.type,
-              expoPushToken: post?.postedby?.expoPushToken,
-            },
-          },
+  //           user: {
+  //             profile: userState.profile,
+  //             fullName: userState.fullName,
+  //             type: userState.type,
+  //             expoPushToken: post?.postedby?.expoPushToken,
+  //           },
+  //         },
 
-          data: {
-            title: "post-share",
-            content: post._id,
-          },
-        },
-        config
-      )
-    } catch (error) {
-      console.log("error in local notofications", error)
-    }
-  }
+  //         data: {
+  //           title: 'post-share',
+  //           content: post._id,
+  //         },
+  //       },
+  //       config,
+  //     );
+  //   } catch (error) {
+  //     console.log('error in local notofications', error);
+  //   }
+  // };
 
   // const handleDownloadFile = async () => {
   //   const remoteFileUri = `${url}`;
@@ -304,26 +301,35 @@ export default function FullPostView(props) {
   //   }
   // };
 
+  const userRole = [
+    'Operations',
+    'Admin',
+    'Manager',
+    'Assistant Manager',
+    'Super Admin',
+    'celebrity',
+  ];
+
   return (
     <View>
       <View>
-        {props.route.params.mediatype === "video" ? (
+        {props.route.params.mediatype === 'video' ? (
           <View>
-            {props.route.params.screen === "message" ? (
+            {props.route.params.screen === 'message' ? (
               <GestureRecognizer
                 onSwipeDown={() => {
-                  navigation.goBack()
+                  navigation.goBack();
                 }}
               >
                 <VideoPlayer
                   style={{
-                    height: Dimensions.get("screen").height,
-                    width: Dimensions.get("screen").width,
+                    height: Dimensions.get('screen').height,
+                    width: Dimensions.get('screen').width,
                   }}
-                  fullscreen={true}
-                  defaultControlsVisible={true}
+                  fullscreen
+                  defaultControlsVisible
                   timeVisible={false}
-                  slider={true}
+                  slider
                   videoProps={{
                     isLooping: false,
                     ref: video,
@@ -331,29 +337,29 @@ export default function FullPostView(props) {
                       uri: props.route.params.url,
                     },
                     shouldPlay: true,
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               </GestureRecognizer>
             ) : (
               <GestureRecognizer
                 onSwipeDown={() => {
-                  setVideoURI(url)
-                  setVideoDescriptionHandler(post?.description)
-                  setShowMiniWindow(true)
-                  setvideoAutherName(post?.postedby?.fullName)
-                  navigation.goBack()
+                  setVideoURI(url);
+                  setVideoDescriptionHandler(post?.description);
+                  setShowMiniWindow(true);
+                  setvideoAutherName(post?.postedby?.fullName);
+                  navigation.goBack();
                 }}
               >
                 <VideoPlayer
                   style={{
-                    height: Dimensions.get("screen").height,
-                    width: Dimensions.get("screen").width,
+                    height: Dimensions.get('screen').height,
+                    width: Dimensions.get('screen').width,
                   }}
-                  fullscreen={true}
-                  defaultControlsVisible={true}
+                  fullscreen
+                  defaultControlsVisible
                   timeVisible={false}
-                  slider={true}
+                  slider
                   videoProps={{
                     isLooping: false,
                     ref: video,
@@ -361,7 +367,7 @@ export default function FullPostView(props) {
                       uri: url,
                     },
                     shouldPlay: true,
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               </GestureRecognizer>
@@ -379,12 +385,20 @@ export default function FullPostView(props) {
           />
         )}
         {/* Bottom tab */}
-        {screen === "home" && (
+        {screen === 'home' && (
           <View style={style.bottomTab}>
             {/* content container  */}
             <View style={style.contentContainer}>
-              <View>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+              >
                 <Text style={style.userName}>{post?.postedby?.fullName}</Text>
+                {userRole?.includes(post?.postedby?.type) && (
+                  <MaterialCommunityIcons
+                    name="check-decagram"
+                    style={style.adminIcon}
+                  />
+                )}
               </View>
               <View>
                 <DescriptionText description={post?.description} />
@@ -496,71 +510,71 @@ export default function FullPostView(props) {
         />
       </View>
     </View>
-  )
+  );
 }
 
 const style = StyleSheet.create({
   bottomTab: {
-    position: "absolute",
-    width: "100%",
+    position: 'absolute',
+    width: '100%',
     bottom: deviceHeight * 0.065,
-    backgroundColor: "rgba(0, 13, 16, 0.4)",
-    justifyContent: "space-evenly",
+    backgroundColor: 'rgba(0, 13, 16, 0.4)',
+    justifyContent: 'space-evenly',
     zIndex: 300,
   },
 
   likedCount: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: scale(16),
   },
   likedContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 10,
   },
   likeIcon: {
     fontSize: scale(17),
   },
   likeCount: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(13),
     paddingHorizontal: scale(4),
     color: Color.White,
   },
   comment: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   commetTitle: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
     color: Color.White,
   },
   actionMainContainer: {
     borderTopWidth: 1,
-    width: "95%",
-    alignSelf: "center",
+    width: '95%',
+    alignSelf: 'center',
     borderColor: Color.VeryLightGrey,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   mainAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: scale(20),
   },
   postAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   actionIcon: {
     width: scale(22),
@@ -569,15 +583,15 @@ const style = StyleSheet.create({
   },
   actionText: {
     fontSize: scale(13),
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.White,
     marginLeft: scale(8),
   },
   actionedText: {
     fontSize: scale(13),
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
     marginLeft: scale(8),
   },
@@ -594,13 +608,13 @@ const style = StyleSheet.create({
   },
   contentContainer: {},
   userName: {
-    paddingHorizontal: scale(18),
+    paddingLeft: scale(18),
     paddingTop: scale(10),
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.White,
   },
   downloadContainer: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 100,
     right: scale(15),
     top: scale(30),
@@ -609,4 +623,10 @@ const style = StyleSheet.create({
     paddingHorizontal: scale(10),
     paddingVertical: scale(10),
   },
-})
+  adminIcon: {
+    paddingTop: scale(10),
+    fontFamily: 'Roboto_500Medium',
+    color: Color.Blue,
+    fontSize: deviceHeight * 0.015,
+  },
+});

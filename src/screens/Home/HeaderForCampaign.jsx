@@ -1,14 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../../../axiosInstance";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React from "react";
 import { scale } from "react-native-size-matters";
-import { Entypo, AntDesign } from "react-native-vector-icons";
+import { AntDesign } from "react-native-vector-icons";
 import Color from "../../../assets/colors/Color";
 import { useNavigation } from "@react-navigation/native";
 

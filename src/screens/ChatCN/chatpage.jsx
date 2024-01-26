@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import ChatScreenHeader from "./Components/ChatScreenHeader/ChatScreenHeader";
 import { io } from "socket.io-client";
-import { useEffect } from "react";
+
 import { BASE_URL } from "../../../CONSTANTS";
 import { useUserState } from "./../../slices/userSlice";
 import * as ImagePicker from "expo-image-picker";
@@ -40,10 +40,8 @@ import RecordingVoiceMessageCn from "../../components/RecordingVoiceMessage/Reco
 import DocumentMessageCn from "../../components/DocumentMessage/DocumentMessageCn";
 import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
 import VideoMessageCn from "../../components/VideoMessage/VideoMessageCn";
-import moment from "moment";
 
 const ChatPageCN = (props) => {
-  var date = moment().utcOffset("+05:00");
   const { loading, setLoading, setImgloading, imgloading } = useStateContext();
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [socket, setSocket] = useState(null);
@@ -59,7 +57,7 @@ const ChatPageCN = (props) => {
       setChatMessages((prevChatMessages) => {
         const updatedMessages = [...prevChatMessages, data];
         const filteredMessages = updatedMessages.filter(
-          (message) => !messagesId.includes(message._id)
+          (message) => !messagesId.includes(message._id),
         );
         return filteredMessages.sort((a, b) => (a.date < b.date ? 1 : -1));
       });
@@ -110,8 +108,8 @@ const ChatPageCN = (props) => {
   const [chatMessages, setChatMessages] = useState(
     props?.route?.params?.group?.messages &&
       props?.route?.params?.group?.messages.sort((a, b) =>
-        a.date < b.date ? 1 : -1
-      )
+        a.date < b.date ? 1 : -1,
+      ),
   );
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,9 +120,8 @@ const ChatPageCN = (props) => {
     setShowInput(value);
   };
 
-  const [image, setImage] = useState(null);
   const pick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.3,
     });
@@ -152,7 +149,7 @@ const ChatPageCN = (props) => {
     isDocumentPickingInProgress = true;
 
     try {
-      let result = await DocumentPicker.getDocumentAsync({
+      const result = await DocumentPicker.getDocumentAsync({
         quality: 0.5,
         allowsMultipleSelection: false,
       });
@@ -168,7 +165,7 @@ const ChatPageCN = (props) => {
               {
                 compress: compressionQuality,
                 format: SaveFormat.JPEG,
-              }
+              },
             );
             compressImage = await FileSystem.getInfoAsync(manipResult.uri);
             if (compressImage.size <= 1024 * 1024) {
@@ -191,10 +188,8 @@ const ChatPageCN = (props) => {
           });
         }
       } else if (result.type === "cancel") {
-        console.log("Document picking cancelled.");
       }
     } catch (error) {
-      console.error("An error occurred during document picking:", error);
     } finally {
       isDocumentPickingInProgress = false;
     }
@@ -227,12 +222,8 @@ const ChatPageCN = (props) => {
             },
           });
         })
-        .catch((e) => {
-          console.log("working but error", e);
-        });
-    } catch (e) {
-      console.log(e);
-    }
+        .catch((e) => {});
+    } catch (e) {}
   };
   const [voice, setvoice] = useState();
   const handleSendAudioMessage = (uri) => {
@@ -258,16 +249,13 @@ const ChatPageCN = (props) => {
             content: res.data.path,
           });
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
             handleLocalNotification(
-              props?.route?.params?.group?.members[1].expoPushToken
+              props?.route?.params?.group?.members[1].expoPushToken,
             );
           }
         })
 
-        .catch((e) => {
-          console.log("working but error", e);
-        });
+        .catch((e) => {});
     } catch (e) {
       console.log(e);
     }
@@ -282,12 +270,10 @@ const ChatPageCN = (props) => {
       });
 
       const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+        Audio.RecordingOptionsPresets.HIGH_QUALITY,
       );
       setvoice(recording);
-    } catch (err) {
-      console.error("Failed to start recording", err);
-    }
+    } catch (err) {}
   }
 
   async function stopRecording() {
@@ -299,11 +285,8 @@ const ChatPageCN = (props) => {
         allowsRecordingIOS: false,
       });
       const uri = voice.getURI();
-      console.log("Recording stopped and stored at", uri);
       handleSendAudioMessage(uri);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   }
 
   const handleSendImageMessage = async (imageprop) => {
@@ -332,17 +315,13 @@ const ChatPageCN = (props) => {
           });
           setImgloading(false);
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
             handleLocalNotification(
-              props?.route?.params?.group?.members[1].expoPushToken
+              props?.route?.params?.group?.members[1].expoPushToken,
             );
           }
         })
-        .catch((e) => {
-          setImgloading(false);
-        });
+        .catch((e) => {});
     } catch (e) {
-      console.log(e);
       setImgloading(false);
     }
   };
@@ -373,9 +352,8 @@ const ChatPageCN = (props) => {
 
           setImgloading(false);
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
-            console.log(props?.route?.params?.group?.members[0]._id);
             handleLocalNotification(
-              props?.route?.params?.group?.members[1].expoPushToken
+              props?.route?.params?.group?.members[1].expoPushToken,
             );
           }
         })
@@ -399,7 +377,7 @@ const ChatPageCN = (props) => {
     });
     if (props?.route?.params?.group?.members[0]._id === userState.id) {
       handleLocalNotification(
-        props?.route?.params?.group?.members[1].expoPushToken
+        props?.route?.params?.group?.members[1].expoPushToken,
       );
     }
     setLoading(false);
@@ -418,11 +396,9 @@ const ChatPageCN = (props) => {
           fullName: userState.fullName,
           expoPushtoken: token,
         },
-        config
+        config,
       );
-    } catch (error) {
-      console.log("error in local notofications", error);
-    }
+    } catch (error) {}
   };
 
   const handleCamera = () => {
@@ -524,108 +500,107 @@ const ChatPageCN = (props) => {
           ) : null}
 
           <View style={styles.container}>
-            {
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                style={{
-                  marginHorizontal: 10,
-                }}
-                inverted={true}
-                keyExtractor={(item) => item._id}
-                extraData={
-                  searchQuery === ""
-                    ? chatMessages
-                    : chatMessages.filter((message, index) => {
-                        if (typeof message.content === "string") {
-                          if (message.content.match(searchQuery)) {
-                            return message;
-                          }
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              style={{
+                marginHorizontal: 10,
+              }}
+              inverted={true}
+              keyExtractor={(item) => item._id}
+              extraData={
+                searchQuery === ""
+                  ? chatMessages
+                  : chatMessages.filter((message, index) => {
+                      if (typeof message.content === "string") {
+                        if (message.content.match(searchQuery)) {
+                          return message;
                         }
-                      })
-                }
-                data={
-                  searchQuery === ""
-                    ? chatMessages
-                    : chatMessages.filter((message, index) => {
-                        if (typeof message.content === "string") {
-                          if (message.content.match(searchQuery)) {
-                            console.log("matched");
-                            return message;
+                      }
+                    })
+              }
+              data={
+                searchQuery === ""
+                  ? chatMessages
+                  : chatMessages.filter((message, index) => {
+                      if (typeof message.content === "string") {
+                        if (message.content.match(searchQuery)) {
+                          console.log("matched");
+                          return message;
+                        }
+                      } else return null;
+                    })
+              }
+              onEndReachedThreshold={0.1}
+              onEndReached={() => {
+                console.log("FETCHING NEW MESSAGES");
+              }}
+              renderItem={({ item, index }) => {
+                let timePassed = calculateTimeDifference(item.date);
+
+                return (
+                  <View style={{ marginVertical: "1%" }}>
+                    {item.type === "text" ? (
+                      <NormalMessageCn
+                        setmodalVisible={setmodalVisible}
+                        longPress={handleDelet}
+                        socket={socket}
+                        item={item}
+                      />
+                    ) : null}
+                    {item.type === "image" ? (
+                      <TouchableOpacity>
+                        <ImageMessageCn
+                          socket={socket}
+                          longPress={handleDelet}
+                          item={item}
+                          onPress={() =>
+                            props.navigation.navigate("ViewImage", {
+                              url: `${BASE_URL}/messageMedia/${item.content}`,
+                              message: item.content,
+                            })
                           }
-                        } else return null;
-                      })
-                }
-                onEndReachedThreshold={0.1}
-                onEndReached={() => {
-                  console.log("FETCHING NEW MESSAGES");
-                }}
-                renderItem={({ item, index }) => {
-                  let timePassed = calculateTimeDifference(item.date);
+                        />
+                      </TouchableOpacity>
+                    ) : null}
+                    {item.type === "document" ? (
+                      <DocumentMessageCn
+                        title="Select"
+                        socket={socket}
+                        item={item}
+                        longPress={handleDelet}
+                      />
+                    ) : null}
 
-                  return (
-                    <View style={{ marginVertical: "1%" }}>
-                      {item.type === "text" ? (
-                        <NormalMessageCn
-                          setmodalVisible={setmodalVisible}
+                    {item.type === "audio" ? (
+                      <RecordingVoiceMessageCn
+                        socket={socket}
+                        item={item}
+                        longPress={handleDelet}
+                      />
+                    ) : null}
+                    {item.type === "video" ? (
+                      <TouchableOpacity>
+                        <VideoMessageCn
                           longPress={handleDelet}
                           socket={socket}
                           item={item}
+                          onPress={() =>
+                            props.navigation.navigate("ViewImage", {
+                              url: `${BASE_URL}/messageMedia/${item.content}`,
+                              message: item.content,
+                            })
+                          }
                         />
-                      ) : null}
-                      {item.type === "image" ? (
-                        <TouchableOpacity>
-                          <ImageMessageCn
-                            socket={socket}
-                            longPress={handleDelet}
-                            item={item}
-                            onPress={() =>
-                              props.navigation.navigate("ViewImage", {
-                                url: `${BASE_URL}/messageMedia/${item.content}`,
-                                message: item.content,
-                              })
-                            }
-                          />
-                        </TouchableOpacity>
-                      ) : null}
-                      {item.type === "document" ? (
-                        <DocumentMessageCn
-                          title={"Select"}
-                          socket={socket}
-                          item={item}
-                          longPress={handleDelet}
-                        />
-                      ) : null}
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                );
+              }}
+            />
 
-                      {item.type === "audio" ? (
-                        <RecordingVoiceMessageCn
-                          socket={socket}
-                          item={item}
-                          longPress={handleDelet}
-                        />
-                      ) : null}
-                      {item.type === "video" ? (
-                        <TouchableOpacity>
-                          <VideoMessageCn
-                            longPress={handleDelet}
-                            socket={socket}
-                            item={item}
-                            onPress={() =>
-                              props.navigation.navigate("ViewImage", {
-                                url: `${BASE_URL}/messageMedia/${item.content}`,
-                                message: item.content,
-                              })
-                            }
-                          />
-                        </TouchableOpacity>
-                      ) : null}
-                    </View>
-                  );
-                }}
-              />
-            }
             <View style={{ marginLeft: "40%" }}>
               {imgloading && (
-                <ActivityIndicator size={"large"} color={Color.Blue} />
+                <ActivityIndicator size="large" color={Color.Blue} />
               )}
             </View>
 

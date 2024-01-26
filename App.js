@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, Dimensions, LogBox, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import persistStore from "redux-persist/es/persistStore";
@@ -77,7 +77,6 @@ import {
   TopStories,
   StoryComment,
   StoriesPosts,
-  ExpandedPost,
   Welcome,
   PostsLike,
   PostViewNotify,
@@ -104,7 +103,7 @@ import CreateCampaignPost from "./src/components/CreateCampaignPost";
 import PostSkeleton from "./src/components/PostSkeleton";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import CustomStatsBar from "./src/components/CustomStatsBar";
-let customFonts = {
+const customFonts = {
   Roboto_300Light: require("./assets/fonts/Roboto-Light.ttf"),
   Roboto_400Regular: require("./assets/fonts/Roboto-Regular.ttf"),
   Roboto_500Medium: require("./assets/fonts/Roboto-Medium.ttf"),
@@ -113,9 +112,8 @@ let customFonts = {
 };
 
 const Stack = createStackNavigator();
-const Height = Dimensions.get("screen").height;
 
-let persistor = persistStore(store);
+const persistor = persistStore(store);
 
 //REACT-QUERY
 
@@ -185,7 +183,6 @@ function Main() {
         <Stack.Screen name="TopStories" component={TopStories} />
         <Stack.Screen name="StoryComment" component={StoryComment} />
         <Stack.Screen name="StoriesPosts" component={StoriesPosts} />
-        <Stack.Screen name="ExpandedPost" component={ExpandedPost} />
         <Stack.Screen name="PostsLike" component={PostsLike} />
         <Stack.Screen name="MediaScreen" component={MediaScreen} />
         <Stack.Screen name="FullPostView" component={FullPostView} />
@@ -234,7 +231,7 @@ function Main() {
       {loading && (
         <ActivityIndicator
           style={{ position: "absolute", bottom: "20%", left: "48%" }}
-          size={"large"}
+          size="large"
           color={Color.Blue}
         />
       )}

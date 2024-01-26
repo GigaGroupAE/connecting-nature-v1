@@ -9,30 +9,28 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
-  Pressable,
-} from "react-native";
-import { useRef, useState } from "react";
+} from 'react-native';
+import { useRef, useState } from 'react';
 
-import AnimatedLottieView from "lottie-react-native";
+import AnimatedLottieView from 'lottie-react-native';
 
 //componenets import
-import HeaderNormal from "../../components/HeaderNormal";
+import HeaderNormal from '../../components/HeaderNormal';
 
 //images import
-import CampaignNotification from "../../components/Notifications/CampaignNotification";
-import LikeCommentNotification from "../../components/Notifications/LikeCommentNotification";
-import AcceptedRejectedNotification from "../../components/Notifications/AcceptedRejectedNotification";
-import { useInfiniteQuery } from "react-query";
-import { axiosInstance } from "../../../axiosInstance";
-import Color from "../../../assets/colors/Color";
-import bellIcon from "../../../assets/Union.png";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
-import NotificationsSkeleton from "../../components/NotificationsSkeleton";
+import CampaignNotification from '../../components/Notifications/CampaignNotification';
+import LikeCommentNotification from '../../components/Notifications/LikeCommentNotification';
+import AcceptedRejectedNotification from '../../components/Notifications/AcceptedRejectedNotification';
+import { useInfiniteQuery } from 'react-query';
+import { axiosInstance } from '../../../axiosInstance';
+import Color from '../../../assets/colors/Color';
+import bellIcon from '../../../assets/Union.png';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import NotificationsSkeleton from '../../components/NotificationsSkeleton';
 
-const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
-const WIDTH = Dimensions.get("screen").width;
-const ITEMS_PER_PAGE = 25;
+const HEIGHT = Dimensions.get('screen').height - StatusBar.currentHeight;
+const WIDTH = Dimensions.get('screen').width;
 
 const NotificationsScreen = () => {
   const {
@@ -44,7 +42,7 @@ const NotificationsScreen = () => {
     error,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["notifications"],
+    queryKey: ['notifications'],
 
     queryFn: async ({ pageParam = 1 }) => {
       const { data } = await axiosInstance.get(`/notify/getnoties`);
@@ -59,8 +57,8 @@ const NotificationsScreen = () => {
   const [animationVisible, setAnimationVisible] = useState(null);
   const navigation = useNavigation();
 
-  if (status === "error") {
-    Alert.alert("error", error);
+  if (status === 'error') {
+    Alert.alert('error', error);
     return;
   }
 
@@ -85,17 +83,16 @@ const NotificationsScreen = () => {
     );
   };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       {
         <AnimatedLottieView
           ref={animation}
           loop={false}
           onAnimationFinish={() => {
-            console.log("animation is finished");
             //animation.current.reset();
             setAnimationVisible(false);
           }}
-          source={require("../../../assets/thankyou.json")}
+          source={require('../../../assets/thankyou.json')}
           speed={2}
           style={[
             animationVisible
@@ -103,12 +100,12 @@ const NotificationsScreen = () => {
                   height: 100,
                   width: 100,
                   borderRadius: 100 / 2,
-                  position: "absolute",
+                  position: 'absolute',
                   zIndex: 1,
-                  bottom: "5%",
-                  left: "30%",
+                  bottom: '5%',
+                  left: '30%',
                 }
-              : { display: "none" },
+              : { display: 'none' },
           ]}
         />
       }
@@ -116,7 +113,7 @@ const NotificationsScreen = () => {
         {/* //HEADER */}
         <View style={{ height: HEIGHT * 0.07 }}>
           <HeaderNormal
-            title={"Notifications"}
+            title="Notifications"
             onback={() => navigation.goBack()}
           />
         </View>
@@ -143,7 +140,7 @@ const NotificationsScreen = () => {
               onEndReachedThreshold={0.3}
               ListFooterComponent={renderFooter}
               renderItem={({ item }) => {
-                if (item?.data?.title === "campaign-invite") {
+                if (item?.data?.title === 'campaign-invite') {
                   return (
                     <CampaignNotification
                       data={item}
@@ -151,16 +148,16 @@ const NotificationsScreen = () => {
                     />
                   );
                 } else if (
-                  item?.data?.title === "post-comment" ||
-                  item?.data?.title === "post-like" ||
-                  item?.data?.title === "post-share"
+                  item?.data?.title === 'post-comment' ||
+                  item?.data?.title === 'post-like' ||
+                  item?.data?.title === 'post-share'
                 ) {
                   return <LikeCommentNotification data={item} />;
-                } else if (item?.data?.title === "campaign-invite-accepted") {
+                } else if (item?.data?.title === 'campaign-invite-accepted') {
                   return (
                     <AcceptedRejectedNotification data={item} type="accepted" />
                   );
-                } else if (item?.data?.title === "campaign-invite-rejected") {
+                } else if (item?.data?.title === 'campaign-invite-rejected') {
                   return (
                     <AcceptedRejectedNotification data={item} type="rejected" />
                   );
@@ -175,7 +172,7 @@ const NotificationsScreen = () => {
                 {!isLoading && (
                   <View
                     style={{
-                      alignItems: "center",
+                      alignItems: 'center',
                       marginBottom: HEIGHT * 0.34,
                     }}
                   >
@@ -211,19 +208,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   visible: {
-    display: "flex",
+    display: 'flex',
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: HEIGHT * 0.019,
     paddingVertical: HEIGHT * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: HEIGHT * 0.016,
   },
@@ -239,7 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: HEIGHT * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: HEIGHT * 0.02,
   },

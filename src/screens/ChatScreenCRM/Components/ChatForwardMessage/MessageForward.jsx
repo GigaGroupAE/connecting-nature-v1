@@ -5,21 +5,20 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Pressable,
   ScrollView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import HeaderNormal from "../../../../components/HeaderNormal";
-import { BASE_URL } from "../../../../../CONSTANTS";
-import { useUserState } from "../../../../slices/userSlice";
-import { useStateContext } from "../../../../contexts/ContextProvider";
-import axios from "axios";
-import { FlatList } from "react-native";
-import Color from "../../../../../assets/colors/Color";
+  FlatList,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import HeaderNormal from '../../../../components/HeaderNormal';
+import { BASE_URL } from '../../../../../CONSTANTS';
+import { useUserState } from '../../../../slices/userSlice';
+import { useStateContext } from '../../../../contexts/ContextProvider';
+import axios from 'axios';
+import Color from '../../../../../assets/colors/Color';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const MessageForwardCRM = (props) => {
   const route = useRoute();
@@ -37,18 +36,17 @@ const MessageForwardCRM = (props) => {
       try {
         const response = await axios.get(`${BASE_URL}/user/new-chat-contacts`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         });
 
         let tempUsers = response.data.contacts.filter(
-          (user) => user.phoneNumber !== userState.phoneNumber
+          (user) => user.phoneNumber !== userState.phoneNumber,
         );
 
         setuser([...tempUsers]);
         setLoading(false);
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     };
@@ -62,28 +60,24 @@ const MessageForwardCRM = (props) => {
       try {
         const res = await axios.get(`${BASE_URL}/groups/getgroups`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         });
 
         let groups = res.data.filter((group) => {
-          console.log("group is => ", group.type);
-
           const currentuser = group.members.filter((m) => {
             return m.member?.phoneNumber === userState.phoneNumber;
           });
           return currentuser.length !== 0;
         });
 
-        let individualGroups = groups.filter((group) => {
-          return group.type === "individual";
+        const individualGroups = groups.filter((group) => {
+          return group.type === 'individual';
         });
 
-        console.log("individual groups are ", individualGroups);
         setMessages([...individualGroups]);
         setLoading(false);
       } catch (error) {
-        console.log(error);
         setLoading(false);
       }
     };
@@ -92,16 +86,15 @@ const MessageForwardCRM = (props) => {
   }, []);
 
   const handleForward = (item) => {
-    socket.emit("send_message", {
+    socket.emit('send_message', {
       from: forwardFrom,
       group: item._id,
       type: forwardType,
       content: forwardContent,
     });
-    navigation.navigate("ChatCRM", {
+    navigation.navigate('ChatCRM', {
       group: item,
     });
-    console.log(forwardFrom);
   };
 
   const handleForwardContact = async (item) => {
@@ -109,38 +102,36 @@ const MessageForwardCRM = (props) => {
       const members = [{ member: userState.id }, { member: item._id }];
 
       const formData = new FormData();
-      formData.append("name", userState.fullName);
-      formData.append("type", "individual");
-      formData.append("title", "test");
-      formData.append("members", JSON.stringify(members));
+      formData.append('name', userState.fullName);
+      formData.append('type', 'individual');
+      formData.append('title', 'test');
+      formData.append('members', JSON.stringify(members));
 
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-          "auth-token": userState.token,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          'auth-token': userState.token,
         },
       };
 
       const response = await axios.post(
         `${BASE_URL}/groups/creategroup`,
         formData,
-        config
+        config,
       );
 
       const chatId = response.data._id;
 
-      socket.emit("send_message", {
+      socket.emit('send_message', {
         from: forwardFrom,
         group: chatId,
         type: forwardType,
         content: forwardContent,
       });
 
-      navigation.navigate("ChatCRM", { group: response.data });
-    } catch (error) {
-      console.error(error);
-    }
+      navigation.navigate('ChatCRM', { group: response.data });
+    } catch (error) {}
   };
 
   const setPhotoForDirectChat = (props) => {
@@ -158,8 +149,8 @@ const MessageForwardCRM = (props) => {
   const filteredUsersWithoutChat = user.filter((user) => {
     const hasMatchingMember = Messages.some((message) =>
       message.members.some(
-        (member) => member.member.phoneNumber === user.phoneNumber
-      )
+        (member) => member.member.phoneNumber === user.phoneNumber,
+      ),
     );
     return !hasMatchingMember;
   });
@@ -177,7 +168,7 @@ const MessageForwardCRM = (props) => {
               style={{
                 marginTop: Height * 0.008,
                 flex: 0,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
             >
               <Text style={styles.userName}>{item.fullName}</Text>
@@ -214,7 +205,7 @@ const MessageForwardCRM = (props) => {
                       style={{
                         marginTop: Height * 0.008,
                         flex: 0,
-                        alignSelf: "center",
+                        alignSelf: 'center',
                       }}
                     >
                       <Text style={styles.userName}>
@@ -250,35 +241,35 @@ export default MessageForwardCRM;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: Height * 0.009,
-    alignContent: "center",
+    alignContent: 'center',
 
-    paddingHorizontal: "3%",
+    paddingHorizontal: '3%',
     borderBottomColor: Color.LightGrey,
     borderBottomWidth: 0.7,
   },
   userImg: {
     borderRadius: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     height: 50,
     width: 50,
   },
   userName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     marginLeft: Width * 0.02,
     fontSize: Height * 0.017,
   },
   userRole: {
     marginLeft: Width * 0.02,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Blue,
-    marginTop: "-1.5%",
+    marginTop: '-1.5%',
   },
   contactTitle: {
     paddingHorizontal: Width * 0.06,
     paddingVertical: Height * 0.01,
     fontSize: Height * 0.022,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });

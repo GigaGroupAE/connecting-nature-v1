@@ -1,7 +1,14 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from "react-native";
 import React from "react";
-import { MaterialCommunityIcons, Entypo } from "react-native-vector-icons";
-import { Dimensions } from "react-native";
+import { Entypo } from "react-native-vector-icons";
+
 import Color from "../../../assets/colors/Color";
 import { BASE_URL } from "../../../CONSTANTS";
 import { useNavigation } from "@react-navigation/native";
@@ -27,7 +34,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
     });
   };
 
-  let timePassed = calculateTimeDifference(data.createdAT);
+  const timePassed = calculateTimeDifference(data.createdAT);
 
   return (
     <View>

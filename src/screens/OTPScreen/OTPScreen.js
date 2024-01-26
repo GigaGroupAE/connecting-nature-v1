@@ -1,4 +1,4 @@
-import React, { useState, version } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,18 +6,18 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import OTPTextInput from "react-native-otp-textinput";
-import Header from "../../components/Header";
-import ButtonMain from "../../components/ButtonMain";
-import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import { useUserState, useUserStateActions } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+} from 'react-native';
+import OTPTextInput from 'react-native-otp-textinput';
+import Header from '../../components/Header';
+import ButtonMain from '../../components/ButtonMain';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { useUserState, useUserStateActions } from '../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS';
+import Color from '../../../assets/colors/Color';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 export default function OTPScreen(props) {
   const userActions = useUserStateActions();
   const { setLoading, showSnackbar, hideSnackbar } = useStateContext();
@@ -45,10 +45,10 @@ export default function OTPScreen(props) {
       hideSnackbar();
       navigation.reset({
         index: 0,
-        routes: [{ name: "Home" }],
+        routes: [{ name: 'Home' }],
       });
     } else {
-      showSnackbar("OTP incorrect");
+      showSnackbar('OTP incorrect');
     }
     setLoading(false);
   };
@@ -64,10 +64,10 @@ export default function OTPScreen(props) {
         hideSnackbar();
         navigation.reset({
           index: 0,
-          routes: [{ name: "Home" }],
+          routes: [{ name: 'Home' }],
         });
       } else {
-        showSnackbar("OTP incorrect");
+        showSnackbar('OTP incorrect');
       }
     }
     setLoading(false);
@@ -77,21 +77,21 @@ export default function OTPScreen(props) {
       .post(`${BASE_URL}/user/otp`, { phoneNumber })
       .then((res) => {
         if (res.data.status === 200) {
-          showSnackbar("OTP Resent Successfully");
+          showSnackbar('OTP Resent Successfully');
           setbackendOtp(JSON.stringify(res.data.message));
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   };
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
       <View>
-        <Header title={"Enter OTP"} />
+        <Header title="Enter OTP" />
         <View style={styles.contentContainer}>
           <Image
             style={styles.logo}
-            source={require("../../../assets/loginIcon.png")}
+            source={require('../../../assets/loginIcon.png')}
           />
           <OTPTextInput
             style={styles.inputContainer}
@@ -108,18 +108,18 @@ export default function OTPScreen(props) {
             >
               <Text
                 style={{
-                  fontFamily: "Roboto_600SemiBold",
+                  fontFamily: 'Roboto_600SemiBold',
                   color: Color.Black,
                 }}
               >
-                {" " + " "}
+                {' ' + ' '}
                 Resend
               </Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.buttonVerify}>
-            <ButtonMain title={"Verify"} callback={handleVerify} />
+            <ButtonMain title={'Verify'} callback={handleVerify} />
           </View>
         </View>
       </View>
@@ -129,22 +129,22 @@ export default function OTPScreen(props) {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     paddingTop: 28,
-    width: "100%",
-    height: Dimensions.get("screen").height,
+    width: '100%',
+    height: Dimensions.get('screen').height,
     backgroundColor: Color.White,
   },
 
   resendOTP: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 25,
   },
   resendOTPText: {
     color: Color.Grey,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 14,
   },
   buttonVerify: {
@@ -153,16 +153,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 61.53,
     color: Color.Grey,
-    marginHorizontal: Dimensions.get("screen").height * 0.013,
-    textAlign: "center",
+    marginHorizontal: Dimensions.get('screen').height * 0.013,
+    textAlign: 'center',
     fontSize: 22,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     width: 48,
-    height: Dimensions.get("screen").height * 0.06,
-    alignSelf: "center",
+    height: Dimensions.get('screen').height * 0.06,
+    alignSelf: 'center',
     backgroundColor: Color.White,
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 250,
     height: 130,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
 });

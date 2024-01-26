@@ -1,16 +1,14 @@
-import Color from "../../../assets/colors/Color";
+import Color from '../../../assets/colors/Color';
 import {
   FontAwesome,
   MaterialIcons,
-  Feather,
-  FontAwesome5,
   Octicons,
-} from "react-native-vector-icons";
+} from 'react-native-vector-icons';
 export const SETTINGS_DATA = [
   {
-    title: "Edit Profile",
+    title: 'Edit Profile',
     icon: <FontAwesome name="user-circle-o" size={24} color={Color.Black} />,
-    screenToNavigate: "EditProfile",
+    screenToNavigate: 'EditProfile',
   },
   // {
   //   title: "Privacy & Security",
@@ -18,17 +16,17 @@ export const SETTINGS_DATA = [
   //   screenToNavigate: null,
   // },
   {
-    title: "Upgrade Account",
+    title: 'Upgrade Account',
     icon: <MaterialIcons name="upgrade" size={24} color={Color.Black} />,
-    screenToNavigate: "UpgradeAccountScreen",
+    screenToNavigate: 'UpgradeAccountScreen',
   },
   {
-    title: "Blocked Users",
+    title: 'Blocked Users',
     icon: <Octicons name="blocked" size={24} color={Color.Black} />,
-    screenToNavigate: "BlockedUsers",
+    screenToNavigate: 'BlockedUsers',
   },
   {
-    title: "Logout",
+    title: 'Logout',
     icon: <MaterialIcons name="logout" size={25} color={Color.Black} />,
     screenToNavigate: null,
   },
