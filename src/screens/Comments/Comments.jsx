@@ -7,8 +7,6 @@ import {
   Text,
   Keyboard,
   Dimensions,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import Comment from '../../components/Comment';
 import CommentInput from '../../components/CommentInput';
@@ -36,9 +34,9 @@ export default function Comments(props) {
   const date = moment().utcOffset('+05:00');
 
   const navigation = useNavigation();
-  const route = `${BASE_URL}/posts/updateposts/` + props.route.params.id;
+  const route = `${BASE_URL}/posts/updateposts/` + props?.route?.params?.id;
   const userState = useUserState();
-  const [comments, setcomments] = useState([...props.route.params.comments]);
+  const [comments, setcomments] = useState([...props?.route?.params?.comments]);
 
   const postId = props?.route?.params?.id;
   let tempcomment = '';
