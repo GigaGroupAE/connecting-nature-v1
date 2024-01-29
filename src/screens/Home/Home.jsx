@@ -1,35 +1,35 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   FlatList,
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
-} from "react-native";
-import { useIsFocused } from "@react-navigation/native";
-import { useInfiniteQuery, useQuery } from "react-query";
-import Color from "../../../assets/colors/Color";
-import BottomTab from "../../components/BottomTab";
-import Post from "../../components/Post";
+} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { useInfiniteQuery, useQuery } from 'react-query';
+import Color from '../../../assets/colors/Color';
+import BottomTab from '../../components/BottomTab';
+import Post from '../../components/Post';
 import {
   fetchPosts,
   fetchRecentCampaigns,
   registerForPushNotificationsAsync,
-} from "../../Api/GetPost";
-import PostSkeleton from "../../components/PostSkeleton";
+} from '../../Api/GetPost';
+import PostSkeleton from '../../components/PostSkeleton';
 
-import HomeHeader from "./HomeHeader";
+import HomeHeader from './HomeHeader';
 
-import { useStateContext } from "../../contexts/ContextProvider";
-import MiniVideoPlayer from "../../components/MiniVideoPlayer";
-import StoryHeader from "./StoryHeader";
-import HeaderForCampaign from "./HeaderForCampaign";
-import * as Notifications from "expo-notifications";
-import { useUserState, useUserStateActions } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import axios from "axios";
+import { useStateContext } from '../../contexts/ContextProvider';
+import MiniVideoPlayer from '../../components/MiniVideoPlayer';
+import StoryHeader from './StoryHeader';
+import HeaderForCampaign from './HeaderForCampaign';
+import * as Notifications from 'expo-notifications';
+import { useUserState, useUserStateActions } from '../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS';
+import axios from 'axios';
 
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,7 +41,7 @@ Notifications.setNotificationHandler({
 
 const Home = () => {
   const isFocused = useIsFocused();
-  const [expoPushToken, setExpoPushToken] = useState("");
+  const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const userstate = useUserState();
   const userActions = useUserStateActions();
@@ -59,7 +59,7 @@ const Home = () => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery(
-    "posts",
+    'posts',
     ({ pageParam = 1 }) => fetchPosts({ pageParam }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -76,13 +76,28 @@ const Home = () => {
   );
 
   const { data: campaign } = useQuery(
-    "mostRecentCampaigns",
+    'mostRecentCampaigns',
     fetchRecentCampaigns,
   );
   useEffect(() => {
-    if (isFocused) {
-      refetch();
-    }
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        if (isMounted && isFocused) {
+          await refetch();
+        }
+      } catch (error) {
+        // Handle errors
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      // Cleanup function to cancel ongoing operations
+      isMounted = false;
+    };
   }, [isFocused, refetch]);
 
   const handleRefresh = () => {
@@ -113,7 +128,7 @@ const Home = () => {
           //make api call to save the token
           const config = {
             headers: {
-              "auth-token": userstate.token,
+              'auth-token': userstate.token,
             },
           };
           if (!userstate.expoPushToken) {
@@ -205,19 +220,19 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     // backgroundColor: Color.White,
-    height: "100%",
+    height: '100%',
   },
   pageContainer: {
-    alignContent: "flex-start",
+    alignContent: 'flex-start',
     backgroundColor: Color.VeryLightGrey,
-    height: "100%",
+    height: '100%',
     paddingBottom: 10,
   },
   showMiniVideo: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 200,
-    width: "100%",
-    height: "9%",
+    width: '100%',
+    height: '9%',
     bottom: 10,
   },
 });

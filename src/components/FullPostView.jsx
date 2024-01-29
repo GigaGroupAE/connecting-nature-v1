@@ -34,12 +34,7 @@ export default function FullPostView(props) {
   const [modalVisible, setmodalVisible] = useState(false);
   const userState = useUserState();
   const route = useRoute();
-  const {
-    url,
-    post,
-
-    screen,
-  } = route.params;
+  const { url, post, screen, setcomment } = route.params;
   const Apiroute = `${BASE_URL}/posts/updateposts/${post?._id}`;
   const [liked, setliked] = useState(
     post?.reactions?.some((user) => {
@@ -179,6 +174,7 @@ export default function FullPostView(props) {
       postedBy: post?.postedby?._id,
       data: props?.data,
       expoPushToken: post?.postedby?.expoPushToken,
+      setcomment: setcomment,
     });
   };
   const handleonshare = async () => {
@@ -439,8 +435,6 @@ export default function FullPostView(props) {
                       </View>
                     )}
                   </View>
-
-                  <View></View>
                 </View>
               </View>
             </View>

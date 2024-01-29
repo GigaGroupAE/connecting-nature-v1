@@ -1,19 +1,20 @@
-import { Image, TouchableOpacity } from "react-native";
-import React from "react";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useNavigation } from "@react-navigation/native";
+import { Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useNavigation } from '@react-navigation/native';
 
 const PostImage = (props) => {
   const navigation = useNavigation();
 
-  const { post, imageStyle } = props;
+  const { post, imageStyle, setcomment } = props;
 
   const handleNavigation = () => {
-    navigation.navigate("FullPostView", {
+    navigation.navigate('FullPostView', {
       url: `${BASE_URL}/images/${post?.media?.name}`,
-      message: "",
+      message: '',
       post: post,
-      screen: "home",
+      screen: 'home',
+      setcomment: setcomment,
     });
   };
 
