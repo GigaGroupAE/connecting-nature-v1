@@ -5,20 +5,20 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-} from "react-native";
-import React from "react";
-import { Entypo } from "react-native-vector-icons";
+} from 'react-native';
+import React from 'react';
+import { Entypo } from 'react-native-vector-icons';
 
-import Color from "../../../assets/colors/Color";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import AdminIcon from "../../components/AdminIcon";
-import { scale } from "react-native-size-matters";
-import PostDescription from "../../components/PostDesciption";
+import Color from '../../../assets/colors/Color';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useNavigation } from '@react-navigation/native';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import AdminIcon from '../../components/AdminIcon';
+import { scale } from 'react-native-size-matters';
+import PostDescription from '../../components/PostDesciption';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const PostHeader = ({ data, setmodalVisible }) => {
   const navigation = useNavigation();
@@ -29,7 +29,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
   const userPhoneNumber = data?.postedby?.phoneNumber;
 
   const handleUserProfile = () => {
-    navigation.navigate("UserProfile", {
+    navigation.navigate('UserProfile', {
       userPhoneNumber,
     });
   };
@@ -43,12 +43,12 @@ const PostHeader = ({ data, setmodalVisible }) => {
           style={styles.userAvatar}
           source={{
             uri: `${BASE_URL}/images/${userImage}`,
-            cache: "force-cache",
+            cache: 'force-cache',
           }}
         />
         <View>
           <TouchableOpacity
-            style={{ flexDirection: "row" }}
+            style={{ flexDirection: 'row' }}
             onPress={handleUserProfile}
           >
             <Text style={styles.userName}>{userName}</Text>
@@ -56,11 +56,11 @@ const PostHeader = ({ data, setmodalVisible }) => {
           </TouchableOpacity>
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
             }}
           >
-            {timePassed === "0m ago" ? (
+            {timePassed === '0m ago' ? (
               <Text style={styles.postTime}>Just now</Text>
             ) : (
               <Text style={styles.postTime}>{timePassed}</Text>
@@ -97,60 +97,60 @@ export default PostHeader;
 
 const styles = StyleSheet.create({
   postHead: {
-    width: "100%",
+    width: '100%',
     marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    alignContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
     paddingHorizontal: 17,
   },
   userAvatar: {
     marginRight: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: Dimensions.get("screen").height * 0.06,
-    height: Dimensions.get("screen").height * 0.06,
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: Dimensions.get('screen').height * 0.06,
+    height: Dimensions.get('screen').height * 0.06,
     backgroundColor: Color.VeryLightGrey,
   },
   userName: {
     color: Color.Black,
     fontSize: 14,
-    fontFamily: "Roboto_600SemiBold",
-    alignSelf: "center",
+    fontFamily: 'Roboto_600SemiBold',
+    alignSelf: 'center',
   },
   type: {
     color: Color.Blue,
     fontSize: 12,
     marginLeft: 5,
-    fontFamily: "Roboto_400Regular",
-    alignSelf: "center",
+    fontFamily: 'Roboto_400Regular',
+    alignSelf: 'center',
   },
   postTime: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     fontSize: 11,
   },
   cross: {
-    position: "absolute",
+    position: 'absolute',
     right: 45,
     top: 0,
   },
   threeDots: {
-    position: "absolute",
-    right: "4%",
+    position: 'absolute',
+    right: '4%',
     top: 0,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     // position: "relative",
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
   adminIcon: {
     marginLeft: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: Height * 0.018,
     color: Color.Blue,
   },
   sideIcon: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: Height * 0.015,
     color: Color.Black,
     fontSize: Height * 0.026,

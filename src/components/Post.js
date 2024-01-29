@@ -41,19 +41,31 @@ export default function Post(props, postId) {
   const [reactions, setreactions] = useState(props?.post?.reactions);
   const [comment, setcomment] = useState(props?.post?.comments);
   const [liked, setliked] = useState(false);
-
   useEffect(() => {
-    setreactions(props?.post?.reactions);
-    setliked(
-      reactions.some((user) => {
-        return user._id === userState.id;
-      }),
-    );
-  }, [props?.post?.reactions]);
+    // Memoize the reactions and comments props
+    const { post } = props;
 
-  useEffect(() => {
-    setcomment(props?.post?.comments);
-  }, [props?.post?.comments]);
+    setreactions((prevReactions) => {
+      // Check if reactions have changed before updating state
+      if (prevReactions !== post?.reactions) {
+        setliked(
+          post?.reactions.some((user) => {
+            return user._id === userState.id;
+          }),
+        );
+        return post?.reactions;
+      }
+      return prevReactions;
+    });
+
+    setcomment((prevComments) => {
+      // Check if comments have changed before updating state
+      if (prevComments !== post?.comments) {
+        return post?.comments;
+      }
+      return prevComments;
+    });
+  }, [props.post?.reactions, props.post?.comments]);
 
   const modalComponent = useMemo(
     () => (
@@ -77,9 +89,6 @@ export default function Post(props, postId) {
     });
   };
 
-  //notify shall be true in case of like action
-  //notify shall be false in case of unlike action
-  //so that the user shall not receive notification when the user has unliked
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
       //check if the owner of post is not the user that is logged IN.
@@ -126,7 +135,7 @@ export default function Post(props, postId) {
       .then((res) => {
         setreactions(res.data.reactions);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   };
   const handleonshare = async (post) => {
     navigation.navigate('postShare', { post: post, reload: props.reload });
@@ -191,12 +200,16 @@ export default function Post(props, postId) {
             {props?.post?.media?.type &&
               supportedImageFormats.includes(props?.post?.media?.type) && (
                 <View style={styles.postImage}>
-                  <PostImage post={props?.post} imageStyle={styles.image} />
+                  <PostImage
+                    post={props?.post}
+                    imageStyle={styles.image}
+                    setcomment={setcomment}
+                  />
                 </View>
               )}
             <View>
               {props.post.media?.type === 'video/mp4' ? (
-                <PostVideo post={props?.post} />
+                <PostVideo post={props?.post} setcomment={setcomment} />
               ) : null}
             </View>
             {reactions?.length !== 0 ||
