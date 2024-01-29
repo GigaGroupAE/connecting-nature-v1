@@ -1,49 +1,35 @@
-import React, { useState } from "react"
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native"
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
-import Color from "../../../assets/colors/Color"
-import { useUserState } from "../../slices/userSlice"
-import { ActivityIndicator } from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import VideoPlayer from "expo-video-player"
-import { BASE_URL } from "../../../CONSTANTS"
-import { calculateTimeDifference } from "../../utils/timeDifference"
+} from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import VideoPlayer from 'expo-video-player';
+import { BASE_URL } from '../../../CONSTANTS';
+import { calculateTimeDifference } from '../../utils/timeDifference';
 
-const Width = Dimensions.get("screen").width
-const Height = Dimensions.get("screen").height
+const Width = Dimensions.get('screen').width;
 
 const VideoMessageCn = (props) => {
-  const video = React.useRef(null)
+  const video = React.useRef(null);
 
-  const [longPress, setLongPress] = useState(false)
-  const userState = useUserState()
-  const navigation = useNavigation()
-  const { socket, item } = props
-  let timePassed = calculateTimeDifference(item.date)
-
-  const [modalVisible, setmodalVisible] = useState(false)
-  const handleNavigation = () => {
-    navigation.navigate("MsgShare")
-  }
-
-  const handleDelet = () => {
-    setmodalVisible(true)
-  }
+  const userState = useUserState();
+  const navigation = useNavigation();
+  const { socket, item } = props;
+  const timePassed = calculateTimeDifference(item.date);
 
   return (
     <Pressable
-    onLongPress={() => props?.    longPress(item._id,item?.from)}
-
+      onLongPress={() => props?.longPress(item._id, item?.from)}
       style={[
-    props.LongPressed
+        props.LongPressed
           ? {
               backgroundColor: Color.LightBlue,
               // opacity: 0.7,
@@ -71,15 +57,13 @@ const VideoMessageCn = (props) => {
             <Pressable
               key={props.index}
               onPress={props.onPress}
-              onLongPress={() => props?.    longPress(item._id,item?.from)}
-
+              onLongPress={() => props?.longPress(item._id, item?.from)}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
             >
-              {item.content !== "" && (
+              {item.content !== '' && (
                 <Pressable
                   style={{
-                    backgroundColor: "red",
-                    overflow: "hidden",
+                    overflow: 'hidden',
                     backgroundColor: Color.White,
                     borderWidth: 3,
                     borderColor: Color.VeryLightGrey,
@@ -87,7 +71,6 @@ const VideoMessageCn = (props) => {
                     borderBottomLeftRadius: 15,
                     borderBottomRightRadius: 15,
                   }}
-          
                 >
                   <VideoPlayer
                     style={{ width: 205, height: 300, borderRadius: 20 }}
@@ -95,15 +78,15 @@ const VideoMessageCn = (props) => {
                       enterFullscreen: () => {
                         video.current.setStatusAsync({
                           shouldPlay: false,
-                        })
-                        navigation.navigate("PostView", {
+                        });
+                        navigation.navigate('PostView', {
                           url: `${BASE_URL}/messageMedia/${item?.content}`,
-                          message: "",
-                          mediatype: "video",
-                          description: "",
+                          message: '',
+                          mediatype: 'video',
+                          description: '',
                           //video: props.video,
-                          screen: "message",
-                        })
+                          screen: 'message',
+                        });
                       },
                       exitFullscreen: (e) => console.log(e),
                     }}
@@ -117,9 +100,8 @@ const VideoMessageCn = (props) => {
                         uri: `${BASE_URL}/messageMedia/${item?.content}`,
                       },
                       shouldPlay: false,
-                      resizeMode: "contain",
+                      resizeMode: 'contain',
                     }}
-                    
                   />
                 </Pressable>
               )}
@@ -151,10 +133,10 @@ const VideoMessageCn = (props) => {
           </View>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("MsgShare", {
+              navigation.navigate('MsgShare', {
                 forwardFrom: userState.id,
-                forwardChat: "chatId",
-                forwardType: "video",
+                forwardChat: 'chatId',
+                forwardType: 'video',
                 forwardContent: item.content,
                 socket: socket,
               })
@@ -170,75 +152,75 @@ const VideoMessageCn = (props) => {
               <MaterialCommunityIcons
                 name="share"
                 size={22}
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               />
             </View>
           </TouchableOpacity>
         </View>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   senderTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   receiverTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginTop: "-1%",
-    marginVertical: "1%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginTop: '-1%',
+    marginVertical: '1%',
   },
   OverlayTimeContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 10,
     right: 0,
-    flexDirection: "row",
-    alignSelf: "flex-end",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   overlayTime: {
     fontSize: 12,
     color: Color.LightGrey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   shareMessage: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.62,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
   },
   receiverShareMessage: {
-    position: "absolute",
+    position: 'absolute',
     // right: -40,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -251,8 +233,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
   receiverImageMessage: {
     backgroundColor: Color.White,
@@ -261,9 +243,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
-})
+});
 
-export default VideoMessageCn
+export default VideoMessageCn;

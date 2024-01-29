@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
   View,
   Text,
@@ -7,33 +7,29 @@ import {
   Dimensions,
   Linking,
   Pressable,
-} from "react-native";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import Color from "../../../assets/colors/Color";
-import MessageType from "./MessageType";
-import { useNavigation } from "@react-navigation/native";
-import { scale } from "react-native-size-matters";
+} from 'react-native';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from '../../slices/userSlice';
+import Color from '../../../assets/colors/Color';
+import MessageType from './MessageType';
+import { useNavigation } from '@react-navigation/native';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const DocumentMessage = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
 
-  const {  socket,item } =
-  props;
+  const { socket, item } = props;
   const [document, setDocument] = React.useState(item.content);
 
   const shortTitle =
     document?.name?.length > 25
-      ? document?.name.slice(0, 25) + "..."
+      ? document?.name.slice(0, 25) + '...'
       : document?.name;
-
-  const [modalVisible, setmodalVisible] = useState(false);
-
 
   return (
     <View>
@@ -46,7 +42,6 @@ const DocumentMessage = (props) => {
         android_ripple={{ foreground: true, color: Color.LightGrey }}
         // onLongPress={props.longPress}
         onLongPress={() => props?.longPress(item._id, item?.from)}
-
       >
         <View
           style={[
@@ -54,7 +49,6 @@ const DocumentMessage = (props) => {
               ? styles.receiverTextMessageContainer
               : styles.senderTextMessageContainer,
           ]}
-      
         >
           <View
             style={[
@@ -63,9 +57,9 @@ const DocumentMessage = (props) => {
                 : styles.senderDocumentContainer,
             ]}
           >
-            {           userState.id === item?.from?._id ? (
+            {userState.id !== item?.from?._id ? (
               <View>
-                {props?.groupTitle !== "test" ? (
+                {props?.groupTitle !== 'test' ? (
                   <View>
                     <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
@@ -75,47 +69,47 @@ const DocumentMessage = (props) => {
             <Pressable>
               <Pressable
                 onLongPress={() => props?.longPress(item._id, item?.from)}
-
                 style={{
-                  flexDirection: "row",
+                  flexDirection: 'row',
                   paddingHorizontal: 4,
                 }}
                 onPress={() => {
-                  Linking.openURL(`${BASE_URL}/messageMedia/${item.content?.path}`);
+                  Linking.openURL(
+                    `${BASE_URL}/messageMedia/${item.content?.path}`,
+                  );
                 }}
-
               >
                 <MessageType title={item.content?.name} />
 
                 <View
                   style={{
-                    alignContent: "center",
-                    justifyContent: "center",
-                    overflow: "hidden",
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
                   }}
                 >
                   <Text
                     style={{
-                      fontFamily: "Roboto",
+                      fontFamily: 'Roboto',
                       fontSize: Height * 0.019,
-                      alignSelf: "center",
+                      alignSelf: 'center',
                       paddingLeft: scale(5),
                     }}
                   >
-                    {document.name ? shortTitle : "Testing"}
+                    {document.name ? shortTitle : 'Testing'}
                   </Text>
                   <Text
                     style={{
                       fontSize: 11,
-                      color: "grey",
+                      color: 'grey',
                       paddingLeft: scale(5),
                     }}
                   >
                     {document.size
                       ? document.size >= 1000000
-                        ? document.size / 1000000 + " " + "MB" + " " + "-" + " "
-                        : document.size / 1000 + " " + "kB" + " " + "-" + " "
-                      : "somesize"}
+                        ? document.size / 1000000 + ' ' + 'MB' + ' ' + '-' + ' '
+                        : document.size / 1000 + ' ' + 'kB' + ' ' + '-' + ' '
+                      : 'somesize'}
                   </Text>
                 </View>
               </Pressable>
@@ -124,10 +118,10 @@ const DocumentMessage = (props) => {
         </View>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("MessageForwardCRM", {
+            navigation.navigate('MessageForwardCRM', {
               forwardFrom: userState?.id,
-              forwardChat: "chatId",
-              forwardType: "document",
+              forwardChat: 'chatId',
+              forwardType: 'document',
               forwardContent: item.content,
               socket: socket,
             })
@@ -142,7 +136,7 @@ const DocumentMessage = (props) => {
             <MaterialCommunityIcons
               name="share"
               size={22}
-              style={{ color: "white" }}
+              style={{ color: 'white' }}
             />
           </View>
         </TouchableOpacity>
@@ -154,28 +148,28 @@ const DocumentMessage = (props) => {
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   senderTextMessageContainer: {
     backgroundColor: Color.White,
-    maxWidth: "80%",
-    width: "75%",
+    maxWidth: '80%',
+    width: '75%',
     borderRadius: 15,
     marginVertical: 4,
     paddingHorizontal: 5,
   },
   receiverTextMessageContainer: {
     backgroundColor: Color.White,
-    maxWidth: "80%",
+    maxWidth: '80%',
     width: Width * 0.75,
     borderRadius: 15,
     paddingHorizontal: 5,
@@ -183,18 +177,18 @@ const styles = StyleSheet.create({
   },
   textMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   textMessageContainer: {
-    alignItems: "baseline",
-    width: Dimensions.get("screen").width * 0.64,
+    alignItems: 'baseline',
+    width: Dimensions.get('screen').width * 0.64,
     // alignSelf: "flex-start",
-    backgroundColor: "white",
-    maxWidth: "80%",
+    backgroundColor: 'white',
+    maxWidth: '80%',
     borderLeftWidth: 4,
-    borderColor: "#4582C3",
+    borderColor: '#4582C3',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     marginVertical: 4.5,
@@ -202,42 +196,42 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginLeft: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     paddingVertical: 3,
-    color: "#4582C3",
+    color: '#4582C3',
   },
   message: {
     fontSize: 14,
     marginLeft: 5,
     lineHeight: 18,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     paddingVertical: 3,
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginVertical: "1%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginVertical: '1%',
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   shareMessage: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.76,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
   },
   receiverShareMessage: {
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -262,7 +256,7 @@ const styles = StyleSheet.create({
     height: Height * 0.09,
   },
   senderName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.017,
     color: Color.Blue,
     marginBottom: Height * 0.007,

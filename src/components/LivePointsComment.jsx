@@ -8,8 +8,6 @@ import {
   FlatList,
   Pressable,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Entypo, Foundation } from 'react-native-vector-icons';
@@ -60,7 +58,13 @@ const LivePointsComment = () => {
       const newcomments = comment;
       newcomments.push({
         description: tempComment,
-        commented_by: userState.id,
+        commented_by: {
+          _id: userState?._id,
+          fullName: userState?.fullName,
+          phoneNumber: userState?.phoneNumber,
+          profile: userState?.profile,
+          type: userState?.type,
+        },
         date,
       });
 
@@ -98,10 +102,7 @@ const LivePointsComment = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'height' : ''}
-      style={{ flex: 1 }}
-    >
+    <View style={{ flex: 1 }}>
       <View style={styles.main}>
         <View style={styles.header}>
           <Text style={styles.headText}>Most Recent Comments</Text>
@@ -189,6 +190,7 @@ const LivePointsComment = () => {
                     setModalVisible={setmodalVisible}
                     comment={item}
                     handleDelete={handleDelete}
+                    screen="campaign"
                   />
                 </Pressable>
               );
@@ -214,7 +216,7 @@ const LivePointsComment = () => {
           id={campaign._id}
         />
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

@@ -138,6 +138,7 @@ export default function Comment({
         handleDelete={handleDelete}
         index={index}
         updatereactions={getindex}
+        screen="home"
       />
     </View>
   );

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   View,
   StyleSheet,
@@ -13,47 +13,45 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import ChatScreenHeader from "./Components/ChatScreenHeader/ChatScreenHeader";
-import { io } from "socket.io-client";
+} from 'react-native';
+import ChatScreenHeader from './Components/ChatScreenHeader/ChatScreenHeader';
+import { io } from 'socket.io-client';
 
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "./../../slices/userSlice";
-import * as ImagePicker from "expo-image-picker";
-import { Audio } from "expo-av";
-import { useNavigation } from "@react-navigation/native";
-import * as DocumentPicker from "expo-document-picker";
-import axios from "axios";
-import "react-native-get-random-values";
-import * as FileSystem from "expo-file-system";
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from './../../slices/userSlice';
+import * as ImagePicker from 'expo-image-picker';
+import { Audio } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
+import 'react-native-get-random-values';
+import * as FileSystem from 'expo-file-system';
 
 //utility function for showing appropriate times
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import Color from "../../../assets/colors/Color";
-import ChatBottomBar from "./Components/ChatBottomBar/ChatBottomBar";
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import NormalMessageCn from "../../components/NormalMessage/NormalMessageCn";
-import ImageMessageCn from "../../components/ImageMessage/ImageMessageCn";
-import RecordingVoiceMessageCn from "../../components/RecordingVoiceMessage/RecordingVoiceMessageCn";
-import DocumentMessageCn from "../../components/DocumentMessage/DocumentMessageCn";
-import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
-import VideoMessageCn from "../../components/VideoMessage/VideoMessageCn";
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import Color from '../../../assets/colors/Color';
+import ChatBottomBar from './Components/ChatBottomBar/ChatBottomBar';
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import NormalMessageCn from '../../components/NormalMessage/NormalMessageCn';
+import ImageMessageCn from '../../components/ImageMessage/ImageMessageCn';
+import RecordingVoiceMessageCn from '../../components/RecordingVoiceMessage/RecordingVoiceMessageCn';
+import DocumentMessageCn from '../../components/DocumentMessage/DocumentMessageCn';
+import { SaveFormat, manipulateAsync } from 'expo-image-manipulator';
+import VideoMessageCn from '../../components/VideoMessage/VideoMessageCn';
 
 const ChatPageCN = (props) => {
   const { loading, setLoading, setImgloading, imgloading } = useStateContext();
   const [isLongPressed, setIsLongPressed] = useState(false);
   const [socket, setSocket] = useState(null);
   const [modalVisible, setmodalVisible] = useState(false);
-  const [deleteId, setdeleteId] = useState("");
+  const [deleteId, setdeleteId] = useState('');
   const [messagesId, setmessagesId] = useState([]);
   useEffect(() => {
     let newSocket = io(BASE_URL, { auth: { token: userState.token } });
-    newSocket.on("connect", () => {
-      newSocket.emit("join", { id: props.route.params.group._id });
+    newSocket.on('connect', () => {
+      newSocket.emit('join', { id: props.route.params.group._id });
     });
-    newSocket.on("receive_message", (data) => {
+    newSocket.on('receive_message', (data) => {
       setChatMessages((prevChatMessages) => {
         const updatedMessages = [...prevChatMessages, data];
         const filteredMessages = updatedMessages.filter(
@@ -62,12 +60,12 @@ const ChatPageCN = (props) => {
         return filteredMessages.sort((a, b) => (a.date < b.date ? 1 : -1));
       });
     });
-    newSocket.on("Deleted_messageCN", (data, message) => {
+    newSocket.on('Deleted_messageCN', (data, message) => {
       setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
     });
     setSocket(newSocket);
     return () => {
-      newSocket.emit("leave", { id: props.route.params.group._id });
+      newSocket.emit('leave', { id: props.route.params.group._id });
       newSocket.disconnect();
     };
   }, []);
@@ -77,28 +75,28 @@ const ChatPageCN = (props) => {
   const handleTakePicture = (image) => {
     try {
       const formdata = new FormData();
-      formdata.append("media", {
+      formdata.append('media', {
         name: `${userState.fullName}.jpg`,
         uri: image.uri,
-        type: "image/jpg",
+        type: 'image/jpg',
       });
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
         })
         .then((res) => {
-          socket.emit("send_messageCN", {
+          socket.emit('send_messageCN', {
             from: userState.id,
             chat: props.route.params.group._id,
-            type: "image",
+            type: 'image',
             content: res.data.path,
           });
         })
         .catch((e) => {
-          console.log("working but error", e);
+          console.log('working but error', e);
         });
     } catch (e) {
       console.log(e);
@@ -112,7 +110,7 @@ const ChatPageCN = (props) => {
       ),
   );
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [showInput, setShowInput] = useState(false);
 
   // Function to update the showInput state
@@ -133,11 +131,11 @@ const ChatPageCN = (props) => {
   };
 
   const supportedImageFormats = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/bmp",
-    "image/tiff",
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/bmp',
+    'image/tiff',
   ];
   let isDocumentPickingInProgress = false;
 
@@ -177,7 +175,7 @@ const ChatPageCN = (props) => {
           return;
         }
 
-        if (result?.assets[0].mimeType === "video/mp4") {
+        if (result?.assets[0].mimeType === 'video/mp4') {
           handleSenVideoMessage(result?.assets[0]);
         } else {
           handleSendDocumentMessage({
@@ -187,7 +185,7 @@ const ChatPageCN = (props) => {
             name: result?.assets[0].name,
           });
         }
-      } else if (result.type === "cancel") {
+      } else if (result.type === 'cancel') {
       }
     } catch (error) {
     } finally {
@@ -198,7 +196,7 @@ const ChatPageCN = (props) => {
   const handleSendDocumentMessage = async (docprops) => {
     try {
       const formdata = new FormData();
-      formdata.append("media", {
+      formdata.append('media', {
         name: `${docprops.name}`,
         uri: docprops.uri,
         type: docprops.type,
@@ -206,15 +204,15 @@ const ChatPageCN = (props) => {
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
         })
         .then((res) => {
-          socket.emit("send_messageCN", {
+          socket.emit('send_messageCN', {
             from: userState.id,
             chat: props.route.params.group._id,
-            type: "document",
+            type: 'document',
             content: {
               path: res.data.path,
               name: docprops.name,
@@ -229,23 +227,23 @@ const ChatPageCN = (props) => {
   const handleSendAudioMessage = (uri) => {
     try {
       const formdata = new FormData();
-      formdata.append("media", {
+      formdata.append('media', {
         name: `${userState.phoneNumber}.m4a`,
         uri: uri,
-        type: "audio/mpeg",
+        type: 'audio/mpeg',
       });
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
         })
         .then((res) => {
-          socket.emit("send_messageCN", {
+          socket.emit('send_messageCN', {
             from: userState.id,
             chat: props.route.params.group._id,
-            type: "audio",
+            type: 'audio',
             content: res.data.path,
           });
           if (props?.route?.params?.group?.members[0]._id === userState.id) {
@@ -293,24 +291,24 @@ const ChatPageCN = (props) => {
     setImgloading(true);
     try {
       const formdata = new FormData();
-      formdata.append("media", {
+      formdata.append('media', {
         name: `${userState.fullName}.jpg`,
         uri: imageprop,
-        type: "image/jpg",
+        type: 'image/jpg',
       });
 
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
         })
         .then((res) => {
-          socket.emit("send_messageCN", {
+          socket.emit('send_messageCN', {
             from: userState.id,
             chat: props.route.params.group._id,
-            type: "image",
+            type: 'image',
             content: res.data.path,
           });
           setImgloading(false);
@@ -330,23 +328,23 @@ const ChatPageCN = (props) => {
     setImgloading(true);
     try {
       const formdata = new FormData();
-      formdata.append("media", {
+      formdata.append('media', {
         name: videoprop.name,
         uri: videoprop.uri,
-        type: "video/mp4",
+        type: 'video/mp4',
       });
       axios
         .post(`${BASE_URL}/chat/saveMedia`, formdata, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
           },
         })
         .then((res) => {
-          socket.emit("send_messageCN", {
+          socket.emit('send_messageCN', {
             from: userState.id,
             chat: props.route.params.group._id,
-            type: "video",
+            type: 'video',
             content: res.data.path,
           });
 
@@ -358,7 +356,7 @@ const ChatPageCN = (props) => {
           }
         })
         .catch((e) => {
-          console.log("working but error", e);
+          console.log('working but error', e);
           setImgloading(false);
         });
     } catch (e) {
@@ -369,10 +367,10 @@ const ChatPageCN = (props) => {
 
   const sendtext = (text) => {
     setLoading(true);
-    socket.emit("send_messageCN", {
+    socket.emit('send_messageCN', {
       from: userState.id,
       chat: props.route.params.group._id,
-      type: "text",
+      type: 'text',
       content: text,
     });
     if (props?.route?.params?.group?.members[0]._id === userState.id) {
@@ -387,7 +385,7 @@ const ChatPageCN = (props) => {
     try {
       const config = {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       };
       const notification = await axios.post(
@@ -402,7 +400,7 @@ const ChatPageCN = (props) => {
   };
 
   const handleCamera = () => {
-    navigation.navigate("Camera", {
+    navigation.navigate('Camera', {
       handleTakePicture: handleTakePicture,
     });
   };
@@ -417,7 +415,7 @@ const ChatPageCN = (props) => {
     setmessagesId((messagesId) => [...messagesId, deleteId]);
 
     try {
-      socket.emit("Delete_messageCN", {
+      socket.emit('Delete_messageCN', {
         chat: props.route.params.group._id,
         id: deleteId,
       });
@@ -426,197 +424,188 @@ const ChatPageCN = (props) => {
     } catch (error) {}
   };
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : ""}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <>
-          {!isLongPressed && (
-            <ChatScreenHeader
-              groupState={props.route.params.group}
-              handleShowInput={handleShowInput}
-            />
-          )}
-          {isLongPressed && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: "7.4%",
-                width: "100%",
-                backgroundColor: Color.Blue,
-                paddingHorizontal: 15,
-              }}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <>
+        {!isLongPressed && (
+          <ChatScreenHeader
+            groupState={props.route.params.group}
+            handleShowInput={handleShowInput}
+          />
+        )}
+        {isLongPressed && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              height: '7.4%',
+              width: '100%',
+              backgroundColor: Color.Blue,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Pressable
+              onPress={() => setIsLongPressed(false)}
+              style={{ alignSelf: 'center' }}
             >
-              <Pressable
-                onPress={() => setIsLongPressed(false)}
-                style={{ alignSelf: "center" }}
-              >
-                <Entypo
-                  name="cross"
-                  color={Color.White}
-                  size={25}
-                  // style={{ marginTop: 0, paddingRight: "55%" }}
-                />
-              </Pressable>
-              <TouchableOpacity
-                android_ripple={{ color: Color.LightGrey, borderless: true }}
-                style={{ alignSelf: "center" }}
-                onPress={handleDeleteMessage}
-              >
-                <MaterialCommunityIcons
-                  name="delete"
-                  color={Color.White}
-                  size={25}
-                  style={{ marginTop: 0 }}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
+              <Entypo
+                name="cross"
+                color={Color.White}
+                size={25}
+                // style={{ marginTop: 0, paddingRight: "55%" }}
+              />
+            </Pressable>
+            <TouchableOpacity
+              android_ripple={{ color: Color.LightGrey, borderless: true }}
+              style={{ alignSelf: 'center' }}
+              onPress={handleDeleteMessage}
+            >
+              <MaterialCommunityIcons
+                name="delete"
+                color={Color.White}
+                size={25}
+                style={{ marginTop: 0 }}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
 
-          {showInput ? (
-            <View
-              style={{
-                backgroundColor: Color.White,
-                width: "100%",
-              }}
-            >
-              <View style={styles.chatSearchContainer}>
-                <TouchableOpacity onPress={() => setShowInput(false)}>
-                  <Entypo name="cross" size={28} color={Color.Grey} />
-                </TouchableOpacity>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    autoFocus
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    style={styles.textBox}
-                  />
-                </View>
+        {showInput ? (
+          <View
+            style={{
+              backgroundColor: Color.White,
+              width: '100%',
+            }}
+          >
+            <View style={styles.chatSearchContainer}>
+              <TouchableOpacity onPress={() => setShowInput(false)}>
+                <Entypo name="cross" size={28} color={Color.Grey} />
+              </TouchableOpacity>
+              <View style={styles.searchContainer}>
+                <TextInput
+                  autoFocus
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  style={styles.textBox}
+                />
               </View>
             </View>
-          ) : null}
-
-          <View style={styles.container}>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              style={{
-                marginHorizontal: 10,
-              }}
-              inverted={true}
-              keyExtractor={(item) => item._id}
-              extraData={
-                searchQuery === ""
-                  ? chatMessages
-                  : chatMessages.filter((message, index) => {
-                      if (typeof message.content === "string") {
-                        if (message.content.match(searchQuery)) {
-                          return message;
-                        }
-                      }
-                    })
-              }
-              data={
-                searchQuery === ""
-                  ? chatMessages
-                  : chatMessages.filter((message, index) => {
-                      if (typeof message.content === "string") {
-                        if (message.content.match(searchQuery)) {
-                          console.log("matched");
-                          return message;
-                        }
-                      } else return null;
-                    })
-              }
-              onEndReachedThreshold={0.1}
-              onEndReached={() => {
-                console.log("FETCHING NEW MESSAGES");
-              }}
-              renderItem={({ item, index }) => {
-                let timePassed = calculateTimeDifference(item.date);
-
-                return (
-                  <View style={{ marginVertical: "1%" }}>
-                    {item.type === "text" ? (
-                      <NormalMessageCn
-                        setmodalVisible={setmodalVisible}
-                        longPress={handleDelet}
-                        socket={socket}
-                        item={item}
-                      />
-                    ) : null}
-                    {item.type === "image" ? (
-                      <TouchableOpacity>
-                        <ImageMessageCn
-                          socket={socket}
-                          longPress={handleDelet}
-                          item={item}
-                          onPress={() =>
-                            props.navigation.navigate("ViewImage", {
-                              url: `${BASE_URL}/messageMedia/${item.content}`,
-                              message: item.content,
-                            })
-                          }
-                        />
-                      </TouchableOpacity>
-                    ) : null}
-                    {item.type === "document" ? (
-                      <DocumentMessageCn
-                        title="Select"
-                        socket={socket}
-                        item={item}
-                        longPress={handleDelet}
-                      />
-                    ) : null}
-
-                    {item.type === "audio" ? (
-                      <RecordingVoiceMessageCn
-                        socket={socket}
-                        item={item}
-                        longPress={handleDelet}
-                      />
-                    ) : null}
-                    {item.type === "video" ? (
-                      <TouchableOpacity>
-                        <VideoMessageCn
-                          longPress={handleDelet}
-                          socket={socket}
-                          item={item}
-                          onPress={() =>
-                            props.navigation.navigate("ViewImage", {
-                              url: `${BASE_URL}/messageMedia/${item.content}`,
-                              message: item.content,
-                            })
-                          }
-                        />
-                      </TouchableOpacity>
-                    ) : null}
-                  </View>
-                );
-              }}
-            />
-
-            <View style={{ marginLeft: "40%" }}>
-              {imgloading && (
-                <ActivityIndicator size="large" color={Color.Blue} />
-              )}
-            </View>
-
-            <ChatBottomBar
-              disabled={loading}
-              pick={pick}
-              pickDoc={pickDoc}
-              startRecording={startRecording}
-              stopRecording={stopRecording}
-              handleCamera={handleCamera}
-              sendtext={sendtext}
-            />
           </View>
-        </>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        ) : null}
+
+        <View style={styles.container}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            style={{
+              marginHorizontal: 10,
+            }}
+            inverted={true}
+            keyExtractor={(item) => item._id}
+            extraData={
+              searchQuery === ''
+                ? chatMessages
+                : chatMessages.filter((message, index) => {
+                    if (typeof message.content === 'string') {
+                      if (message.content.match(searchQuery)) {
+                        return message;
+                      }
+                    }
+                  })
+            }
+            data={
+              searchQuery === ''
+                ? chatMessages
+                : chatMessages.filter((message, index) => {
+                    if (typeof message.content === 'string') {
+                      if (message.content.match(searchQuery)) {
+                        console.log('matched');
+                        return message;
+                      }
+                    } else return null;
+                  })
+            }
+            onEndReachedThreshold={0.1}
+            onEndReached={() => {}}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={{ marginVertical: '1%' }}>
+                  {item.type === 'text' ? (
+                    <NormalMessageCn
+                      setmodalVisible={setmodalVisible}
+                      longPress={handleDelet}
+                      socket={socket}
+                      item={item}
+                    />
+                  ) : null}
+                  {item.type === 'image' ? (
+                    <TouchableOpacity>
+                      <ImageMessageCn
+                        socket={socket}
+                        longPress={handleDelet}
+                        item={item}
+                        onPress={() =>
+                          props.navigation.navigate('ViewImage', {
+                            url: `${BASE_URL}/messageMedia/${item.content}`,
+                            message: item.content,
+                          })
+                        }
+                      />
+                    </TouchableOpacity>
+                  ) : null}
+                  {item.type === 'document' ? (
+                    <DocumentMessageCn
+                      title="Select"
+                      socket={socket}
+                      item={item}
+                      longPress={handleDelet}
+                    />
+                  ) : null}
+
+                  {item.type === 'audio' ? (
+                    <RecordingVoiceMessageCn
+                      socket={socket}
+                      item={item}
+                      longPress={handleDelet}
+                    />
+                  ) : null}
+                  {item.type === 'video' ? (
+                    <TouchableOpacity>
+                      <VideoMessageCn
+                        longPress={handleDelet}
+                        socket={socket}
+                        item={item}
+                        onPress={() =>
+                          props.navigation.navigate('ViewImage', {
+                            url: `${BASE_URL}/messageMedia/${item.content}`,
+                            message: item.content,
+                          })
+                        }
+                      />
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+              );
+            }}
+          />
+
+          <View style={{ marginLeft: '40%' }}>
+            {imgloading && (
+              <ActivityIndicator size="large" color={Color.Blue} />
+            )}
+          </View>
+
+          <ChatBottomBar
+            disabled={loading}
+            pick={pick}
+            pickDoc={pickDoc}
+            startRecording={startRecording}
+            stopRecording={stopRecording}
+            handleCamera={handleCamera}
+            sendtext={sendtext}
+          />
+        </View>
+      </>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -627,7 +616,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
 
   message: {
@@ -638,44 +627,44 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
     paddingVertical: 3,
   },
   time: {
     fontSize: 11,
-    color: "grey",
+    color: 'grey',
     // fontFamily: "Roboto",
     marginTop: -5,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
 
   imageMessage: {
-    maxWidth: "100%",
+    maxWidth: '100%',
     marginVertical: 0,
   },
   chatSearchContainer: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 10,
     marginHorizontal: 10,
   },
   searchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginLeft: 10,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    backgroundColor: "#F1F1F1",
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    backgroundColor: '#F1F1F1',
   },
   textBox: {
     fontSize: 14,
     marginTop: 3,
-    fontFamily: "Roboto_400Regular",
-    width: "82%",
+    fontFamily: 'Roboto_400Regular',
+    width: '82%',
   },
 });
 

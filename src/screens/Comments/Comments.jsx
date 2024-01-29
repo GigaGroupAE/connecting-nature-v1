@@ -226,10 +226,7 @@ export default function Comments(props) {
   // };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : ''}
-      style={{ flex: 1 }}
-    >
+    <View style={{ flex: 1 }}>
       <View style={{ backgroundColor: Color.LightBlue }}>
         <View style={styles.main}>
           <View style={styles.header}>
@@ -279,7 +276,7 @@ export default function Comments(props) {
           onBlur={handleTextInputBlur}
         />
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
