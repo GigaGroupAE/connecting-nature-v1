@@ -38,7 +38,13 @@ const LivepollComments = ({ id, screen }) => {
     const newcomments = comment;
     newcomments.push({
       description: item.description,
-      commented_by: userState.id,
+      commented_by: {
+        _id: userState?._id,
+        fullName: userState?.fullName,
+        phoneNumber: userState?.phoneNumber,
+        profile: userState?.profile,
+        type: userState?.type,
+      },
       date,
     });
     const data = {

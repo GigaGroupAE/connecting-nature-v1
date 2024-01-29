@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,40 +7,43 @@ import {
   Text,
   ScrollView,
   Dimensions,
-} from "react-native";
+  Platform,
+  Keyboard,
+} from 'react-native';
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
-import Color from "../../assets/colors/Color";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
+import Color from '../../assets/colors/Color';
 
 const comments = [
-  "Great job!",
-  "I love it!",
-  "Awesome work!",
-  "Keep it up!",
-  "Fantastic!",
-  "Impressive!",
-  "Well done!",
-  "Amazing!",
-  "You nailed it!",
-  "Bravo!",
-  "Excellent!",
-  "Superb!",
-  "Incredible!",
-  "Outstanding!",
-  "WOW!",
-  "Very impressive!",
-  "Thumbs up!",
-  "Go Teams 🚀",
-  "Go Team A🚀",
-  "Go Team B 🚀",
-  "Hurrah!",
-  "Good bro 🔥",
+  'Great job!',
+  'I love it!',
+  'Awesome work!',
+  'Keep it up!',
+  'Fantastic!',
+  'Impressive!',
+  'Well done!',
+  'Amazing!',
+  'You nailed it!',
+  'Bravo!',
+  'Excellent!',
+  'Superb!',
+  'Incredible!',
+  'Outstanding!',
+  'WOW!',
+  'Very impressive!',
+  'Thumbs up!',
+  'Go Teams 🚀',
+  'Go Team A🚀',
+  'Go Team B 🚀',
+  'Hurrah!',
+  'Good bro 🔥',
 ];
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 export default function CommentInput(props) {
-  const [value, setvalue] = useState("");
+  const [value, setvalue] = useState('');
   const [suggsComments, setSuggesComments] = useState([]);
+
   useEffect(() => {
     const shuffledComments = comments.sort(() => 0.5 - Math.random());
     const selectedComments = shuffledComments.slice(0, 6);
@@ -56,14 +59,14 @@ export default function CommentInput(props) {
     <View style={styles.main}>
       <ScrollView
         horizontal
-        style={{ flexDirection: "row", backgroundColor: Color.White }}
+        style={{ flexDirection: 'row', backgroundColor: Color.White }}
         showsHorizontalScrollIndicator={false}
       >
         {suggsComments.map((item, index) => {
           return (
             <ScrollView
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
                 flex: 1,
                 paddingHorizontal: Width * 0.012,
                 paddingVertical: Height * 0.002,
@@ -73,12 +76,12 @@ export default function CommentInput(props) {
             >
               <View>
                 <TouchableOpacity
-                  style={{ flexDirection: "row" }}
+                  style={{ flexDirection: 'row' }}
                   onPress={() => handleSuggestionComment(item)}
                 >
                   <Text
                     style={{
-                      backgroundColor: "#EBF5FF",
+                      backgroundColor: '#EBF5FF',
                       // width: "100%",
                       paddingHorizontal: Width * 0.04,
                       paddingVertical: Height * 0.008,
@@ -106,13 +109,12 @@ export default function CommentInput(props) {
             props.onchange(e);
             setvalue(e);
           }}
-          multiline={true}
-          
+          multiline
         />
         <TouchableOpacity
           disabled={props.disabled}
           onPress={() => {
-            setvalue("");
+            setvalue('');
             props.onPress();
           }}
         >
@@ -131,23 +133,22 @@ export default function CommentInput(props) {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    position: "absolute",
+    position: 'absolute',
     bottom: 10,
-    alignItems: "center",
-    alignContent: "center",
-    width: "100%",
+    alignItems: 'center',
+    alignContent: 'center',
+    width: '100%',
     // height: 65,
     // paddingHorizontal: 19,
     backgroundColor: Color.White,
   },
   container: {
     marginTop: 3,
-    justifyContent: "space-between",
-    flexDirection: "row",
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     borderRadius: 8,
     paddingLeft: 17,
-    // paddingVertical: 14,
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.White,
     shadowColor: Color.Black,
     shadowOffset: {
@@ -157,9 +158,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.58,
     shadowRadius: 16.0,
     elevation: 10,
+    // marginBottom: 10,
   },
   input: {
-    width: "80%",
+    width: '80%',
     fontSize: 16,
   },
   sendIcon: {

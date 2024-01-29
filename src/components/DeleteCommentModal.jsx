@@ -13,6 +13,7 @@ const DeleteCommentModal = ({
   setModalVisible,
   comment,
   handleDelete,
+  screen,
 }) => {
   const hideModal = () => setModalVisible(false);
   const userState = useUserState();
@@ -63,6 +64,16 @@ const DeleteCommentModal = ({
               <Text style={styles.title}>Delete</Text>
             </TouchableOpacity>
           )}
+          {screen === 'campaign' &&
+            comment?.commented_by?.phoneNumber === userState.phoneNumber && (
+              <TouchableOpacity
+                style={styles.contentContainer}
+                onPress={handleDeleteComment}
+              >
+                <AntDesign name="delete" style={styles.icon} />
+                <Text style={styles.title}>Delete</Text>
+              </TouchableOpacity>
+            )}
         </View>
       </Modal>
     </Portal>

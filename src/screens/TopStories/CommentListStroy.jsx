@@ -148,6 +148,7 @@ const CommentListStroy = ({ item, setcomments }) => {
         setModalVisible={setmodalVisible}
         comment={item}
         handleDelete={handleDelete}
+        screen="story"
       />
     </Pressable>
   );

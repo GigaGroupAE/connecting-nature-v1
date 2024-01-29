@@ -5,13 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  Keyboard,
 } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 import Color from '../../assets/colors/Color';
 import LivepollComments from '../LivepollComments';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const comments = [
   'Great job!',
@@ -48,7 +48,7 @@ export default function CampaignCommentInput(props) {
   }, []);
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'height' : ''}>
+    <View>
       <ScrollView
         horizontal
         style={{ flexDirection: 'row', backgroundColor: Color.White }}
@@ -85,21 +85,21 @@ export default function CampaignCommentInput(props) {
           />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   main: {
-    // flex: 1,
-    // position: 'absolute',
-    // bottom: 10,
-    // alignItems: 'center',
-    // alignContent: 'center',
-    // width: '100%',
-    // // height: 65,
-    // // paddingHorizontal: 19,
-    // backgroundColor: Color.White,
+    flex: 1,
+    position: 'absolute',
+    bottom: 10,
+    alignItems: 'center',
+    alignContent: 'center',
+    width: '100%',
+    // height: 65,
+    // paddingHorizontal: 19,
+    backgroundColor: Color.White,
   },
   container: {
     marginTop: 3,

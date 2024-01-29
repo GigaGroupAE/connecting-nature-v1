@@ -1,21 +1,26 @@
-import React from "react";
-import { ActivityIndicator, View } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import persistStore from "redux-persist/es/persistStore";
-import { store } from "./store";
-import { Provider as ReduxProvider } from "react-redux";
-import { PersistGate } from "redux-persist/lib/integration/react";
-import { Provider as PaperProvider } from "react-native-paper";
-import { isEqual } from "lodash";
+import React from 'react';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import persistStore from 'redux-persist/es/persistStore';
+import { store } from './store';
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { isEqual } from 'lodash';
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import {
   useUserState,
   initialState as initialUserState,
-} from "./src/slices/userSlice.js";
-import { useFonts } from "expo-font";
+} from './src/slices/userSlice.js';
+import { useFonts } from 'expo-font';
 
 import {
   AdminHome,
@@ -87,28 +92,28 @@ import {
   ArchivedScreen,
   ArchivedCampaign,
   dodaylist,
-} from "./src/screens";
+} from './src/screens';
 //contexts
 import {
   ContextProvider,
   useStateContext,
-} from "./src/contexts/ContextProvider";
-import SnackBar from "./src/components/SnackBar";
-import Color from "./assets/colors/Color";
-import OrderRequest from "./src/screens/Order Request/OrderRequest";
-import PostShare from "./src/components/PostShare";
-import Animation from "./src/screens/Animation";
-import LivePointsComment from "./src/components/LivePointsComment";
-import CreateCampaignPost from "./src/components/CreateCampaignPost";
-import PostSkeleton from "./src/components/PostSkeleton";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "./src/components/CustomStatsBar";
+} from './src/contexts/ContextProvider';
+import SnackBar from './src/components/SnackBar';
+import Color from './assets/colors/Color';
+import OrderRequest from './src/screens/Order Request/OrderRequest';
+import PostShare from './src/components/PostShare';
+import Animation from './src/screens/Animation';
+import LivePointsComment from './src/components/LivePointsComment';
+import CreateCampaignPost from './src/components/CreateCampaignPost';
+import PostSkeleton from './src/components/PostSkeleton';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from './src/components/CustomStatsBar';
 const customFonts = {
-  Roboto_300Light: require("./assets/fonts/Roboto-Light.ttf"),
-  Roboto_400Regular: require("./assets/fonts/Roboto-Regular.ttf"),
-  Roboto_500Medium: require("./assets/fonts/Roboto-Medium.ttf"),
-  Roboto_600SemiBold: require("./assets/fonts/Roboto-Bold.ttf"),
-  Roboto_700Bold: require("./assets/fonts/Roboto-Bold.ttf"),
+  Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
+  Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
+  Roboto_500Medium: require('./assets/fonts/Roboto-Medium.ttf'),
+  Roboto_600SemiBold: require('./assets/fonts/Roboto-Bold.ttf'),
+  Roboto_700Bold: require('./assets/fonts/Roboto-Bold.ttf'),
 };
 
 const Stack = createStackNavigator();
@@ -122,8 +127,8 @@ function Main() {
   const { loading } = useStateContext();
   const UserState = useUserState();
   const initialRouteName = isEqual(initialUserState, UserState)
-    ? "SignIn"
-    : "Home";
+    ? 'SignIn'
+    : 'Home';
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -230,7 +235,7 @@ function Main() {
       </Stack.Navigator>
       {loading && (
         <ActivityIndicator
-          style={{ position: "absolute", bottom: "20%", left: "48%" }}
+          style={{ position: 'absolute', bottom: '20%', left: '48%' }}
           size="large"
           color={Color.Blue}
         />
@@ -256,10 +261,15 @@ export default function App() {
         <PaperProvider>
           <ContextProvider>
             <QueryClientProvider client={queryClient}>
-              <SafeAreaProvider>
-                <CustomStatsBar backgroundColor={Color.White} />
-                <Main />
-              </SafeAreaProvider>
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : ''}
+                style={{ flex: 1 }}
+              >
+                <SafeAreaProvider>
+                  <CustomStatsBar backgroundColor={Color.White} />
+                  <Main />
+                </SafeAreaProvider>
+              </KeyboardAvoidingView>
             </QueryClientProvider>
           </ContextProvider>
         </PaperProvider>
