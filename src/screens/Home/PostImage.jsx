@@ -1,7 +1,8 @@
-import { Image, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import React from 'react';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
 
 const PostImage = (props) => {
   const navigation = useNavigation();
@@ -20,11 +21,20 @@ const PostImage = (props) => {
 
   return (
     <TouchableOpacity key={post?._id} onPress={handleNavigation}>
+      {/* <Image
+        style={imageStyle}
+        source={{
+          uri: `${BASE_URL}/images/${post?.media?.name}`,
+        }}
+      /> */}
+
       <Image
         style={imageStyle}
         source={{
           uri: `${BASE_URL}/images/${post?.media?.name}`,
         }}
+        contentFit="cover"
+        transition={1000}
       />
     </TouchableOpacity>
   );
