@@ -28,10 +28,6 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/cn-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "bundleIdentifier": "com.notify.connectingnatureapp"
       
     },
