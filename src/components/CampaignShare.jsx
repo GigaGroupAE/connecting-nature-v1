@@ -5,14 +5,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { FontAwesome } from "react-native-vector-icons";
-import Color from "../../assets/colors/Color";
-import { scale } from "react-native-size-matters";
+} from 'react-native';
+import React from 'react';
+import { FontAwesome } from 'react-native-vector-icons';
+import Color from '../../assets/colors/Color';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("window").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('window').width;
 
 const CampaignShare = ({ handleShareExternal, handlePointsShareFeed }) => {
   return (
@@ -22,7 +22,7 @@ const CampaignShare = ({ handleShareExternal, handlePointsShareFeed }) => {
         onPress={handlePointsShareFeed}
       >
         <Image
-          source={require("../../assets/postLogo.png")}
+          source={require('../../assets/postLogo.png')}
           style={styles.image}
         />
         <Text style={styles.title}>Share on Feeds</Text>
@@ -43,9 +43,9 @@ export default CampaignShare;
 const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: Color.White,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.01,
     borderBottomWidth: 0.5,
@@ -53,16 +53,16 @@ const styles = StyleSheet.create({
     // marginBottom: Height * 0.01,
   },
   contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   image: {
     width: 25,
     height: 23,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   title: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(14),
     paddingHorizontal: scale(10),
     marginTop: Height * 0.007,

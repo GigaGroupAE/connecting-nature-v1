@@ -17,7 +17,7 @@ import * as Location from 'expo-location';
 import Header from '../../components/Header.js';
 import InputText from '../../components/InputText.js';
 import ButtonMain from '../../components/ButtonMain.js';
-import { useUserState, useUserStateActions } from '../../slices/userSlice.js';
+import { useUserStateActions } from '../../slices/userSlice.js';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar.js';
 

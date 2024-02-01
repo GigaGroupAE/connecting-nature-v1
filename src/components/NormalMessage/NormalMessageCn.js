@@ -1,33 +1,22 @@
-import React, { useState } from "react"
-import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native"
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons"
-import Color from "../../../assets/colors/Color"
-import { useUserState } from "../../slices/userSlice"
-import { useNavigation } from "@react-navigation/native"
-import { calculateTimeDifference } from "../../utils/timeDifference"
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
 
-const Width = Dimensions.get("screen").width
-const Height = Dimensions.get("screen").height
+import { calculateTimeDifference } from '../../utils/timeDifference';
 
 const NormalMessageCn = (props) => {
-  const [longPress, setLongPress] = useState(false)
-  const [modalVisible, setmodalVisible] = useState(false)
-  const userState = useUserState()
-  const navigation = useNavigation()
+  const userState = useUserState();
+
   // const [modalVisible, setmodalVisible] = useState(false);
-  const { socket, item } = props
-  let timePassed = calculateTimeDifference(item.date)
-
-  const handleDelet = (id) => {
-    setmodalVisible(true)
-
-  }
+  const { item } = props;
+  const timePassed = calculateTimeDifference(item.date);
 
   return (
     <Pressable
-      onLongPress={() => props?.    longPress(item._id,item?.from)}
+      onLongPress={() => props?.longPress(item._id, item?.from)}
       style={[
-        longPress && props.LongPressed
+        props.LongPressed
           ? {
               backgroundColor: Color.LightBlue,
               // opacity: 0.7,
@@ -107,26 +96,26 @@ const NormalMessageCn = (props) => {
         </View>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row-reverse",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: 'row-reverse',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   senderTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
     backgroundColor: Color.Blue,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
@@ -135,8 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   receiverTextMessageContainer: {
-    backgroundColor: Color.White,
-    maxWidth: "80%",
+    maxWidth: '80%',
     backgroundColor: Color.VeryLightGrey,
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
@@ -147,16 +135,16 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingHorizontal: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto_500Medium',
     paddingVertical: 2,
-    color: "#4582C3",
+    color: '#4582C3',
   },
   message: {
     fontSize: 16,
     paddingHorizontal: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto_400Regular',
     paddingVertical: 4,
     lineHeight: 20,
     color: Color.White,
@@ -164,52 +152,52 @@ const styles = StyleSheet.create({
   receiverTextMessage: {
     fontSize: 15.5,
     paddingHorizontal: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto_400Regular',
     paddingVertical: 4,
     lineHeight: 20,
   },
   timeContainer: {
     // marginLeft: "15%",
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginTop: "-2%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginTop: '-2%',
     marginVertical: 5,
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto_400Regular',
+    marginLeft: '10%',
   },
   shareMessage: {
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
     // flex: 2,
   },
   imageMessage: {
-    maxWidth: "100%",
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    maxWidth: '100%',
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
     marginVertical: 0,
     // alignSelf: "flex-start",
   },
-  shareMessage: {
-    // position: "absolute",
-    // right: Width * 0.62,
-    // bottom: -15,
-    backgroundColor: "#CFCFCF",
-    marginLeft: 9,
-    borderRadius: 50,
-    padding: 3,
-    marginHorizontal: Width * 0.016,
-  },
+  // shareMessage: {
+  //   // position: "absolute",
+  //   // right: Width * 0.62,
+  //   // bottom: -15,
+  //   backgroundColor: '#CFCFCF',
+  //   marginLeft: 9,
+  //   borderRadius: 50,
+  //   padding: 3,
+  //   marginHorizontal: Width * 0.016,
+  // },
   receiverShareMessage: {
     // position: "absolute",
     // right: -40,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -218,9 +206,9 @@ const styles = StyleSheet.create({
   messageReciveTime: {
     fontSize: 12,
     color: Color.White,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
-})
+});
 
-export default NormalMessageCn
+export default NormalMessageCn;

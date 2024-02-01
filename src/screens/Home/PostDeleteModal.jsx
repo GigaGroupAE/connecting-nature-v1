@@ -1,20 +1,27 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useCallback } from "react";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import axios from "axios";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { scale } from "react-native-size-matters";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { useUserState } from '../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS';
+import Color from '../../../assets/colors/Color';
+import axios from 'axios';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { scale } from 'react-native-size-matters';
 import {
   Ionicons,
   MaterialIcons,
   MaterialCommunityIcons,
-} from "react-native-vector-icons";
+} from 'react-native-vector-icons';
+import { axiosInstance } from '../../../axiosInstance';
 
 const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
   const userState = useUserState();
   const { showSnackbar } = useStateContext();
+
+  const deletePostNotifications = async () => {
+    try {
+      await axiosInstance.delete(`/notify/delete-notification/${post._id}`);
+    } catch (error) {}
+  };
 
   const archivePost = useCallback(
     async (post) => {
@@ -24,19 +31,20 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
           {},
           {
             headers: {
-              "auth-token": userState.token,
+              'auth-token': userState.token,
             },
           },
         );
 
         if (response.data.success) {
-          showSnackbar("Post deleted successfully");
+          showSnackbar('Post deleted successfully');
           reload();
+          deletePostNotifications();
         } else {
-          handleApiError("Failed to archive the post. Please try again.");
+          handleApiError('Failed to archive the post. Please try again.');
         }
       } catch (error) {
-        handleApiError("Failed to archive the post. Please try again.");
+        handleApiError('Failed to archive the post. Please try again.');
       } finally {
         // setmodalVisible(false);
       }
@@ -48,7 +56,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
     async (post) => {
       const config = {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       };
       try {
@@ -59,13 +67,13 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
         );
 
         if (data.success) {
-          showSnackbar("User blocked successfully");
+          showSnackbar('User blocked successfully');
           reload();
         } else {
-          handleApiError("Failed to block the user. Please try again.");
+          handleApiError('Failed to block the user. Please try again.');
         }
       } catch (error) {
-        handleApiError("Failed to block the user. Please try again.");
+        handleApiError('Failed to block the user. Please try again.');
       } finally {
         // setmodalVisible(false);
       }
@@ -148,8 +156,8 @@ const styles = StyleSheet.create({
     paddingVertical: scale(14),
   },
   hiddenContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   eyeOff: {
     fontSize: scale(16),
@@ -158,43 +166,43 @@ const styles = StyleSheet.create({
   hiddenTitle: {
     paddingHorizontal: scale(10),
     fontSize: scale(11),
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
   },
   conforContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    overflow: "hidden",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    overflow: 'hidden',
     paddingVertical: scale(8),
     borderBottomWidth: scale(2),
     borderColor: Color.VeryLightGrey,
   },
   title: {
     width: scale(240),
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: scale(13),
   },
   undoContainer: {
-    backgroundColor: "#CBCED5",
-    position: "relative",
+    backgroundColor: '#CBCED5',
+    position: 'relative',
     height: scale(30),
     width: scale(55),
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: scale(8),
     top: scale(-7),
   },
   deleteMain: {},
   deleteContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: scale(9),
   },
   deleteIcon: {
     fontSize: scale(18),
   },
   deleteTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     paddingHorizontal: scale(7),
     fontSize: scale(13),
   },

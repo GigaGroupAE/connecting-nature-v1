@@ -26,9 +26,6 @@ import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
 import 'react-native-get-random-values';
 import * as FileSystem from 'expo-file-system';
-
-//utility function for showing appropriate times
-import { calculateTimeDifference } from '../../utils/timeDifference';
 import Color from '../../../assets/colors/Color';
 import ChatBottomBar from './Components/ChatBottomBar/ChatBottomBar';
 import { useStateContext } from '../../contexts/ContextProvider.js';
@@ -47,7 +44,7 @@ const ChatPageCN = (props) => {
   const [deleteId, setdeleteId] = useState('');
   const [messagesId, setmessagesId] = useState([]);
   useEffect(() => {
-    let newSocket = io(BASE_URL, { auth: { token: userState.token } });
+    const newSocket = io(BASE_URL, { auth: { token: userState.token } });
     newSocket.on('connect', () => {
       newSocket.emit('join', { id: props.route.params.group._id });
     });
@@ -95,12 +92,8 @@ const ChatPageCN = (props) => {
             content: res.data.path,
           });
         })
-        .catch((e) => {
-          console.log('working but error', e);
-        });
-    } catch (e) {
-      console.log(e);
-    }
+        .catch((e) => {});
+    } catch (e) {}
   };
   const [recording, setRecording] = useState(false);
   const [chatMessages, setChatMessages] = useState(
@@ -254,9 +247,7 @@ const ChatPageCN = (props) => {
         })
 
         .catch((e) => {});
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   async function startRecording() {
     setRecording((recording) => !recording);
@@ -356,11 +347,9 @@ const ChatPageCN = (props) => {
           }
         })
         .catch((e) => {
-          console.log('working but error', e);
           setImgloading(false);
         });
     } catch (e) {
-      console.log(e);
       setImgloading(false);
     }
   };
@@ -499,7 +488,7 @@ const ChatPageCN = (props) => {
             style={{
               marginHorizontal: 10,
             }}
-            inverted={true}
+            inverted
             keyExtractor={(item) => item._id}
             extraData={
               searchQuery === ''
@@ -518,7 +507,6 @@ const ChatPageCN = (props) => {
                 : chatMessages.filter((message, index) => {
                     if (typeof message.content === 'string') {
                       if (message.content.match(searchQuery)) {
-                        console.log('matched');
                         return message;
                       }
                     } else return null;
@@ -613,35 +601,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.White,
-  },
-  image: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-
-  message: {
-    fontSize: 14,
-    marginLeft: 5,
-    lineHeight: 18,
-    // fontFamily: "Roboto",
-    paddingVertical: 3,
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    paddingVertical: 3,
-  },
-  time: {
-    fontSize: 11,
-    color: 'grey',
-    // fontFamily: "Roboto",
-    marginTop: -5,
-    alignSelf: 'flex-end',
-  },
-
-  imageMessage: {
-    maxWidth: '100%',
-    marginVertical: 0,
   },
   chatSearchContainer: {
     flexDirection: 'row',

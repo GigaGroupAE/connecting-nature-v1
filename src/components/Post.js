@@ -27,6 +27,8 @@ import PostImage from '../screens/Home/PostImage';
 import PostSharedHeader from './PostSharedHeader';
 import { screenHeight } from '../utils/ScreenDimensions';
 
+import LikedSvg from './SVG/LikedSvg';
+
 export default function Post(props, postId) {
   const date = moment().utcOffset('+05:00');
   const [visible, setVisible] = useState(false);
@@ -228,18 +230,7 @@ export default function Post(props, postId) {
                   }}
                   onPress={() => handlePostsLike(reactions)}
                 >
-                  {reactions.length !== 0 ? (
-                    <AntDesign
-                      name="like1"
-                      size={10}
-                      color={Color.White}
-                      style={{
-                        backgroundColor: Color.Blue,
-                        padding: 4,
-                        borderRadius: screenHeight * 0.1,
-                      }}
-                    />
-                  ) : null}
+                  {reactions.length !== 0 ? <LikedSvg /> : null}
                   <Text style={styles.statsLikes}>
                     {liked !== false || reactions.length > 0
                       ? reactions.length + ' Liked'
@@ -375,9 +366,10 @@ const styles = StyleSheet.create({
   },
   statsLikes: {
     marginLeft: 5,
-    fontSize: 12,
+    fontSize: screenHeight * 0.014,
     fontFamily: 'Roboto_400Regular',
-    color: Color.Black,
+    color: Color.Grey,
+    marginTop: '3%',
   },
   rightStats: {
     flexDirection: 'row',
@@ -386,15 +378,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statsComments: {
-    fontSize: 12,
+    fontSize: screenHeight * 0.014,
     fontFamily: 'Roboto_400Regular',
-    color: Color.Black,
+    color: Color.Grey,
   },
   statsShare: {
-    marginLeft: '5%',
-    fontSize: 12,
+    marginLeft: '3%',
+    fontSize: screenHeight * 0.014,
     fontFamily: 'Roboto_400Regular',
-    color: Color.Black,
+    color: Color.Grey,
   },
   actionMainContainer: {
     borderTopWidth: 1,
