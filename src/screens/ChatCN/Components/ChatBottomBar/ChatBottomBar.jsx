@@ -6,18 +6,18 @@ import {
   TouchableWithoutFeedback,
   Animated,
   TextInput,
-} from "react-native";
-import React, { useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Icon } from "react-native-elements";
-import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import FontAwesome from "react-native-vector-icons/FontAwesome.js";
-import { Appbar, Button, Snackbar } from "react-native-paper";
-import Color from "../../../../../assets/colors/Color";
+} from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Icon } from 'react-native-elements';
+import { Entypo, Ionicons } from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome.js';
+import { Snackbar } from 'react-native-paper';
+import Color from '../../../../../assets/colors/Color';
 export default function ChatBottomBar(props) {
   const [visible, setVisible] = React.useState(false);
   const onDismissSnackBar = () => setVisible(false);
-  const [textmessage, settextmessage] = useState("");
+  const [textmessage, settextmessage] = useState('');
   const [typing, setTyping] = useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const [animation, setAnimation] = useState(new Animated.Value(0));
@@ -40,7 +40,7 @@ export default function ChatBottomBar(props) {
   };
   const boxInterpolation = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgb(224,0,99)", "rgb(100,0,0)"],
+    outputRange: ['rgb(224,0,99)', 'rgb(100,0,0)'],
   });
   const handleChangeText = (text) => {
     if (text.length !== 0) {
@@ -54,8 +54,8 @@ export default function ChatBottomBar(props) {
     <View
       style={{
         paddingVertical: 8,
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         borderTopWidth: 1,
         borderColor: Color.VeryLightGrey,
       }}
@@ -67,12 +67,12 @@ export default function ChatBottomBar(props) {
         style={{
           bottom: 60,
           elevation: 3,
-          backgroundColor: "#474747",
+          backgroundColor: '#474747',
           borderRadius: 25,
           width: 190,
           paddingLeft: 25,
           // marginLeft: 100,
-          alignSelf: "center",
+          alignSelf: 'center',
         }}
       >
         <View style={{ flex: 1 }}>
@@ -81,7 +81,7 @@ export default function ChatBottomBar(props) {
               style={{
                 width: 13,
                 height: 13,
-                backgroundColor: "red",
+                backgroundColor: 'red',
                 borderRadius: 50,
                 elevation: 2,
                 ...styles.box,
@@ -143,7 +143,7 @@ export default function ChatBottomBar(props) {
         <TouchableOpacity
           onPress={() => {
             props.sendtext(textmessage);
-            settextmessage("");
+            settextmessage('');
             setTyping(false);
           }}
           disabled={props.disabled}
@@ -155,7 +155,7 @@ export default function ChatBottomBar(props) {
             size={20}
             color={Color.White}
             style={{
-              alignSelf: "center",
+              alignSelf: 'center',
             }}
           />
         </TouchableOpacity>
@@ -163,11 +163,11 @@ export default function ChatBottomBar(props) {
         <TouchableOpacity
           style={{
             backgroundColor: Color.Blue,
-            height: Dimensions.get("screen").height * 0.05,
-            width: Dimensions.get("screen").height * 0.05,
-            borderRadius: Dimensions.get("screen").height * 0.1,
-            justifyContent: "center",
-            alignItems: "center",
+            height: Dimensions.get('screen').height * 0.05,
+            width: Dimensions.get('screen').height * 0.05,
+            borderRadius: Dimensions.get('screen').height * 0.1,
+            justifyContent: 'center',
+            alignItems: 'center',
             // marginLeft: 5,
           }}
         >
@@ -185,7 +185,7 @@ export default function ChatBottomBar(props) {
               style={{
                 marginLeft: 1.5,
                 padding: 2,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
             />
           ) : (
@@ -199,7 +199,7 @@ export default function ChatBottomBar(props) {
               name="mic-outline"
               size={25}
               color={Color.White}
-              style={{ justifyContent: "center", padding: 2 }}
+              style={{ justifyContent: 'center', padding: 2 }}
             />
           )}
         </TouchableOpacity>
@@ -209,40 +209,40 @@ export default function ChatBottomBar(props) {
 }
 const styles = StyleSheet.create({
   messageInputView: {
-    flexDirection: "row",
-    marginHorizontal: Dimensions.get("screen").height * 0.01,
+    flexDirection: 'row',
+    marginHorizontal: Dimensions.get('screen').height * 0.01,
     backgroundColor: Color.VeryLightGrey,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: "62%",
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "center",
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: '62%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
   typingMessage: {
-    flexDirection: "row",
-    marginHorizontal: Dimensions.get("screen").height * 0.01,
+    flexDirection: 'row',
+    marginHorizontal: Dimensions.get('screen').height * 0.01,
     backgroundColor: Color.VeryLightGrey,
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: "82%",
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "flex-end",
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: '82%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'flex-end',
   },
   messageInput: {
-    height: Dimensions.get("screen").height * 0.05,
+    height: Dimensions.get('screen').height * 0.05,
     flex: 1,
     paddingRight: 10,
     paddingLeft: 20,
     paddingVertical: 3,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto_400Regular',
   },
   messageSendView: {
     // padding: 8,
-    justifyContent: "center",
+    justifyContent: 'center',
     backgroundColor: Color.Blue,
-    height: Dimensions.get("screen").height * 0.05,
-    width: Dimensions.get("screen").height * 0.05,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    height: Dimensions.get('screen').height * 0.05,
+    width: Dimensions.get('screen').height * 0.05,
+    borderRadius: Dimensions.get('screen').height * 0.1,
   },
   cameraIcon: {
     paddingHorizontal: 4,
@@ -250,17 +250,17 @@ const styles = StyleSheet.create({
   },
   textMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   textMessageContainer: {
-    alignItems: "baseline",
+    alignItems: 'baseline',
     // alignSelf: "flex-start",
-    backgroundColor: "white",
-    maxWidth: "80%",
+    backgroundColor: 'white',
+    maxWidth: '80%',
     borderLeftWidth: 4,
-    borderColor: "#4582C3",
+    borderColor: '#4582C3',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     marginVertical: 9,

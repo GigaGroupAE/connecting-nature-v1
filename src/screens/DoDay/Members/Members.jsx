@@ -89,7 +89,7 @@ const Members = (props) => {
         }}
       >
         <TouchableOpacity
-          onPress={() => props.onCancel()}
+          onPress={() => props?.onCancel()}
           style={{ alignSelf: 'flex-end', marginRight: Width * 0.03 }}
         >
           <Entypo name="cross" color={Color.Black} size={30} />

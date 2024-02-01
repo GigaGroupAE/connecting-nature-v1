@@ -198,13 +198,13 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto_400Regular',
     marginLeft: '10%',
   },
   overlayTime: {
     fontSize: 12,
     color: Color.LightGrey,
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto_400Regular',
     marginLeft: '10%',
   },
   shareMessage: {

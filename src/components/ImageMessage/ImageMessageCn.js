@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
   View,
   Text,
@@ -7,22 +7,22 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { BASE_URL } from "../../../CONSTANTS";
+} from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
 
-const Width = Dimensions.get("screen").width;
+import { useNavigation } from '@react-navigation/native';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { BASE_URL } from '../../../CONSTANTS';
+
+const Width = Dimensions.get('screen').width;
 
 const ImageMessageCn = (props) => {
   const userState = useUserState();
   const navigation = useNavigation();
   const { socket, item } = props;
-  let timePassed = calculateTimeDifference(item.date);
+  const timePassed = calculateTimeDifference(item.date);
 
   return (
     <Pressable
@@ -57,7 +57,7 @@ const ImageMessageCn = (props) => {
               android_ripple={{ foreground: true, color: Color.LightGrey }}
               onLongPress={() => props?.longPress(item._id, item?.from)}
             >
-              {item.content !== "" && (
+              {item.content !== '' && (
                 <Image
                   style={[
                     userState.id === item.from
@@ -96,10 +96,10 @@ const ImageMessageCn = (props) => {
           </View>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("MsgShare", {
+              navigation.navigate('MsgShare', {
                 forwardFrom: userState?.id,
-                forwardChat: "chatId",
-                forwardType: "image",
+                forwardChat: 'chatId',
+                forwardType: 'image',
                 forwardContent: item.content,
                 socket: socket,
               })
@@ -115,7 +115,7 @@ const ImageMessageCn = (props) => {
               <MaterialCommunityIcons
                 name="share"
                 size={22}
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               />
             </View>
           </TouchableOpacity>
@@ -128,62 +128,62 @@ const ImageMessageCn = (props) => {
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   senderTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   receiverTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginTop: "-1%",
-    marginVertical: "1%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginTop: '-1%',
+    marginVertical: '1%',
   },
   OverlayTimeContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 10,
     right: 0,
-    flexDirection: "row",
-    alignSelf: "flex-end",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto_400Regular',
+    marginLeft: '10%',
   },
   overlayTime: {
     fontSize: 12,
     color: Color.LightGrey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto_400Regular',
+    marginLeft: '10%',
   },
   shareMessage: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.62,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
   },
   receiverShareMessage: {
-    position: "absolute",
+    position: 'absolute',
     // right: -40,
     // bottom: -15,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
   receiverImageMessage: {
     backgroundColor: Color.White,
@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
 });
 

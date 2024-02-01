@@ -1,30 +1,28 @@
 /* eslint-disable semi */
-import React from "react";
-import { Platform, Text, TouchableOpacity } from "react-native";
-import { Appbar, Avatar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../../../../slices/userSlice";
-import { useState } from "react";
-import { useEffect } from "react";
-import { BASE_URL } from "../../../../../CONSTANTS";
-import Color from "../../../../../assets/colors/Color";
-import { useStateContext } from "../../../../contexts/ContextProvider";
+import React, { useState, useEffect } from 'react';
+import { Platform, TouchableOpacity } from 'react-native';
+import { Appbar, Avatar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../../../../slices/userSlice';
+
+import { BASE_URL } from '../../../../../CONSTANTS';
+import Color from '../../../../../assets/colors/Color';
+import { useStateContext } from '../../../../contexts/ContextProvider';
 
 const ChatScreenHeader = (props) => {
-  const groupState = props.groupState;
   const userState = useUserState();
   const navigation = useNavigation();
   const [subtitle, setsubtitle] = useState();
   const [photo, setPhoto] = useState();
   const [title, settitle] = useState();
-  const { group, setgroup } = useStateContext();
+  const { setgroup } = useStateContext();
 
   useEffect(() => {
-    let member = props.groupState.members.filter((member) => {
+    const member = props.groupState.members.filter((member) => {
       return member.phoneNumber !== userState.phoneNumber;
     });
     // console.log(member[0]);
-    let memb = member[0];
+    const memb = member[0];
     setPhoto(`${BASE_URL}/images/${memb.profile}`);
     settitle(memb.fullName);
     setsubtitle(memb.type);
@@ -39,7 +37,7 @@ const ChatScreenHeader = (props) => {
       style={{
         marginTop: 0,
         marginBottom: 2.5,
-        width: "100%",
+        width: '100%',
         backgroundColor: Color.White,
         borderBottomWidth: 1,
         borderColor: Color.VeryLightGrey,
@@ -54,7 +52,7 @@ const ChatScreenHeader = (props) => {
       />
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("ChatSettingsCN", {
+          navigation.navigate('ChatSettingsCN', {
             groupState: {
               title: title,
               groupPic: photo,
@@ -70,7 +68,7 @@ const ChatScreenHeader = (props) => {
             photo
               ? { uri: photo }
               : {
-                  uri: "https://firebasestorage.googleapis.com/v0/b/giga-intranet.appspot.com/o/default%2Fgroup.png?alt=media&token=e26513b2-3ac3-4f77-8ab6-be92e2d45c79",
+                  uri: 'https://firebasestorage.googleapis.com/v0/b/giga-intranet.appspot.com/o/default%2Fgroup.png?alt=media&token=e26513b2-3ac3-4f77-8ab6-be92e2d45c79',
                 }
           }
           style={{ marginRight: -12 }}
@@ -78,7 +76,7 @@ const ChatScreenHeader = (props) => {
       </TouchableOpacity>
       <Appbar.Content
         onPress={() =>
-          navigation.navigate("ChatSettingsCN", {
+          navigation.navigate('ChatSettingsCN', {
             groupState: {
               title: title,
               groupPic: photo,
@@ -87,13 +85,13 @@ const ChatScreenHeader = (props) => {
             },
           })
         }
-        title={title ? title : "Loading..."}
+        title={title ? title : 'Loading...'}
         titleStyle={{
-          fontFamily: "Roboto_500Medium",
+          fontFamily: 'Roboto_500Medium',
           fontSize: 18,
           color: Color.Black,
         }}
-        subtitle={subtitle ? subtitle : "Loading..."}
+        subtitle={subtitle ? subtitle : 'Loading...'}
         subtitleStyle={{ fontSize: 12, marginTop: -5, color: Color.Black }}
         color={Color.Black}
         style={{
