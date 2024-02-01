@@ -5,33 +5,34 @@ import {
   Text,
   View,
   TouchableOpacity,
-} from "react-native";
-import React, { useMemo, useState } from "react";
-import moment from "moment";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../../slices/userSlice";
-import { BASE_URL } from "../../../CONSTANTS";
-import PostDeleteModal from "../Home/PostDeleteModal";
-import Color from "../../../assets/colors/Color";
-import PostHeader from "../Home/PostHeader";
-import { FontAwesome, AntDesign } from "react-native-vector-icons";
-import PostImage from "../Home/PostImage";
-import PostVideo from "../Home/PostVideo";
-import axios from "axios";
-import PostSharedHeader from "../../components/PostSharedHeader";
+} from 'react-native';
+import React, { useMemo, useState } from 'react';
+import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../../slices/userSlice';
+import { BASE_URL } from '../../../CONSTANTS';
+import PostDeleteModal from '../Home/PostDeleteModal';
+import Color from '../../../assets/colors/Color';
+import PostHeader from '../Home/PostHeader';
+import { FontAwesome, AntDesign } from 'react-native-vector-icons';
+import PostImage from '../Home/PostImage';
+import PostVideo from '../Home/PostVideo';
+import axios from 'axios';
+import PostSharedHeader from '../../components/PostSharedHeader';
+import LikedSvg from '../../components/SVG/LikedSvg';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
-const supportedImageFormats = ["image/jpeg", "image/png", "image/jpg"];
+const supportedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
 
 const supportedMediaFormats = [
-  "image/jpeg",
-  "image/png",
-  "image/jpg",
-  "video/mp4",
+  'image/jpeg',
+  'image/png',
+  'image/jpg',
+  'video/mp4',
 ];
 
 const CampaignPosts = ({ post, campaignId, reload }) => {
-  const date = moment().utcOffset("+05:00");
+  const date = moment().utcOffset('+05:00');
 
   const [modalVisible, setmodalVisible] = useState(false);
   const [shares, setshares] = useState([post?.shares]);
@@ -49,11 +50,11 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
   );
 
   const handleOnClickComment = () => {
-    navigation.navigate("Comments", {
+    navigation.navigate('Comments', {
       comments: comment,
       id: post?._id,
       postedBy: post.postedby._id,
-      data: "",
+      data: '',
       expoPushToken: post?.postedby?.expoPushToken,
       setcomment: setcomment,
     });
@@ -85,7 +86,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
         // notifications
         const config = {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         };
         const { data } = await axios.post(
@@ -102,7 +103,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
               },
             },
             data: {
-              title: "post-like",
+              title: 'post-like',
               content: post?._id,
             },
           },
@@ -117,18 +118,18 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
         { reactions: likes },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         },
       )
       .then((res) => {
         setreactions(res?.data?.reactions);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   };
 
   const handleonshare = async (post) => {
-    navigation.navigate("postShare", { post: post, reload: reload });
+    navigation.navigate('postShare', { post: post, reload: reload });
 
     // try {
     //   let tempshares = [...shares];
@@ -229,7 +230,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
   //   });
   // };
   const handlePostsLike = (item) => {
-    navigation.navigate("PostsLike", { item });
+    navigation.navigate('PostsLike', { item });
   };
 
   const handleLike = () => {
@@ -258,7 +259,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
     <View
       style={{
         mainContainer: {
-          width: "100%",
+          width: '100%',
           marginBottom: 10,
         },
       }}
@@ -295,7 +296,7 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
           </View>
         ) : null}
         <View>
-          {post.media?.type === "video/mp4" ? (
+          {post.media?.type === 'video/mp4' ? (
             <PostVideo
               post={post}
               reactions={reactions}
@@ -319,25 +320,14 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
           >
             <TouchableOpacity
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
               }}
               onPress={() => handlePostsLike(reactions)}
             >
-              {reactions.length !== 0 ? (
-                <AntDesign
-                  name="like1"
-                  size={10}
-                  color={Color.White}
-                  style={{
-                    backgroundColor: Color.Blue,
-                    borderRadius: Dimensions.get("screen").height * 0.1,
-                    padding: 4,
-                  }}
-                />
-              ) : null}
+              {reactions.length !== 0 ? <LikedSvg /> : null}
               <Text style={styles.statsLikes}>
                 {liked !== false || reactions.length > 0
-                  ? reactions.length + " Liked"
+                  ? reactions.length + ' Liked'
                   : null}
               </Text>
             </TouchableOpacity>
@@ -346,8 +336,8 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
                 <Text style={styles.statsComments}>
                   {comment.length !== 0
                     ? comment.length === 1
-                      ? comment?.length + " comment"
-                      : comment?.length + " comments"
+                      ? comment?.length + ' comment'
+                      : comment?.length + ' comments'
                     : null}
                 </Text>
               </TouchableOpacity>
@@ -355,8 +345,8 @@ const CampaignPosts = ({ post, campaignId, reload }) => {
                 <Text style={styles.statsShare}>
                   {post.shares.length !== 0
                     ? post.shares.length === 1
-                      ? post.shares.length + " share"
-                      : post.shares.length + " shares"
+                      ? post.shares.length + ' share'
+                      : post.shares.length + ' shares'
                     : null}
                 </Text>
               )}
@@ -414,29 +404,29 @@ export default CampaignPosts;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: "100%",
+    width: '100%',
     marginBottom: 10,
   },
   postContainer: {
-    backgroundColor: "#fff",
-    width: "100%",
+    backgroundColor: '#fff',
+    width: '100%',
   },
   image: {
-    height: Dimensions.get("screen").height * 0.5,
+    height: Dimensions.get('screen').height * 0.5,
     marginTop: 5,
-    width: "100%",
-    resizeMode: "cover",
+    width: '100%',
+    resizeMode: 'cover',
   },
   video: {
-    height: Dimensions.get("screen").height * 0.6,
+    height: Dimensions.get('screen').height * 0.6,
     marginTop: 5,
     backgroundColor: Color.Black,
   },
   statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    alignContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'center',
     paddingHorizontal: 17,
     paddingVertical: 8,
     borderTopWidth: 1,
@@ -444,64 +434,65 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   imageStatsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    alignContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'center',
     paddingHorizontal: 17,
     paddingVertical: 8,
     borderColor: Color.VeryLightGrey,
     marginTop: 5,
   },
   statIcon: {
-    width: Dimensions.get("screen").height * 0.02,
-    height: Dimensions.get("screen").height * 0.02,
+    width: Dimensions.get('screen').height * 0.02,
+    height: Dimensions.get('screen').height * 0.02,
   },
   statsLikes: {
     marginLeft: 5,
-    fontSize: 12,
-    fontFamily: "Roboto_400Regular",
-    color: Color.Black,
+    fontSize: screenHeight * 0.014,
+    fontFamily: 'Roboto_400Regular',
+    color: Color.Grey,
+    marginTop: '3%',
   },
   rightStats: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignContent: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'space-between',
   },
   statsComments: {
-    fontSize: 12,
-    fontFamily: "Roboto_400Regular",
-    color: Color.Black,
+    fontSize: screenHeight * 0.014,
+    fontFamily: 'Roboto_400Regular',
+    color: Color.Grey,
   },
   statsShare: {
-    marginLeft: "5%",
-    fontSize: 12,
-    fontFamily: "Roboto_400Regular",
-    color: Color.Black,
+    marginLeft: '3%',
+    fontSize: screenHeight * 0.014,
+    fontFamily: 'Roboto_400Regular',
+    color: Color.Grey,
   },
   actionMainContainer: {
     borderTopWidth: 1,
-    width: "95%",
-    alignSelf: "center",
+    width: '95%',
+    alignSelf: 'center',
     borderColor: Color.VeryLightGrey,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   mainAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
   postAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   actionIcon: {
     width: 22,
@@ -509,15 +500,15 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 13,
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     marginLeft: 8,
   },
   actionedText: {
     fontSize: 13,
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
     marginLeft: 8,
   },

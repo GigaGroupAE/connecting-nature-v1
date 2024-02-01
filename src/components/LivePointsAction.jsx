@@ -4,22 +4,22 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
-} from "react-native"
-import React, { useEffect, useState } from "react"
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {
   FontAwesome,
   AntDesign,
   MaterialCommunityIcons,
-} from "react-native-vector-icons"
-import Color from "../../assets/colors/Color"
-import moment from "moment"
-import { useStateContext } from "../contexts/ContextProvider"
-import { useNavigation } from "@react-navigation/native"
-import { useUserState } from "../slices/userSlice"
-import { BASE_URL } from "../../CONSTANTS"
-import { scale } from "react-native-size-matters"
-import axios from "axios"
+} from 'react-native-vector-icons';
+import Color from '../../assets/colors/Color';
+
+import { useStateContext } from '../contexts/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../slices/userSlice';
+import { BASE_URL } from '../../CONSTANTS';
+import { scale } from 'react-native-size-matters';
+import axios from 'axios';
+import LikedSvg from './SVG/LikedSvg';
 
 const LivePointsAction = ({
   campaign,
@@ -28,28 +28,25 @@ const LivePointsAction = ({
   handleComment,
   setlikeAnimation,
 }) => {
-  var date = moment().utcOffset("+05:00")
-  const { reactions, setreactions, comment, setcomment } = useStateContext()
-  const [visible, setVisible] = useState(false)
-  const [modalVisible, setmodalVisible] = useState(false)
-  const [shares, setshares] = useState([])
-  const toggleBottomNavigationView = () => {
-    setVisible(!visible)
-  }
-  const navigation = useNavigation()
-  const userState = useUserState()
+  const { reactions, setreactions, comment } = useStateContext();
+  // const [visible, setVisible] = useState(false);
+  // const [modalVisible, setmodalVisible] = useState(false);
+  // const [shares, setshares] = useState([]);
 
-  const route = `${BASE_URL}/campaigns/update/${campaign?._id}`
+  const navigation = useNavigation();
+  const userState = useUserState();
 
-  const [liked, setliked] = useState(false)
+  const route = `${BASE_URL}/campaigns/update/${campaign?._id}`;
+
+  const [liked, setliked] = useState(false);
 
   useEffect(() => {
     setliked(
       reactions?.some((user) => {
-        return user._id === userState.id
-      })
-    )
-  }, [reactions])
+        return user._id === userState.id;
+      }),
+    );
+  }, [reactions]);
 
   const updatereactions = async (likes, notify = false) => {
     axios
@@ -58,51 +55,51 @@ const LivePointsAction = ({
         { reactions: likes },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
+        },
       )
       .then((res) => {
-        setreactions(res.data.reactions)
+        setreactions(res.data.reactions);
       })
-      .catch((e) => console.log(e))
-  }
+      .catch((e) => {});
+  };
 
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions]
+      const templike = [...reactions];
       const newLikes = {
         phoneNumber: userState.phoneNumber,
         fullName: userState.fullName,
         type: userState.type,
         profile: userState.profile,
         _id: userState.id,
-      }
-      templike.push(newLikes)
-      updatereactions(templike, true)
-      setliked(true)
-      setlikeAnimation(true)
+      };
+      templike.push(newLikes);
+      updatereactions(templike, true);
+      setliked(true);
+      setlikeAnimation(true);
       setTimeout(() => {
-        setlikeAnimation(false)
-      }, 40)
+        setlikeAnimation(false);
+      }, 40);
     } else {
       const newlikes = reactions.filter((reaction) => {
-        return reaction._id !== userState.id
-      })
-      updatereactions(newlikes, false)
+        return reaction._id !== userState.id;
+      });
+      updatereactions(newlikes, false);
 
-      setliked(false)
+      setliked(false);
     }
-  }
+  };
 
   const handleCommentnavigation = () => {
-    const screen = campaign?.status === "archived" ? "arch" : ""
-    navigation.navigate("CampaignComments", { campaign, screen })
-  }
+    const screen = campaign?.status === 'archived' ? 'arch' : '';
+    navigation.navigate('CampaignComments', { campaign, screen });
+  };
 
   const handleonshare = () => {
-    onpress()
-  }
+    onpress();
+  };
 
   return (
     <View>
@@ -110,26 +107,14 @@ const LivePointsAction = ({
         <View style={styles.statsContainer}>
           <TouchableOpacity
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
             }}
             //   onPress={() => handlePostsLike(reactions)}
           >
-            {reactions?.length !== 0 ? (
-              <AntDesign
-                name="like1"
-                size={10}
-                color={Color.White}
-                style={{
-                  backgroundColor: Color.Blue,
-                  borderRadius: Dimensions.get("screen").height * 0.1,
-
-                  padding: scale(2),
-                }}
-              />
-            ) : null}
+            {reactions?.length !== 0 ? <LikedSvg /> : null}
             <Text style={styles.statsLikes}>
               {liked !== false || reactions.length > 0
-                ? reactions?.length + " Liked"
+                ? reactions?.length + ' Liked'
                 : null}
             </Text>
           </TouchableOpacity>
@@ -138,8 +123,8 @@ const LivePointsAction = ({
               <Text style={styles.statsComments}>
                 {comment?.length !== 0
                   ? comment?.length === 1
-                    ? comment?.length + " comment"
-                    : comment?.length + " comments"
+                    ? comment?.length + ' comment'
+                    : comment?.length + ' comments'
                   : null}
               </Text>
             </TouchableOpacity>
@@ -147,15 +132,15 @@ const LivePointsAction = ({
               <Text style={styles.statsShare}>
                 {campaign?.shares.length !== 0
                   ? campaign?.shares.length === 1
-                    ? campaign?.shares.length + " share"
-                    : campaign?.shares.length + " shares"
+                    ? campaign?.shares.length + ' share'
+                    : campaign?.shares.length + ' shares'
                   : null}
               </Text>
             )}
           </View>
         </View>
       )}
-      {campaign?.status !== "archived" && (
+      {campaign?.status !== 'archived' && (
         <View style={styles.actionMainContainer}>
           <View>
             <Pressable
@@ -203,17 +188,17 @@ const LivePointsAction = ({
         </View>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default LivePointsAction
+export default LivePointsAction;
 
 const styles = StyleSheet.create({
   statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    alignContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'center',
     paddingHorizontal: scale(17),
     paddingVertical: scale(6),
     borderTopWidth: scale(0.9),
@@ -226,52 +211,53 @@ const styles = StyleSheet.create({
   statsLikes: {
     marginLeft: 5,
     fontSize: scale(11),
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
+    marginTop: '4%',
   },
   rightStats: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignContent: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'space-between',
   },
   statsComments: {
     fontSize: scale(11),
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
   },
   statsShare: {
-    marginLeft: "5%",
+    marginLeft: '5%',
     fontSize: scale(11),
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
   },
   actionMainContainer: {
     borderTopWidth: 1,
-    width: "100%",
-    alignSelf: "center",
+    width: '100%',
+    alignSelf: 'center',
     borderColor: Color.VeryLightGrey,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: Color.White,
     borderBottomWidth: 0.5,
     borderBottomColor: Color.LightGrey,
     // marginBottom: scale(10),
   },
   mainAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
   postAction: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   actionIcon: {
     width: 22,
@@ -279,15 +265,15 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: scale(11),
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     marginLeft: 8,
   },
   actionedText: {
     fontSize: scale(11),
-    alignSelf: "center",
-    fontFamily: "Roboto_400Regular",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
     marginLeft: 8,
   },
@@ -302,4 +288,4 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontSize: scale(20),
   },
-})
+});

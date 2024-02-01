@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,54 +10,52 @@ import {
   Dimensions,
   Modal,
   Pressable,
-} from "react-native";
-import HeaderNormal from "../../components/HeaderNormal";
-import BottomTab from "../../components/BottomTab";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../../assets/colors/Color";
-import axios from "axios";
-import { BASE_URL } from "../../../CONSTANTS";
-import { useUserState } from "../../slices/userSlice";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import NoMessage from "./NoMessage";
-import MessagePreview from "../../components/MessagePreview";
-import { axiosInstance } from "../../../axiosInstance";
-import { useQuery } from "react-query";
-import NotificationsSkeleton from "../../components/NotificationsSkeleton";
+} from 'react-native';
+import HeaderNormal from '../../components/HeaderNormal';
+import BottomTab from '../../components/BottomTab';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Color from '../../../assets/colors/Color';
+import { BASE_URL } from '../../../CONSTANTS';
+import { useUserState } from '../../slices/userSlice';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import NoMessage from './NoMessage';
+import MessagePreview from '../../components/MessagePreview';
+import { axiosInstance } from '../../../axiosInstance';
+import { useQuery } from 'react-query';
+import NotificationsSkeleton from '../../components/NotificationsSkeleton';
+import { Entypo } from 'react-native-vector-icons';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const fetchMessages = async () => {
-  const response = await axiosInstance.get("/chat/get-my-chats");
+  const response = await axiosInstance.get('/chat/get-my-chats');
   return response.data.myChats;
 };
 
 export default function ChatList() {
   // const [Messages, setMessages] = useState([])
   const [modalVisible, setmodalVisible] = useState(false);
-  const [refresh, setRefresh] = useState(false);
   const [IsshowInput, setIsShowInput] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     data: Messages,
     isLoading: loading,
     refetch,
-  } = useQuery("cnmessages", fetchMessages);
+  } = useQuery('cnmessages', fetchMessages);
 
   const navigation = useNavigation();
   const userState = useUserState();
-  const { group, setgroup } = useStateContext();
+  const { setgroup } = useStateContext();
   const handleonbackpress = () => {
     navigation.goBack();
   };
   useFocusEffect(
     React.useCallback(() => {
       refetch();
-    }, [])
+    }, []),
   );
 
   const setPhotoForDirectChat = (props) => {
@@ -83,7 +81,7 @@ export default function ChatList() {
 
   const handleHideInput = useCallback(() => {
     setIsShowInput(false);
-    setSearchQuery("");
+    setSearchQuery('');
   }, []);
   const sortedMessages = useMemo(() => {
     return Messages?.slice().sort((a, b) => {
@@ -107,10 +105,37 @@ export default function ChatList() {
     });
   }, [Messages]);
 
+  const handleDelete = () => {};
+
+  const handleNavigation = async (item) => {
+    const { messages } = item;
+
+    const latestMessage =
+      messages?.length > 0 ? messages[messages.length - 1] : null;
+
+    const isMessageRead =
+      latestMessage?.status === 'unchecked' &&
+      userState?.id !== latestMessage?.from;
+    if (isMessageRead) {
+      try {
+        const response = await axiosInstance.patch('/chat/updatachat', {
+          messageId: latestMessage._id,
+          newStatus: 'checked',
+        });
+
+        console.log(response);
+      } catch (error) {}
+    }
+    setgroup(item);
+    navigation.navigate('ChatCN', {
+      group: item,
+    });
+  };
+
   return (
-    <View style={{ backgroundColor: Color.White, height: "100%" }}>
+    <View style={{ backgroundColor: Color.White, height: '100%' }}>
       <HeaderNormal
-        title={"Chats"}
+        title="Chats"
         onback={handleonbackpress}
         handleShowInput={handleShowInput}
       />
@@ -118,7 +143,7 @@ export default function ChatList() {
         <View
           style={{
             backgroundColor: Color.White,
-            width: "100%",
+            width: '100%',
           }}
         >
           <View style={styles.chatSearchContainer}>
@@ -151,23 +176,18 @@ export default function ChatList() {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
                   const { messages } = item;
-
                   const latestMessage =
                     messages?.length > 0 ? messages[messages.length - 1] : null;
                   const timePassed = calculateTimeDifference(
-                    latestMessage?.createdAt
+                    latestMessage?.createdAt,
                   );
-
+                  const isMessageRead =
+                    latestMessage?.status === 'unchecked' &&
+                    userState?.id !== latestMessage?.from;
                   return (
                     <Pressable
                       style={styles.mainBody}
-                      onPress={() => {
-                        setgroup(item);
-                        navigation.navigate("ChatCN", {
-                          group: item,
-                        });
-                      }}
-                      delayLongPress={1000}
+                      onPress={() => handleNavigation(item)}
                     >
                       <View style={styles.singleNotification}>
                         <Image
@@ -185,7 +205,26 @@ export default function ChatList() {
                             </Text>
                             <Text style={styles.timeText}>{timePassed}</Text>
                           </View>
-                          <MessagePreview item={item} />
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <MessagePreview item={item} />
+                            {isMessageRead && (
+                              <View
+                                style={{
+                                  backgroundColor: Color.Blue,
+                                  width: 10,
+                                  height: 10,
+                                  borderRadius: 5,
+                                  marginRight: '13%',
+                                  marginTop: '2%',
+                                }}
+                              />
+                            )}
+                          </View>
                         </View>
                       </View>
                     </Pressable>
@@ -194,7 +233,7 @@ export default function ChatList() {
               />
               <Modal
                 animationType="slide"
-                transparent={true}
+                transparent
                 visible={modalVisible}
                 onRequestClose={() => {
                   setmodalVisible(!modalVisible);
@@ -204,8 +243,8 @@ export default function ChatList() {
                   <View>
                     <Text
                       style={{
-                        fontFamily: "Roboto_400Regular",
-                        fontWeight: "400",
+                        fontFamily: 'Roboto_400Regular',
+                        fontWeight: '400',
                       }}
                     >
                       Do you really want to delete the Chat?
@@ -235,32 +274,39 @@ export default function ChatList() {
         </View>
       )}
 
-      <BottomTab activeMenu={"Chat"} scrollToTop={scrollToTop} />
+      <BottomTab activeMenu="Chat" scrollToTop={scrollToTop} />
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    display: 'flex',
     backgroundColor: Color.White,
-    width: "100%",
-    marginBottom: "28%",
+    width: '100%',
+    marginBottom: '28%',
     paddingBottom: 10,
-    alignContent: "flex-start",
-    justifyContent: "flex-start",
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',
   },
   mainBody: {
     paddingHorizontal: 19,
     paddingVertical: 5,
     borderWidth: 0.5,
-
     borderColor: Color.VeryLightGrey,
   },
-  singleNotification: {
-    flexDirection: "row",
-    alignItems: "center",
+  mainBodyUnRead: {
+    paddingHorizontal: 19,
     paddingVertical: 5,
-    width: "95%",
+    borderWidth: 0.5,
+
+    borderColor: Color.VeryLightGrey,
+    backgroundColor: Color.LightBlue,
+  },
+  singleNotification: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    width: '95%',
     // justifyContent: "center",
   },
   userAvatar: {
@@ -270,27 +316,27 @@ const styles = StyleSheet.create({
   },
 
   listHead: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   userName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: 14,
     color: Color.Black,
     marginLeft: 11,
   },
 
   timeText: {
-    position: "absolute",
-    fontFamily: "Roboto_400Regular",
+    position: 'absolute',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: Color.Black,
-    right: "10%",
+    right: '10%',
   },
   mainContent: {
-    width: "100%",
-    justifyContent: "space-around",
+    width: '100%',
+    justifyContent: 'space-around',
     // alignItems: "center",
   },
   btn: {
@@ -298,18 +344,15 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     paddingHorizontal: Width * 0.07,
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "600",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '600',
     borderRadius: Height * 0.01,
   },
   ConfrmModel: {
-    alignSelf: "center",
-
     flex: 0.3,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: Height * 0.4,
-
     backgroundColor: Color.White,
     shadowColor: Color.Grey,
     shadowOffset: {
@@ -319,38 +362,38 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 8,
-    alignSelf: "center",
+    alignSelf: 'center',
     paddingVertical: Height * 0.019,
     // marginTop: 10,
     borderRadius: 6,
   },
   model: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: Height * 0.03,
     width: Width * 0.9,
   },
   chatSearchContainer: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 10,
     marginHorizontal: 10,
   },
   searchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 4,
     marginLeft: 10,
     borderRadius: Height * 0.1,
-    backgroundColor: "#F1F1F1",
+    backgroundColor: '#F1F1F1',
   },
   textBox: {
     fontSize: 14,
     marginTop: 3,
-    fontFamily: "Roboto_400Regular",
-    width: "82%",
+    fontFamily: 'Roboto_400Regular',
+    width: '82%',
   },
 });
