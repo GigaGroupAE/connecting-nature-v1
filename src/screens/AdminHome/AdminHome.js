@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,35 +8,35 @@ import {
   FlatList,
   Dimensions,
   Pressable,
-} from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { List } from "react-native-paper";
-import AdminBottomTab from "../../components/AdminBottomTab";
-import { Ionicons, MaterialIcons } from "react-native-vector-icons";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import axios from "axios";
-import * as Contacts from "expo-contacts";
-import { useUserState } from "./../../slices/userSlice";
-import { useContactsStateActions } from "../../slices/contactslice.js";
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import CreateNew from "../../components/Modals/AdminHome/CreateNew";
+} from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { List } from 'react-native-paper';
+import AdminBottomTab from '../../components/AdminBottomTab';
+import { Ionicons, MaterialIcons } from 'react-native-vector-icons';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
+import * as Contacts from 'expo-contacts';
+import { useUserState } from './../../slices/userSlice';
+import { useContactsStateActions } from '../../slices/contactslice.js';
+import { BASE_URL } from '../../../CONSTANTS';
+import Color from '../../../assets/colors/Color';
+import CreateNew from '../../components/Modals/AdminHome/CreateNew';
 
-import { useStateContext } from "../../contexts/ContextProvider";
-import { ScrollView } from "react-native-gesture-handler";
-import AdminHomeManegeTab from "./AdminHomeManegeTab";
-import { scale } from "react-native-size-matters";
-import GroupMembersList from "../../components/GroupMembersList";
-import { axiosInstance } from "../../../axiosInstance";
-import { useQuery } from "react-query";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { useStateContext } from '../../contexts/ContextProvider';
+import { ScrollView } from 'react-native-gesture-handler';
+import AdminHomeManegeTab from './AdminHomeManegeTab';
+import { scale } from 'react-native-size-matters';
+import GroupMembersList from '../../components/GroupMembersList';
+import { axiosInstance } from '../../../axiosInstance';
+import { useQuery } from 'react-query';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const fetchGroups = async () => {
   try {
-    const { data } = await axiosInstance.get("/groups/getgroups");
+    const { data } = await axiosInstance.get('/groups/getgroups');
     return data;
   } catch (error) {
     console.log(error);
@@ -46,7 +46,7 @@ const fetchGroups = async () => {
 export default function AdminHome(props) {
   const [visible, setVisible] = React.useState(false);
   const [isChatListOpen, setisChatListOpen] = useState({});
-  const [groupDetails, setgroupDetails] = useState("");
+  const [groupDetails, setgroupDetails] = useState('');
 
   const showModal = useCallback(() => {
     setVisible(true);
@@ -57,7 +57,7 @@ export default function AdminHome(props) {
   }, []);
 
   const containerStyle = {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: Height * 0.01,
     paddingVertical: Height * 0.015,
     marginHorizontal: Width * 0.04,
@@ -66,17 +66,17 @@ export default function AdminHome(props) {
 
   const contactstateactions = useContactsStateActions();
   const {
-    data: groups = [], // Initialize as an empty array
+    data: groups = [],
     isLoading: loading,
     refetch,
-  } = useQuery("groups", fetchGroups);
+  } = useQuery('groups', fetchGroups);
 
   //fetch user contacts in this useEffect
   useEffect(() => {
     const fetchcontacts = async () => {
       try {
         const { status } = await Contacts.requestPermissionsAsync({});
-        if (status === "granted") {
+        if (status === 'granted') {
           const { data } = await Contacts.getContactsAsync();
 
           if (data.length > 0) {
@@ -89,7 +89,7 @@ export default function AdminHome(props) {
                   phoneNumber: contact?.phoneNumbers[0]?.number,
                 });
               } catch (error) {
-                console.log("error is in this contact ", contact);
+                console.log('error is in this contact ', contact);
               }
             });
             resolvedContacts.sort((a, b) => {
@@ -108,24 +108,24 @@ export default function AdminHome(props) {
   }, []);
   const sections = [
     {
-      id: "1",
-      title: "Managerial Groups",
+      id: '1',
+      title: 'Managerial Groups',
     },
     {
-      id: "2",
-      title: "Departmental Groups",
+      id: '2',
+      title: 'Departmental Groups',
     },
     {
-      id: "3",
-      title: "Outsourcing Groups",
+      id: '3',
+      title: 'Outsourcing Groups',
     },
     {
-      id: "4",
-      title: "Social Groups",
+      id: '4',
+      title: 'Social Groups',
     },
     {
-      id: "5",
-      title: "Connecting Nature (Do-Day)",
+      id: '5',
+      title: 'Connecting Nature (Do-Day)',
     },
   ];
   const navigation = useNavigation();
@@ -134,7 +134,7 @@ export default function AdminHome(props) {
     let second = false;
     let foundGroup = {};
     const individualGroups = groups.filter((group) => {
-      return group.type === "individual";
+      return group.type === 'individual';
     });
     individualGroups.map((group) => {
       if (
@@ -153,7 +153,7 @@ export default function AdminHome(props) {
     });
     if (first === true && second === true) {
       setgroup(foundGroup);
-      navigation.navigate("ChatCRM", { group: foundGroup });
+      navigation.navigate('ChatCRM', { group: foundGroup });
     } else {
       let members = [];
       members.push({
@@ -169,21 +169,21 @@ export default function AdminHome(props) {
         photo: props.profile,
       });
       const formData = new FormData();
-      formData.append("name", userState.fullName);
-      formData.append("type", "individual");
-      formData.append("title", "test");
-      formData.append("members", JSON.stringify(members));
+      formData.append('name', userState.fullName);
+      formData.append('type', 'individual');
+      formData.append('title', 'test');
+      formData.append('members', JSON.stringify(members));
       axios
         .post(`${BASE_URL}/groups/creategroup`, formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
-            "auth-token": userState.token,
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
+            'auth-token': userState.token,
           },
         })
         .then((res) => {
           setgroup(res.data);
-          navigation.navigate("ChatCRM", { group: res.data });
+          navigation.navigate('ChatCRM', { group: res.data });
         })
         .catch((e) => console.log(e));
     }
@@ -192,7 +192,7 @@ export default function AdminHome(props) {
   useFocusEffect(
     React.useCallback(() => {
       refetch();
-    }, [])
+    }, []),
   );
 
   const userState = useUserState();
@@ -200,7 +200,7 @@ export default function AdminHome(props) {
   const handleAdminChat = () => {
     let groupfound = false;
     const admingroup = groups.filter((group) => {
-      return group.type === "Admin";
+      return group.type === 'Admin';
     });
 
     admingroup.map((group) => {
@@ -208,10 +208,10 @@ export default function AdminHome(props) {
         group.members[0].member.phoneNumber === userState.phoneNumber ||
         group.members[1].member.phoneNumber === userState.phoneNumber
       ) {
-        if (group.type === "Admin") {
+        if (group.type === 'Admin') {
           groupfound = true;
           setgroup(group);
-          navigation.navigate("ChatCRM", { group: group });
+          navigation.navigate('ChatCRM', { group: group });
         }
       }
     });
@@ -219,12 +219,12 @@ export default function AdminHome(props) {
       axios
         .get(`${BASE_URL}/user/getusers`, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         })
         .then((res) => {
           let user = res.data.filter((admin) => {
-            return admin.type === "Admin";
+            return admin.type === 'Admin';
           });
           let members = [
             {
@@ -235,21 +235,21 @@ export default function AdminHome(props) {
             },
           ];
           const formData = new FormData();
-          formData.append("name", userState.fullName);
-          formData.append("type", "Admin");
-          formData.append("title", "Admin");
-          formData.append("members", JSON.stringify(members));
+          formData.append('name', userState.fullName);
+          formData.append('type', 'Admin');
+          formData.append('title', 'Admin');
+          formData.append('members', JSON.stringify(members));
           axios
             .post(`${BASE_URL}/groups/creategroup`, formData, {
               headers: {
-                "Content-Type": "multipart/form-data",
-                Accept: "application/json",
-                "auth-token": userState.token,
+                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+                'auth-token': userState.token,
               },
             })
             .then((res) => {
               setgroup(res.data);
-              navigation.navigate("ChatCRM", { group: res.data });
+              navigation.navigate('ChatCRM', { group: res.data });
             })
             .catch((e) => console.log(e));
         })
@@ -258,10 +258,10 @@ export default function AdminHome(props) {
   };
 
   const handleInviteUser = () => {
-    navigation.navigate("InviteUsers");
+    navigation.navigate('InviteUsers');
   };
   const handleVerificationReq = () => {
-    navigation.navigate("UpgradeRequestsScreen");
+    navigation.navigate('UpgradeRequestsScreen');
   };
 
   const handleExpandGroup = (id, group) => {
@@ -281,12 +281,12 @@ export default function AdminHome(props) {
         }}
       >
         <Image
-          source={require("../../../assets/crmlogo.png")}
+          source={require('../../../assets/crmlogo.png')}
           style={styles.logo}
         />
       </View>
       <ScrollView
-        style={{ height: "93%" }}
+        style={{ height: '93%' }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.main}>
@@ -304,7 +304,7 @@ export default function AdminHome(props) {
           </View>
           <View
             style={{
-              marginTop: Dimensions.get("screen").height * 0.0015,
+              marginTop: Dimensions.get('screen').height * 0.0015,
             }}
           />
           <View>
@@ -317,25 +317,25 @@ export default function AdminHome(props) {
                     <List.Accordion
                       title={item.title}
                       key={index}
-                      titleStyle={{ color: "black" }}
+                      titleStyle={{ color: 'black' }}
                       expanded={true}
                       style={{
                         icon: {
-                          display: "none",
+                          display: 'none',
                         },
                       }}
                       right={(props) => (
                         <List.Icon
                           {...props}
                           icon="folder"
-                          style={{ display: "none" }}
+                          style={{ display: 'none' }}
                           key={index}
                         />
                       )}
                     >
-                      {item.title === "Managerial Groups"
+                      {item.title === 'Managerial Groups'
                         ? groups.map((group, id) => {
-                            if (group.type === "Managerial")
+                            if (group.type === 'Managerial')
                               return (
                                 <>
                                   <View style={styles.List} key={id}>
@@ -352,8 +352,8 @@ export default function AdminHome(props) {
                                         <MaterialIcons
                                           name={
                                             isChatListOpen[id]
-                                              ? "keyboard-arrow-up"
-                                              : "keyboard-arrow-down"
+                                              ? 'keyboard-arrow-up'
+                                              : 'keyboard-arrow-down'
                                           }
                                           style={{ fontSize: scale(20) }}
                                         />
@@ -363,19 +363,19 @@ export default function AdminHome(props) {
                                   {isChatListOpen[id] && (
                                     <View
                                       style={{
-                                        width: "95%",
-                                        alignSelf: "center",
+                                        width: '95%',
+                                        alignSelf: 'center',
                                       }}
                                     >
                                       <TouchableOpacity
                                         style={styles.enterChat}
                                         onPress={() => {
                                           setgroup(groupDetails);
-                                          navigation.navigate("ChatCRM", {
+                                          navigation.navigate('ChatCRM', {
                                             group: groupDetails,
                                           });
                                           setisChatListOpen(
-                                            !isChatListOpen[id]
+                                            !isChatListOpen[id],
                                           );
                                         }}
                                       >
@@ -398,9 +398,9 @@ export default function AdminHome(props) {
                               );
                           })
                         : null}
-                      {item.title === "Departmental Groups"
+                      {item.title === 'Departmental Groups'
                         ? groups.map((group, id) => {
-                            if (group.type === "Departmental") {
+                            if (group.type === 'Departmental') {
                               return (
                                 <>
                                   <View style={styles.List} key={id}>
@@ -417,8 +417,8 @@ export default function AdminHome(props) {
                                         <MaterialIcons
                                           name={
                                             isChatListOpen[id]
-                                              ? "keyboard-arrow-up"
-                                              : "keyboard-arrow-down"
+                                              ? 'keyboard-arrow-up'
+                                              : 'keyboard-arrow-down'
                                           }
                                           style={{ fontSize: scale(20) }}
                                         />
@@ -428,19 +428,19 @@ export default function AdminHome(props) {
                                   {isChatListOpen[id] && (
                                     <View
                                       style={{
-                                        width: "95%",
-                                        alignSelf: "center",
+                                        width: '95%',
+                                        alignSelf: 'center',
                                       }}
                                     >
                                       <TouchableOpacity
                                         style={styles.enterChat}
                                         onPress={() => {
                                           setgroup(groupDetails);
-                                          navigation.navigate("ChatCRM", {
+                                          navigation.navigate('ChatCRM', {
                                             group: groupDetails,
                                           });
                                           setisChatListOpen(
-                                            !isChatListOpen[id]
+                                            !isChatListOpen[id],
                                           );
                                         }}
                                       >
@@ -464,9 +464,9 @@ export default function AdminHome(props) {
                             }
                           })
                         : null}
-                      {item.title === "Outsourcing Groups"
+                      {item.title === 'Outsourcing Groups'
                         ? groups.map((group, id) => {
-                            if (group.type === "Outsource")
+                            if (group.type === 'Outsource')
                               return (
                                 <>
                                   <View style={styles.List} key={id}>
@@ -483,8 +483,8 @@ export default function AdminHome(props) {
                                         <MaterialIcons
                                           name={
                                             isChatListOpen[id]
-                                              ? "keyboard-arrow-up"
-                                              : "keyboard-arrow-down"
+                                              ? 'keyboard-arrow-up'
+                                              : 'keyboard-arrow-down'
                                           }
                                           style={{ fontSize: scale(20) }}
                                         />
@@ -494,15 +494,15 @@ export default function AdminHome(props) {
                                   {isChatListOpen[id] && (
                                     <View
                                       style={{
-                                        width: "95%",
-                                        alignSelf: "center",
+                                        width: '95%',
+                                        alignSelf: 'center',
                                       }}
                                     >
                                       <TouchableOpacity
                                         style={styles.enterChat}
                                         onPress={() => {
                                           setgroup(groupDetails);
-                                          navigation.navigate("ChatCRM", {
+                                          navigation.navigate('ChatCRM', {
                                             group: groupDetails,
                                           });
                                         }}
@@ -526,9 +526,9 @@ export default function AdminHome(props) {
                               );
                           })
                         : null}
-                      {item.title === "Social Groups"
+                      {item.title === 'Social Groups'
                         ? groups.map((group, id) => {
-                            if (group.type === "Social")
+                            if (group.type === 'Social')
                               return (
                                 <>
                                   <View style={styles.List} key={id}>
@@ -545,8 +545,8 @@ export default function AdminHome(props) {
                                         <MaterialIcons
                                           name={
                                             isChatListOpen[id]
-                                              ? "keyboard-arrow-up"
-                                              : "keyboard-arrow-down"
+                                              ? 'keyboard-arrow-up'
+                                              : 'keyboard-arrow-down'
                                           }
                                           style={{ fontSize: scale(20) }}
                                         />
@@ -556,15 +556,15 @@ export default function AdminHome(props) {
                                   {isChatListOpen[id] && (
                                     <View
                                       style={{
-                                        width: "95%",
-                                        alignSelf: "center",
+                                        width: '95%',
+                                        alignSelf: 'center',
                                       }}
                                     >
                                       <TouchableOpacity
                                         style={styles.enterChat}
                                         onPress={() => {
                                           setgroup(groupDetails);
-                                          navigation.navigate("ChatCRM", {
+                                          navigation.navigate('ChatCRM', {
                                             group: groupDetails,
                                           });
                                         }}
@@ -588,9 +588,9 @@ export default function AdminHome(props) {
                               );
                           })
                         : null}
-                      {item.title === "Connecting Nature (Do-Day)"
+                      {item.title === 'Connecting Nature (Do-Day)'
                         ? groups.map((group, id) => {
-                            if (group.type === "campaign")
+                            if (group.type === 'campaign')
                               return (
                                 <>
                                   <View style={styles.List} key={id}>
@@ -607,8 +607,8 @@ export default function AdminHome(props) {
                                         <MaterialIcons
                                           name={
                                             isChatListOpen[id]
-                                              ? "keyboard-arrow-up"
-                                              : "keyboard-arrow-down"
+                                              ? 'keyboard-arrow-up'
+                                              : 'keyboard-arrow-down'
                                           }
                                           style={{ fontSize: scale(20) }}
                                         />
@@ -618,15 +618,15 @@ export default function AdminHome(props) {
                                   {isChatListOpen[id] && (
                                     <View
                                       style={{
-                                        width: "95%",
-                                        alignSelf: "center",
+                                        width: '95%',
+                                        alignSelf: 'center',
                                       }}
                                     >
                                       <TouchableOpacity
                                         style={styles.enterChat}
                                         onPress={() => {
                                           setgroup(groupDetails);
-                                          navigation.navigate("ChatCRM", {
+                                          navigation.navigate('ChatCRM', {
                                             group: groupDetails,
                                           });
                                         }}
@@ -672,12 +672,10 @@ export default function AdminHome(props) {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: Color.LightBg,
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   bodyContainer: {
-    borderColor: Color.VeryLightGrey,
-    backgroundColor: Color.White,
     borderRadius: 10,
     marginVertical: scale(15),
     borderColor: Color.LightGrey,
@@ -693,44 +691,44 @@ const styles = StyleSheet.create({
 
     elevation: 4,
 
-    position: "relative",
+    position: 'relative',
     zIndex: 900,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
   },
 
   contentContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: Height * 0.008,
-    alignContent: "center",
+    alignContent: 'center',
     marginLeft: Width * 0.03,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   CreateGroup: {
-    flexDirection: "row",
-    alignSelf: "center",
-    width: "100%",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignSelf: 'center',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: Width * 0.03,
   },
   avatarGroup: {
-    width: Dimensions.get("screen").height * 0.07,
-    height: Dimensions.get("screen").height * 0.07,
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    width: Dimensions.get('screen').height * 0.07,
+    height: Dimensions.get('screen').height * 0.07,
+    borderRadius: Dimensions.get('screen').height * 0.1,
     backgroundColor: Color.VeryLightGrey,
   },
   CreateGroupText: {
     paddingVertical: Height * 0.02,
     fontSize: Height * 0.02,
-    fontWeight: "400",
-    fontFamily: "Roboto_400Regular",
+    fontWeight: '400',
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
   },
   groupHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.023,
-    fontWeight: "600",
+    fontWeight: '600',
     marginLeft: Width * 0.059,
     marginTop: Height * 0.015,
     color: Color.Black,
@@ -753,24 +751,24 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
 
     elevation: 4,
-    position: "relative",
+    position: 'relative',
     zIndex: 900,
   },
 
   adminGroupListContainer: {
     paddingHorizontal: Width * 0.045,
-    width: Dimensions.get("window").width,
+    width: Dimensions.get('window').width,
   },
 
   groupContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: scale(12),
   },
   groupTitle: {
     fontSize: Height * 0.02,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     paddingVertical: Height * 0.02,
     marginLeft: Width * 0.02,
     color: Color.Black,
@@ -784,22 +782,22 @@ const styles = StyleSheet.create({
     marginLeft: Width * 0.05,
     width: 90,
     height: 58,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   enterChat: {
-    backgroundColor: "rgba(0, 123, 255, 0.1)",
-    alignItems: "center",
-    width: "100%",
-    alignSelf: "center",
+    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+    alignItems: 'center',
+    width: '100%',
+    alignSelf: 'center',
     height: scale(40),
-    justifyContent: "center",
+    justifyContent: 'center',
     borderRadius: scale(8),
     borderWidth: 1,
-    borderColor: "rgba(0, 123, 255, 1)",
+    borderColor: 'rgba(0, 123, 255, 1)',
   },
   buttonTitle: {
     color: Color.Blue,
     fontSize: scale(15),
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
   },
 });

@@ -1,5 +1,5 @@
-import { StyleSheet, TouchableOpacity, Text } from "react-native";
-import Color from "../../assets/colors/Color";
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import Color from '../../assets/colors/Color';
 
 export default function ButtonMain(props) {
   return (
@@ -23,9 +23,9 @@ const styles = StyleSheet.create({
   },
   title: {
     padding: 11,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.White,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 18,
   },
 });

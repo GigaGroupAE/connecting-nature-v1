@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   View,
-  FlatList,
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { useIsFocused } from '@react-navigation/native';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import Color from '../../../assets/colors/Color';
@@ -41,8 +41,6 @@ Notifications.setNotificationHandler({
 
 const Home = () => {
   const isFocused = useIsFocused();
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
   const userstate = useUserState();
   const userActions = useUserStateActions();
   const notificationListener = useRef();
@@ -124,7 +122,7 @@ const Home = () => {
     if (isFocused) {
       if (!userstate.expoPushToken)
         registerForPushNotificationsAsync().then((token) => {
-          setExpoPushToken(token);
+          // setExpoPushToken(token);
           //make api call to save the token
           const config = {
             headers: {
@@ -147,7 +145,7 @@ const Home = () => {
 
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification);
+          // setNotification(notification);
         });
 
       responseListener.current =
@@ -186,7 +184,7 @@ const Home = () => {
         {postsLoading ? (
           <PostSkeleton screen="home" />
         ) : (
-          <FlatList
+          <FlashList
             data={postsData?.pages.flatMap((page) => page.newPosts) || []}
             keyExtractor={(item) => item._id}
             ListHeaderComponent={storyHeaderComponent}
@@ -202,6 +200,7 @@ const Home = () => {
             onEndReachedThreshold={0.5}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
+            estimatedItemSize={200}
           />
         )}
       </View>

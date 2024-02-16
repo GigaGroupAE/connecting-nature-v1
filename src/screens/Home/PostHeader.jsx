@@ -1,5 +1,4 @@
 import {
-  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,12 +15,14 @@ import { calculateTimeDifference } from '../../utils/timeDifference';
 import AdminIcon from '../../components/AdminIcon';
 import { scale } from 'react-native-size-matters';
 import PostDescription from '../../components/PostDesciption';
+import { Image } from 'expo-image';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 
 const PostHeader = ({ data, setmodalVisible }) => {
   const navigation = useNavigation();
+
   // console.log(data);
   const userImage = data?.postedby.profile;
   const userName = data?.postedby?.fullName;
@@ -106,10 +107,10 @@ const styles = StyleSheet.create({
   },
   userAvatar: {
     marginRight: 10,
-    borderRadius: Dimensions.get('screen').height * 0.1,
-    width: Dimensions.get('screen').height * 0.06,
-    height: Dimensions.get('screen').height * 0.06,
     backgroundColor: Color.VeryLightGrey,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   userName: {
     color: Color.Black,

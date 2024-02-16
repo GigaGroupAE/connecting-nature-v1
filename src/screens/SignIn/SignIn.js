@@ -33,10 +33,10 @@ const SignIn = () => {
   const [location, setLocation] = useState(null);
 
   const onHandleClick = () => {
-    if (phoneNumber.length !== 11) {
-      showSnackbar('Phone number should be 11 digits');
-      return;
-    }
+    // if (phoneNumber.length !== 11) {
+    //   showSnackbar('Phone number should be 11 digits');
+    //   return;
+    // }
 
     if (loading) return;
 
@@ -61,6 +61,7 @@ const SignIn = () => {
             })
             .catch((e) => {
               setLoading(false);
+              console.log(e);
             });
         } else {
           showSnackbar(res.data.message);
@@ -73,13 +74,13 @@ const SignIn = () => {
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         showSnackbar('Permission to access location was denied');
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({});
       setLocation(location.coords);
       userActions.setLocation(location?.coords);
     })();
@@ -88,7 +89,7 @@ const SignIn = () => {
   return (
     <SafeAreaProvider>
       <CustomStatsBar backgroundColor={Color.White} />
-      <Header title={'Sign In'} />
+      <Header title="Sign In" />
       <View style={styles.container}>
         <Image
           style={styles.logo}
@@ -101,13 +102,13 @@ const SignIn = () => {
           </Text>
         </View>
         <InputText
-          title={'Phone Number'}
+          title="Phone Number"
           onchange={setPhoneNumber}
           value={phoneNumber}
-          keyboardType={'number-pad'}
+          keyboardType="number-pad"
         />
         <ButtonMain
-          title={'Sign In'}
+          title="Sign In"
           callback={onHandleClick}
           disabled={loading}
         />

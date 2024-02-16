@@ -1,41 +1,44 @@
 import {
   View,
   Dimensions,
-  Image,
   TouchableOpacity,
   Modal,
   Text,
   StyleSheet,
-} from "react-native"
-import React, { useState, useEffect } from "react"
-import { BASE_URL } from "../../CONSTANTS"
-import Color from "../../assets/colors/Color"
-import { ProgressBar } from "react-native-paper"
-import { useNavigation } from "@react-navigation/native"
-import GradientBottomImage from "./GradientBottomImage"
-import { useStateContext } from "../contexts/ContextProvider"
+} from 'react-native';
+import React, { useState } from 'react';
+import { BASE_URL } from '../../CONSTANTS';
+import Color from '../../assets/colors/Color';
+import { ProgressBar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import GradientBottomImage from './GradientBottomImage';
+import { useStateContext } from '../contexts/ContextProvider';
+import { Image } from 'expo-image';
 
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 export default function StoryCard(props) {
-  const [visible, setvisible] = useState(false)
-  const [time, settime] = useState(0)
+  const [visible, setvisible] = useState(false);
+  const [time, settime] = useState(0);
 
-  const { setSelectedStory } = useStateContext()
-  const navigation = useNavigation()
+  const { setSelectedStory } = useStateContext();
+  const navigation = useNavigation();
 
   const handleNavigation = (selectedStory) => {
-    navigation.navigate("StoryComment")
-    setSelectedStory(selectedStory)
-  }
+    navigation.navigate('StoryComment');
+    setSelectedStory(selectedStory);
+  };
+
+  const supportedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => handleNavigation(props.story)}>
         <View style={styles.card}>
           <GradientBottomImage
             style={{
-              height: Dimensions.get("screen").height * 0.17,
-              width: Dimensions.get("screen").width * 0.8,
+              height: Dimensions.get('screen').height * 0.17,
+              width: Dimensions.get('screen').width * 0.8,
             }}
             source={{
               uri: `${BASE_URL}/images/${props.story.media.name}`,
@@ -44,10 +47,14 @@ export default function StoryCard(props) {
           />
 
           <View style={styles.userContainer}>
-            {props.story.media?.type === "image/jpeg" ||
-            props.story.media?.type === "image/png" ||
-            props.story.media?.type === "image/jpg" ||
-            props.story.media?.type === "video/mp4" ? (
+            {/* {props.story.media?.type === 'image/jpeg' ||
+            props.story.media?.type === 'image/png' ||
+            props.story.media?.type === 'image/jpg' ||
+            props.story.media?.type === 'video/mp4' ? (
+            
+            ) : null} */}
+
+            {supportedImageFormats.includes(props.story.media?.type) && (
               <View>
                 <TouchableOpacity key={props.index}>
                   <Image
@@ -58,7 +65,7 @@ export default function StoryCard(props) {
                   />
                 </TouchableOpacity>
               </View>
-            ) : null}
+            )}
 
             <Text style={styles.userFullName}>
               {props.story.postedby.fullName}
@@ -68,7 +75,7 @@ export default function StoryCard(props) {
         <Modal animationType="slide" visible={visible}>
           <TouchableOpacity
             onPress={() => {
-              setvisible(false)
+              setvisible(false);
             }}
           >
             <View>
@@ -84,12 +91,12 @@ export default function StoryCard(props) {
         </Modal>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: "95%",
+    height: '95%',
     borderBottomColor: Color.LightGrey,
     borderBottomWidth: 0.5,
   },
@@ -108,11 +115,11 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   userContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: Height * 0.12,
     left: 12,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   userProfileImage: {
     height: 30,
@@ -125,4 +132,4 @@ const styles = StyleSheet.create({
     height: Height * 0.8,
     width: Width,
   },
-})
+});

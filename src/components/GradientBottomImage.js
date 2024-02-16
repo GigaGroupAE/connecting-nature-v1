@@ -1,15 +1,10 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  View,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-import VideoPlayer from "expo-video-player";
-import { BASE_URL } from "../../CONSTANTS";
-import { useNavigation } from "@react-navigation/native";
-import { useStateContext } from "../contexts/ContextProvider";
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import VideoPlayer from 'expo-video-player';
+import { BASE_URL } from '../../CONSTANTS';
+import { useNavigation } from '@react-navigation/native';
+import { useStateContext } from '../contexts/ContextProvider';
+import { Image } from 'expo-image';
 
 const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
   const video = React.useRef(null);
@@ -19,12 +14,12 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
     video.current.setStatusAsync({
       shouldPlay: false,
     });
-    navigation.navigate("StoryComment");
+    navigation.navigate('StoryComment');
     setSelectedStory(story);
   };
   return (
     <View style={[style, { borderRadius }]}>
-      {story.media.type === "image/jpeg" ? (
+      {story.media.type === 'image/jpeg' ? (
         <Image
           source={source}
           style={[StyleSheet.absoluteFill, { borderRadius }]}
@@ -33,9 +28,9 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
         <TouchableOpacity
           style={[
             StyleSheet.absoluteFill,
-            { borderRadius, overflow: "hidden" },
+            { borderRadius, overflow: 'hidden' },
           ]}
-          onPress={() => console.log("clicked")}
+          onPress={() => {}}
         >
           <VideoPlayer
             style={{ height: 130 }}
@@ -43,7 +38,6 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
               enterFullscreen: () => {
                 handleNavigation(story);
               },
-              exitFullscreen: (e) => console.log(e),
             }}
             defaultControlsVisible={false}
             videoProps={{
@@ -53,7 +47,7 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
                 uri: `${BASE_URL}/images/${story.media.name}`,
               },
               shouldPlay: false,
-              resizeMode: "cover",
+              resizeMode: 'cover',
             }}
           />
         </TouchableOpacity>
