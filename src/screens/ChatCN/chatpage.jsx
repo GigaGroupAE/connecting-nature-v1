@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import ChatScreenHeader from './Components/ChatScreenHeader/ChatScreenHeader';
 import { io } from 'socket.io-client';
-
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from './../../slices/userSlice';
 import * as ImagePicker from 'expo-image-picker';

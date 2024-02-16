@@ -34,7 +34,6 @@ const PostImage = (props) => {
           uri: `${BASE_URL}/images/${post?.media?.name}`,
         }}
         contentFit="cover"
-        transition={1000}
       />
     </TouchableOpacity>
   );

@@ -1,19 +1,16 @@
-import React from "react";
-import { StyleSheet, View, Button, Text, TouchableOpacity } from "react-native";
-import { Video, AVPlaybackStatus, ResizeMode } from "expo-av";
-import { useStateContext } from "../contexts/ContextProvider";
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Video } from 'expo-av';
+import { useStateContext } from '../contexts/ContextProvider';
 
 //icons
-import AntDesign from "react-native-vector-icons/AntDesign.js";
-import Entypo from "react-native-vector-icons/Entypo";
-
-//video player
-import VideoPlayer from "expo-video-player";
+import AntDesign from 'react-native-vector-icons/AntDesign.js';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 //draggable
-import Draggable from "react-native-draggable";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../assets/colors/Color";
+
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../assets/colors/Color';
 
 const MiniVideoPlayer = ({ uri }) => {
   const videoRef = React.useRef(null);
@@ -37,24 +34,24 @@ const MiniVideoPlayer = ({ uri }) => {
   };
 
   const gotoFullScreen = () => {
-    navigation.navigate("PostView", {
+    navigation.navigate('PostView', {
       url: uri,
-      message: "",
-      mediatype: "video",
+      message: '',
+      mediatype: 'video',
       autherName: videoAutherName,
       description: videoDescription,
-      screen: "miniVideo",
+      screen: 'miniVideo',
     });
   };
 
   const shortTitle =
     videoDescription.length > 15
-      ? videoDescription.slice(0, 10) + "..."
+      ? videoDescription.slice(0, 10) + '...'
       : videoDescription;
 
   const shortName =
     videoAutherName.length > 10
-      ? videoAutherName.slice(0, 10) + "..."
+      ? videoAutherName.slice(0, 10) + '...'
       : videoAutherName;
   return (
     <View style={styles.tile}>
@@ -62,7 +59,7 @@ const MiniVideoPlayer = ({ uri }) => {
 
       <TouchableOpacity style={styles.video} onPress={gotoFullScreen}>
         <Video
-          style={{ height: "100%", width: "100%", paddingHorizontal: 20 }}
+          style={{ height: '100%', width: '100%', paddingHorizontal: 20 }}
           ref={videoRef}
           source={{
             uri,
@@ -77,26 +74,26 @@ const MiniVideoPlayer = ({ uri }) => {
       {/* TITLE AND DES */}
       <View
         style={{
-          flexDirection: "row",
-          width: "60%",
+          flexDirection: 'row',
+          width: '60%',
           // alignItems: "center",
           paddingHorizontal: 10,
         }}
       >
         <View style={{ paddingVertical: 8 }}>
-          <Text style={{ fontFamily: "Roboto_500Medium", fontSize: 14 }}>
+          <Text style={{ fontFamily: 'Roboto_500Medium', fontSize: 14 }}>
             {shortTitle}
           </Text>
-          <Text style={{ fontFamily: "Roboto_400Regular", fontSize: 14 }}>
+          <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 14 }}>
             {shortName}
           </Text>
         </View>
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
             paddingHorizontal: 40,
-            alignItems: "center",
+            alignItems: 'center',
           }}
         >
           {status.isPlaying ? (
@@ -211,22 +208,22 @@ export default MiniVideoPlayer;
 
 const styles = StyleSheet.create({
   tile: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     backgroundColor: Color.LightBg,
-    display: "flex",
-    flexDirection: "row",
-    position: "absolute",
+    display: 'flex',
+    flexDirection: 'row',
+    position: 'absolute',
     bottom: 0,
   },
   video: {
-    height: "100%",
-    width: "38%",
+    height: '100%',
+    width: '38%',
     // paddingHorizontal: 20,s
     // paddingVertical: 6,
   },
   center: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   crossIcon: {
     // margin: 20,
@@ -235,7 +232,7 @@ const styles = StyleSheet.create({
   description: {
     flex: 1,
     paddingLeft: 5,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });
 

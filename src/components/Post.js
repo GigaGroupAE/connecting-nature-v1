@@ -31,6 +31,8 @@ import LikedSvg from './SVG/LikedSvg';
 
 export default function Post(props, postId) {
   const date = moment().utcOffset('+05:00');
+  const { post } = props;
+
   const [visible, setVisible] = useState(false);
   const [modalVisible, setmodalVisible] = useState(false);
   const toggleBottomNavigationView = () => {
@@ -39,9 +41,9 @@ export default function Post(props, postId) {
   const navigation = useNavigation();
   const userState = useUserState();
 
-  const route = `${BASE_URL}/posts/updateposts/${props.post._id}`;
-  const [reactions, setreactions] = useState(props?.post?.reactions);
-  const [comment, setcomment] = useState(props?.post?.comments);
+  const route = `${BASE_URL}/posts/updateposts/${post._id}`;
+  const [reactions, setreactions] = useState(post?.reactions);
+  const [comment, setcomment] = useState(post?.comments);
   const [liked, setliked] = useState(false);
   useEffect(() => {
     // Memoize the reactions and comments props
@@ -67,7 +69,7 @@ export default function Post(props, postId) {
       }
       return prevComments;
     });
-  }, [props.post?.reactions, props.post?.comments]);
+  }, [post?.reactions, post?.comments]);
 
   const modalComponent = useMemo(
     () => (
@@ -77,16 +79,16 @@ export default function Post(props, postId) {
         setmodalVisible={setmodalVisible}
       />
     ),
-    [modalVisible, props?.post, props?.reload],
+    [modalVisible, post, props?.reload],
   );
 
   const handleOnClickComment = () => {
     navigation.navigate('Comments', {
       comments: comment,
-      id: props?.post._id,
-      postedBy: props?.post?.postedby?._id,
+      id: post._id,
+      postedBy: post?.postedby?._id,
       data: props?.data,
-      expoPushToken: props?.post?.postedby?.expoPushToken,
+      expoPushToken: post?.postedby?.expoPushToken,
       setcomment: setcomment,
     });
   };
@@ -94,7 +96,7 @@ export default function Post(props, postId) {
   const updatereactions = async (likes, notify = false) => {
     if (liked === false) {
       //check if the owner of post is not the user that is logged IN.
-      if (notify && props.post.postedby.phoneNumber !== userState.phoneNumber) {
+      if (notify && post.postedby.phoneNumber !== userState.phoneNumber) {
         // notifications
         const config = {
           headers: {
@@ -102,7 +104,7 @@ export default function Post(props, postId) {
           },
         };
         await axios.post(
-          `${BASE_URL}/notify/commentNotification/${props.post._id}`,
+          `${BASE_URL}/notify/commentNotification/${post._id}`,
           {
             user: userState.phoneNumber,
             body: {
@@ -111,12 +113,12 @@ export default function Post(props, postId) {
                 profile: userState.profile,
                 fullName: userState.fullName,
                 type: userState.type,
-                expoPushToken: props?.post?.postedby?.expoPushToken,
+                expoPushToken: post?.postedby?.expoPushToken,
               },
             },
             data: {
               title: 'post-like',
-              content: props.post._id,
+              content: post?._id,
             },
           },
           config,
@@ -185,38 +187,38 @@ export default function Post(props, postId) {
         {modalVisible && modalComponent}
         <View>
           <View style={styles.postContainer}>
-            {props?.post?.sharedBy && (
+            {post?.sharedBy && (
               <PostSharedHeader
-                sharedBy={props?.post?.sharedBy}
+                sharedBy={post?.sharedBy}
                 setmodalVisible={setmodalVisible}
-                postedBy={props?.post?.postedby}
-                description={props?.post?.description}
-                createdAT={props?.post?.createdAT}
+                postedBy={post?.postedby}
+                description={post?.description}
+                createdAT={post?.createdAT}
               />
             )}
             {!props?.post?.sharedBy && (
-              <PostHeader data={props.post} setmodalVisible={setmodalVisible} />
+              <PostHeader data={post} setmodalVisible={setmodalVisible} />
             )}
           </View>
           <View style={styles.postContainer}>
-            {props?.post?.media?.type &&
-              supportedImageFormats.includes(props?.post?.media?.type) && (
+            {post?.media?.type &&
+              supportedImageFormats.includes(post?.media?.type) && (
                 <View style={styles.postImage}>
                   <PostImage
-                    post={props?.post}
+                    post={post}
                     imageStyle={styles.image}
                     setcomment={setcomment}
                   />
                 </View>
               )}
             <View>
-              {props.post.media?.type === 'video/mp4' ? (
-                <PostVideo post={props?.post} setcomment={setcomment} />
+              {post.media?.type === 'video/mp4' ? (
+                <PostVideo post={post} setcomment={setcomment} />
               ) : null}
             </View>
             {reactions?.length !== 0 ||
             comment?.length !== 0 ||
-            props?.post?.shares?.length !== 0 ? (
+            post?.shares?.length !== 0 ? (
               <View
                 style={
                   isImageOrVideo
@@ -247,12 +249,12 @@ export default function Post(props, postId) {
                         : null}
                     </Text>
                   </TouchableOpacity>
-                  {props.post.shares.length !== 0 && (
+                  {post.shares.length !== 0 && (
                     <Text style={styles.statsShare}>
-                      {props.post.shares.length !== 0
-                        ? props.post.shares.length === 1
-                          ? props.post.shares.length + ' share'
-                          : props.post.shares.length + ' shares'
+                      {post.shares.length !== 0
+                        ? post.shares.length === 1
+                          ? post.shares.length + ' share'
+                          : post.shares.length + ' shares'
                         : null}
                     </Text>
                   )}
@@ -308,10 +310,10 @@ export default function Post(props, postId) {
             toggleBottomNavigationView={toggleBottomNavigationView}
             visible={visible}
             isPoster={userState.phoneNumber === props.post.postedby.phoneNumber}
-            reload={props.reload}
-            postId={props.post._id}
-            post={props.post}
-            storyReload={props.storyReload}
+            reload={props?.reload}
+            postId={props?.post._id}
+            post={props?.post}
+            storyReload={props?.storyReload}
           />
         )}
       </View>
