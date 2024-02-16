@@ -1,59 +1,49 @@
-import React, { useEffect, useState } from "react"
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  Dimensions,
-} from "react-native"
-import Ionicons from "react-native-vector-icons/Ionicons"
-import FontAwesome from "react-native-vector-icons/FontAwesome"
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import { useNavigation } from "@react-navigation/native"
-import Color from "../../assets/colors/Color"
-import AddButton from "./AddButton"
-import { CreatePost } from "../screens"
-import { useUserState } from "../slices/userSlice"
-import { authorized } from "../utils/authorized"
+import React, { useState } from 'react';
+import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../assets/colors/Color';
+import AddButton from './AddButton';
+import { CreatePost } from '../screens';
+import { useUserState } from '../slices/userSlice';
+import { authorized } from '../utils/authorized';
 
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
 export default function BottomTab(props) {
-  const navigation = useNavigation()
-  const userstate = useUserState()
+  const navigation = useNavigation();
+  const userstate = useUserState();
 
-  const [createPostVisible, setCreatePostVisible] = useState(false)
+  const [createPostVisible, setCreatePostVisible] = useState(false);
   const onAddPost = () => {
-    navigation.navigate("AddPost", {
-      origin: "post",
-    })
-    setCreatePostVisible(false)
-  }
+    navigation.navigate('AddPost', {
+      origin: 'post',
+    });
+    setCreatePostVisible(false);
+  };
   const closeModal = () => {
-    setCreatePostVisible(false)
-  }
+    setCreatePostVisible(false);
+  };
 
   function showCreatePost() {
-    setCreatePostVisible(true)
+    setCreatePostVisible(true);
   }
   function hideCreatePost() {
-    setCreatePostVisible(false)
+    setCreatePostVisible(false);
   }
 
   // INCLUDE user AS AN ARGUMENT IN BELOW 2 LINES IF YOU WANT TO ACCESS ADMIN AND CAMPAIGN CREATION.S
   const canSeeCampaign = authorized(
     userstate.type,
-    "Manager",
-    "celebrity",
-    "user"
-  )
+    'Manager',
+    'celebrity',
+    'user',
+  );
 
   const handleHome = () => {
-    navigation.navigate("Home")
-    props?.scrollToTop()
-  }
+    navigation.navigate('Home');
+    props?.scrollToTop();
+  };
   return (
     <View style={styles.mainContainer}>
       <View>
@@ -66,7 +56,7 @@ export default function BottomTab(props) {
           <FontAwesome
             name="home"
             size={30}
-            color={props?.activeMenu === "Home" ? Color.Blue : Color.Black}
+            color={props?.activeMenu === 'Home' ? Color.Blue : Color.Black}
           />
         </Pressable>
       </View>
@@ -75,20 +65,20 @@ export default function BottomTab(props) {
           style={styles.tabStyle}
           android_ripple={{ color: Color.LightGrey, borderless: true }}
           onPress={() => {
-            navigation.navigate("SearchScreen")
+            navigation.navigate('SearchScreen');
           }}
         >
           <Ionicons
             name="search"
             size={30}
-            color={props?.activeMenu === "Search" ? Color.Blue : Color.Black}
+            color={props?.activeMenu === 'Search' ? Color.Blue : Color.Black}
           />
         </Pressable>
       </View>
       <View>
         <AddButton
           clicktrigger={() => showCreatePost()}
-          activeScreen={"bottomTab"}
+          activeScreen="bottomTab"
         />
         {createPostVisible && (
           <CreatePost
@@ -104,73 +94,73 @@ export default function BottomTab(props) {
         style={styles.tabStyle}
         android_ripple={{ color: Color.LightGrey, borderless: true }}
         onPress={() => {
-          navigation.navigate("Campaign")
-          props?.scrollToTop()
+          navigation.navigate('Campaign');
+          props?.scrollToTop();
         }}
       >
         <MaterialIcons
           name="campaign"
           size={35}
-          color={props?.activeMenu === "Campaign" ? Color.Blue : Color.Black}
+          color={props?.activeMenu === 'Campaign' ? Color.Blue : Color.Black}
         />
       </Pressable>
       <Pressable
         style={styles.tabStyle}
         android_ripple={{ color: Color.LightGrey, borderless: true }}
         onPress={() => {
-          navigation.navigate("ChatList")
-          props?.scrollToTop()
+          navigation.navigate('ChatList');
+          props?.scrollToTop();
         }}
       >
         <Ionicons
           name={
-            props?.activeMenu === "Chat"
-              ? "chatbox-ellipses"
-              : "md-chatbox-ellipses-outline"
+            props?.activeMenu === 'Chat'
+              ? 'chatbox-ellipses'
+              : 'md-chatbox-ellipses-outline'
           }
           size={30}
-          color={props?.activeMenu === "Chat" ? Color.Blue : Color.Black}
+          color={props?.activeMenu === 'Chat' ? Color.Blue : Color.Black}
         />
       </Pressable>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     paddingHorizontal: 30,
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     backgroundColor: Color.White,
-    width: "100%",
-    height: "8%",
+    width: '100%',
+    height: '8%',
     borderTopWidth: 1.5,
     borderColor: Color.VeryLightGrey,
   },
   tabStyle: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
   },
   tabCart: {
-    alignContent: "center",
-    alignItems: "center",
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    alignContent: 'center',
+    alignItems: 'center',
+    borderRadius: Dimensions.get('screen').height * 0.1,
     padding: 17,
     marginTop: 0,
   },
   tabText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 13,
     color: Color.Grey,
   },
   activeTabText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     marginTop: 2,
     fontSize: 13,
     color: Color.Blue,
   },
-})
+});
