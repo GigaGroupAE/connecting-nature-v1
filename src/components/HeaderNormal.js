@@ -2,35 +2,34 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  TouchableOpacity,
   Pressable,
   Dimensions,
-} from "react-native";
-import { AntDesign, Entypo } from "react-native-vector-icons";
-import { MaterialIcons } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../assets/colors/Color";
-import { useCartState } from "../slices/cartSlice";
-import { useState, useEffect } from "react";
-import { BASE_URL } from "../../CONSTANTS";
-import { useUserState } from "../slices/userSlice";
-import axios from "axios";
-import { useStateContext } from "../contexts/ContextProvider";
+  TouchableOpacity,
+} from 'react-native';
+import { AntDesign, Entypo, MaterialIcons } from 'react-native-vector-icons';
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../assets/colors/Color';
+import { useCartState } from '../slices/cartSlice';
+import { useState, useEffect } from 'react';
+import { BASE_URL } from '../../CONSTANTS';
+import { useUserState } from '../slices/userSlice';
+import axios from 'axios';
+import { useStateContext } from '../contexts/ContextProvider';
+import { screenHeight } from '../utils/ScreenDimensions';
+
+const width = Dimensions.get('screen').width;
 
 export default function HeaderNormal(props) {
   const userState = useUserState();
   const cartSlice = useCartState();
   const [Messages, setMessages] = useState([]);
-  const { group, setgroup } = useStateContext();
+  const { setgroup } = useStateContext();
   useEffect(() => {
     axios
       .get(`${BASE_URL}/chat/get-my-chats`, {
         headers: {
-          "auth-token": userState.token,
+          'auth-token': userState.token,
         },
       })
       .then((res) => {
@@ -60,12 +59,9 @@ export default function HeaderNormal(props) {
     });
     if (first === true && second === true) {
       setgroup(foundGroup);
-      navigation.navigate("ChatCN", { group: foundGroup });
+      navigation.navigate('ChatCN', { group: foundGroup });
     } else {
-      console.log("login user is ===>", userState.id);
-      console.log("props user is =====>", props._id);
-
-      let members = [userState.id, props._id];
+      const members = [userState.id, props._id];
 
       let data;
 
@@ -76,14 +72,14 @@ export default function HeaderNormal(props) {
       axios
         .post(`${BASE_URL}/chat/createchat`, data, {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         })
         .then((response) => {
           axios
             .get(`${BASE_URL}/chat/get-my-chats`, {
               headers: {
-                "auth-token": userState.token,
+                'auth-token': userState.token,
               },
             })
             .then((res) => {
@@ -91,23 +87,24 @@ export default function HeaderNormal(props) {
                 return singlegroup._id === response.data._id;
               });
               setgroup(newgroup[0]);
-              navigation.navigate("ChatCN", { group: newgroup[0] });
+              navigation.navigate('ChatCN', { group: newgroup[0] });
             })
-            .catch((e) => console.log(e));
+            .catch((e) => {});
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {});
     }
   };
   const navigation = useNavigation();
+
   return (
     <View>
       <View style={styles.container}>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             flex: 2,
-            alignItems: "center",
+            alignItems: 'center',
           }}
         >
           <Pressable
@@ -118,7 +115,7 @@ export default function HeaderNormal(props) {
               name="arrowleft"
               size={24}
               color={Color.Black}
-              style={{ alignSelf: "center", alignItems: "center" }}
+              style={{ alignSelf: 'center', alignItems: 'center' }}
             />
           </Pressable>
 
@@ -126,15 +123,15 @@ export default function HeaderNormal(props) {
         </View>
         <View
           style={{
-            alignSelf: "center",
-            position: "relative",
+            alignSelf: 'center',
+            position: 'relative',
             width: width * 0.12,
           }}
         >
-          {props.title === "Chats" && (
+          {props.title === 'Chats' && (
             <Pressable
               onPress={() => {
-                navigation.navigate("SelectContact", {
+                navigation.navigate('SelectContact', {
                   selectedContact: selectcontact,
                 });
               }}
@@ -143,10 +140,19 @@ export default function HeaderNormal(props) {
             </Pressable>
           )}
         </View>
-        {props.title === "ShowCase" ? (
+        {props?.title === 'Affordability' && (
+          <TouchableOpacity
+            style={styles.affordabContainer}
+            onPress={() => props.setismodalVisible(true)}
+          >
+            <AntDesign name="plus" style={styles.affordableTitle} />
+            <Text style={styles.affordableTitle}>Add</Text>
+          </TouchableOpacity>
+        )}
+        {props.title === 'ShowCase' ? (
           <Pressable
             onPress={() => {
-              navigation.navigate("Checkout");
+              navigation.navigate('Checkout');
             }}
           >
             <MaterialIcons
@@ -158,11 +164,11 @@ export default function HeaderNormal(props) {
               style={{
                 top: -7,
                 right: -6,
-                position: "absolute",
-                backgroundColor: "#DCDCDC",
+                position: 'absolute',
+                backgroundColor: '#DCDCDC',
                 borderRadius: 20,
                 paddingHorizontal: 5,
-                color: "#4582C3",
+                color: '#4582C3',
               }}
             >
               {cartSlice.cart.length}
@@ -179,22 +185,37 @@ export default function HeaderNormal(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    alignContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 17,
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderColor: Color.VeryLightGrey,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   title: {
     color: Color.Black,
     fontSize: 17,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     marginLeft: 10,
     marginTop: 2,
     lineHeight: 30,
-    textAlignVertical: "center",
+    textAlignVertical: 'center',
+  },
+  affordabContainer: {
+    backgroundColor: Color.Blue,
+    width: width * 0.22,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: '2%',
+    borderRadius: screenHeight * 0.01,
+    gap: 4,
+  },
+  affordableTitle: {
+    color: Color.White,
+    fontFamily: 'Roboto_700Bold',
+    fontSize: screenHeight * 0.017,
   },
 });

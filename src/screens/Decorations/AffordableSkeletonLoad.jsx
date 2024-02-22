@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import Color from '../../../assets/colors/Color';
 
-const ArchivedCampaignSkelentan = () => {
+const AffordableSkeletonLoad = () => {
   const shimmerAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const ArchivedCampaignSkelentan = () => {
           key={index}
           style={[
             styles.postContainer,
-            { opacity: shimmerOpacity, marginBottom: index === 3 ? 0 : 10 },
+            { opacity: shimmerOpacity, marginBottom: index === 9 ? 0 : 1 },
           ]}
         >
           <Animated.View style={[styles.footer, { opacity: shimmerOpacity }]} />
@@ -50,6 +50,12 @@ const ArchivedCampaignSkelentan = () => {
 };
 
 const styles = StyleSheet.create({
+  postContainer: {
+    height: 90,
+    width: '100%',
+    backgroundColor: Color.LightGrey,
+    borderRadius: 4,
+  },
   footer: {
     height: 60,
     width: '100%',
@@ -58,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArchivedCampaignSkelentan;
+export default AffordableSkeletonLoad;

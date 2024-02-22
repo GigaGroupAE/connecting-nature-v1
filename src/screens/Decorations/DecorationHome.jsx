@@ -7,30 +7,39 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { AntDesign } from 'react-native-vector-icons';
 import HeaderNormal from '../../components/HeaderNormal';
 import Color from '../../../assets/colors/Color';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import DollarSign from '../../components/SVG/DollarSign';
+import CategorieSvg from '../../components/SVG/CategorieSvg';
+import DesignTypeSvg from '../../components/SVG/DesignTypeSvg';
+import ProductSvg from '../../components/SVG/ProductSvg';
+import ArrowSvg from '../../components/SVG/Arrow';
 
 const DECORATION_DATA = [
   {
     id: 1,
     title: 'Affordability',
     navigationScreen: 'Afordability',
+    icon: <DollarSign />,
   },
   {
     id: 2,
     title: 'Design Type ',
     navigationScreen: 'DesignType',
+    icon: <DesignTypeSvg />,
   },
   {
     id: 3,
-    title: 'Add Decor Product',
+    title: 'Products',
     navigationScreen: 'AddDecorProduct',
+    icon: <ProductSvg />,
   },
   {
     id: 4,
     title: 'Design Category',
     navigationScreen: 'DesignCategory',
+    icon: <CategorieSvg />,
   },
 ];
 
@@ -49,17 +58,17 @@ const DecorationHome = () => {
             >
               <View style={styles.mainContainer}>
                 <View style={styles.leftContainer}>
-                  <AntDesign name="right" style={styles.icons} />
+                  {item?.icon}
                   <Text style={styles.title}>{item?.title}</Text>
                 </View>
                 <View style={styles.rigtContainer}>
-                  <AntDesign name="right" style={styles.icons} />
+                  <ArrowSvg />
                 </View>
               </View>
             </TouchableOpacity>
           );
         }}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
@@ -75,19 +84,16 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    marginTop: screenHeight * 0.038,
+    width: screenWidth * 0.9,
+    alignSelf: 'center',
   },
   leftContainer: {
     flexDirection: 'row',
-    gap: 10,
-  },
-  rigtContainer: {},
-  icons: {
-    fontSize: 20,
+    gap: 22,
   },
   title: {
     fontFamily: 'Roboto_600SemiBold',
-    fontSize: 14,
+    fontSize: screenHeight * 0.018,
   },
 });
