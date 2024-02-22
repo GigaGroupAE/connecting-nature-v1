@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { AntDesign } from 'react-native-vector-icons';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
 
 const DECORATION_DATA = [
   {
@@ -35,6 +38,7 @@ const DecorationHome = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
+      <HeaderNormal title="Decorate" />
       <FlatList
         data={DECORATION_DATA}
         renderItem={({ item }) => {
@@ -43,7 +47,15 @@ const DecorationHome = () => {
               style={styles.item}
               onPress={() => navigation.navigate(item?.navigationScreen)}
             >
-              <Text style={styles.title}>{item.title}</Text>
+              <View style={styles.mainContainer}>
+                <View style={styles.leftContainer}>
+                  <AntDesign name="right" style={styles.icons} />
+                  <Text style={styles.title}>{item?.title}</Text>
+                </View>
+                <View style={styles.rigtContainer}>
+                  <AntDesign name="right" style={styles.icons} />
+                </View>
+              </View>
             </TouchableOpacity>
           );
         }}
@@ -58,18 +70,24 @@ export default DecorationHome;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    backgroundColor: Color.White,
   },
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 10,
+  mainContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  rigtContainer: {},
+  icons: {
+    fontSize: 20,
   },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Roboto_600SemiBold',
+    fontSize: 14,
   },
 });
