@@ -108,6 +108,11 @@ import CreateCampaignPost from './src/components/CreateCampaignPost';
 import PostSkeleton from './src/components/PostSkeleton';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from './src/components/CustomStatsBar';
+import DecorationHome from './src/screens/Decorations/DecorationHome';
+import Affordability from './src/screens/Decorations/Affordability';
+import DesignType from './src/screens/Decorations/DesignType';
+import AddDecorProduct from './src/screens/Decorations/AddDecorProduct';
+import DesignCategory from './src/screens/Decorations/DesignCategory';
 const customFonts = {
   Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
   Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
@@ -198,6 +203,11 @@ function Main() {
         <Stack.Screen name="dodaylist" component={dodaylist} />
         <Stack.Screen name="postShare" component={PostShare} />
         <Stack.Screen name="Animation" component={Animation} />
+        <Stack.Screen name="Decoration" component={DecorationHome} />
+        <Stack.Screen name="Afordability" component={Affordability} />
+        <Stack.Screen name="DesignType" component={DesignType} />
+        <Stack.Screen name="AddDecorProduct" component={AddDecorProduct} />
+        <Stack.Screen name="DesignCategory" component={DesignCategory} />
         <Stack.Screen
           name="CreateCampaignPost"
           component={CreateCampaignPost}

@@ -30,4 +30,10 @@ export const SETTINGS_DATA = [
     icon: <MaterialIcons name="logout" size={25} color={Color.Black} />,
     screenToNavigate: null,
   },
+
+  {
+    title: 'Decoration',
+    icon: <Octicons name="blocked" size={24} color={Color.Black} />,
+    screenToNavigate: 'Decoration',
+  },
 ];
