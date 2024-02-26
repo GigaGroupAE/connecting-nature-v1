@@ -12,15 +12,23 @@ import Color from '../../../assets/colors/Color';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { axiosInstance } from '../../../axiosInstance';
 import { useStateContext } from '../../contexts/ContextProvider';
+import {
+  buttonContainer,
+  buttonTitle,
+  container,
+  inputstyle,
+  titleStyle,
+} from './ModalStyle';
 
 const AddAfforablilityModal = ({
   ismodalVisible,
   setismodalVisible,
   refetch,
+  item,
 }) => {
-  const [typeName, setTypeName] = useState('');
-  const [minNumber, setMinNumber] = useState('');
-  const [maxNumber, setMaxNumber] = useState('');
+  const [typeName, setTypeName] = useState(item?.name || '');
+  const [minNumber, setMinNumber] = useState(item?.minRange || '');
+  const [maxNumber, setMaxNumber] = useState(item?.maxRange || '');
   const hideModal = () => setismodalVisible(false);
   const { showSnackbar } = useStateContext();
 
@@ -56,21 +64,21 @@ const AddAfforablilityModal = ({
   return (
     <Portal>
       <Modal visible={ismodalVisible} onDismiss={hideModal}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Add Affordability</Text>
+        <View style={container}>
+          <Text style={titleStyle}>Add Affordability</Text>
 
           <View>
             <TextInput
               placeholder="Type Name"
               value={typeName}
               onChangeText={setTypeName}
-              style={{ ...styles.input, width: screenWidth * 0.75 }}
+              style={inputstyle}
             />
           </View>
 
           <View style={styles.priceRangeContainer}>
             <TextInput
-              style={styles.input}
+              style={{ ...inputstyle, width: screenWidth * 0.36 }}
               onChangeText={setMinNumber}
               value={minNumber}
               placeholder="Min."
@@ -81,15 +89,15 @@ const AddAfforablilityModal = ({
               value={maxNumber}
               onChangeText={setMaxNumber}
               keyboardType="numeric"
-              style={styles.input}
+              style={{ ...inputstyle, width: screenWidth * 0.36 }}
             />
           </View>
 
           <TouchableOpacity
-            style={styles.buttonContainer}
+            style={buttonContainer}
             onPress={handleAddAfforadbility}
           >
-            <Text style={styles.buttonTitle}>Add</Text>
+            <Text style={buttonTitle}>Add</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -100,55 +108,11 @@ const AddAfforablilityModal = ({
 export default AddAfforablilityModal;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Color.White,
-    width: screenWidth * 0.9,
-    alignSelf: 'center',
-    paddingVertical: screenHeight * 0.03,
-    alignItems: 'center',
-    borderRadius: screenHeight * 0.01,
-  },
   priceRangeContainer: {
     flexDirection: 'row',
     width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-  },
-  input: {
-    padding: screenHeight * 0.015,
-    borderRadius: 8,
-    width: screenWidth * 0.36,
-    fontSize: 14,
-    fontFamily: 'Roboto_500Medium',
-    marginTop: 16,
-    backgroundColor: Color.White,
-    shadowColor: Color.Grey,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 3,
-    zIndex: 100,
-    position: 'relative',
-  },
-  buttonContainer: {
-    backgroundColor: Color.Blue,
-    alignItems: 'center',
-    paddingVertical: screenHeight * 0.014,
-    width: screenWidth * 0.75,
-    borderRadius: screenHeight * 0.01,
-    marginTop: screenHeight * 0.027,
-  },
-  buttonTitle: {
-    color: Color.White,
-    fontSize: screenHeight * 0.021,
-    fontFamily: 'Roboto_700Bold',
-  },
-  title: {
-    fontSize: screenHeight * 0.021,
-    fontFamily: 'Roboto_700Bold',
   },
 });
