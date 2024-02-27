@@ -303,9 +303,16 @@ import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import { ScrollView } from 'react-native-gesture-handler';
 import DesignCategoryModal from './DesignCategoryModal';
+import { useQuery } from 'react-query';
+import { fetchDecorations } from '../../utils/Decorate';
 
 const DesignCategory = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
+  const { data, refetch } = useQuery('DesignCategory', fetchDecorations, {
+    staleTime: 300000,
+    cacheTime: 600000,
+    refetchOnWindowFocus: false,
+  });
   return (
     <ScrollView style={styles.container}>
       <HeaderNormal
@@ -316,6 +323,7 @@ const DesignCategory = () => {
       <DesignCategoryModal
         setisModalVisible={setismodalVisible}
         ismodalVisible={ismodalVisible}
+        refetch={refetch}
       />
     </ScrollView>
   );
