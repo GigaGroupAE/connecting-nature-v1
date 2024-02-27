@@ -1,28 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
-  Button,
   Image,
+  TouchableOpacity,
   FlatList,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { axiosInstance } from '../../../axiosInstance';
+import Color from '../../../assets/colors/Color';
+import HeaderNormal from '../../components/HeaderNormal';
+import { Modal, Portal } from 'react-native-paper';
+
+import {
+  buttonContainer,
+  buttonTitle,
+  container,
+  editButton,
+  editButtonTitle,
+  inputstyle,
+  itemTitle,
+  mainContainer,
+  titleStyle,
+} from './ModalStyle';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import { addProduct, getProducts } from '../../utils/Decorate';
+import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../CONSTANTS';
+import AffordableSkeletonLoad from './AffordableSkeletonLoad';
+import NoItemIndicater from '../../components/NoItemIndicater';
 
 const AddDecorProduct = () => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null);
+  const [ismodalVisible, setismodalVisible] = useState(false);
 
-  const [data, setdata] = useState([]);
+  const { data, isLoading, isError, refetch } = useQuery(
+    'decorproducts',
+    getProducts,
+    {
+      staleTime: 300000,
+      cacheTime: 600000,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const openImagePicker = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -32,84 +59,126 @@ const AddDecorProduct = () => {
     }
   };
 
-  useEffect(() => {
-    const fethData = async () => {
-      try {
-        const { data } = await axiosInstance.get(
-          '/decorations/getDecorProducts',
-        );
-        setdata(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fethData();
-  }, []);
   const handleSubmit = async () => {
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('price', price);
-      formData.append('image', {
-        uri: image,
-        name: 'image.jpg',
-        type: 'image/jpeg',
-      });
-
-      const { data } = await axiosInstance.post(
-        '/decorations/add-decor-product',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        },
+      const data = await addProduct(
+        title,
+        price,
+        image,
+        setImage,
+        setPrice,
+        setTitle,
+        refetch,
+        setismodalVisible,
       );
-
-      // Handle response data if needed
-      console.log('Decoration added successfully:', data);
     } catch (error) {
-      // Handle network errors or other exceptions
-      console.error('Error adding decoration:', error);
+      console.log(error);
     }
   };
 
+  const hideModal = () => {
+    setismodalVisible(false);
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Title</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Enter title"
-      />
-      <Text style={styles.label}>Price</Text>
-      <TextInput
-        style={styles.input}
-        value={price}
-        onChangeText={setPrice}
-        placeholder="Enter price"
-        keyboardType="numeric"
-      />
-      <Button title="Choose Image" onPress={openImagePicker} />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <Button title="Submit" onPress={handleSubmit} />
+      <HeaderNormal title="Products" setismodalVisible={setismodalVisible} />
+      <View style={{ flex: 1 }}>
+        {isLoading ? (
+          <AffordableSkeletonLoad />
+        ) : (
+          <View style={{ flex: 1 }}>
+            {data?.length === 0 ? (
+              <NoItemIndicater
+                title="No Products Found"
+                description="Looks like there are no products available at the moment. When you add products, they will appear here."
+                image={require('../../../assets/newPost.png')}
+              />
+            ) : (
+              <FlatList
+                data={data}
+                renderItem={({ item }) => {
+                  return (
+                    <View style={mainContainer}>
+                      <View style={styles.leftContainer}>
+                        <Image
+                          source={{ uri: `${BASE_URL}/images/${item?.image}` }}
+                          style={styles.productImage}
+                        />
+                        <View
+                          style={{
+                            height: '80%',
+                            gap: 5,
+                          }}
+                        >
+                          <Text style={itemTitle}>{item?.title}</Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                ...itemTitle,
+                                fontFamily: 'Roboto_500Medium',
+                              }}
+                            >
+                              Price :
+                            </Text>
+                            <Text style={itemTitle}>{item?.price}</Text>
+                          </View>
+                        </View>
+                      </View>
+                      <View style={styles.rightContainer}>
+                        <TouchableOpacity
+                          style={editButton}
+                          // onPress={() => handleEdit(item)}
+                        >
+                          <Text style={editButtonTitle}>Edit</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }}
+                keyExtractor={(item) => item?._id}
+              />
+            )}
+          </View>
+        )}
+      </View>
 
-      {/* <View>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => {
-            console.log(item, 'itm');
-            return (
-              <View>
-                <Image source={{ uri: `${BASE_URL}/images/${item?.image}` }} />
-                <Text>hello</Text>
-              </View>
-            );
-          }}
-        />
-      </View> */}
+      <Portal>
+        <Modal visible={ismodalVisible} onDismiss={hideModal}>
+          <View style={container}>
+            <Text style={titleStyle}>Add Product</Text>
+
+            <View>
+              <TextInput
+                placeholder="Name"
+                value={title}
+                onChangeText={setTitle}
+                style={inputstyle}
+              />
+              <TextInput
+                placeholder="Unit Price"
+                value={price}
+                onChangeText={setPrice}
+                style={inputstyle}
+                keyboardType="numeric"
+              />
+
+              <TouchableOpacity style={inputstyle} onPress={openImagePicker}>
+                <Text style={{ color: Color.LightGrey }}>Product Image</Text>
+              </TouchableOpacity>
+
+              {image && <Image source={{ uri: image }} style={styles.image} />}
+            </View>
+            <TouchableOpacity style={buttonContainer} onPress={handleSubmit}>
+              <Text style={buttonTitle}>Add</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };
@@ -117,10 +186,7 @@ export default AddDecorProduct;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: Color.White,
   },
   label: {
     fontSize: 18,
@@ -135,8 +201,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   image: {
-    width: 200,
-    height: 200,
-    marginVertical: 20,
+    width: screenWidth * 0.75,
+    height: screenHeight * 0.2,
+    marginVertical: screenHeight * 0.02,
+    borderRadius: screenHeight * 0.01,
+    resizeMode: 'cover',
+  },
+  leftContainer: {
+    flex: 2,
+    // justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  rightContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  productImage: {
+    width: screenWidth * 0.2,
+    height: screenHeight * 0.09,
+    resizeMode: 'cover',
+    borderRadius: screenHeight * 0.01,
   },
 });

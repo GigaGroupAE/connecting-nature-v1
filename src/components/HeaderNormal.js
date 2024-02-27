@@ -140,7 +140,10 @@ export default function HeaderNormal(props) {
             </Pressable>
           )}
         </View>
-        {props?.title === 'Affordability' && (
+        {props?.title === 'Affordability' ||
+        props?.title === 'Design Type' ||
+        props?.title === 'Design Category' ||
+        props?.title === 'Products' ? (
           <TouchableOpacity
             style={styles.affordabContainer}
             onPress={() => props.setismodalVisible(true)}
@@ -148,7 +151,7 @@ export default function HeaderNormal(props) {
             <AntDesign name="plus" style={styles.affordableTitle} />
             <Text style={styles.affordableTitle}>Add</Text>
           </TouchableOpacity>
-        )}
+        ) : null}
         {props.title === 'ShowCase' ? (
           <Pressable
             onPress={() => {
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: '2%',
+    paddingVertical: '1.7%',
     borderRadius: screenHeight * 0.01,
     gap: 4,
   },

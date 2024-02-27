@@ -14,13 +14,20 @@ import { fetchAffordabilityData } from '../../utils/Decorate';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import AddAfforablilityModal from './AddAfforablilityModal';
+import { editButton, editButtonTitle, itemTitle } from './ModalStyle';
 
 const Affordability = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
+  const [itemData, setitemData] = useState(null);
   const { data, isLoading, refetch } = useQuery(
     'Affordability',
     fetchAffordabilityData,
   );
+
+  const handleEdit = (item) => {
+    setitemData(item);
+    setismodalVisible(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -39,7 +46,7 @@ const Affordability = () => {
               return (
                 <View style={styles.mainContainer}>
                   <View style={styles.leftContainer}>
-                    <Text style={styles.title}>{item?.name}</Text>
+                    <Text style={itemTitle}>{item?.name}</Text>
                     <Text style={styles.description}>
                       Admin who have access to this feature can edit the price
                       range as per market in the future.
@@ -51,13 +58,17 @@ const Affordability = () => {
                       <Text style={styles.price}>-</Text>
                       <Text style={styles.price}>{item?.maxRange}</Text>
                     </View>
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.buttonTitle}>Edit</Text>
+                    <TouchableOpacity
+                      style={{ ...editButton, marginTop: screenHeight * 0.016 }}
+                      onPress={() => handleEdit(item)}
+                    >
+                      <Text style={editButtonTitle}>Edit</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               );
             }}
+            showsVerticalScrollIndicator={false}
           />
         )}
       </View>
@@ -66,6 +77,7 @@ const Affordability = () => {
         ismodalVisible={ismodalVisible}
         setismodalVisible={setismodalVisible}
         refetch={refetch}
+        item={itemData}
       />
     </View>
   );
@@ -95,11 +107,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
-  title: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: screenHeight * 0.02,
-    fontWeight: '600',
-  },
   description: {
     fontFamily: 'Roboto_400Regular',
     fontSize: screenHeight * 0.015,
@@ -114,18 +121,5 @@ const styles = StyleSheet.create({
   price: {
     fontFamily: 'Roboto_700Bold',
     fontSize: screenHeight * 0.018,
-  },
-  button: {
-    width: '80%',
-    alignItems: 'center',
-    marginTop: screenHeight * 0.016,
-    paddingVertical: screenHeight * 0.008,
-    borderRadius: screenHeight * 0.01,
-    borderWidth: 0.9,
-    borderColor: Color.Black,
-  },
-  buttonTitle: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: screenHeight * 0.017,
   },
 });
