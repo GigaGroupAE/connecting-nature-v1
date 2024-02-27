@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
-import Color from '../../../assets/colors/Color';
-import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import { screenWidth } from '../../utils/ScreenDimensions';
 import { axiosInstance } from '../../../axiosInstance';
 import { useStateContext } from '../../contexts/ContextProvider';
 import {

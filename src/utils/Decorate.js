@@ -79,3 +79,58 @@ export const getProducts = async () => {
     throw error;
   }
 };
+
+export const handleAddCatagory = async (
+  selectedDesign,
+  title,
+  Description,
+  price,
+  products,
+  mainImages,
+  refetch,
+) => {
+  try {
+    const decorationData = new FormData();
+    decorationData.append('categorie', selectedDesign);
+    decorationData.append('title', title);
+    decorationData.append('Description', Description);
+    decorationData.append('price', price);
+    decorationData.append('tag', 'Example Tag');
+
+    products.forEach((product, index) => {
+      decorationData.append(`products[${index}][productId]`, product.productId);
+      decorationData.append(`products[${index}][quantity]`, product.quantity);
+    });
+
+    mainImages.forEach((link, index) => {
+      decorationData.append(`images`, {
+        name: link,
+        uri: link,
+        type: 'image/jpg',
+      });
+    });
+
+    const response = await axiosInstance.post(
+      '/decorations/add-decoration',
+      decorationData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    refetch();
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchDecorations = async () => {
+  try {
+    const { data } = await axiosInstance.get('/decorations/get-decoration');
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
