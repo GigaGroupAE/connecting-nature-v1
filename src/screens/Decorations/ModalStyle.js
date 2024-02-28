@@ -55,13 +55,13 @@ export const mainContainer = {
   overflow: 'hidden',
   borderBottomWidth: 0.9,
   borderBottomColor: Color.VeryLightGrey,
-  paddingHorizontal: screenWidth * 0.06,
+  paddingHorizontal: screenWidth * 0.04,
   paddingVertical: screenHeight * 0.015,
 };
 
 export const itemTitle = {
   fontFamily: 'Roboto_500Medium',
-  fontSize: screenHeight * 0.019,
+  fontSize: screenHeight * 0.0185,
   fontWeight: '600',
 };
 

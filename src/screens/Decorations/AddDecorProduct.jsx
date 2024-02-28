@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -36,16 +36,13 @@ const AddDecorProduct = () => {
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null);
   const [ismodalVisible, setismodalVisible] = useState(false);
+  const [editProductDetails, seteditProductDetails] = useState(null);
 
-  const { data, isLoading, isError, refetch } = useQuery(
-    'decorproducts',
-    getProducts,
-    {
-      staleTime: 300000,
-      cacheTime: 600000,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const { data, isLoading, refetch } = useQuery('decorproducts', getProducts, {
+    staleTime: 300000,
+    cacheTime: 600000,
+    refetchOnWindowFocus: false,
+  });
 
   const openImagePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -59,6 +56,19 @@ const AddDecorProduct = () => {
     }
   };
 
+  useEffect(() => {
+    if (editProductDetails) {
+      setTitle(editProductDetails?.title);
+      setPrice(editProductDetails?.price?.toString());
+    }
+    if (!ismodalVisible) {
+      seteditProductDetails('');
+      setTitle('');
+      setImage('');
+      setPrice('');
+    }
+  }, [editProductDetails, ismodalVisible]);
+
   const handleSubmit = async () => {
     try {
       const data = await addProduct(
@@ -70,15 +80,20 @@ const AddDecorProduct = () => {
         setTitle,
         refetch,
         setismodalVisible,
+        editProductDetails,
       );
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const hideModal = () => {
     setismodalVisible(false);
   };
+
+  const handleEdit = (item) => {
+    seteditProductDetails(item);
+    setismodalVisible(true);
+  };
+
   return (
     <View style={styles.container}>
       <HeaderNormal title="Products" setismodalVisible={setismodalVisible} />
@@ -132,7 +147,7 @@ const AddDecorProduct = () => {
                       <View style={styles.rightContainer}>
                         <TouchableOpacity
                           style={editButton}
-                          // onPress={() => handleEdit(item)}
+                          onPress={() => handleEdit(item)}
                         >
                           <Text style={editButtonTitle}>Edit</Text>
                         </TouchableOpacity>
@@ -141,17 +156,16 @@ const AddDecorProduct = () => {
                   );
                 }}
                 keyExtractor={(item) => item?._id}
+                showsVerticalScrollIndicator={false}
               />
             )}
           </View>
         )}
       </View>
-
       <Portal>
         <Modal visible={ismodalVisible} onDismiss={hideModal}>
           <View style={container}>
             <Text style={titleStyle}>Add Product</Text>
-
             <View>
               <TextInput
                 placeholder="Name"
@@ -171,7 +185,20 @@ const AddDecorProduct = () => {
                 <Text style={{ color: Color.LightGrey }}>Product Image</Text>
               </TouchableOpacity>
 
-              {image && <Image source={{ uri: image }} style={styles.image} />}
+              {image ? (
+                <Image source={{ uri: image }} style={styles.image} />
+              ) : (
+                <View>
+                  {editProductDetails && (
+                    <Image
+                      source={{
+                        uri: `${BASE_URL}/images/${editProductDetails?.image}`,
+                      }}
+                      style={styles.image}
+                    />
+                  )}
+                </View>
+              )}
             </View>
             <TouchableOpacity style={buttonContainer} onPress={handleSubmit}>
               <Text style={buttonTitle}>Add</Text>

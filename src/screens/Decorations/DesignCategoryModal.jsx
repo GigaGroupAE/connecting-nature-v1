@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
 import {
   buttonContainer,
   buttonTitle,
-  container,
   inputstyle,
   titleStyle,
 } from './ModalStyle';
@@ -50,7 +50,7 @@ const DesignCategoryModal = ({
     setisModalVisible(false);
   };
 
-  const { data, isLoading } = useQuery('designData', getDesignType, {
+  const { data } = useQuery('designData', getDesignType, {
     staleTime: 300000,
     cacheTime: 600000,
     refetchOnWindowFocus: false,
@@ -149,7 +149,11 @@ const DesignCategoryModal = ({
   return (
     <Portal>
       <Modal visible={ismodalVisible} onDismiss={hideModal}>
-        <View style={container}>
+        <ScrollView
+          style={styles.mainContainer}
+          contentContainerStyle={{ alignItems: 'center' }}
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={titleStyle}>Add Design Type</Text>
 
           <View
@@ -330,10 +334,13 @@ const DesignCategoryModal = ({
             </Animated.View>
           )}
 
-          <TouchableOpacity style={buttonContainer} onPress={handleAdd}>
+          <TouchableOpacity
+            style={{ ...buttonContainer, marginBottom: screenHeight * 0.04 }}
+            onPress={handleAdd}
+          >
             <Text style={buttonTitle}>Save</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </Modal>
     </Portal>
   );
@@ -405,5 +412,13 @@ const styles = StyleSheet.create({
     borderColor: Color.Blue,
     paddingHorizontal: screenWidth * 0.03,
     backgroundColor: Color.LightBlue,
+  },
+  mainContainer: {
+    backgroundColor: Color.White,
+    width: screenWidth * 0.9,
+    alignSelf: 'center',
+    paddingVertical: screenHeight * 0.03,
+    borderRadius: screenHeight * 0.01,
+    maxHeight: screenHeight * 0.85,
   },
 });

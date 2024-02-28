@@ -5,7 +5,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import { useQuery } from 'react-query';
@@ -19,6 +19,7 @@ import { editButton, editButtonTitle, itemTitle } from './ModalStyle';
 const Affordability = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [itemData, setitemData] = useState(null);
+  const [isEdit, setisEdit] = useState(false);
   const { data, isLoading, refetch } = useQuery(
     'Affordability',
     fetchAffordabilityData,
@@ -27,7 +28,12 @@ const Affordability = () => {
   const handleEdit = (item) => {
     setitemData(item);
     setismodalVisible(true);
+    setisEdit(true);
   };
+  useEffect(() => {
+    setitemData('');
+    setisEdit(false);
+  }, [ismodalVisible]);
 
   return (
     <View style={styles.container}>
@@ -72,13 +78,16 @@ const Affordability = () => {
           />
         )}
       </View>
-
-      <AddAfforablilityModal
-        ismodalVisible={ismodalVisible}
-        setismodalVisible={setismodalVisible}
-        refetch={refetch}
-        item={itemData}
-      />
+      {ismodalVisible && (
+        <AddAfforablilityModal
+          ismodalVisible={ismodalVisible}
+          setismodalVisible={setismodalVisible}
+          refetch={refetch}
+          item={itemData}
+          setisEdit={setisEdit}
+          isEdit={isEdit}
+        />
+      )}
     </View>
   );
 };

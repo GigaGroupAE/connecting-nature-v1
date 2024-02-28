@@ -3,5 +3,4 @@
 
 export const BASE_URL = 'http://192.168.8.101:3000';
 // export const BASE_URL = 'http://3.111.51.14:3000';
-
 // export const OUTSOURC_GROUP = "64109d78898a57e18c73253a";
