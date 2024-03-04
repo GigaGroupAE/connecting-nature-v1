@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -26,8 +26,10 @@ import { useQuery } from 'react-query';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 
 const DesignType = () => {
-  const [name, setname] = useState('');
   const [ismodalVisible, setismodalVisible] = useState(false);
+  const [product, setproduct] = useState(null);
+  const [isEdit, setisEdit] = useState(false);
+  const [name, setname] = useState(product?.name || '');
 
   const handleAddDecoration = async () => {
     if (!name) {
@@ -35,14 +37,23 @@ const DesignType = () => {
       return;
     }
     try {
-      const data = await AddDesignType(name, refetch);
+      const data = await AddDesignType(name, refetch, isEdit, product);
       setname('');
       setismodalVisible(false);
-      zzzmmm;
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (product) {
+      setname(product?.name);
+    }
+    if (!ismodalVisible) {
+      setname('');
+      setproduct(null);
+    }
+  }, [product, ismodalVisible]);
 
   const { data, isLoading, refetch } = useQuery('designData', getDesignType, {
     staleTime: 300000,
@@ -51,6 +62,11 @@ const DesignType = () => {
   });
   const hideModal = () => {
     setismodalVisible(false);
+  };
+
+  const handleEdit = (item) => {
+    setproduct(item);
+    setismodalVisible(true);
   };
 
   return (
@@ -72,7 +88,7 @@ const DesignType = () => {
                   <View style={styles.rightContainer}>
                     <TouchableOpacity
                       style={editButton}
-                      // onPress={() => handleEdit(item)}
+                      onPress={() => handleEdit(item)}
                     >
                       <Text style={editButtonTitle}>Edit</Text>
                     </TouchableOpacity>

@@ -62,7 +62,6 @@ export default function DirectChat(props, { route }) {
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].member.phoneNumber === userState.phoneNumber) {
       const profile = props.members[1].member.profile;
-
       return `${BASE_URL}/images/${profile}`;
     } else {
       const profile = props.members[0].member.profile;
@@ -161,10 +160,8 @@ export default function DirectChat(props, { route }) {
       if (!dateA || !dateB) {
         return 0;
       }
-
       const timeDifferenceA = Math.abs(new Date() - new Date(dateA));
       const timeDifferenceB = Math.abs(new Date() - new Date(dateB));
-
       return timeDifferenceA - timeDifferenceB;
     });
   }, [Messages]);

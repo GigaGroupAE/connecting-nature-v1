@@ -12,13 +12,23 @@ export const fetchAffordabilityData = async () => {
   }
 };
 
-export const AddDesignType = async (name, refetch) => {
+export const AddDesignType = async (name, refetch, isEdit, product) => {
   try {
-    const { data } = await axiosInstance.post('/decorations/post-design', {
-      name,
-    });
+    let response;
+    if (product) {
+      response = await axiosInstance.put(
+        `/decorations/update-design/${product?._id}`,
+        {
+          name,
+        },
+      );
+    } else {
+      response = await axiosInstance.post('/decorations/post-design', {
+        name,
+      });
+    }
     refetch();
-    return data;
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -33,6 +43,78 @@ export const getDesignType = async () => {
   }
 };
 
+// export const addProduct = async (
+//   title,
+//   price,
+//   image,
+//   setImage,
+//   setPrice,
+//   setTitle,
+//   refetch,
+//   setismodalVisible,
+//   editProductDetails,
+// ) => {
+//   console.log(image);
+//   try {
+//     const formData = new FormData();
+//     formData.append('title', title);
+//     formData.append('price', price);
+
+//     // if (editProductDetails) {
+//     //   formData.append('image', {
+//     //     uri: editProductDetails?.image,
+//     //     name: editProductDetails?.image,
+//     //     type: 'image/jpeg',
+//     //   });
+//     // } else {
+//     //   formData.append('image', {
+//     //     uri: image,
+//     //     name: image,
+//     //     type: 'image/jpeg',
+//     //   });
+//     // }
+//     formData.append('image', {
+//       uri: image,
+//       name: image,
+//       type: 'image/jpeg',
+//     });
+
+//     console.log(formData);
+
+//     let response;
+//     if (editProductDetails) {
+//       response = await axiosInstance.put(
+//         `/decorations/update-decor-product/${editProductDetails?._id}`,
+//         formData,
+//         {
+//           headers: {
+//             'Content-Type': 'multipart/form-data',
+//           },
+//         },
+//       );
+//     } else {
+//       response = await axiosInstance.post(
+//         '/decorations/add-decor-product',
+//         formData,
+//         {
+//           headers: {
+//             'Content-Type': 'multipart/form-data',
+//           },
+//         },
+//       );
+//     }
+
+//     // refetch();
+//     // setismodalVisible(false);
+//     // setImage('');
+//     // setPrice('');
+//     // setTitle('');
+//     // return response.data; // Return response data instead of 'data'
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
 export const addProduct = async (
   title,
   price,
@@ -42,26 +124,42 @@ export const addProduct = async (
   setTitle,
   refetch,
   setismodalVisible,
+  editProductDetails,
 ) => {
   try {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('price', price);
-    formData.append('image', {
-      uri: image,
-      name: image,
-      type: 'image/jpeg',
-    });
-
-    const { data } = await axiosInstance.post(
-      '/decorations/add-decor-product',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+    if (image) {
+      formData.append('image', {
+        uri: image,
+        name: image,
+        type: 'image/jpeg',
+      });
+    }
+    console.log(formData);
+    let response;
+    if (editProductDetails) {
+      response = await axiosInstance.put(
+        `/decorations/update-decor-product/${editProductDetails?._id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      },
-    );
+      );
+    } else {
+      response = await axiosInstance.post(
+        '/decorations/add-decor-product',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+    }
     refetch();
     setismodalVisible(false);
     setImage(''), setPrice(''), setTitle('');
@@ -84,18 +182,19 @@ export const handleAddCatagory = async (
   selectedDesign,
   title,
   Description,
-  price,
+  totalPrice,
   products,
   mainImages,
   refetch,
+  tag,
 ) => {
   try {
     const decorationData = new FormData();
     decorationData.append('categorie', selectedDesign);
     decorationData.append('title', title);
     decorationData.append('Description', Description);
-    decorationData.append('price', price);
-    decorationData.append('tag', 'Example Tag');
+    decorationData.append('price', totalPrice);
+    decorationData.append('tag', tag);
 
     products.forEach((product, index) => {
       decorationData.append(`products[${index}][productId]`, product.productId);
@@ -109,7 +208,6 @@ export const handleAddCatagory = async (
         type: 'image/jpg',
       });
     });
-
     const response = await axiosInstance.post(
       '/decorations/add-decoration',
       decorationData,

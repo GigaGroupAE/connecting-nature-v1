@@ -24,42 +24,63 @@ const AddAfforablilityModal = ({
   setismodalVisible,
   refetch,
   item,
+  setisEdit,
+  isEdit,
 }) => {
   const [typeName, setTypeName] = useState(item?.name || '');
-  const [minNumber, setMinNumber] = useState(item?.minRange || '');
-  const [maxNumber, setMaxNumber] = useState(item?.maxRange || '');
+  const [minNumber, setMinNumber] = useState(item?.minRange?.toString() || '');
+  const [maxNumber, setMaxNumber] = useState(item?.maxRange?.toString() || '');
+  const [id, setid] = useState(item?._id);
   const hideModal = () => setismodalVisible(false);
   const { showSnackbar } = useStateContext();
+  const [isEditt, setisEditt] = useState(isEdit);
 
   const handleAddAfforadbility = async () => {
-    if (!typeName || !minNumber || !maxNumber) {
-      Alert.alert('Please fill all fields.');
-      return;
-    }
-    if (parseInt(maxNumber) <= parseInt(minNumber)) {
-      Alert.alert('Max Range must be greater than Min Range.');
-      return;
-    }
     try {
+      if (!typeName || !minNumber || !maxNumber) {
+        Alert.alert('Please fill all fields.');
+        return;
+      }
+      if (parseInt(maxNumber) <= parseInt(minNumber)) {
+        Alert.alert('Max Range must be greater than Min Range.');
+        return;
+      }
+
       const decoration = {
         name: typeName,
         minRange: parseInt(minNumber),
         maxRange: parseInt(maxNumber),
       };
-      const { data } = await axiosInstance.post(
-        '/decorations/post-affordabilities',
-        decoration,
-      );
-      showSnackbar(data?.message);
-      setTypeName('');
-      setMinNumber('');
-      setMaxNumber('');
+
+      let response;
+      if (isEditt) {
+        response = await axiosInstance.put(
+          `/decorations/update-affordabilities/${id}`,
+          decoration,
+        );
+      } else {
+        response = await axiosInstance.post(
+          `/decorations/post-affordabilities`,
+          decoration,
+        );
+      }
+
+      showSnackbar(response.data?.message);
+      clearInputFields();
       setismodalVisible(false);
       refetch();
     } catch (error) {
       console.log(error);
+      Alert.alert('An error occurred. Please try again later.');
     }
   };
+
+  const clearInputFields = () => {
+    setTypeName('');
+    setMinNumber('');
+    setMaxNumber('');
+  };
+
   return (
     <Portal>
       <Modal visible={ismodalVisible} onDismiss={hideModal}>

@@ -113,6 +113,8 @@ import Affordability from './src/screens/Decorations/Affordability';
 import DesignType from './src/screens/Decorations/DesignType';
 import AddDecorProduct from './src/screens/Decorations/AddDecorProduct';
 import DesignCategory from './src/screens/Decorations/DesignCategory';
+import Decoration from './src/screens/Decorations/Decoration';
+import DecorationProductDetails from './src/screens/Decorations/DecorationProductDetails';
 const customFonts = {
   Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
   Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
@@ -217,9 +219,7 @@ function Main() {
           name="NotificationsScreen"
           component={NotificationsScreen}
         />
-
         <Stack.Screen name="PostViewNotify" component={PostViewNotify} />
-
         <Stack.Screen
           name="UpgradeAccountScreen"
           component={UpgradeAccountScreen}
@@ -238,6 +238,12 @@ function Main() {
         <Stack.Screen name="OrderCompleted" component={OrderCompleted} />
         <Stack.Screen name="OrderRequest" component={OrderRequest} />
         <Stack.Screen name="BlockedUsers" component={BlockedUsers} />
+        <Stack.Screen name="DecorationClient" component={Decoration} />
+        <Stack.Screen
+          name="DecorationProductDetails"
+          component={DecorationProductDetails}
+        />
+
         <Stack.Screen
           name="ManagePointsScreen"
           component={ManagePointnsScreen}
