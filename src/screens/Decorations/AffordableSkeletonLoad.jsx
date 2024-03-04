@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
   postContainer: {
     height: 90,
     width: '100%',
-    backgroundColor: Color.LightGrey,
+    backgroundColor: Color.VeryLightGrey,
     borderRadius: 4,
   },
   footer: {
     height: 60,
     width: '100%',
-    backgroundColor: Color.LightGrey,
+    backgroundColor: Color.VeryLightGrey,
     borderRadius: 4,
   },
 });

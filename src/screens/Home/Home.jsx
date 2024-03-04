@@ -4,9 +4,11 @@ import {
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import Color from '../../../assets/colors/Color';
 import BottomTab from '../../components/BottomTab';
@@ -30,6 +32,8 @@ import { BASE_URL } from '../../../CONSTANTS';
 import axios from 'axios';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { screenHeight } from '../../utils/ScreenDimensions';
+import { itemTitle } from '../Decorations/ModalStyle';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -45,6 +49,7 @@ const Home = () => {
   const userActions = useUserStateActions();
   const notificationListener = useRef();
   const responseListener = useRef();
+  const navigation = useNavigation();
 
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
     useStateContext();
@@ -118,47 +123,47 @@ const Home = () => {
     };
   }, [postsData, postsLoading]);
 
-  useEffect(() => {
-    if (isFocused) {
-      if (!userstate.expoPushToken)
-        registerForPushNotificationsAsync().then((token) => {
-          // setExpoPushToken(token);
-          //make api call to save the token
-          const config = {
-            headers: {
-              'auth-token': userstate.token,
-            },
-          };
-          if (!userstate.expoPushToken) {
-            axios
-              .put(
-                `${BASE_URL}/user/updateUserExpoToken`,
-                { expoPushToken: `${token}` },
-                config,
-              )
-              .then((res) => {
-                userActions.setExpoPushToken(res.data.expoPushToken);
-              })
-              .catch((err) => {});
-          }
-        });
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     if (!userstate.expoPushToken)
+  //       registerForPushNotificationsAsync().then((token) => {
+  //         // setExpoPushToken(token);
+  //         //make api call to save the token
+  //         const config = {
+  //           headers: {
+  //             'auth-token': userstate.token,
+  //           },
+  //         };
+  //         if (!userstate.expoPushToken) {
+  //           axios
+  //             .put(
+  //               `${BASE_URL}/user/updateUserExpoToken`,
+  //               { expoPushToken: `${token}` },
+  //               config,
+  //             )
+  //             .then((res) => {
+  //               userActions.setExpoPushToken(res.data.expoPushToken);
+  //             })
+  //             .catch((err) => {});
+  //         }
+  //       });
 
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          // setNotification(notification);
-        });
+  //     notificationListener.current =
+  //       Notifications.addNotificationReceivedListener((notification) => {
+  //         // setNotification(notification);
+  //       });
 
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {});
+  //     responseListener.current =
+  //       Notifications.addNotificationResponseReceivedListener((response) => {});
 
-      return () => {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current,
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
-    }
-  }, [isFocused]);
+  //     return () => {
+  //       Notifications.removeNotificationSubscription(
+  //         notificationListener.current,
+  //       );
+  //       Notifications.removeNotificationSubscription(responseListener.current);
+  //     };
+  //   }
+  // }, [isFocused]);
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
   const VideoMiniPlayer = useMemo(
@@ -208,6 +213,12 @@ const Home = () => {
       {showMiniWindow && (
         <View style={styles.showMiniVideo}>{VideoMiniPlayer}</View>
       )}
+      <TouchableOpacity
+        style={styles.decorateButton}
+        onPress={() => navigation.navigate('DecorationClient')}
+      >
+        <Text style={{ ...itemTitle, color: Color.White }}>Decorate</Text>
+      </TouchableOpacity>
 
       <BottomTab activeMenu="Home" scrollToTop={scrollToTop} reload={refetch} />
     </SafeAreaProvider>
@@ -233,5 +244,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '9%',
     bottom: 10,
+  },
+  decorateButton: {
+    backgroundColor: Color.Purple,
+    position: 'absolute',
+    bottom: screenHeight * 0.1,
+    right: '6%',
+    width: '26%',
+    alignItems: 'center',
+    paddingVertical: '9%',
+    borderRadius: screenHeight * 0.01,
   },
 });

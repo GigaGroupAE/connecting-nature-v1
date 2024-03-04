@@ -1,23 +1,22 @@
-import React from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  Animated,
-  Dimensions,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from 'react';
+import { View, Text, ImageBackground, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 
 export default function ViewImage(props) {
-  let deviceHeight = Dimensions.get("screen").height;
-  let deviceWidth = Dimensions.get("screen").width;
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <ImageBackground
           resizeMode="contain"
           source={{ uri: props.route.params.url }}
-          style={{ height: deviceHeight, width: deviceWidth }}
+          style={{ height: screenHeight, width: screenWidth }}
         />
       </View>
       <View>

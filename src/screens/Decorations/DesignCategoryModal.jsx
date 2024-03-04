@@ -8,16 +8,21 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
 import {
   buttonContainer,
   buttonTitle,
   inputstyle,
+  itemTitle,
   titleStyle,
 } from './ModalStyle';
 import { useQuery } from 'react-query';
-import { getDesignType, handleAddCatagory } from '../../utils/Decorate';
+import {
+  fetchAffordabilityData,
+  getDesignType,
+  handleAddCatagory,
+} from '../../utils/Decorate';
 import { AntDesign } from 'react-native-vector-icons';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import Color from '../../../assets/colors/Color';
@@ -25,26 +30,32 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import * as ImagePicker from 'expo-image-picker';
 import _debounce from 'lodash.debounce';
 import { axiosInstance } from '../../../axiosInstance';
+import LockIconSvg from '../../components/SVG/LockIconSvg';
 
 const DesignCategoryModal = ({
   ismodalVisible,
   setisModalVisible,
   refetch,
+  product,
 }) => {
   const [isDesignTypeModalOpen, setisDesignTypeModalOpen] = useState(false);
-  const [selectedDesign, setselectedDesign] = useState('Design Type');
+  const [selectedDesign, setselectedDesign] = useState(
+    product?.categorie || 'Design Type',
+  );
   const [searchQuery, setSearchQuery] = useState('');
-  const [title, settitle] = useState('');
-  const [Description, setDescription] = useState('');
+  const [title, settitle] = useState(product?.title || '');
+  const [Description, setDescription] = useState(product?.Description || '');
   const [mainImages, setmainImages] = useState([]);
-  const [price, setprice] = useState(null);
+  const [price, setprice] = useState(0);
   const [searchProduct, setsearchProduct] = useState('');
   const [products, setProducts] = useState([]);
   const [quantity, setQuantity] = useState('');
   const [productsData, setproductsData] = useState([]);
   const [showProductModal, setshowProductModal] = useState(false);
-  const [showProducts, setshowProducts] = useState([]);
+  const [showProducts, setshowProducts] = useState(product?.products || []);
   const [addedProducts, setaddedProducts] = useState(null);
+  const [totalPrice, settotalPrice] = useState(product?.price?.toString() || 0);
+  const [tag, settag] = useState('Affordability (Automatic)');
 
   const hideModal = () => {
     setisModalVisible(false);
@@ -56,6 +67,11 @@ const DesignCategoryModal = ({
     refetchOnWindowFocus: false,
   });
 
+  const { data: Affordabilites, isLoading } = useQuery(
+    'Affordability',
+    fetchAffordabilityData,
+  );
+
   const filteredData = data?.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
@@ -65,6 +81,21 @@ const DesignCategoryModal = ({
     setisDesignTypeModalOpen(false);
     setSearchQuery('');
   };
+  useEffect(() => {
+    let closestObject = null;
+    let minDifference = Infinity;
+    if (Affordabilites) {
+      for (const obj of Affordabilites) {
+        const midpoint = (obj?.minRange + obj?.maxRange) / 2;
+        const difference = Math?.abs(midpoint - totalPrice);
+        if (difference < minDifference) {
+          closestObject = obj;
+          minDifference = difference;
+        }
+      }
+    }
+    settag(closestObject?.name);
+  }, [totalPrice]);
 
   const handleImagePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -86,14 +117,21 @@ const DesignCategoryModal = ({
       return;
     }
 
+    const productPrice = addedProducts?.price * parseInt(quantity);
+
+    settotalPrice(totalPrice + productPrice);
+
     const newProduct = {
       productId: addedProducts?._id,
       quantity: parseInt(quantity),
     };
     const showProductsUi = {
-      productName: addedProducts?.title,
       quantity: parseInt(quantity),
-      productPrice: addedProducts?.price,
+      productId: {
+        title: addedProducts?.title,
+        price: addedProducts?.price,
+        image: addedProducts?.price,
+      },
     };
 
     setProducts([...products, newProduct]);
@@ -101,7 +139,6 @@ const DesignCategoryModal = ({
     setsearchProduct('');
     setQuantity('');
   };
-
   const debouncedSearch = _debounce(async (query) => {
     try {
       const response = await axiosInstance.get(
@@ -129,22 +166,33 @@ const DesignCategoryModal = ({
         selectedDesign,
         title,
         Description,
-        price,
+        totalPrice,
         products,
         mainImages,
         refetch,
+        tag,
       );
-      setselectedDesign('');
-      settitle('');
-      setDescription('');
-      setprice('');
-      setProducts([]);
-      setaddedProducts([]);
-      setmainImages([]);
-      setisModalVisible(false);
+      resetState();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handlePrice = (e) => {
+    setprice(e);
+  };
+  const resetState = () => {
+    setselectedDesign('');
+    settitle('');
+    setDescription('');
+    setprice('');
+    setProducts([]);
+    setaddedProducts([]);
+    setmainImages([]);
+    setisModalVisible(false);
+  };
+  handlePricefous = () => {
+    settotalPrice(totalPrice - price);
   };
   return (
     <Portal>
@@ -211,6 +259,7 @@ const DesignCategoryModal = ({
             value={Description}
             onChangeText={setDescription}
             style={inputstyle}
+            // multiline
           />
 
           <TouchableOpacity style={buttonContainer} onPress={handleImagePicker}>
@@ -245,11 +294,25 @@ const DesignCategoryModal = ({
           )}
 
           <TextInput
-            placeholder="Approx. Price"
+            placeholder="Additional charges"
             value={price}
-            onChangeText={setprice}
+            onChangeText={(e) => handlePrice(e)}
             style={inputstyle}
+            onBlur={() => settotalPrice(totalPrice + parseInt(price))}
+            onFocus={handlePricefous}
           />
+
+          <View
+            style={{
+              ...inputstyle,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Text>{tag}</Text>
+            <LockIconSvg />
+          </View>
 
           <View style={{ flexDirection: 'row', gap: 16 }}>
             <TextInput
@@ -287,7 +350,10 @@ const DesignCategoryModal = ({
               </View>
             </Animated.View>
           )}
-          <TouchableOpacity style={buttonContainer} onPress={handleAddProduct}>
+          <TouchableOpacity
+            style={{ ...buttonContainer, marginBottom: '4%' }}
+            onPress={handleAddProduct}
+          >
             <Text style={buttonTitle}>+ Add Product</Text>
           </TouchableOpacity>
           {showProducts?.length !== 0 && (
@@ -296,13 +362,13 @@ const DesignCategoryModal = ({
                 style={{
                   width: screenWidth * 0.75,
                   gap: 10,
-                  marginVertical: screenHeight * 0.018,
+                  marginBottom: screenHeight * 0.018,
                 }}
               >
                 <FlatList
                   data={showProducts}
                   renderItem={({ item }) => {
-                    const totlePrice = item?.quantity * item?.productPrice;
+                    const totlePrice = item?.quantity * item?.productId?.price;
                     return (
                       <View style={styles.showProductContainer}>
                         <View
@@ -314,7 +380,7 @@ const DesignCategoryModal = ({
                           }}
                         >
                           <Text style={styles.productTitle}>
-                            {item?.productName}
+                            {item?.productName || item?.productId?.title}
                           </Text>
                           <Text style={styles.quantity}>{item?.quantity}x</Text>
                         </View>
@@ -333,6 +399,12 @@ const DesignCategoryModal = ({
               </View>
             </Animated.View>
           )}
+          <View style={styles.approxAmountContainer}>
+            <Text style={styles.approxAmount}>Approximate Amount</Text>
+            <Text style={{ ...itemTitle, fontSize: screenHeight * 0.018 }}>
+              {totalPrice} PKR
+            </Text>
+          </View>
 
           <TouchableOpacity
             style={{ ...buttonContainer, marginBottom: screenHeight * 0.04 }}
@@ -420,5 +492,16 @@ const styles = StyleSheet.create({
     paddingVertical: screenHeight * 0.03,
     borderRadius: screenHeight * 0.01,
     maxHeight: screenHeight * 0.85,
+  },
+  approxAmount: {
+    fontFamily: 'Roboto_500Medium',
+    color: Color.Grey,
+    fontSize: screenHeight * 0.016,
+  },
+  approxAmountContainer: {
+    width: screenWidth * 0.75,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // marginTop: '4%',
   },
 });
