@@ -30,7 +30,7 @@ export const inputstyle = {
 };
 
 export const titleStyle = {
-  fontSize: screenHeight * 0.021,
+  fontSize: screenHeight * 0.018,
   fontFamily: 'Roboto_700Bold',
 };
 
@@ -44,7 +44,7 @@ export const buttonContainer = {
 };
 export const buttonTitle = {
   color: Color.White,
-  fontSize: screenHeight * 0.021,
+  fontSize: screenHeight * 0.019,
   fontFamily: 'Roboto_700Bold',
 };
 
@@ -61,14 +61,13 @@ export const mainContainer = {
 
 export const itemTitle = {
   fontFamily: 'Roboto_500Medium',
-  fontSize: screenHeight * 0.0185,
+  fontSize: screenHeight * 0.017,
   fontWeight: '600',
 };
 
 export const editButton = {
   width: '75%',
   alignItems: 'center',
-  // marginTop: screenHeight * 0.016,
   paddingVertical: screenHeight * 0.006,
   borderRadius: screenHeight * 0.01,
   borderWidth: 0.9,
@@ -77,4 +76,26 @@ export const editButton = {
 export const editButtonTitle = {
   fontFamily: 'Roboto_500Medium',
   fontSize: screenHeight * 0.017,
+};
+
+export const descriptionTextStyle = {
+  fontFamily: 'Roboto_400Regular',
+  fontSize: screenHeight * 0.014,
+  color: Color.Grey,
+  marginTop: '2%',
+  lineHeight: 18,
+};
+
+export const tagContainer = {
+  backgroundColor: Color.Purple,
+  // paddingVertical: screenHeight * 0.007,
+  alignItems: 'center',
+  borderRadius: screenHeight * 0.1,
+  // paddingHorizontal: screenWidth * 0.02,
+  padding: 5,
+};
+export const tagText = {
+  color: Color.White,
+  fontFamily: 'Roboto_400Regular',
+  fontSize: screenHeight * 0.013,
 };

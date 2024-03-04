@@ -14,7 +14,13 @@ import { fetchAffordabilityData } from '../../utils/Decorate';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import AddAfforablilityModal from './AddAfforablilityModal';
-import { editButton, editButtonTitle, itemTitle } from './ModalStyle';
+import {
+  descriptionText,
+  descriptionTextStyle,
+  editButton,
+  editButtonTitle,
+  itemTitle,
+} from './ModalStyle';
 
 const Affordability = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
@@ -53,7 +59,7 @@ const Affordability = () => {
                 <View style={styles.mainContainer}>
                   <View style={styles.leftContainer}>
                     <Text style={itemTitle}>{item?.name}</Text>
-                    <Text style={styles.description}>
+                    <Text style={descriptionTextStyle}>
                       Admin who have access to this feature can edit the price
                       range as per market in the future.
                     </Text>

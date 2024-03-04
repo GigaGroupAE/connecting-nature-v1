@@ -1,21 +1,48 @@
-import { FlatList, StyleSheet, Text, View, Image } from 'react-native';
-import React, { useState } from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Pressable,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import { ScrollView } from 'react-native-gesture-handler';
 import DesignCategoryModal from './DesignCategoryModal';
 import { useQuery } from 'react-query';
 import { fetchDecorations } from '../../utils/Decorate';
-import { itemTitle, mainContainer } from './ModalStyle';
+import {
+  descriptionTextStyle,
+  itemTitle,
+  mainContainer,
+  tagContainer,
+  tagText,
+} from './ModalStyle';
 import { BASE_URL } from '../../../CONSTANTS';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 const DesignCategory = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
+  const [seeproduct, setseeproduct] = useState(null);
   const { data, refetch } = useQuery('DesignCategory', fetchDecorations, {
     staleTime: 300000,
     cacheTime: 600000,
     refetchOnWindowFocus: false,
   });
+
+  const handleItemPress = (item) => {
+    setseeproduct(item);
+    setismodalVisible(true);
+  };
+
+  useEffect(() => {
+    if (!ismodalVisible) {
+      setseeproduct(null);
+    }
+
+    // setisEdit(false);
+  }, [ismodalVisible]);
   return (
     <ScrollView style={styles.container}>
       <HeaderNormal
@@ -36,7 +63,10 @@ const DesignCategory = () => {
                 ? item?.categorie.slice(0, 15) + '...'
                 : item?.categorie;
             return (
-              <View style={mainContainer}>
+              <Pressable
+                style={mainContainer}
+                onPress={() => handleItemPress(item)}
+              >
                 <View style={styles.leftContainer}>
                   <Image
                     source={{
@@ -59,22 +89,13 @@ const DesignCategory = () => {
                     >
                       <Text
                         style={{
-                          ...itemTitle,
-                          fontFamily: 'Roboto_500Medium',
-                          color: Color.Grey,
-                          fontSize: screenHeight * 0.017,
+                          ...descriptionTextStyle,
+                          fontSize: screenHeight * 0.016,
                         }}
                       >
                         Type.
                       </Text>
-                      <Text
-                        style={{
-                          ...itemTitle,
-                          fontFamily: 'Roboto_500Medium',
-                          color: Color.Grey,
-                          fontSize: screenHeight * 0.017,
-                        }}
-                      >
+                      <Text style={descriptionTextStyle}>
                         {shortCategorieText}
                       </Text>
                     </View>
@@ -82,20 +103,24 @@ const DesignCategory = () => {
                 </View>
                 <View style={styles.rightContainer}>
                   <Text style={itemTitle}>{item?.price} PKR</Text>
-                  <View style={styles.tagContainer}>
-                    <Text style={styles.tagText}>{item?.tag}</Text>
+                  <View style={tagContainer}>
+                    <Text style={tagText}>{item?.tag}</Text>
                   </View>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
         />
       </View>
-      <DesignCategoryModal
-        setisModalVisible={setismodalVisible}
-        ismodalVisible={ismodalVisible}
-        refetch={refetch}
-      />
+
+      {ismodalVisible && (
+        <DesignCategoryModal
+          setisModalVisible={setismodalVisible}
+          ismodalVisible={ismodalVisible}
+          refetch={refetch}
+          product={seeproduct}
+        />
+      )}
     </ScrollView>
   );
 };
@@ -125,21 +150,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   productImage: {
-    width: screenWidth * 0.19,
-    height: screenHeight * 0.064,
+    width: screenWidth * 0.21,
+    height: screenHeight * 0.053,
     resizeMode: 'cover',
     borderRadius: screenHeight * 0.01,
-  },
-  tagContainer: {
-    backgroundColor: Color.Purple,
-    width: screenWidth * 0.25,
-    paddingVertical: screenHeight * 0.007,
-    alignItems: 'center',
-    borderRadius: screenHeight * 0.01,
-  },
-  tagText: {
-    color: Color.White,
-    fontFamily: 'Roboto_500Medium',
-    fontSize: screenHeight * 0.015,
   },
 });

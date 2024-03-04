@@ -182,18 +182,19 @@ export const handleAddCatagory = async (
   selectedDesign,
   title,
   Description,
-  price,
+  totalPrice,
   products,
   mainImages,
   refetch,
+  tag,
 ) => {
   try {
     const decorationData = new FormData();
     decorationData.append('categorie', selectedDesign);
     decorationData.append('title', title);
     decorationData.append('Description', Description);
-    decorationData.append('price', price);
-    decorationData.append('tag', 'Example Tag');
+    decorationData.append('price', totalPrice);
+    decorationData.append('tag', tag);
 
     products.forEach((product, index) => {
       decorationData.append(`products[${index}][productId]`, product.productId);
@@ -207,7 +208,6 @@ export const handleAddCatagory = async (
         type: 'image/jpg',
       });
     });
-
     const response = await axiosInstance.post(
       '/decorations/add-decoration',
       decorationData,

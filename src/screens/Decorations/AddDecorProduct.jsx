@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Color from '../../../assets/colors/Color';
@@ -31,7 +32,7 @@ import { BASE_URL } from '../../../CONSTANTS';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import NoItemIndicater from '../../components/NoItemIndicater';
 
-const AddDecorProduct = () => {
+const AddDecorProduct = ({ navigation }) => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null);
@@ -115,10 +116,20 @@ const AddDecorProduct = () => {
                   return (
                     <View style={mainContainer}>
                       <View style={styles.leftContainer}>
-                        <Image
-                          source={{ uri: `${BASE_URL}/images/${item?.image}` }}
-                          style={styles.productImage}
-                        />
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate('ViewImage', {
+                              url: `${BASE_URL}/images/${item?.image}`,
+                            })
+                          }
+                        >
+                          <Image
+                            source={{
+                              uri: `${BASE_URL}/images/${item?.image}`,
+                            }}
+                            style={styles.productImage}
+                          />
+                        </Pressable>
                         <View
                           style={{
                             height: '80%',
@@ -247,8 +258,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   productImage: {
-    width: screenWidth * 0.2,
-    height: screenHeight * 0.09,
+    width: screenWidth * 0.21,
+    height: screenHeight * 0.053,
     resizeMode: 'cover',
     borderRadius: screenHeight * 0.01,
   },
