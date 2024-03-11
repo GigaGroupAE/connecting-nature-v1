@@ -25,6 +25,7 @@ import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 const DesignCategory = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [seeproduct, setseeproduct] = useState(null);
+  const [isEdit, setisEdit] = useState(false);
   const { data, refetch } = useQuery('DesignCategory', fetchDecorations, {
     staleTime: 300000,
     cacheTime: 600000,
@@ -34,11 +35,12 @@ const DesignCategory = () => {
   const handleItemPress = (item) => {
     setseeproduct(item);
     setismodalVisible(true);
+    setisEdit(true);
   };
-
   useEffect(() => {
     if (!ismodalVisible) {
       setseeproduct(null);
+      setisEdit(false);
     }
 
     // setisEdit(false);
@@ -119,6 +121,7 @@ const DesignCategory = () => {
           ismodalVisible={ismodalVisible}
           refetch={refetch}
           product={seeproduct}
+          isEdit={isEdit}
         />
       )}
     </ScrollView>

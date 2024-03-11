@@ -137,7 +137,6 @@ export const addProduct = async (
         type: 'image/jpeg',
       });
     }
-    console.log(formData);
     let response;
     if (editProductDetails) {
       response = await axiosInstance.put(
@@ -187,6 +186,8 @@ export const handleAddCatagory = async (
   mainImages,
   refetch,
   tag,
+  isEdit,
+  id,
 ) => {
   try {
     const decorationData = new FormData();
@@ -200,23 +201,39 @@ export const handleAddCatagory = async (
       decorationData.append(`products[${index}][productId]`, product.productId);
       decorationData.append(`products[${index}][quantity]`, product.quantity);
     });
-
-    mainImages.forEach((link, index) => {
-      decorationData.append(`images`, {
-        name: link,
-        uri: link,
-        type: 'image/jpg',
+    if (mainImages?.length !== 0) {
+      mainImages.forEach((link, index) => {
+        decorationData.append(`images`, {
+          name: link,
+          uri: link,
+          type: 'image/jpg',
+        });
       });
-    });
-    const response = await axiosInstance.post(
-      '/decorations/add-decoration',
-      decorationData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+    }
+
+    let response;
+    if (isEdit) {
+      response = await axiosInstance.put(
+        `/decorations/update-decoration/${id}`,
+        decorationData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      },
-    );
+      );
+    } else {
+      response = await axiosInstance.post(
+        '/decorations/add-decoration',
+        decorationData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+    }
+
     refetch();
     return response;
   } catch (error) {

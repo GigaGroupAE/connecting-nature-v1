@@ -52,6 +52,7 @@ const DesignType = () => {
     if (!ismodalVisible) {
       setname('');
       setproduct(null);
+      setisEdit(false);
     }
   }, [product, ismodalVisible]);
 
@@ -67,6 +68,7 @@ const DesignType = () => {
   const handleEdit = (item) => {
     setproduct(item);
     setismodalVisible(true);
+    setisEdit(true);
   };
 
   return (
@@ -118,7 +120,11 @@ const DesignType = () => {
               style={buttonContainer}
               onPress={handleAddDecoration}
             >
-              <Text style={buttonTitle}>Add</Text>
+              {isEdit ? (
+                <Text style={buttonTitle}>Update</Text>
+              ) : (
+                <Text style={buttonTitle}>Add</Text>
+              )}
             </TouchableOpacity>
           </View>
         </Modal>

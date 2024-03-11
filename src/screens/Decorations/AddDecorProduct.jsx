@@ -38,6 +38,7 @@ const AddDecorProduct = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [editProductDetails, seteditProductDetails] = useState(null);
+  const [isEdit, setisEdit] = useState(false);
 
   const { data, isLoading, refetch } = useQuery('decorproducts', getProducts, {
     staleTime: 300000,
@@ -67,6 +68,7 @@ const AddDecorProduct = ({ navigation }) => {
       setTitle('');
       setImage('');
       setPrice('');
+      setisEdit(false);
     }
   }, [editProductDetails, ismodalVisible]);
 
@@ -93,8 +95,8 @@ const AddDecorProduct = ({ navigation }) => {
   const handleEdit = (item) => {
     seteditProductDetails(item);
     setismodalVisible(true);
+    setisEdit(true);
   };
-
   return (
     <View style={styles.container}>
       <HeaderNormal title="Products" setismodalVisible={setismodalVisible} />
@@ -212,7 +214,11 @@ const AddDecorProduct = ({ navigation }) => {
               )}
             </View>
             <TouchableOpacity style={buttonContainer} onPress={handleSubmit}>
-              <Text style={buttonTitle}>Add</Text>
+              {isEdit ? (
+                <Text style={buttonTitle}>Update</Text>
+              ) : (
+                <Text style={buttonTitle}>Add</Text>
+              )}
             </TouchableOpacity>
           </View>
         </Modal>

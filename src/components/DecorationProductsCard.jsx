@@ -1,5 +1,12 @@
-import { FlatList, StyleSheet, Text, View, Image } from 'react-native';
-import React from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useState } from 'react';
 import { BASE_URL } from '../../CONSTANTS';
 import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
 
@@ -9,7 +16,31 @@ import {
   itemTitle,
 } from '../screens/Decorations/ModalStyle';
 
-const DecorationProductsCard = ({ items }) => {
+const DecorationProductsCard = ({
+  items,
+  setremovedProduct,
+  removedProduct,
+}) => {
+  const [products, setproducts] = useState(items);
+  const handleProduct = (item) => {
+    const activeIndex = products?.findIndex((e) => e?._id === item?._id);
+    const updatedProducts = [...products];
+    if (activeIndex !== -1) {
+      updatedProducts.splice(activeIndex, 1);
+      setproducts(updatedProducts);
+      setremovedProduct({
+        isAdd: false,
+        item: item,
+      });
+    } else {
+      setremovedProduct({
+        isAdd: true,
+        item: item,
+      });
+      setproducts([...products, item]);
+    }
+  };
+
   return (
     <View style={{ marginLeft: screenWidth * 0.016 }}>
       <FlatList
@@ -19,8 +50,14 @@ const DecorationProductsCard = ({ items }) => {
             item?.productId?.title.length > 16
               ? item?.productId?.title?.slice(0, 16) + '...'
               : item?.productId?.title;
+          const isSelected = products.some((e) => e?._id === item?._id);
+          const totlePrice = item?.quantity * item?.productId?.price;
+
           return (
-            <View style={styles.card}>
+            <TouchableOpacity
+              style={isSelected ? styles.activeCard : styles.card}
+              onPress={() => handleProduct(item)}
+            >
               <Image
                 source={{
                   uri: `${BASE_URL}/images/${item?.productId?.image}`,
@@ -43,7 +80,7 @@ const DecorationProductsCard = ({ items }) => {
               </View>
 
               <View style={styles.priceContainer}>
-                <Text style={itemTitle}>{item?.productId?.price}</Text>
+                <Text style={itemTitle}>{totlePrice}</Text>
                 <Text
                   style={{
                     ...descriptionTextStyle,
@@ -54,7 +91,7 @@ const DecorationProductsCard = ({ items }) => {
                   PKR
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         horizontal
@@ -71,6 +108,15 @@ export default DecorationProductsCard;
 
 const styles = StyleSheet.create({
   card: {
+    width: screenWidth * 0.28,
+    height: screenHeight * 0.18,
+    borderRadius: screenHeight * 0.01,
+    backgroundColor: Color.LightBlue,
+    // borderWidth: 0.9,
+    // borderColor: Color.Blue,
+    padding: '3%',
+  },
+  activeCard: {
     width: screenWidth * 0.28,
     height: screenHeight * 0.18,
     borderRadius: screenHeight * 0.01,
