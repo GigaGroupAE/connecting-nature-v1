@@ -5,52 +5,113 @@ import {
   Text,
   View,
   Image,
+  Animated,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
-import { fetchDecorations } from '../../utils/Decorate';
+import {
+  fetchAffordabilityData,
+  fetchDecorations,
+  getDesignType,
+} from '../../utils/Decorate';
 import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../CONSTANTS';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import { AntDesign } from 'react-native-vector-icons';
 
 import {
+  container,
   descriptionTextStyle,
   itemTitle,
   tagContainer,
   tagText,
+  titleStyle,
+  inputstyle,
 } from './ModalStyle';
 import { useNavigation } from '@react-navigation/native';
+import { shortenText } from '../../utils/isFollowing';
+import { Modal, Portal } from 'react-native-paper';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
+import CheckedBox from '../../components/SVG/CheckedBox';
+import UnCheckedBox from '../../components/SVG/unCheckedBox';
 
 const Decoration = () => {
-  const { data, refetch } = useQuery('DesignCategoryClient', fetchDecorations);
+  const { data } = useQuery('DesignCategoryClient', fetchDecorations);
+  const [isFilterModal, setisFilterModal] = useState(false);
   const navigation = useNavigation();
+  const [isDesignTypeModalOpen, setisDesignTypeModalOpen] = useState(false);
+  const [productType, setproductType] = useState('');
+  const [priceRangers, setpriceRangers] = useState([]);
+
+  const { data: designData } = useQuery('designData', getDesignType, {
+    staleTime: 300000,
+    cacheTime: 600000,
+  });
+
+  const { data: Affordabilites } = useQuery(
+    'Affordability',
+    fetchAffordabilityData,
+  );
+
+  const handlenavigation = (item) => {
+    navigation.navigate('DecorationProductDetails', {
+      item: item,
+      data: data,
+    });
+  };
+
+  const hideModal = () => {
+    setisFilterModal(false);
+  };
+
+  const handelProductType = (item) => {
+    setproductType(item);
+    setisDesignTypeModalOpen(false);
+  };
+
+  const handleAddProduct = (item) => {
+    setpriceRangers((prevPriceRangers) => {
+      const isAlreadyAdded = prevPriceRangers.includes(item?.name);
+      if (isAlreadyAdded) {
+        return prevPriceRangers.filter((name) => name !== item?.name);
+      } else {
+        return [...prevPriceRangers, item?.name];
+      }
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <HeaderNormal title="Decoration" />
+      <HeaderNormal
+        title="Decoration"
+        openFilterModal={() => setisFilterModal(true)}
+        screen="Decoration"
+      />
       <View style={{ flex: 1, marginVertical: '3%' }}>
         <FlatList
-          data={data}
+          data={
+            priceRangers?.length > 0 && productType
+              ? data?.filter(
+                  (item) =>
+                    priceRangers.includes(item?.tag) &&
+                    item?.categorie === productType,
+                )
+              : priceRangers?.length > 0
+                ? data?.filter((item) => priceRangers.includes(item?.tag))
+                : productType
+                  ? data.filter((item) => item?.categorie === productType)
+                  : data
+          }
           renderItem={({ item }) => {
-            const shortTitle =
-              item?.title?.length > 25
-                ? item?.title?.slice(0, 25) + '...'
-                : item?.title;
-
-            const shortCategorieText =
-              item?.categorie?.length > 20
-                ? item?.categorie.slice(0, 20) + '...'
-                : item?.categorie;
-
+            const shortTitle = shortenText(item?.title, 25);
+            const shortCategorieText = shortenText(item?.categorie, 20);
             return (
               <Pressable
                 style={styles.productContainer}
-                onPress={() =>
-                  navigation.navigate('DecorationProductDetails', {
-                    item: item,
-                  })
-                }
+                onPress={() => handlenavigation(item)}
               >
                 <View style={styles.imageContainer}>
                   <Image
@@ -92,6 +153,104 @@ const Decoration = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <Portal>
+        <Modal visible={isFilterModal} onDismiss={hideModal}>
+          <View
+            style={{
+              ...container,
+              maxHeight: screenHeight * 0.85,
+            }}
+          >
+            <ScrollView
+              contentContainerStyle={{
+                alignItems: 'center',
+              }}
+              showsVerticalScrollIndicator={false}
+            >
+              <Text style={titleStyle}>Filter Products</Text>
+
+              <View
+                style={{
+                  ...inputstyle,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                {productType === '' ? (
+                  <Text>Select Product Type</Text>
+                ) : (
+                  <Text>{productType}</Text>
+                )}
+                <TouchableOpacity
+                  onPress={() =>
+                    setisDesignTypeModalOpen(!isDesignTypeModalOpen)
+                  }
+                >
+                  <AntDesign name="down" style={styles.downIcon} />
+                </TouchableOpacity>
+              </View>
+              {isDesignTypeModalOpen && (
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                  <View style={styles.designModalContainer}>
+                    <FlatList
+                      data={designData}
+                      renderItem={({ item }) => {
+                        return (
+                          <TouchableOpacity
+                            style={styles.desingContainer}
+                            onPress={() => handelProductType(item?.name)}
+                          >
+                            <Text>{item?.name}</Text>
+                          </TouchableOpacity>
+                        );
+                      }}
+                      keyExtractor={(item) => item._id}
+                      showsVerticalScrollIndicator={false}
+                    />
+                  </View>
+                </Animated.View>
+              )}
+
+              <View
+                style={{
+                  alignSelf: 'flex-start',
+                  marginVertical: '2%',
+                }}
+              >
+                <View style={{ marginBottom: '2%' }}>
+                  <Text style={descriptionTextStyle}>Pricing Range</Text>
+                </View>
+
+                <FlatList
+                  data={Affordabilites}
+                  renderItem={({ item }) => {
+                    const isChecked = priceRangers.includes(item?.name);
+                    return (
+                      <Pressable
+                        style={styles.priceContainer}
+                        onPress={() => handleAddProduct(item)}
+                      >
+                        {isChecked ? <CheckedBox /> : <UnCheckedBox />}
+                        <Text
+                          style={{
+                            ...descriptionTextStyle,
+                            color: Color.Black,
+                          }}
+                        >
+                          {item?.name}
+                        </Text>
+                      </Pressable>
+                    );
+                  }}
+                  contentContainerStyle={{ gap: 10 }}
+                />
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };
@@ -144,5 +303,21 @@ const styles = StyleSheet.create({
   typeContainer: {
     flexDirection: 'row',
     gap: 4,
+  },
+  designModalContainer: {
+    backgroundColor: Color.White,
+    width: screenWidth * 0.75,
+    maxHeight: screenHeight * 0.2,
+    marginTop: '3%',
+    borderColor: Color.LightGrey,
+    borderWidth: 1,
+    borderRadius: screenHeight * 0.01,
+    paddingHorizontal: '3%',
+    paddingVertical: '2%',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
 });

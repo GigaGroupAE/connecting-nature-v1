@@ -31,32 +31,40 @@ import * as ImagePicker from 'expo-image-picker';
 import _debounce from 'lodash.debounce';
 import { axiosInstance } from '../../../axiosInstance';
 import LockIconSvg from '../../components/SVG/LockIconSvg';
+import { BASE_URL } from '../../../CONSTANTS';
 
 const DesignCategoryModal = ({
   ismodalVisible,
   setisModalVisible,
   refetch,
   product,
+  isEdit,
 }) => {
   const [isDesignTypeModalOpen, setisDesignTypeModalOpen] = useState(false);
   const [selectedDesign, setselectedDesign] = useState(
     product?.categorie || 'Design Type',
   );
+
+  const productItems = product?.products?.map((e) => e?.productId);
+  const updatedItems = product?.products?.map((item) => ({
+    productId: item.productId._id,
+    quantity: item.quantity,
+  }));
+
   const [searchQuery, setSearchQuery] = useState('');
   const [title, settitle] = useState(product?.title || '');
   const [Description, setDescription] = useState(product?.Description || '');
   const [mainImages, setmainImages] = useState([]);
   const [price, setprice] = useState(0);
   const [searchProduct, setsearchProduct] = useState('');
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(updatedItems || []);
   const [quantity, setQuantity] = useState('');
   const [productsData, setproductsData] = useState([]);
   const [showProductModal, setshowProductModal] = useState(false);
   const [showProducts, setshowProducts] = useState(product?.products || []);
-  const [addedProducts, setaddedProducts] = useState(null);
-  const [totalPrice, settotalPrice] = useState(product?.price?.toString() || 0);
+  const [addedProducts, setaddedProducts] = useState(productItems || null);
+  const [totalPrice, settotalPrice] = useState(product?.price || 0);
   const [tag, settag] = useState('Affordability (Automatic)');
-
   const hideModal = () => {
     setisModalVisible(false);
   };
@@ -67,7 +75,7 @@ const DesignCategoryModal = ({
     refetchOnWindowFocus: false,
   });
 
-  const { data: Affordabilites, isLoading } = useQuery(
+  const { data: Affordabilites } = useQuery(
     'Affordability',
     fetchAffordabilityData,
   );
@@ -116,11 +124,8 @@ const DesignCategoryModal = ({
       alert('Please enter product name and quantity.');
       return;
     }
-
     const productPrice = addedProducts?.price * parseInt(quantity);
-
     settotalPrice(totalPrice + productPrice);
-
     const newProduct = {
       productId: addedProducts?._id,
       quantity: parseInt(quantity),
@@ -133,7 +138,6 @@ const DesignCategoryModal = ({
         image: addedProducts?.price,
       },
     };
-
     setProducts([...products, newProduct]);
     setshowProducts([...showProducts, showProductsUi]);
     setsearchProduct('');
@@ -161,6 +165,7 @@ const DesignCategoryModal = ({
     setaddedProducts(item);
   };
   const handleAdd = async () => {
+    const id = product?._id;
     try {
       const data = await handleAddCatagory(
         selectedDesign,
@@ -171,6 +176,8 @@ const DesignCategoryModal = ({
         mainImages,
         refetch,
         tag,
+        isEdit,
+        id,
       );
       resetState();
     } catch (error) {
@@ -282,6 +289,34 @@ const DesignCategoryModal = ({
                       style={styles.selectedImages}
                       resizeMode="cover"
                       source={{ uri: item }}
+                    />
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: 15 }}
+              />
+            </View>
+          )}
+
+          {product?.images !== 'undefined' && mainImages?.length === 0 && (
+            <View
+              style={{
+                width: screenHeight * 0.35,
+                gap: 10,
+                marginTop: '4%',
+              }}
+            >
+              <FlatList
+                data={product?.images}
+                renderItem={({ item, index }) => (
+                  <View>
+                    <Image
+                      key={index}
+                      style={styles.selectedImages}
+                      resizeMode="cover"
+                      source={{ uri: `${BASE_URL}/images/${item?.name}` }}
                     />
                   </View>
                 )}
@@ -410,7 +445,11 @@ const DesignCategoryModal = ({
             style={{ ...buttonContainer, marginBottom: screenHeight * 0.04 }}
             onPress={handleAdd}
           >
-            <Text style={buttonTitle}>Save</Text>
+            {isEdit ? (
+              <Text style={buttonTitle}>Update</Text>
+            ) : (
+              <Text style={buttonTitle}>Save</Text>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </Modal>

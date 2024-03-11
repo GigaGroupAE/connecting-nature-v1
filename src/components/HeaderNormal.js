@@ -6,23 +6,27 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { AntDesign, Entypo, MaterialIcons } from 'react-native-vector-icons';
+import { AntDesign, Entypo } from 'react-native-vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
-import { useCartState } from '../slices/cartSlice';
+// import { useCartState } from '../slices/cartSlice';
 import { useState, useEffect } from 'react';
 import { BASE_URL } from '../../CONSTANTS';
 import { useUserState } from '../slices/userSlice';
 import axios from 'axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import { screenHeight } from '../utils/ScreenDimensions';
+import FilterSvg from './SVG/FilterSvg';
+import ThreeDotsVerticalSvg from './SVG/dotsThreeVertical';
+import SavedSvg from './SVG/SavedSvg';
 
 const width = Dimensions.get('screen').width;
 
 export default function HeaderNormal(props) {
   const userState = useUserState();
-  const cartSlice = useCartState();
+  const title = props?.title;
+  // const cartSlice = useCartState();
   const [Messages, setMessages] = useState([]);
   const { setgroup } = useStateContext();
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function HeaderNormal(props) {
       .then((res) => {
         setMessages([...res.data.myChats]);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
   }, []);
   const selectcontact = (props) => {
     let first = false;
@@ -119,7 +123,7 @@ export default function HeaderNormal(props) {
             />
           </Pressable>
 
-          <Text style={styles.title}>{props.title}</Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
         <View
           style={{
@@ -128,7 +132,7 @@ export default function HeaderNormal(props) {
             width: width * 0.12,
           }}
         >
-          {props.title === 'Chats' && (
+          {title === 'Chats' && (
             <Pressable
               onPress={() => {
                 navigation.navigate('SelectContact', {
@@ -140,10 +144,10 @@ export default function HeaderNormal(props) {
             </Pressable>
           )}
         </View>
-        {props?.title === 'Affordability' ||
-        props?.title === 'Design Type' ||
-        props?.title === 'Design Category' ||
-        props?.title === 'Products' ? (
+        {title === 'Affordability' ||
+        title === 'Design Type' ||
+        title === 'Design Category' ||
+        title === 'Products' ? (
           <TouchableOpacity
             style={styles.affordabContainer}
             onPress={() => props.setismodalVisible(true)}
@@ -152,7 +156,28 @@ export default function HeaderNormal(props) {
             <Text style={styles.affordableTitle}>Add</Text>
           </TouchableOpacity>
         ) : null}
-        {props.title === 'ShowCase' ? (
+        {props?.screen === 'Decoration' && (
+          <View style={styles.decorContainer}>
+            <Pressable onPress={props?.openFilterModal}>
+              <FilterSvg />
+            </Pressable>
+            <Pressable>
+              <ThreeDotsVerticalSvg />
+            </Pressable>
+          </View>
+        )}
+
+        {props?.screen === 'DecorationProduct' && (
+          <View style={styles.decorContainer}>
+            <Pressable onPress={props?.isSaved}>
+              <SavedSvg />
+            </Pressable>
+            <Pressable>
+              <ThreeDotsVerticalSvg />
+            </Pressable>
+          </View>
+        )}
+        {/* {title === 'ShowCase' ? (
           <Pressable
             onPress={() => {
               navigation.navigate('Checkout');
@@ -179,7 +204,7 @@ export default function HeaderNormal(props) {
           </Pressable>
         ) : (
           <View></View>
-        )}
+        )} */}
       </View>
     </View>
   );
@@ -220,5 +245,11 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontFamily: 'Roboto_700Bold',
     fontSize: screenHeight * 0.017,
+  },
+  decorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: '3%',
   },
 });

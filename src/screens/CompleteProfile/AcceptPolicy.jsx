@@ -6,14 +6,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { Entypo } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace";
+} from 'react-native';
+import React from 'react';
+import { Entypo } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const AcceptPolicy = ({ setmodalPolicy }) => {
   return (
@@ -48,15 +48,15 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
         </Text>
         <FlatList
           data={[
-            { key: "Email address" },
-            { key: "First name" },
-            { key: "last name" },
-            { key: "Phone number" },
-            { key: "Location" },
-            { key: "Cokkies and Usage Data" },
+            { key: 'Email address' },
+            { key: 'First name' },
+            { key: 'last name' },
+            { key: 'Phone number' },
+            { key: 'Location' },
+            { key: 'Cokkies and Usage Data' },
           ]}
           renderItem={({ item }) => (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={styles.bulletContainer}>
                 <Text style={styles.bullet}>•</Text>
               </View>
@@ -96,25 +96,25 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
         </Text>
         <FlatList
           data={[
-            { key: "To provide and maintain the App" },
-            { key: "To notify you about changes" },
-            { key: "To our App To allow you" },
+            { key: 'To provide and maintain the App' },
+            { key: 'To notify you about changes' },
+            { key: 'To our App To allow you' },
             {
-              key: "To participate in interactive features of our App when you choose to do so",
+              key: 'To participate in interactive features of our App when you choose to do so',
             },
-            { key: "To provide customer support" },
+            { key: 'To provide customer support' },
             {
-              key: "To gather analysis or valuable information so that we can improve the App",
-            },
-            {
-              key: "To monitor the usage of the App",
+              key: 'To gather analysis or valuable information so that we can improve the App',
             },
             {
-              key: "To detect, prevent, and address technical issues ",
+              key: 'To monitor the usage of the App',
+            },
+            {
+              key: 'To detect, prevent, and address technical issues ',
             },
           ]}
           renderItem={({ item }) => (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={styles.bulletContainer}>
                 <Text style={styles.bullet}>•</Text>
               </View>
@@ -145,23 +145,23 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
 
         <FlatList
           data={[
-            { key: "To comply with a legal obligation" },
+            { key: 'To comply with a legal obligation' },
             {
-              key: "To protect and defend the rights or property of Connecting Nature",
+              key: 'To protect and defend the rights or property of Connecting Nature',
             },
             {
-              key: "To prevent or investigate possible wrongdoing in connection with the App ",
+              key: 'To prevent or investigate possible wrongdoing in connection with the App ',
             },
             {
-              key: "To protect the personal safety of users of the App or the public",
+              key: 'To protect the personal safety of users of the App or the public',
             },
-            { key: "To protect against legal liability" },
+            { key: 'To protect against legal liability' },
           ]}
           renderItem={({ item }) => (
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
               <View style={styles.bulletContainer}>
@@ -194,7 +194,7 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
           Transfer Your information, including Personal Data, may be transferred
           to — and maintained on — computers located outside of your state,
           province, country or other governmental jurisdiction where the data
-          protection laws may differ from those of your jurisdiction.{" "}
+          protection laws may differ from those of your jurisdiction.{' '}
         </Text>
         <Text style={styles.subHeading}>
           If you are located outside the United States and choose to provide
@@ -236,7 +236,7 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
         <View style={{ marginBottom: Height * 0.1 }}>
           <Text style={styles.subHeading}>
             If you have any questions about this Privacy Policy, please contact
-            us by email at{" "}
+            us by email at{' '}
             <Text style={styles.email}>support@connectingnature.com </Text> By
             using Connecting Nature, you consent to our Privacy Policy.
           </Text>
@@ -254,36 +254,36 @@ export default AcceptPolicy;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.01,
   },
 
   headerTitle: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: Height * 0.025,
   },
   headerSubtitle: {
-    fontFamily: "Roboto_400Regular",
-    color: "#999999",
+    fontFamily: 'Roboto_400Regular',
+    color: '#999999',
     fontSize: Height * 0.015,
   },
   closeICon: {
     fontSize: Height * 0.035,
   },
   subHeading: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.016,
     paddingVertical: Height * 0.015,
   },
   title: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: Height * 0.019,
   },
   email: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
   },
   button: {
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Width * 0.09,
     paddingVertical: Height * 0.015,
     fontSize: Height * 0.02,
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
   },
   bulletContainer: {
     marginRight: 5,

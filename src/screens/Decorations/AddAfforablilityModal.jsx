@@ -35,6 +35,8 @@ const AddAfforablilityModal = ({
   const { showSnackbar } = useStateContext();
   const [isEditt, setisEditt] = useState(isEdit);
 
+  console.log(isEditt, 'isedit');
+
   const handleAddAfforadbility = async () => {
     try {
       if (!typeName || !minNumber || !maxNumber) {
@@ -117,7 +119,11 @@ const AddAfforablilityModal = ({
             style={buttonContainer}
             onPress={handleAddAfforadbility}
           >
-            <Text style={buttonTitle}>Add</Text>
+            {isEditt ? (
+              <Text style={buttonTitle}>Update</Text>
+            ) : (
+              <Text style={buttonTitle}>Add</Text>
+            )}
           </TouchableOpacity>
         </View>
       </Modal>
