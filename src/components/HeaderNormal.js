@@ -20,6 +20,7 @@ import { screenHeight } from '../utils/ScreenDimensions';
 import FilterSvg from './SVG/FilterSvg';
 import ThreeDotsVerticalSvg from './SVG/dotsThreeVertical';
 import SavedSvg from './SVG/SavedSvg';
+import SavedProductSvg from './SVG/SaveProductSvg';
 
 const width = Dimensions.get('screen').width;
 
@@ -161,7 +162,7 @@ export default function HeaderNormal(props) {
             <Pressable onPress={props?.openFilterModal}>
               <FilterSvg />
             </Pressable>
-            <Pressable>
+            <Pressable onPress={props?.openSavedProducts}>
               <ThreeDotsVerticalSvg />
             </Pressable>
           </View>
@@ -169,10 +170,16 @@ export default function HeaderNormal(props) {
 
         {props?.screen === 'DecorationProduct' && (
           <View style={styles.decorContainer}>
-            <Pressable onPress={props?.isSaved}>
-              <SavedSvg />
-            </Pressable>
-            <Pressable>
+            <TouchableOpacity onPress={props?.isSaved}>
+              {props?.save ? (
+                <View style={{ marginRight: 7 }}>
+                  <SavedProductSvg />
+                </View>
+              ) : (
+                <SavedSvg />
+              )}
+            </TouchableOpacity>
+            <Pressable onPress={props?.openSavedProducts}>
               <ThreeDotsVerticalSvg />
             </Pressable>
           </View>
@@ -244,7 +251,7 @@ const styles = StyleSheet.create({
   affordableTitle: {
     color: Color.White,
     fontFamily: 'Roboto_700Bold',
-    fontSize: screenHeight * 0.017,
+    fontSize: screenHeight * 0.016,
   },
   decorContainer: {
     flexDirection: 'row',

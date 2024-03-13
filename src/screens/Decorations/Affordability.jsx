@@ -15,7 +15,6 @@ import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import AddAfforablilityModal from './AddAfforablilityModal';
 import {
-  descriptionText,
   descriptionTextStyle,
   editButton,
   editButtonTitle,

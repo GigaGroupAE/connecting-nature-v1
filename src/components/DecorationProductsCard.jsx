@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../../CONSTANTS';
 import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
 
@@ -16,12 +16,12 @@ import {
   itemTitle,
 } from '../screens/Decorations/ModalStyle';
 
-const DecorationProductsCard = ({
-  items,
-  setremovedProduct,
-  removedProduct,
-}) => {
+const DecorationProductsCard = ({ items, setremovedProduct }) => {
   const [products, setproducts] = useState(items);
+  useEffect(() => {
+    setproducts(items);
+  }, [items]);
+
   const handleProduct = (item) => {
     const activeIndex = products?.findIndex((e) => e?._id === item?._id);
     const updatedProducts = [...products];
@@ -99,6 +99,7 @@ const DecorationProductsCard = ({
           gap: 10,
           marginVertical: '2.5%',
         }}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );

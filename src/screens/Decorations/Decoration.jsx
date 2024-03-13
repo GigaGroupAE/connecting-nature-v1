@@ -9,13 +9,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import {
   fetchAffordabilityData,
   fetchDecorations,
   getDesignType,
+  toggleSave,
 } from '../../utils/Decorate';
 import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../CONSTANTS';
@@ -31,25 +32,35 @@ import {
   titleStyle,
   inputstyle,
 } from './ModalStyle';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { shortenText } from '../../utils/isFollowing';
 import { Modal, Portal } from 'react-native-paper';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import CheckedBox from '../../components/SVG/CheckedBox';
 import UnCheckedBox from '../../components/SVG/unCheckedBox';
+import SavedWhiteSvg from '../../components/SVG/SavedWhiteSvg';
+import UnSavedWhiteSvg from '../../components/SVG/UnSavedWhite';
+import { useUserState } from '../../slices/userSlice';
 
 const Decoration = () => {
-  const { data } = useQuery('DesignCategoryClient', fetchDecorations);
+  const userState = useUserState();
+  const isFocused = useIsFocused();
+  const { data, refetch } = useQuery('DesignCategoryClient', fetchDecorations);
   const [isFilterModal, setisFilterModal] = useState(false);
   const navigation = useNavigation();
   const [isDesignTypeModalOpen, setisDesignTypeModalOpen] = useState(false);
   const [productType, setproductType] = useState('');
   const [priceRangers, setpriceRangers] = useState([]);
+  const [isSavedOpen, setisSavedOpen] = useState(false);
 
   const { data: designData } = useQuery('designData', getDesignType, {
     staleTime: 300000,
     cacheTime: 600000,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [isFocused]);
 
   const { data: Affordabilites } = useQuery(
     'Affordability',
@@ -74,13 +85,28 @@ const Decoration = () => {
 
   const handleAddProduct = (item) => {
     setpriceRangers((prevPriceRangers) => {
-      const isAlreadyAdded = prevPriceRangers.includes(item?.name);
+      const isAlreadyAdded = prevPriceRangers?.includes(item?.name);
       if (isAlreadyAdded) {
-        return prevPriceRangers.filter((name) => name !== item?.name);
+        return prevPriceRangers?.filter((name) => name !== item?.name);
       } else {
         return [...prevPriceRangers, item?.name];
       }
     });
+  };
+
+  const handleSavedProduct = async (id) => {
+    try {
+      const data = await toggleSave(id, userState?.id);
+      refetch();
+    } catch (error) {}
+  };
+
+  const handleViewSaved = () => {
+    setisSavedOpen(!isSavedOpen);
+  };
+
+  const handleSavednavigation = () => {
+    navigation.navigate('SavedDecoration');
   };
 
   return (
@@ -88,6 +114,7 @@ const Decoration = () => {
       <HeaderNormal
         title="Decoration"
         openFilterModal={() => setisFilterModal(true)}
+        openSavedProducts={handleViewSaved}
         screen="Decoration"
       />
       <View style={{ flex: 1, marginVertical: '3%' }}>
@@ -108,6 +135,8 @@ const Decoration = () => {
           renderItem={({ item }) => {
             const shortTitle = shortenText(item?.title, 25);
             const shortCategorieText = shortenText(item?.categorie, 20);
+            const isSave = item?.isSaved?.some((id) => id === userState?.id);
+
             return (
               <Pressable
                 style={styles.productContainer}
@@ -121,6 +150,17 @@ const Decoration = () => {
                     style={styles.productImage}
                   />
                 </View>
+
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    right: screenWidth * 0.07,
+                    top: screenHeight * 0.02,
+                  }}
+                  onPress={() => handleSavedProduct(item?._id)}
+                >
+                  {isSave ? <SavedWhiteSvg /> : <UnSavedWhiteSvg />}
+                </TouchableOpacity>
 
                 <View style={styles.productDetails}>
                   <View>
@@ -149,7 +189,7 @@ const Decoration = () => {
               </Pressable>
             );
           }}
-          contentContainerStyle={{ gap: 12 }}
+          contentContainerStyle={{ gap: 12, flex: 1 }}
           showsVerticalScrollIndicator={false}
         />
       </View>
@@ -202,7 +242,7 @@ const Decoration = () => {
                             style={styles.desingContainer}
                             onPress={() => handelProductType(item?.name)}
                           >
-                            <Text>{item?.name}</Text>
+                            <Text style={styles.title}>{item?.name}</Text>
                           </TouchableOpacity>
                         );
                       }}
@@ -251,6 +291,15 @@ const Decoration = () => {
           </View>
         </Modal>
       </Portal>
+
+      {isSavedOpen && (
+        <TouchableOpacity
+          style={styles.savedContainer}
+          onPress={handleSavednavigation}
+        >
+          <Text style={styles.titleSaved}>Saved Decoration</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -319,5 +368,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  title: {
+    fontFamily: 'Roboto_400Regular',
+    paddingVertical: 6,
+    fontSize: 12,
+  },
+  savedContainer: {
+    backgroundColor: Color.White,
+    position: 'absolute',
+    right: screenWidth * 0.1,
+    width: screenWidth * 0.4,
+    paddingHorizontal: screenWidth * 0.03,
+    paddingVertical: screenHeight * 0.015,
+    top: screenHeight * 0.05,
+    borderRadius: screenHeight * 0.01,
+    shadowColor: Color.Black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  titleSaved: {
+    fontFamily: 'Roboto_500Medium',
+    fontSize: screenHeight * 0.016,
   },
 });

@@ -15,6 +15,7 @@ const DecorationProductDetialsHeader = ({
   data,
   activeProduct,
   setactiveProduct,
+  setremovedItem,
 }) => {
   const [isProductName, setisProductName] = useState(false);
   const [isCategorie, setisCategorie] = useState(false);
@@ -31,6 +32,19 @@ const DecorationProductDetialsHeader = ({
   const handleSelectedtitle = (item) => {
     setactiveProduct(item);
     setisProductName(false);
+    setremovedItem({
+      isAdd: false,
+      item: null,
+    });
+  };
+
+  const handleSelectedCategorie = (item) => {
+    setactiveProduct(item);
+    setisCategorie(false);
+    setremovedItem({
+      isAdd: false,
+      item: null,
+    });
   };
 
   return (
@@ -104,12 +118,11 @@ const DecorationProductDetialsHeader = ({
                 }}
               >
                 <Pressable
-                  onPress={() => handleSelectedtitle(item)}
+                  onPress={() => handleSelectedCategorie(item)}
                   style={{
                     paddingVertical: 8,
                     width: '60%',
                     paddingHorizontal: 12,
-                    // borderColor: Color.VeryLightGrey,
                   }}
                 >
                   <Text>{item?.categorie}</Text>
