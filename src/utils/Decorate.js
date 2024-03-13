@@ -249,3 +249,35 @@ export const fetchDecorations = async () => {
     throw error;
   }
 };
+
+export const toggleSave = async (id, userId) => {
+  try {
+    const data = await axiosInstance.post(`/decorations/toggleSave/${id}`, {
+      userId: userId,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSavedDecorations = async (id) => {
+  try {
+    const { data } = await axiosInstance.get(`/decorations/saved/${id}`);
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const removeSavedDecorations = async (userId, decorationIds) => {
+  try {
+    const data = await axiosInstance.post('/decorations/remove-saved', {
+      userId,
+      decorationIds,
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

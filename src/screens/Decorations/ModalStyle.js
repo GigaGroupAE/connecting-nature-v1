@@ -68,7 +68,7 @@ export const itemTitle = {
 export const editButton = {
   width: '75%',
   alignItems: 'center',
-  paddingVertical: screenHeight * 0.006,
+  paddingVertical: screenHeight * 0.0048,
   borderRadius: screenHeight * 0.01,
   borderWidth: 0.9,
   borderColor: Color.Black,
@@ -88,11 +88,10 @@ export const descriptionTextStyle = {
 
 export const tagContainer = {
   backgroundColor: Color.Purple,
-  // paddingVertical: screenHeight * 0.007,
   alignItems: 'center',
   borderRadius: screenHeight * 0.1,
   // paddingHorizontal: screenWidth * 0.02,
-  padding: 5,
+  padding: 3,
 };
 export const tagText = {
   color: Color.White,
