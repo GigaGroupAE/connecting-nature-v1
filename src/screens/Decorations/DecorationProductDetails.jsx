@@ -1,11 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  FlatList,
-} from 'react-native';
+import { Image, StyleSheet, Text, View, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
@@ -24,14 +17,15 @@ import DecorationProductsCard from '../../components/DecorationProductsCard';
 import { shortenText } from '../../utils/isFollowing';
 import DecorationProductDetialsHeader from '../../components/DecorationProductDetialsHeader';
 import { useUserState } from '../../slices/userSlice';
+import { toggleSave } from '../../utils/Decorate';
 const DecorationProductDetails = () => {
   const { params } = useRoute();
   const userState = useUserState();
   const navigation = useNavigation();
   const product = params?.item;
   const data = params?.data;
-  const [coverImage, setcoverImage] = useState(product?.images[0]?.name);
   const [activeProduct, setactiveProduct] = useState(product);
+  const [coverImage, setcoverImage] = useState(activeProduct?.images[0]?.name);
   const shortTitle = shortenText(activeProduct?.title, 25);
   const shortCategorieText = shortenText(activeProduct?.categorie, 20);
   const [finalPrice, setfinalPrice] = useState(activeProduct?.price);
@@ -41,24 +35,16 @@ const DecorationProductDetails = () => {
     isAdd: false,
     item: null,
   });
-
   useEffect(() => {
-    setisSaved((prevReactions) => {
-      if (prevReactions !== activeProduct?.isSaved) {
-        setSave(
-          activeProduct?.isSaved.some((user) => {
-            return user._id === userState.id;
-          }),
-        );
-        return activeProduct?.isSaved;
-      }
-      return prevReactions;
-    });
+    const isProductSaved = isSaved?.some((user) => user === userState.id);
+    setSave(isProductSaved);
+    setisSaved(activeProduct?.isSaved);
+    setcoverImage(activeProduct.images[0]?.name);
+    setfinalPrice(activeProduct?.price);
   }, [activeProduct]);
 
   useEffect(() => {
     if (!removedProduct?.item) return;
-
     const { quantity, productId } = removedProduct.item;
     const totalPrice = quantity * productId.price;
 
@@ -67,39 +53,35 @@ const DecorationProductDetails = () => {
         ? prevPrice + totalPrice
         : prevPrice - totalPrice;
     });
-  }, [removedProduct]);
+  }, [removedProduct, activeProduct]);
 
-  const handleSavedProduct = () => {
+  const handleSavedProduct = async () => {
     if (!save) {
-      const tempSave = [...isSaved];
-      const newSave = {
-        _id: userState.id,
-      };
-      tempSave.push(newSave);
-      // updatereactions(templike, true);
+      const data = await toggleSave(activeProduct?._id, userState?.id);
+      setisSaved(data?.data?.isSaved);
       setSave(true);
     } else {
-      const newSave = isSaved.filter((e) => {
-        return e._id !== userState.id;
-      });
-      // updatereactions(newlikes, false);
+      const data = await toggleSave(activeProduct?._id, userState?.id);
+      setisSaved(data?.data?.isSaved);
       setSave(false);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View showsVerticalScrollIndicator={false} style={styles.container}>
       <HeaderNormal
         title="Decoration"
         screen="DecorationProduct"
         isSaved={handleSavedProduct}
+        save={save}
       />
-      <View>
+      <View style={{ flex: 1 }}>
         <View>
           <DecorationProductDetialsHeader
             data={data}
             activeProduct={activeProduct}
             setactiveProduct={setactiveProduct}
+            setremovedItem={setremovedProduct}
           />
         </View>
         <Pressable
@@ -140,9 +122,9 @@ const DecorationProductDetails = () => {
               gap: 2,
             }}
           >
-            <Text style={itemTitle}>{product?.price} PKR</Text>
+            <Text style={itemTitle}>{activeProduct?.price} PKR</Text>
             <View style={tagContainer}>
-              <Text style={tagText}>{product?.tag}</Text>
+              <Text style={tagText}>{activeProduct?.tag}</Text>
             </View>
           </View>
         </View>
@@ -162,7 +144,7 @@ const DecorationProductDetails = () => {
           }}
         >
           <Text style={itemTitle}>Other Details</Text>
-          <Text style={descriptionTextStyle}>{product?.Description}</Text>
+          <Text style={descriptionTextStyle}>{activeProduct?.Description}</Text>
         </View>
 
         <View style={styles.approxAmountContainer}>
@@ -212,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'absolute',
-    bottom: screenHeight * -0.17,
+    bottom: 10,
     height: screenHeight * 0.055,
     width: '100%',
     paddingHorizontal: screenWidth * 0.06,
@@ -225,5 +207,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+    zIndex: 10,
   },
 });
