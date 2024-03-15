@@ -133,7 +133,7 @@ export default function HeaderNormal(props) {
             width: width * 0.12,
           }}
         >
-          {title === 'Chats' && (
+          {/* {title === 'Chats' && (
             <Pressable
               onPress={() => {
                 navigation.navigate('SelectContact', {
@@ -143,7 +143,7 @@ export default function HeaderNormal(props) {
             >
               <Entypo name="new-message" size={25} color={Color.Blue} />
             </Pressable>
-          )}
+          )} */}
         </View>
         {title === 'Affordability' ||
         title === 'Design Type' ||

@@ -9,23 +9,29 @@ import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import { useQuery } from 'react-query';
-import { fetchAffordabilityData } from '../../utils/Decorate';
+import {
+  deleteAffordability,
+  fetchAffordabilityData,
+} from '../../utils/Decorate';
 
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import AddAfforablilityModal from './AddAfforablilityModal';
 import {
   descriptionTextStyle,
-  editButton,
-  editButtonTitle,
+  icon,
+  iconsContainer,
   itemTitle,
 } from './ModalStyle';
 import NoDataIndicater from '../NoDataIndicater';
+import { FontAwesome, AntDesign } from 'react-native-vector-icons';
+import { useStateContext } from '../../contexts/ContextProvider';
 
 const Affordability = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [itemData, setitemData] = useState(null);
   const [isEdit, setisEdit] = useState(false);
+  const { showSnackbar } = useStateContext();
   const { data, isLoading, refetch } = useQuery(
     'Affordability',
     fetchAffordabilityData,
@@ -39,6 +45,17 @@ const Affordability = () => {
     setitemData('');
     setisEdit(false);
   }, [ismodalVisible]);
+
+  const handleDelete = async (item) => {
+    try {
+      const { data } = await deleteAffordability(item?._id);
+
+      showSnackbar(data?.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -77,7 +94,7 @@ it will be list here"
                           <Text style={styles.price}>-</Text>
                           <Text style={styles.price}>{item?.maxRange}</Text>
                         </View>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={{
                             ...editButton,
                             marginTop: screenHeight * 0.016,
@@ -85,7 +102,27 @@ it will be list here"
                           onPress={() => handleEdit(item)}
                         >
                           <Text style={editButtonTitle}>Edit</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            // gap: 8,
+                            alignItems: 'center',
+                          }}
+                        >
+                          <TouchableOpacity
+                            style={iconsContainer}
+                            onPress={() => handleEdit(item)}
+                          >
+                            <FontAwesome name="edit" style={icon} />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={iconsContainer}
+                            onPress={() => handleDelete(item)}
+                          >
+                            <AntDesign name="delete" style={icon} />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
                   );
@@ -125,7 +162,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.9,
     borderBottomColor: Color.VeryLightGrey,
     paddingHorizontal: screenWidth * 0.06,
-    paddingVertical: screenHeight * 0.015,
+    paddingVertical: screenHeight * 0.01,
+    alignItems: 'center',
   },
   leftContainer: {
     flex: 2,
