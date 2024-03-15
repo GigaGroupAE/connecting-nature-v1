@@ -22,15 +22,21 @@ import {
 } from './ModalStyle';
 import { BASE_URL } from '../../../CONSTANTS';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import AffordableSkeletonLoad from './AffordableSkeletonLoad';
+import NoDataIndicater from '../NoDataIndicater';
 const DesignCategory = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [seeproduct, setseeproduct] = useState(null);
   const [isEdit, setisEdit] = useState(false);
-  const { data, refetch } = useQuery('DesignCategory', fetchDecorations, {
-    staleTime: 300000,
-    cacheTime: 600000,
-    refetchOnWindowFocus: false,
-  });
+  const { data, refetch, isLoading } = useQuery(
+    'DesignCategory',
+    fetchDecorations,
+    {
+      staleTime: 300000,
+      cacheTime: 600000,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const handleItemPress = (item) => {
     setseeproduct(item);
@@ -51,68 +57,88 @@ const DesignCategory = () => {
         title="Design Category"
         setismodalVisible={setismodalVisible}
       />
-      <View>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => {
-            const shortTitle =
-              item?.title?.length > 15
-                ? item?.title?.slice(0, 17) + '...'
-                : item?.title;
-
-            const shortCategorieText =
-              item?.categorie?.length > 15
-                ? item?.categorie.slice(0, 15) + '...'
-                : item?.categorie;
-            return (
-              <Pressable
-                style={mainContainer}
-                onPress={() => handleItemPress(item)}
+      <View style={{}}>
+        {isLoading ? (
+          <AffordableSkeletonLoad />
+        ) : (
+          <View style={{ flex: 1 }}>
+            {data?.length === 0 ? (
+              <View
+                style={{
+                  marginTop: screenHeight * 0.3,
+                }}
               >
-                <View style={styles.leftContainer}>
-                  <Image
-                    source={{
-                      uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
-                    }}
-                    style={styles.productImage}
-                  />
-                  <View
-                    style={{
-                      height: '80%',
-                      gap: 5,
-                    }}
-                  >
-                    <Text style={itemTitle}>{shortTitle}</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}
+                <NoDataIndicater
+                  title="Currently No Data Available"
+                  subTitle="When you add Design types, 
+  it will be list here"
+                />
+              </View>
+            ) : (
+              <FlatList
+                data={data}
+                renderItem={({ item }) => {
+                  const shortTitle =
+                    item?.title?.length > 15
+                      ? item?.title?.slice(0, 17) + '...'
+                      : item?.title;
+
+                  const shortCategorieText =
+                    item?.categorie?.length > 15
+                      ? item?.categorie.slice(0, 15) + '...'
+                      : item?.categorie;
+                  return (
+                    <Pressable
+                      style={mainContainer}
+                      onPress={() => handleItemPress(item)}
                     >
-                      <Text
-                        style={{
-                          ...descriptionTextStyle,
-                          fontSize: screenHeight * 0.016,
-                        }}
-                      >
-                        Type.
-                      </Text>
-                      <Text style={descriptionTextStyle}>
-                        {shortCategorieText}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.rightContainer}>
-                  <Text style={itemTitle}>{item?.price} PKR</Text>
-                  <View style={tagContainer}>
-                    <Text style={tagText}>{item?.tag}</Text>
-                  </View>
-                </View>
-              </Pressable>
-            );
-          }}
-        />
+                      <View style={styles.leftContainer}>
+                        <Image
+                          source={{
+                            uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
+                          }}
+                          style={styles.productImage}
+                        />
+                        <View
+                          style={{
+                            height: '80%',
+                            gap: 5,
+                          }}
+                        >
+                          <Text style={itemTitle}>{shortTitle}</Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                ...descriptionTextStyle,
+                                fontSize: screenHeight * 0.016,
+                              }}
+                            >
+                              Type.
+                            </Text>
+                            <Text style={descriptionTextStyle}>
+                              {shortCategorieText}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                      <View style={styles.rightContainer}>
+                        <Text style={itemTitle}>{item?.price} PKR</Text>
+                        <View style={tagContainer}>
+                          <Text style={tagText}>{item?.tag}</Text>
+                        </View>
+                      </View>
+                    </Pressable>
+                  );
+                }}
+              />
+            )}
+          </View>
+        )}
       </View>
 
       {ismodalVisible && (

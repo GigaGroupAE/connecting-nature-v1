@@ -1,13 +1,13 @@
-import React, { useEffect, useRef } from "react"
-import { View, StyleSheet, Animated } from "react-native"
-import Color from "../../../assets/colors/Color"
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
+import Color from '../../../assets/colors/Color';
 
 const CampaignsSkeletn = () => {
-  const shimmerAnimation = useRef(new Animated.Value(0)).current
+  const shimmerAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    shimmer()
-  }, [])
+    shimmer();
+  }, []);
 
   const shimmer = () => {
     Animated.loop(
@@ -23,14 +23,14 @@ const CampaignsSkeletn = () => {
           useNativeDriver: true,
         }),
       ]),
-      { iterations: -1 }
-    ).start()
-  }
+      { iterations: -1 },
+    ).start();
+  };
 
   const shimmerOpacity = shimmerAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [0.3, 0.7],
-  })
+  });
 
   return (
     <View style={styles.container}>
@@ -51,8 +51,8 @@ const CampaignsSkeletn = () => {
         </Animated.View>
       ))}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
   userImagePlaceholder: {
@@ -84,17 +84,17 @@ const styles = StyleSheet.create({
   },
   content: {
     height: 150,
-    width: "100%",
+    width: '100%',
     marginBottom: 10,
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
   footer: {
     height: 30,
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.LightGrey,
     borderRadius: 4,
   },
-})
+});
 
-export default CampaignsSkeletn
+export default CampaignsSkeletn;

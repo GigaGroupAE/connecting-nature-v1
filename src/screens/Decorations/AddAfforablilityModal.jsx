@@ -35,8 +35,6 @@ const AddAfforablilityModal = ({
   const { showSnackbar } = useStateContext();
   const [isEditt, setisEditt] = useState(isEdit);
 
-  console.log(isEditt, 'isedit');
-
   const handleAddAfforadbility = async () => {
     try {
       if (!typeName || !minNumber || !maxNumber) {

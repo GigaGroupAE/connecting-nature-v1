@@ -41,6 +41,8 @@ import UnCheckedBox from '../../components/SVG/unCheckedBox';
 import SavedWhiteSvg from '../../components/SVG/SavedWhiteSvg';
 import UnSavedWhiteSvg from '../../components/SVG/UnSavedWhite';
 import { useUserState } from '../../slices/userSlice';
+import CampaignsSkeletn from '../../components/Skeletns/CampaignsSkeletn';
+import NoDataIndicater from '../NoDataIndicater';
 
 const Decoration = () => {
   const userState = useUserState();
@@ -53,10 +55,14 @@ const Decoration = () => {
   const [priceRangers, setpriceRangers] = useState([]);
   const [isSavedOpen, setisSavedOpen] = useState(false);
 
-  const { data: designData } = useQuery('designData', getDesignType, {
-    staleTime: 300000,
-    cacheTime: 600000,
-  });
+  const { data: designData, isLoading } = useQuery(
+    'designData',
+    getDesignType,
+    {
+      staleTime: 300000,
+      cacheTime: 600000,
+    },
+  );
 
   useEffect(() => {
     refetch();
@@ -107,6 +113,7 @@ const Decoration = () => {
 
   const handleSavednavigation = () => {
     navigation.navigate('SavedDecoration');
+    setisSavedOpen(false);
   };
 
   return (
@@ -117,82 +124,173 @@ const Decoration = () => {
         openSavedProducts={handleViewSaved}
         screen="Decoration"
       />
-      <View style={{ flex: 1, marginVertical: '3%' }}>
-        <FlatList
-          data={
-            priceRangers?.length > 0 && productType
-              ? data?.filter(
-                  (item) =>
-                    priceRangers.includes(item?.tag) &&
-                    item?.categorie === productType,
-                )
-              : priceRangers?.length > 0
-                ? data?.filter((item) => priceRangers.includes(item?.tag))
-                : productType
-                  ? data.filter((item) => item?.categorie === productType)
-                  : data
-          }
-          renderItem={({ item }) => {
-            const shortTitle = shortenText(item?.title, 25);
-            const shortCategorieText = shortenText(item?.categorie, 20);
-            const isSave = item?.isSaved?.some((id) => id === userState?.id);
+      {isLoading ? (
+        <CampaignsSkeletn />
+      ) : (
+        <View style={{ flex: 1, marginVertical: '3%' }}>
+          {data?.length === 0 ? (
+            <NoDataIndicater
+              title="Elevate Your Spaces with Nature's Touch"
+              subTitle="Exciting Additions Coming Soon to Both Your Lawn and Rooftop! Stay Tuned for Updates"
+            />
+          ) : (
+            <FlatList
+              data={
+                priceRangers?.length > 0 && productType
+                  ? data?.filter(
+                      (item) =>
+                        priceRangers.includes(item?.tag) &&
+                        item?.categorie === productType,
+                    )
+                  : priceRangers?.length > 0
+                    ? data?.filter((item) => priceRangers.includes(item?.tag))
+                    : productType
+                      ? data.filter((item) => item?.categorie === productType)
+                      : data
+              }
+              renderItem={({ item }) => {
+                const shortTitle = shortenText(item?.title, 25);
+                const shortCategorieText = shortenText(item?.categorie, 20);
+                const isSave = item?.isSaved?.some(
+                  (id) => id === userState?.id,
+                );
 
-            return (
-              <Pressable
-                style={styles.productContainer}
-                onPress={() => handlenavigation(item)}
-              >
-                <View style={styles.imageContainer}>
-                  <Image
-                    source={{
-                      uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
-                    }}
-                    style={styles.productImage}
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    right: screenWidth * 0.07,
-                    top: screenHeight * 0.02,
-                  }}
-                  onPress={() => handleSavedProduct(item?._id)}
-                >
-                  {isSave ? <SavedWhiteSvg /> : <UnSavedWhiteSvg />}
-                </TouchableOpacity>
-
-                <View style={styles.productDetails}>
-                  <View>
-                    <Text style={itemTitle}>{shortTitle}</Text>
-                    <View style={styles.typeContainer}>
-                      <Text style={{ ...descriptionTextStyle, marginTop: 0 }}>
-                        Type .
-                      </Text>
-                      <Text style={{ ...descriptionTextStyle, marginTop: 0 }}>
-                        {shortCategorieText}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      gap: 2,
-                    }}
+                return (
+                  <Pressable
+                    style={styles.productContainer}
+                    onPress={() => handlenavigation(item)}
                   >
-                    <Text style={itemTitle}>{item?.price} PKR</Text>
-                    <View style={tagContainer}>
-                      <Text style={tagText}>{item?.tag}</Text>
+                    <View style={styles.imageContainer}>
+                      <Image
+                        source={{
+                          uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
+                        }}
+                        style={styles.productImage}
+                      />
+                    </View>
+
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        right: screenWidth * 0.07,
+                        top: screenHeight * 0.02,
+                      }}
+                      onPress={() => handleSavedProduct(item?._id)}
+                    >
+                      {isSave ? <SavedWhiteSvg /> : <UnSavedWhiteSvg />}
+                    </TouchableOpacity>
+
+                    <View style={styles.productDetails}>
+                      <View>
+                        <Text style={itemTitle}>{shortTitle}</Text>
+                        <View style={styles.typeContainer}>
+                          <Text
+                            style={{ ...descriptionTextStyle, marginTop: 0 }}
+                          >
+                            Type .
+                          </Text>
+                          <Text
+                            style={{ ...descriptionTextStyle, marginTop: 0 }}
+                          >
+                            {shortCategorieText}
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          gap: 2,
+                        }}
+                      >
+                        <Text style={itemTitle}>{item?.price} PKR</Text>
+                        <View style={tagContainer}>
+                          <Text style={tagText}>{item?.tag}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                );
+              }}
+              contentContainerStyle={{ gap: 12, flex: 1 }}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+          {/* <FlatList
+            data={
+              priceRangers?.length > 0 && productType
+                ? data?.filter(
+                    (item) =>
+                      priceRangers.includes(item?.tag) &&
+                      item?.categorie === productType,
+                  )
+                : priceRangers?.length > 0
+                  ? data?.filter((item) => priceRangers.includes(item?.tag))
+                  : productType
+                    ? data.filter((item) => item?.categorie === productType)
+                    : data
+            }
+            renderItem={({ item }) => {
+              const shortTitle = shortenText(item?.title, 25);
+              const shortCategorieText = shortenText(item?.categorie, 20);
+              const isSave = item?.isSaved?.some((id) => id === userState?.id);
+
+              return (
+                <Pressable
+                  style={styles.productContainer}
+                  onPress={() => handlenavigation(item)}
+                >
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={{
+                        uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
+                      }}
+                      style={styles.productImage}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: screenWidth * 0.07,
+                      top: screenHeight * 0.02,
+                    }}
+                    onPress={() => handleSavedProduct(item?._id)}
+                  >
+                    {isSave ? <SavedWhiteSvg /> : <UnSavedWhiteSvg />}
+                  </TouchableOpacity>
+
+                  <View style={styles.productDetails}>
+                    <View>
+                      <Text style={itemTitle}>{shortTitle}</Text>
+                      <View style={styles.typeContainer}>
+                        <Text style={{ ...descriptionTextStyle, marginTop: 0 }}>
+                          Type .
+                        </Text>
+                        <Text style={{ ...descriptionTextStyle, marginTop: 0 }}>
+                          {shortCategorieText}
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        gap: 2,
+                      }}
+                    >
+                      <Text style={itemTitle}>{item?.price} PKR</Text>
+                      <View style={tagContainer}>
+                        <Text style={tagText}>{item?.tag}</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-            );
-          }}
-          contentContainerStyle={{ gap: 12, flex: 1 }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+                </Pressable>
+              );
+            }}
+            contentContainerStyle={{ gap: 12, flex: 1 }}
+            showsVerticalScrollIndicator={false}
+          /> */}
+        </View>
+      )}
 
       <Portal>
         <Modal visible={isFilterModal} onDismiss={hideModal}>

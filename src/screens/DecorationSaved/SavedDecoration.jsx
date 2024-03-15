@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
-import HeaderNormal from '../../components/HeaderNormal';
 import { useQuery } from 'react-query';
 import {
   getSavedDecorations,
@@ -30,6 +29,9 @@ import UnCheckedBox from '../../components/SVG/unCheckedBox';
 import { AntDesign } from 'react-native-vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import ThreeDotsVerticalSvg from '../../components/SVG/dotsThreeVertical';
+import AffordableSkeletonLoad from '../Decorations/AffordableSkeletonLoad';
+import NoDataIndicater from '../NoDataIndicater';
+import NoItemIndicater from '../../components/NoItemIndicater';
 
 const SavedDecoration = () => {
   const navigation = useNavigation();
@@ -37,9 +39,17 @@ const SavedDecoration = () => {
   const [isSelectionOpen, setisSelectionOpen] = useState(false);
   const [modalOptions, setmodalOptions] = useState(false);
   const [selectedItems, setselectedItems] = useState([]);
+  const [deleteAll, setdeleteAll] = useState([]);
   const { data, isLoading, refetch } = useQuery('savedDecorate', () =>
     getSavedDecorations(userState?.id),
   );
+
+  useEffect(() => {
+    if (data) {
+      const ids = data?.map((e) => e?._id);
+      setdeleteAll(ids);
+    }
+  }, []);
 
   const handleSelectItme = () => {
     setmodalOptions(!modalOptions);
@@ -63,6 +73,18 @@ const SavedDecoration = () => {
       const data = await removeSavedDecorations(userState?.id, selectedItems);
       setselectedItems([]);
       setisSelectionOpen(false);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    try {
+      const data = await removeSavedDecorations(userState?.id, deleteAll);
+      setselectedItems([]);
+      setisSelectionOpen(false);
+      setmodalOptions(false);
       refetch();
     } catch (error) {
       console.log(error);
@@ -125,85 +147,105 @@ const SavedDecoration = () => {
   return (
     <View style={styles.container}>
       <Header />
-      <FlatList
-        data={data}
-        renderItem={({ item }) => {
-          const shortTitle =
-            item?.title?.length > 15
-              ? item?.title?.slice(0, 17) + '...'
-              : item?.title;
+      {isLoading ? (
+        <AffordableSkeletonLoad />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          {data?.length === 0 ? (
+            <NoItemIndicater
+              title="Currently No Saved Items Available"
+              description="Currently, there are no saved items in this section. Once you save your items it will be listed here. Where you can see again in the future or delete."
+              image={require('../../../assets/campaignICon.png')}
+              buttonTitle="Start Decoration"
+              buttonColor={Color.Purple}
+            />
+          ) : (
+            <FlatList
+              data={data}
+              renderItem={({ item }) => {
+                const shortTitle =
+                  item?.title?.length > 15
+                    ? item?.title?.slice(0, 17) + '...'
+                    : item?.title;
 
-          const shortCategorieText =
-            item?.categorie?.length > 15
-              ? item?.categorie.slice(0, 15) + '...'
-              : item?.categorie;
+                const shortCategorieText =
+                  item?.categorie?.length > 15
+                    ? item?.categorie.slice(0, 15) + '...'
+                    : item?.categorie;
 
-          const isAlreadyAdded = selectedItems?.some((e) => e === item?._id);
+                const isAlreadyAdded = selectedItems?.some(
+                  (e) => e === item?._id,
+                );
 
-          return (
-            <Pressable
-              style={mainContainer}
-              // onPress={() => handleItemPress(item)}
-              onLongPress={() => setisSelectionOpen(!isSelectionOpen)}
-            >
-              <View style={styles.leftContainer}>
-                {isSelectionOpen && (
-                  <TouchableOpacity onPress={() => handleAddItem(item)}>
-                    {isAlreadyAdded ? <CheckedBox /> : <UnCheckedBox />}
-                  </TouchableOpacity>
-                )}
-                <Image
-                  source={{
-                    uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
-                  }}
-                  style={styles.productImage}
-                />
-                <View
-                  style={{
-                    height: '80%',
-                    gap: 5,
-                  }}
-                >
-                  <Text style={itemTitle}>{shortTitle}</Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
+                return (
+                  <Pressable
+                    style={mainContainer}
+                    // onPress={() => handleItemPress(item)}
+                    onLongPress={() => setisSelectionOpen(!isSelectionOpen)}
                   >
-                    <Text
-                      style={{
-                        ...descriptionTextStyle,
-                        fontSize: screenHeight * 0.016,
-                      }}
-                    >
-                      Type.
-                    </Text>
-                    <Text style={descriptionTextStyle}>
-                      {shortCategorieText}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.rightContainer}>
-                <Text style={itemTitle}>{item?.price} PKR</Text>
-                <View style={tagContainer}>
-                  <Text style={tagText}>{item?.tag}</Text>
-                </View>
-              </View>
-            </Pressable>
-          );
-        }}
-      />
+                    <View style={styles.leftContainer}>
+                      {isSelectionOpen && (
+                        <TouchableOpacity onPress={() => handleAddItem(item)}>
+                          {isAlreadyAdded ? <CheckedBox /> : <UnCheckedBox />}
+                        </TouchableOpacity>
+                      )}
+                      <Image
+                        source={{
+                          uri: `${BASE_URL}/images/${item?.images[0]?.name}`,
+                        }}
+                        style={styles.productImage}
+                      />
+                      <View
+                        style={{
+                          height: '80%',
+                          gap: 5,
+                        }}
+                      >
+                        <Text style={itemTitle}>{shortTitle}</Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text
+                            style={{
+                              ...descriptionTextStyle,
+                              fontSize: screenHeight * 0.016,
+                            }}
+                          >
+                            Type.
+                          </Text>
+                          <Text style={descriptionTextStyle}>
+                            {shortCategorieText}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.rightContainer}>
+                      <Text style={itemTitle}>{item?.price} PKR</Text>
+                      <View style={tagContainer}>
+                        <Text style={tagText}>{item?.tag}</Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                );
+              }}
+            />
+          )}
+        </View>
+      )}
 
       {modalOptions && (
         <View style={styles.savedContainer}>
           <TouchableOpacity onPress={handleCheckItems}>
             <Text style={styles.titleSaved}>Select Items</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-          // onPress={handleSavednavigation}
-          >
+          <TouchableOpacity onPress={handleDeleteAll}>
             <Text style={styles.titleSaved}>Delete All</Text>
           </TouchableOpacity>
         </View>

@@ -24,6 +24,7 @@ import {
 import { AddDesignType, getDesignType } from '../../utils/Decorate';
 import { useQuery } from 'react-query';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
+import NoDataIndicater from '../NoDataIndicater';
 
 const DesignType = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
@@ -79,27 +80,37 @@ const DesignType = () => {
         {isLoading ? (
           <AffordableSkeletonLoad />
         ) : (
-          <FlatList
-            data={data}
-            renderItem={({ item }) => {
-              return (
-                <View style={mainContainer}>
-                  <View style={styles.leftContainer}>
-                    <Text style={itemTitle}>{item?.name}</Text>
-                  </View>
-                  <View style={styles.rightContainer}>
-                    <TouchableOpacity
-                      style={editButton}
-                      onPress={() => handleEdit(item)}
-                    >
-                      <Text style={editButtonTitle}>Edit</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item) => item?._id}
-          />
+          <View>
+            {data?.length === 0 ? (
+              <NoDataIndicater
+                title="Currently No Data Available"
+                subTitle="When you add Design types, 
+it will be list here"
+              />
+            ) : (
+              <FlatList
+                data={data}
+                renderItem={({ item }) => {
+                  return (
+                    <View style={mainContainer}>
+                      <View style={styles.leftContainer}>
+                        <Text style={itemTitle}>{item?.name}</Text>
+                      </View>
+                      <View style={styles.rightContainer}>
+                        <TouchableOpacity
+                          style={editButton}
+                          onPress={() => handleEdit(item)}
+                        >
+                          <Text style={editButtonTitle}>Edit</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }}
+                keyExtractor={(item) => item?._id}
+              />
+            )}
+          </View>
         )}
       </View>
 

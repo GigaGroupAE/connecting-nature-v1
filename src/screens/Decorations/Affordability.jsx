@@ -20,6 +20,7 @@ import {
   editButtonTitle,
   itemTitle,
 } from './ModalStyle';
+import NoDataIndicater from '../NoDataIndicater';
 
 const Affordability = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
@@ -29,7 +30,6 @@ const Affordability = () => {
     'Affordability',
     fetchAffordabilityData,
   );
-
   const handleEdit = (item) => {
     setitemData(item);
     setismodalVisible(true);
@@ -51,36 +51,49 @@ const Affordability = () => {
         {isLoading ? (
           <AffordableSkeletonLoad />
         ) : (
-          <FlatList
-            data={data}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.mainContainer}>
-                  <View style={styles.leftContainer}>
-                    <Text style={itemTitle}>{item?.name}</Text>
-                    <Text style={descriptionTextStyle}>
-                      Admin who have access to this feature can edit the price
-                      range as per market in the future.
-                    </Text>
-                  </View>
-                  <View style={styles.rightContainer}>
-                    <View style={styles.priceRange}>
-                      <Text style={styles.price}>{item?.minRange}</Text>
-                      <Text style={styles.price}>-</Text>
-                      <Text style={styles.price}>{item?.maxRange}</Text>
+          <View>
+            {data?.length === 0 ? (
+              <NoDataIndicater
+                title="Currently No Data Available"
+                subTitle="When you add affordability types, 
+it will be list here"
+              />
+            ) : (
+              <FlatList
+                data={data}
+                renderItem={({ item }) => {
+                  return (
+                    <View style={styles.mainContainer}>
+                      <View style={styles.leftContainer}>
+                        <Text style={itemTitle}>{item?.name}</Text>
+                        <Text style={descriptionTextStyle}>
+                          Admin who have access to this feature can edit the
+                          price range as per market in the future.
+                        </Text>
+                      </View>
+                      <View style={styles.rightContainer}>
+                        <View style={styles.priceRange}>
+                          <Text style={styles.price}>{item?.minRange}</Text>
+                          <Text style={styles.price}>-</Text>
+                          <Text style={styles.price}>{item?.maxRange}</Text>
+                        </View>
+                        <TouchableOpacity
+                          style={{
+                            ...editButton,
+                            marginTop: screenHeight * 0.016,
+                          }}
+                          onPress={() => handleEdit(item)}
+                        >
+                          <Text style={editButtonTitle}>Edit</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    <TouchableOpacity
-                      style={{ ...editButton, marginTop: screenHeight * 0.016 }}
-                      onPress={() => handleEdit(item)}
-                    >
-                      <Text style={editButtonTitle}>Edit</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            }}
-            showsVerticalScrollIndicator={false}
-          />
+                  );
+                }}
+                showsVerticalScrollIndicator={false}
+              />
+            )}
+          </View>
         )}
       </View>
       {ismodalVisible && (

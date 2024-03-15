@@ -10,6 +10,7 @@ const NoItemIndicater = ({
   image,
   buttonTitle,
   buttonAction,
+  buttonColor,
 }) => {
   return (
     <View
@@ -29,7 +30,10 @@ const NoItemIndicater = ({
         <Text style={styles.heading}>{title}</Text>
         <Text style={styles.subHeading}>{description}</Text>
         {buttonTitle && (
-          <TouchableOpacity style={styles.button} onPress={buttonAction}>
+          <TouchableOpacity
+            style={{ ...styles.button, backgroundColor: buttonColor }}
+            onPress={buttonAction}
+          >
             <Text style={styles.buttonTitle}>{buttonTitle}</Text>
           </TouchableOpacity>
         )}
