@@ -70,8 +70,7 @@ const AddAfforablilityModal = ({
       setismodalVisible(false);
       refetch();
     } catch (error) {
-      console.log(error);
-      Alert.alert('An error occurred. Please try again later.');
+      showSnackbar('An error occurred. Please try again later.');
     }
   };
 

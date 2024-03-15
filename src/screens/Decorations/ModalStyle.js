@@ -98,3 +98,13 @@ export const tagText = {
   fontFamily: 'Roboto_400Regular',
   fontSize: screenHeight * 0.013,
 };
+
+export const iconsContainer = {
+  paddingHorizontal: '8%',
+  paddingVertical: '8%',
+  fontSize: screenHeight * 0.017,
+  marginTop: '4%',
+};
+export const icon = {
+  fontSize: screenHeight * 0.022,
+};

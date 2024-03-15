@@ -18,19 +18,25 @@ import {
   buttonContainer,
   buttonTitle,
   container,
-  editButton,
-  editButtonTitle,
+  icon,
+  iconsContainer,
   inputstyle,
   itemTitle,
   mainContainer,
   titleStyle,
 } from './ModalStyle';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
-import { addProduct, getProducts } from '../../utils/Decorate';
+import {
+  addProduct,
+  deleteDecorProduct,
+  getProducts,
+} from '../../utils/Decorate';
 import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../CONSTANTS';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import NoItemIndicater from '../../components/NoItemIndicater';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { FontAwesome, AntDesign } from 'react-native-vector-icons';
 
 const AddDecorProduct = ({ navigation }) => {
   const [title, setTitle] = useState('');
@@ -39,6 +45,7 @@ const AddDecorProduct = ({ navigation }) => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [editProductDetails, seteditProductDetails] = useState(null);
   const [isEdit, setisEdit] = useState(false);
+  const { showSnackbar } = useStateContext();
 
   const { data, isLoading, refetch } = useQuery('decorproducts', getProducts, {
     staleTime: 300000,
@@ -96,6 +103,16 @@ const AddDecorProduct = ({ navigation }) => {
     seteditProductDetails(item);
     setismodalVisible(true);
     setisEdit(true);
+  };
+
+  const handleDelete = async (item) => {
+    try {
+      const { data } = await deleteDecorProduct(item?._id);
+      showSnackbar(data?.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <View style={styles.container}>
@@ -158,12 +175,32 @@ const AddDecorProduct = ({ navigation }) => {
                         </View>
                       </View>
                       <View style={styles.rightContainer}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={editButton}
                           onPress={() => handleEdit(item)}
                         >
                           <Text style={editButtonTitle}>Edit</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <TouchableOpacity
+                            style={iconsContainer}
+                            onPress={() => handleEdit(item)}
+                          >
+                            <FontAwesome name="edit" style={icon} />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={iconsContainer}
+                            onPress={() => handleDelete(item)}
+                          >
+                            <AntDesign name="delete" style={icon} />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
                   );

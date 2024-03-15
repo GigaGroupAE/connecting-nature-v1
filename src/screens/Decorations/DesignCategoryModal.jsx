@@ -198,7 +198,7 @@ const DesignCategoryModal = ({
     setmainImages([]);
     setisModalVisible(false);
   };
-  handlePricefous = () => {
+  const handlePricefous = () => {
     settotalPrice(totalPrice - price);
   };
   return (
