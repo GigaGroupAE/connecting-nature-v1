@@ -16,21 +16,30 @@ import {
   container,
   editButton,
   editButtonTitle,
+  icon,
+  iconsContainer,
   inputstyle,
   itemTitle,
   mainContainer,
   titleStyle,
 } from './ModalStyle';
-import { AddDesignType, getDesignType } from '../../utils/Decorate';
+import {
+  AddDesignType,
+  deleteDesignType,
+  getDesignType,
+} from '../../utils/Decorate';
 import { useQuery } from 'react-query';
 import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import NoDataIndicater from '../NoDataIndicater';
+import { FontAwesome, AntDesign } from 'react-native-vector-icons';
+import { useStateContext } from '../../contexts/ContextProvider';
 
 const DesignType = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [product, setproduct] = useState(null);
   const [isEdit, setisEdit] = useState(false);
   const [name, setname] = useState(product?.name || '');
+  const { showSnackbar } = useStateContext();
 
   const handleAddDecoration = async () => {
     if (!name) {
@@ -72,6 +81,16 @@ const DesignType = () => {
     setisEdit(true);
   };
 
+  const handleDelete = async (item) => {
+    try {
+      const { data } = await deleteDesignType(item?._id);
+      showSnackbar(data?.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <HeaderNormal title="Design Type" setismodalVisible={setismodalVisible} />
@@ -97,12 +116,32 @@ it will be list here"
                         <Text style={itemTitle}>{item?.name}</Text>
                       </View>
                       <View style={styles.rightContainer}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           style={editButton}
                           onPress={() => handleEdit(item)}
                         >
                           <Text style={editButtonTitle}>Edit</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            // gap: 8,
+                            alignItems: 'center',
+                          }}
+                        >
+                          <TouchableOpacity
+                            style={{ ...iconsContainer, paddingVertical: '2%' }}
+                            onPress={() => handleEdit(item)}
+                          >
+                            <FontAwesome name="edit" style={icon} />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={{ ...iconsContainer, paddingVertical: '2%' }}
+                            onPress={() => handleDelete(item)}
+                          >
+                            <AntDesign name="delete" style={icon} />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
                   );

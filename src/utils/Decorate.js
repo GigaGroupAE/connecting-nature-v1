@@ -281,3 +281,34 @@ export const removeSavedDecorations = async (userId, decorationIds) => {
     throw error;
   }
 };
+
+export const deleteAffordability = async (id) => {
+  try {
+    const data = await axiosInstance.delete(
+      `/decorations/delete-affordability/${id}`,
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteDesignType = async (id) => {
+  try {
+    const data = await axiosInstance.delete(`/decorations/delete-design/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteDecorProduct = async (id) => {
+  try {
+    const data = await axiosInstance.delete(
+      `/decorations/delete-decor-product/${id}`,
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

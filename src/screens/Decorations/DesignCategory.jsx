@@ -28,6 +28,8 @@ const DesignCategory = () => {
   const [ismodalVisible, setismodalVisible] = useState(false);
   const [seeproduct, setseeproduct] = useState(null);
   const [isEdit, setisEdit] = useState(false);
+  const [openModal, setopenModal] = useState(false);
+
   const { data, refetch, isLoading } = useQuery(
     'DesignCategory',
     fetchDecorations,
@@ -40,7 +42,8 @@ const DesignCategory = () => {
 
   const handleItemPress = (item) => {
     setseeproduct(item);
-    setismodalVisible(true);
+    // setismodalVisible(true);
+    setopenModal(true);
     setisEdit(true);
   };
   useEffect(() => {
