@@ -15,7 +15,6 @@ import {
 import Upcomingcall from '../../../assets/UpcomingCall.png';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Color from '../../../assets/colors/Color';
-import axios from 'axios';
 import { BASE_URL } from '../../../CONSTANTS';
 import { AntDesign, Entypo } from 'react-native-vector-icons';
 import { useUserState } from './../../slices/userSlice';
@@ -68,70 +67,82 @@ export default function DirectChat(props, { route }) {
       return `${BASE_URL}/images/${profile}`;
     }
   };
-  const selectcontact = (props) => {
-    let first = false;
-    let second = false;
-    let foundGroup = {};
-    const individualGroups = Messages;
-    individualGroups.map((group) => {
-      if (
-        group.members[0].phoneNumber === userState.phoneNumber ||
-        group.members[0].phoneNumber === props.phoneNumber
-      ) {
-        first = true;
-        if (
-          group.members[1].phoneNumber === userState.phoneNumber ||
-          group.members[1].phoneNumber === props.phoneNumber
-        ) {
-          second = true;
-          foundGroup = group;
-        }
-      }
-    });
-    if (first === true && second === true) {
-      setgroup(foundGroup);
-      navigation.navigate('ChatCRM', { group: foundGroup });
-    } else {
-      let members = [];
+  // const selectcontact = (props) => {
+  //   let first = false;
+  //   let second = false;
+  //   let foundGroup = {};
+  //   const individualGroups = Messages;
+  //   individualGroups.map((group) => {
+  //     if (
+  //       group.members[0].phoneNumber === userState.phoneNumber ||
+  //       group.members[0].phoneNumber === props.phoneNumber
+  //     ) {
+  //       first = true;
+  //       if (
+  //         group.members[1].phoneNumber === userState.phoneNumber ||
+  //         group.members[1].phoneNumber === props.phoneNumber
+  //       ) {
+  //         second = true;
+  //         foundGroup = group;
+  //       }
+  //     }
+  //   });
+  //   if (first === true && second === true) {
+  //     setgroup(foundGroup);
+  //     navigation.navigate('ChatCRM', { group: foundGroup });
+  //   } else {
+  //     let members = [];
 
-      members = [
-        {
-          member: userState.id,
-        },
-        {
-          member: props._id,
-        },
-      ];
-      const formData = new FormData();
-      formData.append('name', userState.fullName);
-      formData.append('type', 'individual');
-      formData.append('title', 'test');
-      formData.append('members', JSON.stringify(members));
-      axios
-        .post(`${BASE_URL}/groups/creategroup`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-            'auth-token': userState.token,
-          },
-        })
-        .then((response) => {
-          axios
-            .get(`${BASE_URL}/groups/getgroups`, {
-              headers: {
-                'auth-token': userState.token,
-              },
-            })
-            .then((res) => {
-              const newgroup = res.data.filter((singlegroup) => {
-                return singlegroup._id === response.data._id;
-              });
-              setgroup(newgroup[0]);
-              navigation.navigate('ChatCRM', { group: newgroup[0] });
-            })
-            .catch((e) => console.log(e));
-        })
-        .catch((e) => console.log(e));
+  //     members = [
+  //       {
+  //         member: userState.id,
+  //       },
+  //       {
+  //         member: props._id,
+  //       },
+  //     ];
+  //     const formData = new FormData();
+  //     formData.append('name', userState.fullName);
+  //     formData.append('type', 'individual');
+  //     formData.append('title', 'test');
+  //     formData.append('members', JSON.stringify(members));
+  //     axios
+  //       .post(`${BASE_URL}/groups/creategroup`, formData, {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //           Accept: 'application/json',
+  //           'auth-token': userState.token,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         axios
+  //           .get(`${BASE_URL}/groups/getgroups`, {
+  //             headers: {
+  //               'auth-token': userState.token,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             const newgroup = res.data.filter((singlegroup) => {
+  //               return singlegroup._id === response.data._id;
+  //             });
+  //             setgroup(newgroup[0]);
+  //             navigation.navigate('ChatCRM', { group: newgroup[0] });
+  //           })
+  //           .catch((e) => console.log(e));
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  // };
+
+  const selectcontact = async (props) => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/groups/get-orCreateGroup/${props?._id}`,
+      );
+      setgroup(data?.group);
+      navigation.navigate('ChatCRM', { group: data?.group });
+    } catch (error) {
+      console.log(error);
     }
   };
 

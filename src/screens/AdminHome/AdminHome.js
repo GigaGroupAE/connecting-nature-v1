@@ -13,7 +13,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import AdminBottomTab from '../../components/AdminBottomTab';
 import { Ionicons, MaterialIcons } from 'react-native-vector-icons';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axios from 'axios';
 import * as Contacts from 'expo-contacts';
 import { useUserState } from './../../slices/userSlice';
@@ -88,9 +88,7 @@ export default function AdminHome(props) {
                   name: contact.name,
                   phoneNumber: contact?.phoneNumbers[0]?.number,
                 });
-              } catch (error) {
-                console.log('error is in this contact ', contact);
-              }
+              } catch (error) {}
             });
             resolvedContacts.sort((a, b) => {
               if (a.name > b.name) return 1;
@@ -129,65 +127,65 @@ export default function AdminHome(props) {
     },
   ];
   const navigation = useNavigation();
-  const selectcontact = (props) => {
-    let first = false;
-    let second = false;
-    let foundGroup = {};
-    const individualGroups = groups.filter((group) => {
-      return group.type === 'individual';
-    });
-    individualGroups.map((group) => {
-      if (
-        group.members[0].phoneNumber === userState.phoneNumber ||
-        group.members[0].phoneNumber === props.phoneNumber
-      ) {
-        first = true;
-        if (
-          group.members[1].phoneNumber === userState.phoneNumber ||
-          group.members[1].phoneNumber === props.phoneNumber
-        ) {
-          second = true;
-          foundGroup = group;
-        }
-      }
-    });
-    if (first === true && second === true) {
-      setgroup(foundGroup);
-      navigation.navigate('ChatCRM', { group: foundGroup });
-    } else {
-      let members = [];
-      members.push({
-        name: userState.fullName,
-        phoneNumber: userState.phoneNumber,
-        type: userState.type,
-        photo: userState.profile,
-      });
-      members.push({
-        name: props.fullName,
-        phoneNumber: props.phoneNumber,
-        type: props.type,
-        photo: props.profile,
-      });
-      const formData = new FormData();
-      formData.append('name', userState.fullName);
-      formData.append('type', 'individual');
-      formData.append('title', 'test');
-      formData.append('members', JSON.stringify(members));
-      axios
-        .post(`${BASE_URL}/groups/creategroup`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-            'auth-token': userState.token,
-          },
-        })
-        .then((res) => {
-          setgroup(res.data);
-          navigation.navigate('ChatCRM', { group: res.data });
-        })
-        .catch((e) => console.log(e));
-    }
-  };
+  // const selectcontact = (props) => {
+  //   let first = false;
+  //   let second = false;
+  //   let foundGroup = {};
+  //   const individualGroups = groups.filter((group) => {
+  //     return group.type === 'individual';
+  //   });
+  //   individualGroups.map((group) => {
+  //     if (
+  //       group.members[0].phoneNumber === userState.phoneNumber ||
+  //       group.members[0].phoneNumber === props.phoneNumber
+  //     ) {
+  //       first = true;
+  //       if (
+  //         group.members[1].phoneNumber === userState.phoneNumber ||
+  //         group.members[1].phoneNumber === props.phoneNumber
+  //       ) {
+  //         second = true;
+  //         foundGroup = group;
+  //       }
+  //     }
+  //   });
+  //   if (first === true && second === true) {
+  //     setgroup(foundGroup);
+  //     navigation.navigate('ChatCRM', { group: foundGroup });
+  //   } else {
+  //     let members = [];
+  //     members.push({
+  //       name: userState.fullName,
+  //       phoneNumber: userState.phoneNumber,
+  //       type: userState.type,
+  //       photo: userState.profile,
+  //     });
+  //     members.push({
+  //       name: props.fullName,
+  //       phoneNumber: props.phoneNumber,
+  //       type: props.type,
+  //       photo: props.profile,
+  //     });
+  //     const formData = new FormData();
+  //     formData.append('name', userState.fullName);
+  //     formData.append('type', 'individual');
+  //     formData.append('title', 'test');
+  //     formData.append('members', JSON.stringify(members));
+  //     axios
+  //       .post(`${BASE_URL}/groups/creategroup`, formData, {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //           Accept: 'application/json',
+  //           'auth-token': userState.token,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         setgroup(res.data);
+  //         navigation.navigate('ChatCRM', { group: res.data });
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  // };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -318,7 +316,7 @@ export default function AdminHome(props) {
                       title={item.title}
                       key={index}
                       titleStyle={{ color: 'black' }}
-                      expanded={true}
+                      expanded
                       style={{
                         icon: {
                           display: 'none',
@@ -659,7 +657,7 @@ export default function AdminHome(props) {
           <AdminHomeManegeTab loading={loading} />
         </View>
       </ScrollView>
-      <AdminBottomTab contact={selectcontact} onPressAdmin={handleAdminChat} />
+      <AdminBottomTab onPressAdmin={handleAdminChat} />
       <CreateNew
         visible={visible}
         containerStyle={containerStyle}
