@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { AntDesign, Feather } from "react-native-vector-icons";
-import Color from "../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { AntDesign, Feather } from 'react-native-vector-icons';
+import Color from '../../assets/colors/Color';
+import { useNavigation } from '@react-navigation/native';
 
 const HeaderUserProfile = (props) => {
   const navigation = useNavigation();
@@ -13,9 +13,9 @@ const HeaderUserProfile = (props) => {
         <View style={styles.headerIcons}>
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
             }}
             // style={{
             //   marginRight: "60%",
@@ -23,7 +23,7 @@ const HeaderUserProfile = (props) => {
             //   alignItems: "center",
             // }}
           >
-            {props.type === "other" && (
+            {props.type === 'other' && (
               <Text style={styles.title}>Profile</Text>
             )}
 
@@ -31,33 +31,33 @@ const HeaderUserProfile = (props) => {
               onPress={() => {
                 navigation.goBack();
               }}
-              style={{ marginRight: "60%" }}
+              style={{ marginRight: '60%' }}
             >
               <AntDesign name="arrowleft" size={28} color={Color.Black} />
             </TouchableOpacity>
             <Text
               style={{
-                position: "absolute",
-                left: "15%",
+                position: 'absolute',
+                left: '15%',
                 color: Color.Black,
                 fontSize: 18,
-                fontFamily: "Roboto_600SemiBold",
+                fontFamily: 'Roboto_600SemiBold',
                 marginLeft: 10,
                 marginTop: 2,
                 lineHeight: 30,
-                textAlignVertical: "center",
+                textAlignVertical: 'center',
               }}
             >
-              {props.type === "current" ? "Profile" : props.type}
+              {props.type === 'current' ? 'Profile' : props.type}
             </Text>
           </View>
           <TouchableOpacity style={styles.shareIcon}>
             {/* <AntDesign name="sharealt" size={22} color={Color.Grey} /> */}
           </TouchableOpacity>
-          {props.type === "current" && (
+          {props.type === 'current' && (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Settings");
+                navigation.navigate('Settings');
               }}
             >
               <Feather name="settings" size={22} color={Color.Black} />
@@ -71,7 +71,7 @@ const HeaderUserProfile = (props) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.White,
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
     borderColor: Color.VeryLightGrey,
   },
   headerIcons: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     // paddingHorizontal: 5,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   shareIcon: {
     // position: "absolute",
@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
   title: {
     color: Color.Grey,
     fontSize: 20,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     marginLeft: 10,
     marginTop: 2,
     lineHeight: 30,
-    textAlignVertical: "center",
+    textAlignVertical: 'center',
   },
 });
 

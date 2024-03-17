@@ -122,8 +122,6 @@ export default function ChatList() {
           messageId: latestMessage._id,
           newStatus: 'checked',
         });
-
-        console.log(response);
       } catch (error) {}
     }
     setgroup(item);
@@ -212,7 +210,8 @@ export default function ChatList() {
                             }}
                           >
                             <MessagePreview item={item} />
-                            {isMessageRead && (
+
+                            {isMessageRead && !loading && (
                               <View
                                 style={{
                                   backgroundColor: Color.Blue,

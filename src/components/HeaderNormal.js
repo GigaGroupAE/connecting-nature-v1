@@ -11,92 +11,107 @@ import { AntDesign, Entypo } from 'react-native-vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
 // import { useCartState } from '../slices/cartSlice';
-import { useState, useEffect } from 'react';
-import { BASE_URL } from '../../CONSTANTS';
-import { useUserState } from '../slices/userSlice';
-import axios from 'axios';
+// import { useState, useEffect } from 'react';
+// import { BASE_URL } from '../../CONSTANTS';
+// import { useUserState } from '../slices/userSlice';
+// import axios from 'axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import { screenHeight } from '../utils/ScreenDimensions';
 import FilterSvg from './SVG/FilterSvg';
 import ThreeDotsVerticalSvg from './SVG/dotsThreeVertical';
 import SavedSvg from './SVG/SavedSvg';
 import SavedProductSvg from './SVG/SaveProductSvg';
+import { axiosInstance } from '../../axiosInstance';
 
 const width = Dimensions.get('screen').width;
 
 export default function HeaderNormal(props) {
-  const userState = useUserState();
+  // const userState = useUserState();
   const title = props?.title;
   // const cartSlice = useCartState();
-  const [Messages, setMessages] = useState([]);
+  // const [Messages, setMessages] = useState([]);
   const { setgroup } = useStateContext();
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/chat/get-my-chats`, {
-        headers: {
-          'auth-token': userState.token,
-        },
-      })
-      .then((res) => {
-        setMessages([...res.data.myChats]);
-      })
-      .catch((e) => {});
-  }, []);
-  const selectcontact = (props) => {
-    let first = false;
-    let second = false;
-    let foundGroup = {};
-    const individualGroups = Messages;
-    individualGroups.map((group) => {
-      if (
-        group.members[0].phoneNumber === userState.phoneNumber ||
-        group.members[0].phoneNumber === props.phoneNumber
-      ) {
-        first = true;
-        if (
-          group.members[1].phoneNumber === userState.phoneNumber ||
-          group.members[1].phoneNumber === props.phoneNumber
-        ) {
-          second = true;
-          foundGroup = group;
-        }
-      }
-    });
-    if (first === true && second === true) {
-      setgroup(foundGroup);
-      navigation.navigate('ChatCN', { group: foundGroup });
-    } else {
-      const members = [userState.id, props._id];
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASE_URL}/chat/get-my-chats`, {
+  //       headers: {
+  //         'auth-token': userState.token,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setMessages([...res.data.myChats]);
+  //     })
+  //     .catch((e) => {});
+  // }, []);
+  // const selectcontact = (props) => {
+  //   console.log(props, 'props');
+  //   let first = false;
+  //   let second = false;
+  //   let foundGroup = {};
+  //   const individualGroups = Messages;
+  //   individualGroups.map((group) => {
+  //     if (
+  //       group.members[0].phoneNumber === userState.phoneNumber ||
+  //       group.members[0].phoneNumber === props.phoneNumber
+  //     ) {
+  //       first = true;
+  //       if (
+  //         group.members[1].phoneNumber === userState.phoneNumber ||
+  //         group.members[1].phoneNumber === props.phoneNumber
+  //       ) {
+  //         second = true;
+  //         foundGroup = group;
+  //       }
+  //     }
+  //   });
+  //   if (first === true && second === true) {
+  //     setgroup(foundGroup);
+  //     navigation.navigate('ChatCN', { group: foundGroup });
+  //   } else {
+  //     const members = [userState.id, props._id];
 
-      let data;
+  //     let data;
 
-      data = {
-        members: members,
-        messages: [],
-      };
-      axios
-        .post(`${BASE_URL}/chat/createchat`, data, {
-          headers: {
-            'auth-token': userState.token,
-          },
-        })
-        .then((response) => {
-          axios
-            .get(`${BASE_URL}/chat/get-my-chats`, {
-              headers: {
-                'auth-token': userState.token,
-              },
-            })
-            .then((res) => {
-              const newgroup = res.data.myChats.filter((singlegroup) => {
-                return singlegroup._id === response.data._id;
-              });
-              setgroup(newgroup[0]);
-              navigation.navigate('ChatCN', { group: newgroup[0] });
-            })
-            .catch((e) => {});
-        })
-        .catch((e) => {});
+  //     data = {
+  //       members: members,
+  //       messages: [],
+  //     };
+  //     axios
+  //       .post(`${BASE_URL}/chat/createchat`, data, {
+  //         headers: {
+  //           'auth-token': userState.token,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         axios
+  //           .get(`${BASE_URL}/chat/get-my-chats`, {
+  //             headers: {
+  //               'auth-token': userState.token,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             const newgroup = res.data.myChats.filter((singlegroup) => {
+  //               return singlegroup._id === response.data._id;
+  //             });
+  //             setgroup(newgroup[0]);
+  //             navigation.navigate('ChatCN', { group: newgroup[0] });
+  //           })
+  //           .catch((e) => {});
+  //       })
+  //       .catch((e) => {});
+  //   }
+  // };
+
+  const selectcontact = async (props) => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/chat/getOrCreate/${props?._id}`,
+      );
+      // console.log(data?.chat, 'data');
+      setgroup(data?.chat);
+      navigation.navigate('ChatCN', { group: data?.chat });
+    } catch (error) {
+      console.log(error);
     }
   };
   const navigation = useNavigation();
@@ -133,7 +148,7 @@ export default function HeaderNormal(props) {
             width: width * 0.12,
           }}
         >
-          {/* {title === 'Chats' && (
+          {title === 'Chats' && (
             <Pressable
               onPress={() => {
                 navigation.navigate('SelectContact', {
@@ -143,7 +158,7 @@ export default function HeaderNormal(props) {
             >
               <Entypo name="new-message" size={25} color={Color.Blue} />
             </Pressable>
-          )} */}
+          )}
         </View>
         {title === 'Affordability' ||
         title === 'Design Type' ||

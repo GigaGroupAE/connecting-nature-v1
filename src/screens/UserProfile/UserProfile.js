@@ -5,33 +5,32 @@ import {
   RefreshControl,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
-} from "react-native"
-import React, { useMemo } from "react"
-import { useInfiniteQuery, useQuery } from "react-query"
+} from 'react-native';
+import React, { useMemo } from 'react';
+import { useInfiniteQuery, useQuery } from 'react-query';
 import {
   fetchUser,
   fetchUserPosts,
   fetchUsersPostCount,
-} from "../../Api/GetPost"
-import { useUserState } from "../../slices/userSlice"
-import Color from "../../../assets/colors/Color"
-import HeaderUserProfile from "../../components/HeaderUserProfile"
-import { useNavigation } from "@react-navigation/native"
-import UserProfileState from "../../components/UserProfileState"
-import PostSkeleton from "../../components/PostSkeleton"
-import Post from "../../components/Post"
-import NoPostHeader from "./NoPostHeader"
+} from '../../Api/GetPost';
+import { useUserState } from '../../slices/userSlice';
+import Color from '../../../assets/colors/Color';
+import HeaderUserProfile from '../../components/HeaderUserProfile';
+import { useNavigation } from '@react-navigation/native';
+import UserProfileState from '../../components/UserProfileState';
+import PostSkeleton from '../../components/PostSkeleton';
+import Post from '../../components/Post';
+import NoPostHeader from './NoPostHeader';
 
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const UserProfile = (props) => {
-  const userState = useUserState()
-  const navigation = useNavigation()
+  const userState = useUserState();
+  const navigation = useNavigation();
   const userPhoneNumber =
-    props.route.params.userPhoneNumber || userState.phoneNumber
+    props.route.params.userPhoneNumber || userState.phoneNumber;
   const {
     data: postsData,
     isLoading: postsLoading,
@@ -40,7 +39,7 @@ const UserProfile = (props) => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery(
-    ["userPosts", userPhoneNumber],
+    ['userPosts', userPhoneNumber],
 
     ({ pageParam = 1 }) => fetchUserPosts({ userPhoneNumber, pageParam }),
     {
@@ -48,50 +47,50 @@ const UserProfile = (props) => {
         if (lastPage?.currentPage && lastPage?.totalPages) {
           return lastPage.currentPage < lastPage.totalPages
             ? lastPage.currentPage + 1
-            : null
+            : null;
         }
-        return null
+        return null;
       },
       refetchOnWindowFocus: false,
       cacheTime: 1000 * 60 * 5,
-    }
-  )
+    },
+  );
 
   const {
     data: user,
     isLoading,
     refetch: refetchUser,
-  } = useQuery(["user", userPhoneNumber], () => fetchUser(userPhoneNumber))
+  } = useQuery(['user', userPhoneNumber], () => fetchUser(userPhoneNumber));
   const { data: userPostCount, isLoading: postCountLoading } = useQuery(
-    ["postcount", userPhoneNumber],
-    () => fetchUsersPostCount(userPhoneNumber)
-  )
+    ['postcount', userPhoneNumber],
+    () => fetchUsersPostCount(userPhoneNumber),
+  );
   const handleRefresh = () => {
-    refetch()
-  }
+    refetch();
+  };
 
   const handleEndReached = () => {
     if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }
+  };
 
   const renderItem = useMemo(() => {
     return ({ item }) => {
       if (!postsData || postsLoading) {
-        return <PostSkeleton />
+        return <PostSkeleton />;
       } else {
-        return <Post post={item} key={item._id} reload={refetch} />
+        return <Post post={item} key={item._id} reload={refetch} />;
       }
-    }
-  }, [postsData, postsLoading])
+    };
+  }, [postsData, postsLoading]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <HeaderUserProfile
         type={
           user?.phoneNumber === userState.phoneNumber
-            ? "current"
+            ? 'current'
             : user?.fullName
         }
       />
@@ -108,9 +107,9 @@ const UserProfile = (props) => {
           backgroundColor: Color.Disable,
         }}
       >
-              {!postsLoading &&
+        {!postsLoading &&
           postsData?.pages.flatMap((item) => item?.posts.length) < 1 && (
-            <NoPostHeader navigation={() => navigation.navigate("Home")} />
+            <NoPostHeader navigation={() => navigation.navigate('Home')} />
           )}
         {postsLoading ? (
           <PostSkeleton />
@@ -134,10 +133,10 @@ const UserProfile = (props) => {
         )}
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -146,26 +145,26 @@ const styles = StyleSheet.create({
   },
 
   noPostsText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.02,
-    alignSelf: "center",
-    justifyContent: "center",
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: Height * 0.016,
   },
   bellIcon: {
     width: Width * 0.3,
     height: Height * 0.13,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -175,22 +174,22 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.02,
   },
   FollowButton: {
     backgroundColor: Color.Blue,
     // paddingHorizontal: Width * 0.02,
-    width: "45%",
-    alignItems: "center",
+    width: '45%',
+    alignItems: 'center',
     paddingVertical: Height * 0.009,
     borderRadius: Height * 0.01,
   },
   title: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.White,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 14,
   },
-})
+});

@@ -5,31 +5,30 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useState } from "react"
-import { BASE_URL } from "../../CONSTANTS"
-import { MaterialCommunityIcons } from "react-native-vector-icons"
-import { isFollowing } from "../utils/isFollowing"
-import { useNavigation } from "@react-navigation/native"
-import { useUserState, useUserStateActions } from "../slices/userSlice"
-import Color from "../../assets/colors/Color"
-import axios from "axios"
-import { useStateContext } from "../contexts/ContextProvider"
-import { useQueries, useQuery } from "react-query"
-import { getMyChat } from "../Api/GetPost"
+} from 'react-native';
+import React from 'react';
+import { BASE_URL } from '../../CONSTANTS';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import { isFollowing } from '../utils/isFollowing';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState, useUserStateActions } from '../slices/userSlice';
+import Color from '../../assets/colors/Color';
+import axios from 'axios';
+import { useStateContext } from '../contexts/ContextProvider';
+import { axiosInstance } from '../../axiosInstance';
 
-const Height = Dimensions.get("screen").height
-const Width = Dimensions.get("screen").width
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const UserProfileState = ({ user, postCount, refetch }) => {
-  const { setgroup } = useStateContext()
-  const navigation = useNavigation()
-  const userState = useUserState()
-  const userActions = useUserStateActions()
-  const { data: CNGroups, isLoading: chatLoading } = useQuery(
-    "userChat",
-    getMyChat
-  )
+  const { setgroup } = useStateContext();
+  const navigation = useNavigation();
+  const userState = useUserState();
+  const userActions = useUserStateActions();
+  // const { data: CNGroups, isLoading: chatLoading } = useQuery(
+  //   'userChat',
+  //   getMyChat,
+  // );
 
   const handleFollow = async () => {
     try {
@@ -38,101 +37,114 @@ const UserProfileState = ({ user, postCount, refetch }) => {
         {},
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
-        }
-      )
+        },
+      );
       if (data.success) {
-        userActions.setFollowing(data.following)
-        refetch()
+        userActions.setFollowing(data.following);
+        refetch();
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const selectcontact = (props) => {
-    let first = false
-    let second = false
-    let foundGroup = {}
-    const individualGroups = CNGroups
-    individualGroups.map((group) => {
-      if (
-        group.members[0].phoneNumber === userState.phoneNumber ||
-        group.members[0].phoneNumber === props.phoneNumber
-      ) {
-        first = true
-        if (
-          group.members[1].phoneNumber === userState.phoneNumber ||
-          group.members[1].phoneNumber === props.phoneNumber
-        ) {
-          second = true
-          foundGroup = group
-        }
-      }
-    })
-    if (first === true && second === true) {
-      setgroup(foundGroup)
-      navigation.navigate("ChatCN", { group: foundGroup })
-    } else {
-      console.log("login user is ===>", userState.id)
-      console.log("props user is =====>", props._id)
+  // const selectcontact = (props) => {
+  //   let first = false;
+  //   let second = false;
+  //   let foundGroup = {};
+  //   const individualGroups = CNGroups;
+  //   individualGroups.map((group) => {
+  //     if (
+  //       group.members[0].phoneNumber === userState.phoneNumber ||
+  //       group.members[0].phoneNumber === props.phoneNumber
+  //     ) {
+  //       first = true;
+  //       if (
+  //         group.members[1].phoneNumber === userState.phoneNumber ||
+  //         group.members[1].phoneNumber === props.phoneNumber
+  //       ) {
+  //         second = true;
+  //         foundGroup = group;
+  //       }
+  //     }
+  //   });
+  //   if (first === true && second === true) {
+  //     setgroup(foundGroup);
+  //     navigation.navigate('ChatCN', { group: foundGroup });
+  //   } else {
+  //     console.log('login user is ===>', userState.id);
+  //     console.log('props user is =====>', props._id);
 
-      let members = [userState.id, props._id]
-      let data
+  //     let members = [userState.id, props._id];
+  //     let data;
 
-      data = {
-        members: members,
-        messages: [],
-      }
-      axios
-        .post(`${BASE_URL}/chat/createchat`, data, {
-          headers: {
-            "auth-token": userState.token,
-          },
-        })
-        .then((response) => {
-          axios
-            .get(`${BASE_URL}/chat/get-my-chats`, {
-              headers: {
-                "auth-token": userState.token,
-              },
-            })
-            .then((res) => {
-              const newgroup = res.data.myChats.filter((singlegroup) => {
-                return singlegroup._id === response.data._id
-              })
-              setgroup(newgroup[0])
-              navigation.navigate("ChatCN", { group: newgroup[0] })
-            })
-            .catch((e) => console.log(e))
-        })
-        .catch((e) => console.log(e))
+  //     data = {
+  //       members: members,
+  //       messages: [],
+  //     };
+  //     axios
+  //       .post(`${BASE_URL}/chat/createchat`, data, {
+  //         headers: {
+  //           'auth-token': userState.token,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         axios
+  //           .get(`${BASE_URL}/chat/get-my-chats`, {
+  //             headers: {
+  //               'auth-token': userState.token,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             const newgroup = res.data.myChats.filter((singlegroup) => {
+  //               return singlegroup._id === response.data._id;
+  //             });
+  //             setgroup(newgroup[0]);
+  //             navigation.navigate('ChatCN', { group: newgroup[0] });
+  //           })
+  //           .catch((e) => console.log(e));
+  //       })
+  //       .catch((e) => console.log(e));
+  //   }
+  // };
+
+  const selectcontact = async (props) => {
+    try {
+      const { data } = await axiosInstance.post(
+        `/chat/getOrCreate/${props?._id}`,
+      );
+      // console.log(data?.chat, 'data');
+      setgroup(data?.chat);
+      navigation.navigate('ChatCN', { group: data?.chat });
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
   const handleFollowers = () => {
-    navigation.navigate("Followers", {
+    navigation.navigate('Followers', {
       userFollowing: user,
-      screen: "Followers",
+      screen: 'Followers',
       user: user,
-    })
-  }
+    });
+  };
 
   const handleFollowing = () => {
-    navigation.navigate("Followers", {
+    navigation.navigate('Followers', {
       userFollowing: user,
-      screen: "Following",
+      screen: 'Following',
       user: user,
-    })
-  }
+    });
+  };
 
   const handleEditProfile = () => {
-    navigation.navigate("EditProfile")
-  }
+    navigation.navigate('EditProfile');
+  };
   const handleAddPost = () => {
-    navigation.navigate("AddPost", { origin: "post" })
-  }
+    navigation.navigate('AddPost', { origin: 'post' });
+  };
   return (
     <View style={styles.profileContainer}>
       <View>
@@ -147,18 +159,18 @@ const UserProfileState = ({ user, postCount, refetch }) => {
           <View style={styles.userNameContainer}>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
               <Text style={styles.userName}>{user.fullName}</Text>
 
-              {(user.type === "Operations" ||
-                user.type === "Admin" ||
-                user.type === "Manager" ||
-                user.type === "Assistant Manager" ||
-                user.type === "Super Admin" ||
-                user.type === "celebrity") && (
+              {(user.type === 'Operations' ||
+                user.type === 'Admin' ||
+                user.type === 'Manager' ||
+                user.type === 'Assistant Manager' ||
+                user.type === 'Super Admin' ||
+                user.type === 'celebrity') && (
                 <MaterialCommunityIcons
                   name="check-decagram"
                   style={styles.adminIcon}
@@ -195,8 +207,8 @@ const UserProfileState = ({ user, postCount, refetch }) => {
           <TouchableOpacity style={styles.FollowButton} onPress={handleFollow}>
             <Text style={styles.title}>
               {isFollowing(userState.following, user.phoneNumber)
-                ? "Following"
-                : "Follow +"}
+                ? 'Following'
+                : 'Follow +'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -234,10 +246,10 @@ const UserProfileState = ({ user, postCount, refetch }) => {
         </View>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default UserProfileState
+export default UserProfileState;
 
 const styles = StyleSheet.create({
   profileContainer: {
@@ -248,78 +260,78 @@ const styles = StyleSheet.create({
     borderColor: Color.VeryLightGrey,
   },
   profileTitle: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   avatar: {
-    borderRadius: Dimensions.get("screen").height * 0.1,
-    width: Dimensions.get("screen").height * 0.09,
-    height: Dimensions.get("screen").height * 0.09,
+    borderRadius: Dimensions.get('screen').height * 0.1,
+    width: Dimensions.get('screen').height * 0.09,
+    height: Dimensions.get('screen').height * 0.09,
     backgroundColor: Color.VeryLightGrey,
   },
   userNameContainer: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 15,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
-    alignSelf: "center",
+    alignSelf: 'center',
     marginLeft: 15,
   },
   userCategory: {
     marginLeft: 15,
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
   },
   userDescription: {
     marginTop: 14,
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
-    textAlign: "left",
+    textAlign: 'left',
   },
   userProfileStats: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 16,
     // paddingHorizontal: 35,
-    justifyContent: "space-between",
-    width: "73%",
-    position: "relative",
+    justifyContent: 'space-between',
+    width: '73%',
+    position: 'relative',
     top: Height * -0.02,
     left: Width * 0.038,
     paddingVertical: Height * 0.008,
   },
   postsStats: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   followersStats: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   followingStats: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   statCount: {
     fontSize: Height * 0.025,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   statText: {
     fontSize: Height * 0.017,
     // fontWeight: "500",
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     lineHeight: 21,
     color: Color.Black,
   },
   buttons: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 16,
-    width: "80%",
+    width: '80%',
   },
   adminIcon: {
     marginLeft: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: Height * 0.019,
     color: Color.Blue,
   },
@@ -329,26 +341,26 @@ const styles = StyleSheet.create({
   },
 
   noPostsText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.02,
-    alignSelf: "center",
-    justifyContent: "center",
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: Height * 0.016,
   },
   bellIcon: {
     width: Width * 0.3,
     height: Height * 0.13,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -358,22 +370,22 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.02,
   },
   FollowButton: {
     backgroundColor: Color.Blue,
     // paddingHorizontal: Width * 0.02,
-    width: "45%",
-    alignItems: "center",
+    width: '45%',
+    alignItems: 'center',
     paddingVertical: Height * 0.009,
     borderRadius: Height * 0.01,
   },
   title: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.White,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 14,
   },
-})
+});

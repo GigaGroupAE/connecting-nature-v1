@@ -123,47 +123,47 @@ const Home = () => {
     };
   }, [postsData, postsLoading]);
 
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     if (!userstate.expoPushToken)
-  //       registerForPushNotificationsAsync().then((token) => {
-  //         // setExpoPushToken(token);
-  //         //make api call to save the token
-  //         const config = {
-  //           headers: {
-  //             'auth-token': userstate.token,
-  //           },
-  //         };
-  //         if (!userstate.expoPushToken) {
-  //           axios
-  //             .put(
-  //               `${BASE_URL}/user/updateUserExpoToken`,
-  //               { expoPushToken: `${token}` },
-  //               config,
-  //             )
-  //             .then((res) => {
-  //               userActions.setExpoPushToken(res.data.expoPushToken);
-  //             })
-  //             .catch((err) => {});
-  //         }
-  //       });
+  useEffect(() => {
+    if (isFocused) {
+      if (!userstate.expoPushToken)
+        registerForPushNotificationsAsync().then((token) => {
+          // setExpoPushToken(token);
+          //make api call to save the token
+          const config = {
+            headers: {
+              'auth-token': userstate.token,
+            },
+          };
+          if (!userstate.expoPushToken) {
+            axios
+              .put(
+                `${BASE_URL}/user/updateUserExpoToken`,
+                { expoPushToken: `${token}` },
+                config,
+              )
+              .then((res) => {
+                userActions.setExpoPushToken(res.data.expoPushToken);
+              })
+              .catch((err) => {});
+          }
+        });
 
-  //     notificationListener.current =
-  //       Notifications.addNotificationReceivedListener((notification) => {
-  //         // setNotification(notification);
-  //       });
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          // setNotification(notification);
+        });
 
-  //     responseListener.current =
-  //       Notifications.addNotificationResponseReceivedListener((response) => {});
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {});
 
-  //     return () => {
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current,
-  //       );
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //     };
-  //   }
-  // }, [isFocused]);
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current,
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
+  }, [isFocused]);
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
   const VideoMiniPlayer = useMemo(

@@ -1,27 +1,17 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 import {
   Ionicons,
   MaterialIcons,
   EvilIcons,
-  AntDesign,
   Feather,
-} from "react-native-vector-icons";
+} from 'react-native-vector-icons';
 
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../assets/colors/Color";
-import { useUserState } from "../slices/userSlice";
-import AdminHeader from "../screens/AdminHome/AdminHeader";
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../assets/colors/Color';
+import { useUserState } from '../slices/userSlice';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
 
 export default function AdminBottomTab(props) {
   const userState = useUserState();
@@ -30,11 +20,11 @@ export default function AdminBottomTab(props) {
     <View style={styles.mainContainer}>
       <TouchableOpacity
         style={styles.tabStyle}
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate('Home')}
       >
         <Feather
           name="grid"
-          size={Dimensions.get("screen").width * 0.069}
+          size={Dimensions.get('screen').width * 0.069}
           color="#000"
         />
       </TouchableOpacity>
@@ -42,8 +32,8 @@ export default function AdminBottomTab(props) {
         style={styles.tabStyle}
         onFocus
         onPress={() => {
-          if (userState.type === "Admin") {
-            alert("You cannot text yourself");
+          if (userState.type === 'Admin') {
+            alert('You cannot text yourself');
           } else {
             props.onPressAdmin();
           }
@@ -52,7 +42,7 @@ export default function AdminBottomTab(props) {
         <View style={styles.tabStyle}>
           <MaterialIcons
             name="support-agent"
-            size={Dimensions.get("screen").width * 0.08}
+            size={Dimensions.get('screen').width * 0.08}
             color="#000"
           />
         </View>
@@ -71,22 +61,22 @@ export default function AdminBottomTab(props) {
       </TouchableOpacity> */}
       <TouchableOpacity
         style={styles.tabStyle}
-        onPress={() => navigation.navigate("DirectChat")}
+        onPress={() => navigation.navigate('DirectChat')}
       >
         <Ionicons
           name="chatbubble-ellipses-outline"
-          size={Dimensions.get("screen").width * 0.08}
+          size={Dimensions.get('screen').width * 0.08}
           color="#000"
         />
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.tabProfile}
-        onPress={() => navigation.navigate("SettingsCRM")}
+        onPress={() => navigation.navigate('SettingsCRM')}
       >
         <EvilIcons
           name="user"
-          size={Dimensions.get("screen").width * 0.11}
+          size={Dimensions.get('screen').width * 0.11}
           color="black"
         />
       </TouchableOpacity>
@@ -96,40 +86,40 @@ export default function AdminBottomTab(props) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
-    paddingHorizontal: Dimensions.get("screen").width * 0.02,
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-around",
-    flexDirection: "row",
+    paddingHorizontal: Dimensions.get('screen').width * 0.02,
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
     backgroundColor: Color.White,
-    width: "100%",
+    width: '100%',
     height: 65,
     borderTopWidth: 1,
     borderColor: Color.LightGrey,
   },
   tabStyle: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     // flexDirection: "row",
   },
   adminChatButton: {
     backgroundColor: Color.Blue,
     paddingHorizontal: 20,
-    paddingVertical: Dimensions.get("screen").height * 0.013,
+    paddingVertical: Dimensions.get('screen').height * 0.013,
     borderRadius: 8,
   },
   adminChatButtonText: {
-    fontSize: Dimensions.get("screen").height * 0.018,
-    fontFamily: "Roboto_600SemiBold",
+    fontSize: Dimensions.get('screen').height * 0.018,
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
   },
   tabText: {
     marginBottom: Height * 0.02,
     marginTop: Height * 0.009,
     fontSize: Height * 0.016,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
   },
   tabProfile: {
