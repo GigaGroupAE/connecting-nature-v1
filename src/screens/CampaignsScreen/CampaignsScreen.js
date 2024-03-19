@@ -44,6 +44,7 @@ export default function CampaignsScreen() {
     setcomment(campaign?.comments);
     navigation.navigate('CampaignWithPosts', { campaign });
   };
+
   const renderItem = useCallback(
     ({ item }) => (
       <TouchableOpacity onPress={() => handleNavigation(item)}>

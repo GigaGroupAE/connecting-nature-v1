@@ -9,16 +9,16 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
-} from "react-native";
-import React, { useState } from "react";
-import { useUserState } from "../slices/userSlice";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import Color from "../../assets/colors/Color";
-import { AntDesign } from "react-native-vector-icons";
-import { BASE_URL } from "../../CONSTANTS";
-import axios from "axios";
-import { useStateContext } from "../contexts/ContextProvider";
-import { scale } from "react-native-size-matters";
+} from 'react-native';
+import React, { useState } from 'react';
+import { useUserState } from '../slices/userSlice';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import Color from '../../assets/colors/Color';
+import { AntDesign } from 'react-native-vector-icons';
+import { BASE_URL } from '../../CONSTANTS';
+import axios from 'axios';
+import { useStateContext } from '../contexts/ContextProvider';
+import { scale } from 'react-native-size-matters';
 
 const CampaignPointsShare = () => {
   const userState = useUserState();
@@ -26,7 +26,7 @@ const CampaignPointsShare = () => {
   const route = useRoute();
   const { showSnackbar } = useStateContext();
   const [postType, setpostType] = useState(false);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState(null); // this will be an array that will hold the uri's of images to post
   const imageUrl = route?.params;
   const [loading, setloading] = useState(false);
@@ -41,21 +41,21 @@ const CampaignPointsShare = () => {
     //creating form data
     const formData = new FormData();
 
-    formData.append("description", description);
+    formData.append('description', description);
     //since we cannot add object to formdata and userState is an object
     //so we will STRINGIFY the userState and parse it at the backend
-    formData.append("postedby", JSON.stringify(userState.id));
-    formData.append("media", {
+    formData.append('postedby', JSON.stringify(userState.id));
+    formData.append('media', {
       name: imageUrl, // phone number is added to make sure data doesn't duplicate at any cost
       uri: imageUrl,
-      type: "image/jpeg",
+      type: 'image/jpeg',
     });
 
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-        "auth-token": userState.token,
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        'auth-token': userState.token,
       },
     };
     //api call
@@ -64,13 +64,13 @@ const CampaignPointsShare = () => {
       const { data } = await axios.post(
         `${BASE_URL}/posts/addpost/`,
         formData,
-        config
+        config,
       );
-      showSnackbar("Post created successfully");
+      showSnackbar('Post created successfully');
       navigation.goBack();
       setloading(false);
     } catch (error) {
-      console.log(error, "error is ");
+      console.log(error, 'error is ');
       setloading(false);
     }
   };
@@ -87,9 +87,9 @@ const CampaignPointsShare = () => {
           </TouchableOpacity>
           <Text
             style={{
-              marginRight: "30%",
+              marginRight: '30%',
               bottom: -2,
-              fontFamily: "Roboto_600SemiBold",
+              fontFamily: 'Roboto_600SemiBold',
               color: Color.Grey,
               fontSize: 18,
             }}
@@ -107,7 +107,7 @@ const CampaignPointsShare = () => {
           >
             {loading ? (
               <ActivityIndicator
-                size={"small"}
+                size={'small'}
                 style={{ paddingVertical: scale(4) }}
               />
             ) : (
@@ -158,9 +158,9 @@ export default CampaignPointsShare;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
     paddingHorizontal: 19,
     paddingVertical: 10,
   },
@@ -168,74 +168,74 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     width: 80,
     borderRadius: 6,
-    alignItems: "center",
-    marginRight: "3%",
+    alignItems: 'center',
+    marginRight: '3%',
   },
   disabledPostButtonContainer: {
     backgroundColor: Color.VeryLightGrey,
     width: 80,
     borderRadius: 6,
-    alignItems: "center",
-    marginRight: "3%",
+    alignItems: 'center',
+    marginRight: '3%',
   },
   postButtonText: {
     paddingHorizontal: 10,
     paddingVertical: 3,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    fontSize: Dimensions.get("screen").height * 0.02,
+    fontFamily: 'Roboto_500Medium',
+    fontSize: Dimensions.get('screen').height * 0.02,
   },
   disabledPostButtonText: {
     paddingHorizontal: 10,
     paddingVertical: 3,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Grey,
-    fontFamily: "Roboto_500Medium",
-    fontSize: Dimensions.get("screen").height * 0.02,
+    fontFamily: 'Roboto_500Medium',
+    fontSize: Dimensions.get('screen').height * 0.02,
   },
   head: {
-    marginTop: "2%",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
+    marginTop: '2%',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   headerAvatar: {
     marginTop: 40,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     borderRadius: 100,
-    width: Dimensions.get("screen").height * 0.08,
-    height: Dimensions.get("screen").height * 0.08,
+    width: Dimensions.get('screen').height * 0.08,
+    height: Dimensions.get('screen').height * 0.08,
     backgroundColor: Color.VeryLightGrey,
   },
   postContent: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   inputField: {
     marginTop: 40,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     paddingTop: 20,
     paddingHorizontal: 10,
-    width: "80%",
-    maxHeight: "65%",
+    width: '80%',
+    maxHeight: '65%',
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
   },
   selectedImagesContainer: {
     flex: 1,
-    position: "absolute",
+    position: 'absolute',
     bottom: 19,
     left: 9,
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   selectedImages: {
-    width: Dimensions.get("screen").height * 0.14,
-    height: Dimensions.get("screen").height * 0.14,
+    width: Dimensions.get('screen').height * 0.14,
+    height: Dimensions.get('screen').height * 0.14,
     borderRadius: 8,
     marginLeft: 10,
   },

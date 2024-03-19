@@ -7,21 +7,21 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
-} from "react-native";
-import React, { useCallback, useState } from "react";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import VideoPlayer from "expo-video-player";
-import { useStateContext } from "../../contexts/ContextProvider";
+} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import { useNavigation } from '@react-navigation/native';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import VideoPlayer from 'expo-video-player';
+import { useStateContext } from '../../contexts/ContextProvider';
 
-import { AntDesign, MaterialCommunityIcons } from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
-import { ScrollView } from "react-native-gesture-handler";
+import { AntDesign, MaterialCommunityIcons } from 'react-native-vector-icons';
+import { BASE_URL } from '../../../CONSTANTS';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
+const width = Dimensions.get('screen').width;
+const height = Dimensions.get('screen').height;
 
 // check userName length
 const MAX_USERNAME_LENGTH = 15;
@@ -29,7 +29,7 @@ const shortenUsername = (username) => {
   if (username.length <= MAX_USERNAME_LENGTH) {
     return username;
   } else {
-    return username.substring(0, MAX_USERNAME_LENGTH) + "...";
+    return username.substring(0, MAX_USERNAME_LENGTH) + '...';
   }
 };
 
@@ -62,7 +62,7 @@ const TopStories = () => {
 
   // filter the propes to remove selected id story
   const filteredStories = Stories.filter(
-    (story) => story._id !== selectedStory._id
+    (story) => story._id !== selectedStory._id,
   );
 
   const toggleNumberOfLines = () => {
@@ -93,7 +93,7 @@ const TopStories = () => {
       <TouchableOpacity onPress={() => ctaNewStory(item)}>
         <View style={styles.mainContainer}>
           {/* user image*/}
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: 'row' }}>
             <Image
               style={styles.userImg}
               source={{
@@ -137,7 +137,7 @@ const TopStories = () => {
                   onPress={toggleNumberOfLines}
                   style={{ marginTop: 5, color: Color.Blue }}
                 >
-                  {textShown ? "Read less..." : "Read more..."}
+                  {textShown ? 'Read less...' : 'Read more...'}
                 </Text>
               ) : null}
             </View>
@@ -145,9 +145,9 @@ const TopStories = () => {
             {/* post image */}
             <View>
               <View>
-                {item.media?.type === "image/jpeg" ||
-                item.media?.type === "image/png" ||
-                item.media?.type === "image/jpg" ? (
+                {item.media?.type === 'image/jpeg' ||
+                item.media?.type === 'image/png' ||
+                item.media?.type === 'image/jpg' ? (
                   <View style={styles.postImg}>
                     <TouchableOpacity
                       key={selectedStory.index}
@@ -164,15 +164,15 @@ const TopStories = () => {
                   </View>
                 ) : null}
                 <View>
-                  {item.media?.type === "video/mp4" ? (
+                  {item.media?.type === 'video/mp4' ? (
                     <VideoPlayer
                       style={styles.postImg}
                       fullscreen={{
                         enterFullscreen: () => {
-                          navigation.navigate("PostView", {
+                          navigation.navigate('PostView', {
                             url: `${BASE_URL}/images/${item.media.name}`,
-                            message: "",
-                            mediatype: "video",
+                            message: '',
+                            mediatype: 'video',
                           });
                         },
                         exitFullscreen: (e) => console.log(e),
@@ -185,7 +185,7 @@ const TopStories = () => {
                           uri: `${BASE_URL}/images/${item.media.name}`,
                         },
                         shouldPlay: false,
-                        resizeMode: "contain",
+                        resizeMode: 'contain',
                       }}
                     />
                   ) : null}
@@ -202,7 +202,7 @@ const TopStories = () => {
               <Pressable
                 android_ripple={{ color: Color.LightGrey }}
                 style={styles.mainAction}
-                onPress={() => navigation.navigate("StoryComment", item)}
+                onPress={() => navigation.navigate('StoryComment', item)}
               >
                 <View style={styles.postLikes}>
                   <MaterialCommunityIcons
@@ -235,15 +235,15 @@ const TopStories = () => {
             {/* post image */}
 
             <View>
-              {selectedStory.media?.type === "video/mp4" ? (
+              {selectedStory.media?.type === 'video/mp4' ? (
                 <VideoPlayer
                   style={IsScroll ? styles.TopStoryVideo : styles.fullVideo}
                   fullscreen={{
                     enterFullscreen: () => {
-                      navigation.navigate("PostView", {
+                      navigation.navigate('PostView', {
                         url: `${BASE_URL}/images/${selectedStory.media.name}`,
-                        message: "",
-                        mediatype: "video",
+                        message: '',
+                        mediatype: 'video',
                         description: selectedStory.description,
                       });
                     },
@@ -257,16 +257,16 @@ const TopStories = () => {
                       uri: `${BASE_URL}/images/${selectedStory.media.name}`,
                     },
                     shouldPlay: false,
-                    resizeMode: "contain",
+                    resizeMode: 'contain',
                   }}
                 />
               ) : null}
             </View>
             <View>
               <View>
-                {selectedStory.media?.type === "image/jpeg" ||
-                selectedStory.media?.type === "image/png" ||
-                selectedStory.media?.type === "image/jpg" ? (
+                {selectedStory.media?.type === 'image/jpeg' ||
+                selectedStory.media?.type === 'image/png' ||
+                selectedStory.media?.type === 'image/jpg' ? (
                   <View>
                     <TouchableOpacity key={selectedStory.index}>
                       <Image
@@ -289,8 +289,8 @@ const TopStories = () => {
                   style={[
                     styles.userContainer,
                     {
-                      width: "93%",
-                      alignSelf: "center",
+                      width: '93%',
+                      alignSelf: 'center',
                       marginTop: height * 0.02,
                     },
                   ]}
@@ -346,7 +346,7 @@ const TopStories = () => {
                         <Text
                           style={[
                             styles.postDescr,
-                            IsScroll && { display: "none" },
+                            IsScroll && { display: 'none' },
                           ]}
                         >
                           {selectedStory.description}
@@ -364,7 +364,7 @@ const TopStories = () => {
                     style={[
                       styles.topStoryMainContainer,
                       IsScroll && {
-                        display: "none",
+                        display: 'none',
                         borderBottomColor: Color.DarkGrey,
                         borderWidth: 1,
                         // marginBottom: 10,
@@ -380,7 +380,7 @@ const TopStories = () => {
                         android_ripple={{ color: Color.LightGrey }}
                         style={styles.mainAction}
                         onPress={() =>
-                          navigation.navigate("StoryComment", selectedStory)
+                          navigation.navigate('StoryComment', selectedStory)
                         }
                       >
                         <View style={styles.postLikes}>
@@ -423,72 +423,72 @@ export default TopStories;
 const styles = StyleSheet.create({
   mainContainer: {
     marginVertical: height * 0.01,
-    flexDirection: "row",
-    width: "95%",
-    alignSelf: "center",
+    flexDirection: 'row',
+    width: '95%',
+    alignSelf: 'center',
     backgroundColor: Color.White,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   userImg: {
     width: width * 0.13,
     height: height * 0.06,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     borderRadius: height * 0.1,
   },
   userContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   userNameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   userName: {
-    fontFamily: "Roboto_600SemiBold",
-    fontWeight: "500",
+    fontFamily: 'Roboto_600SemiBold',
+    fontWeight: '500',
     fontSize: 18,
     color: Color.DarkGrey,
   },
   postDuration: {
     fontSize: 15,
-    fontWeight: "400",
-    fontFamily: "Roboto_500Medium",
+    fontWeight: '400',
+    fontFamily: 'Roboto_500Medium',
     color: Color.DarkGrey,
     paddingHorizontal: width * 0.025,
   },
   postDescr: {
     fontSize: 13,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Grey,
     lineHeight: 20,
   },
   postImg: {
     width: width * 0.77,
     height: height * 0.2,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     borderRadius: height * 0.01,
   },
   commentsContainer: {
-    width: "97%",
+    width: '97%',
     paddingVertical: height * 0.014,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    alignItems: 'center',
   },
   postLikes: {
     fontSize: 21,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   comment: {
     fontSize: 14,
-    fontFamily: "Poppins_500Medium",
-    fontWeight: "400",
+    fontFamily: 'Poppins_500Medium',
+    fontWeight: '400',
     color: Color.Grey,
   },
   icons: {
@@ -508,10 +508,10 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   topStoryContainer: {
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     borderColor: Color.White,
     paddingVertical: height * 0.0095,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   maxContainer: {
     flex: 0,
@@ -523,27 +523,26 @@ const styles = StyleSheet.create({
     // marginBottom: 10,
   },
   topPostImg: {
-    width: "100%",
+    width: '100%',
     height: height * 0.2,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   topPostUserContainer: {
     flex: 1,
     marginLeft: width * 0.03,
   },
   topStoryUserContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   topStoryType: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "red",
-    width: "93%",
-    alignSelf: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '93%',
+    alignSelf: 'center',
     marginTop: height * 0.02,
   },
   scrollContainer: {
@@ -558,9 +557,9 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   TopStoryVideo: {
-    height: Dimensions.get("screen").height * 0.175,
+    height: Dimensions.get('screen').height * 0.175,
   },
   fullVideo: {
-    height: Dimensions.get("screen").height * 0.3,
+    height: Dimensions.get('screen').height * 0.3,
   },
 });

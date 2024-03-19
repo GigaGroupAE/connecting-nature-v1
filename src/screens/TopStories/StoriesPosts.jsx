@@ -1,20 +1,20 @@
-import React, { useEffect } from "react"
-import { ScrollView, View, StyleSheet, ActivityIndicator } from "react-native"
-import SingleStory from "./SingleStory"
-import HeaderNormal from "../../components/HeaderNormal"
-import { useIsFocused, useRoute } from "@react-navigation/native"
-import { useStateContext } from "../../contexts/ContextProvider"
-import MiniVideoPlayer from "../../components/MiniVideoPlayer"
-import { FlatList } from "react-native"
-import { useInfiniteQuery } from "react-query"
-import { fetchStories } from "../../Api/GetPost"
-import PostSkeleton from "../../components/PostSkeleton"
-
+import React, { useEffect } from 'react';
+import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
+import SingleStory from './SingleStory';
+import HeaderNormal from '../../components/HeaderNormal';
+import { useIsFocused, useRoute } from '@react-navigation/native';
+import { useStateContext } from '../../contexts/ContextProvider';
+import MiniVideoPlayer from '../../components/MiniVideoPlayer';
+import { FlatList } from 'react-native';
+import { useInfiniteQuery } from 'react-query';
+import { fetchStories } from '../../Api/GetPost';
+import PostSkeleton from '../../components/PostSkeleton';
 
 const StoriesPosts = (props) => {
-  const isFocused = useIsFocused()
-const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch={refetch} />
-
+  const isFocused = useIsFocused();
+  const renderPost = ({ item }) => (
+    <SingleStory key={item._id} post={item} refetch={refetch} />
+  );
 
   const {
     data: storiesData,
@@ -23,29 +23,29 @@ const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = useInfiniteQuery("stories", fetchStories, {
+  } = useInfiniteQuery('stories', fetchStories, {
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage?.currentPage && lastPage?.totalPages) {
         return lastPage.currentPage < lastPage.totalPages
           ? lastPage.currentPage + 1
-          : null
+          : null;
       }
-      return null
+      return null;
     },
     refetchOnWindowFocus: false,
     cacheTime: 1000 * 60 * 5,
-  })
+  });
   const refetchStories = () => {
-    refetch()
-  }
+    refetch();
+  };
 
   useEffect(() => {
     if (isFocused) {
-      refetchStories()
+      refetchStories();
     }
-  }, [isFocused])
+  }, [isFocused]);
 
-  const { showMiniWindow, videoURI, videoAutherName } = useStateContext()
+  const { showMiniWindow, videoURI, videoAutherName } = useStateContext();
 
   return (
     <View style={styles.container}>
@@ -63,7 +63,7 @@ const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch
             onEndReachedThreshold={0.5}
             onEndReached={() => {
               if (!isFetchingNextPage && hasNextPage) {
-                fetchNextPage()
+                fetchNextPage();
               }
             }}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
@@ -73,11 +73,10 @@ const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch
       {showMiniWindow && (
         <View
           style={{
-            backgroundColor: "red",
-            position: "relative",
+            position: 'relative',
             zIndex: 200,
-            width: "100%",
-            height: "9%",
+            width: '100%',
+            height: '9%',
             bottom: 0,
           }}
         >
@@ -85,15 +84,15 @@ const renderPost = ({ item }) => <SingleStory key={item._id} post={item} refetch
         </View>
       )}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    height: "100%",
+    backgroundColor: 'white',
+    height: '100%',
     flex: 1,
   },
-})
+});
 
-export default StoriesPosts
+export default StoriesPosts;

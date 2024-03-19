@@ -418,7 +418,6 @@ const ChatPage = (props) => {
   const sendtext = (text) => {
     setLoading(true);
     Keyboard.dismiss();
-    let date = moment().utcOffset('+05:00');
     socket.emit('send_message', {
       from: userState.id,
       group: props.route.params.group._id,
@@ -520,7 +519,6 @@ const ChatPage = (props) => {
       handleTakePicture: handleTakePicture,
     });
   };
-  let timePassed = calculateTimeDifference();
   const updateMessage = (item) => {
     socket.emit('update_Message', {
       id: props.route.params.group._id,
