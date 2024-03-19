@@ -255,13 +255,6 @@ export default function AdminHome(props) {
     }
   };
 
-  const handleInviteUser = () => {
-    navigation.navigate('InviteUsers');
-  };
-  const handleVerificationReq = () => {
-    navigation.navigate('UpgradeRequestsScreen');
-  };
-
   const handleExpandGroup = (id, group) => {
     setisChatListOpen({
       [id]: !isChatListOpen[id],

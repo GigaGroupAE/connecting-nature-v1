@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
-import AddButton from "../AddButton";
-import { MaterialIcons, Entypo } from "react-native-vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { Image } from "react-native";
-import { scale } from "react-native-size-matters";
-import { screenHeight } from "../../utils/ScreenDimensions";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import AddButton from '../AddButton';
+import { MaterialIcons, Entypo } from 'react-native-vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
+import { Image } from 'react-native';
+import { scale } from 'react-native-size-matters';
+import { screenHeight } from '../../utils/ScreenDimensions';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const CreatePost = (props) => {
   const navigation = useNavigation();
@@ -23,24 +23,24 @@ const CreatePost = (props) => {
         >
           <Entypo name="cross" color={Color.Black} size={30} />
         </TouchableOpacity>
-        {userstate.type !== "user" && (
+        {userstate.type !== 'user' && (
           <View style={styles.spotLight}>
             <Text style={styles.text}>New Spotlight Story</Text>
           </View>
         )}
-        {userstate.type !== "user" && (
+        {userstate.type !== 'user' && (
           <View style={styles.post}>
             <TouchableOpacity
               style={styles.addPost}
               onPress={() => {
-                navigation.navigate("AddPost", {
-                  origin: "story",
+                navigation.navigate('AddPost', {
+                  origin: 'story',
                 });
                 props.closeModal();
               }}
             >
               <Image
-                source={require("../../../assets/story.png")}
+                source={require('../../../assets/story.png')}
                 style={styles.imageStyle}
               />
             </TouchableOpacity>
@@ -52,7 +52,7 @@ const CreatePost = (props) => {
         </View>
         <AddButton
           clicktrigger={() => props.onAddPost()}
-          activeScreen={"CreatePost"}
+          activeScreen={'CreatePost'}
         />
       </View>
     </Modal>
@@ -61,46 +61,46 @@ const CreatePost = (props) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     paddingHorizontal: 17,
     flex: 1,
   },
   spotLight: {
-    position: "absolute",
-    bottom: "28%",
-    right: "38%",
-    alignSelf: "flex-end",
+    position: 'absolute',
+    bottom: '28%',
+    right: '38%',
+    alignSelf: 'flex-end',
   },
   post: {
-    position: "absolute",
-    bottom: "25%",
+    position: 'absolute',
+    bottom: '25%',
     paddingHorizontal: 17,
-    marginLeft: "75%",
+    marginLeft: '75%',
   },
   createPost: {
-    position: "absolute",
-    bottom: "14.5%",
-    right: "38%",
-    alignSelf: "flex-end",
+    position: 'absolute',
+    bottom: '14.5%',
+    right: '38%',
+    alignSelf: 'flex-end',
   },
   cancelIcon: {
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
     paddingHorizontal: 15,
     marginTop: screenHeight * 0.03,
   },
   addPost: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: Color.LightGrey,
     borderRadius: 50,
     padding: 17,
     width: 58,
     height: 58,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   text: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     fontSize: 14,
   },

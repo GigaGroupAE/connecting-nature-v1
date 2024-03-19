@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,30 +6,30 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
+} from 'react-native';
 import {
   Entypo,
   AntDesign,
   MaterialCommunityIcons,
   Octicons,
-} from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
+} from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
 import {
   useIsFocused,
   useNavigation,
   useRoute,
-} from "@react-navigation/native";
-import { BASE_URL } from "../../../CONSTANTS";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { useUserState } from "../../slices/userSlice";
-import moment from "moment";
-import { useStateContext } from "../../contexts/ContextProvider";
-import axios from "axios";
-import VideoPlayer from "expo-video-player";
-import StoryDeleteModal from "./StoryDeleteModal";
+} from '@react-navigation/native';
+import { BASE_URL } from '../../../CONSTANTS';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { useUserState } from '../../slices/userSlice';
+import moment from 'moment';
+import { useStateContext } from '../../contexts/ContextProvider';
+import axios from 'axios';
+import VideoPlayer from 'expo-video-player';
+import StoryDeleteModal from './StoryDeleteModal';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const SingleStory = ({ post, refetch }) => {
   const { setSelectedStory, showSnackbar } = useStateContext();
@@ -37,7 +37,7 @@ const SingleStory = ({ post, refetch }) => {
   const isFocused = useIsFocused();
 
   const navigation = useNavigation();
-  var date = moment().utcOffset("+05:00");
+  var date = moment().utcOffset('+05:00');
   // const [post, setpost] = useState([route.params.Stories]);
 
   const selectedStory = post;
@@ -53,7 +53,7 @@ const SingleStory = ({ post, refetch }) => {
   const [liked, setliked] = useState(
     reactions.some((user) => {
       return user._id === userstate.id;
-    })
+    }),
   );
   // calculate time
   let timePassed = calculateTimeDifference(post?.createdAT);
@@ -65,9 +65,9 @@ const SingleStory = ({ post, refetch }) => {
         { reactions: likes },
         {
           headers: {
-            "auth-token": userstate.token,
+            'auth-token': userstate.token,
           },
-        }
+        },
       )
       .then((res) => {
         setreactions(res.data.reactions);
@@ -105,27 +105,27 @@ const SingleStory = ({ post, refetch }) => {
       tempshares.push(userstate.id);
 
       const formData = new FormData();
-      ["shares", "comments", "reactions"].forEach((e) =>
-        formData.append(e, JSON.stringify([]))
+      ['shares', 'comments', 'reactions'].forEach((e) =>
+        formData.append(e, JSON.stringify([])),
       );
-      formData.append("description", selectedStory.description);
-      formData.append("postedby", JSON.stringify(userstate.id));
+      formData.append('description', selectedStory.description);
+      formData.append('postedby', JSON.stringify(userstate.id));
 
       if (selectedStory.media) {
-        formData.append("media", {
+        formData.append('media', {
           name: selectedStory.media.name,
           uri: `${BASE_URL}/images/${selectedStory.media.name}`,
           type: selectedStory.media.type,
         });
       } else {
-        formData.append("media", null);
+        formData.append('media', null);
       }
 
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-          "auth-token": userstate.token,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          'auth-token': userstate.token,
         },
       };
 
@@ -133,9 +133,9 @@ const SingleStory = ({ post, refetch }) => {
       const postResponse = await axios.post(
         `${BASE_URL}/story/addstory/`,
         formData,
-        config
+        config,
       );
-      showSnackbar("The story has been shared");
+      showSnackbar('The story has been shared');
 
       // Update the shares count for the selected story
       const res = await axios.patch(
@@ -143,15 +143,15 @@ const SingleStory = ({ post, refetch }) => {
         { shares: tempshares },
         {
           headers: {
-            "auth-token": userstate.token,
+            'auth-token': userstate.token,
           },
-        }
+        },
       );
       setshares([...res.data.shares]);
     } catch (error) {
       console.log(error);
       showSnackbar(
-        "Sorry, we couldn't share the story at the moment. Please try again later."
+        "Sorry, we couldn't share the story at the moment. Please try again later.",
       );
     }
   };
@@ -163,14 +163,14 @@ const SingleStory = ({ post, refetch }) => {
         { id: selectedStory._id },
         {
           headers: {
-            "auth-token": userstate.token,
+            'auth-token': userstate.token,
           },
-        }
+        },
       );
       setSelectedStory(res.data);
-      navigation.navigate("StoryComment");
+      navigation.navigate('StoryComment');
     } catch (error) {
-      console.log("error in fetching story", error);
+      console.log('error in fetching story', error);
     }
   };
   const toggleNumberOfLines = () => {
@@ -182,8 +182,6 @@ const SingleStory = ({ post, refetch }) => {
     // console.log(e.nativeEvent);
   }, []);
 
-
-
   const modalComponent = useMemo(
     () => (
       <StoryDeleteModal
@@ -192,7 +190,7 @@ const SingleStory = ({ post, refetch }) => {
         setmodalVisible={setmodalVisible}
       />
     ),
-    [modalVisible, post]
+    [modalVisible, post],
   );
 
   return (
@@ -207,19 +205,19 @@ const SingleStory = ({ post, refetch }) => {
         <View style={styles.contentContainer}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("UserProfile", {
+              navigation.navigate('UserProfile', {
                 userPhoneNumber: post.postedby.phoneNumber,
               });
             }}
-            style={{ flexDirection: "row" }}
+            style={{ flexDirection: 'row' }}
           >
             <Text style={styles.username}>{post?.postedby?.fullName}</Text>
-            {(post.postedby.type === "Operations" ||
-              post.postedby.type === "Admin" ||
-              post.postedby.type === "Manager" ||
-              post.postedby.type === "Assistant Manager" ||
-              post.postedby.type === "Super Admin" ||
-              post.postedby.type === "celebrity") && (
+            {(post.postedby.type === 'Operations' ||
+              post.postedby.type === 'Admin' ||
+              post.postedby.type === 'Manager' ||
+              post.postedby.type === 'Assistant Manager' ||
+              post.postedby.type === 'Super Admin' ||
+              post.postedby.type === 'celebrity') && (
               <MaterialCommunityIcons
                 name="check-decagram"
                 style={styles.adminIcon}
@@ -227,7 +225,7 @@ const SingleStory = ({ post, refetch }) => {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ position: "absolute", right: 16, alignSelf: "center" }}
+            style={{ position: 'absolute', right: 16, alignSelf: 'center' }}
             onPress={() => setmodalVisible(true)}
           >
             <Entypo
@@ -256,16 +254,16 @@ const SingleStory = ({ post, refetch }) => {
                   paddingBottom: 4,
                 }}
               >
-                {textShown ? "Read less..." : "Read more..."}
+                {textShown ? 'Read less...' : 'Read more...'}
               </Text>
             ) : null}
           </TouchableOpacity>
-          {post.media?.type === "image/jpeg" ||
-          post.media?.type === "image/png" ||
-          post.media?.type === "image/jpg" ? (
+          {post.media?.type === 'image/jpeg' ||
+          post.media?.type === 'image/png' ||
+          post.media?.type === 'image/jpg' ? (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("PostView", {
+                navigation.navigate('PostView', {
                   url: `${BASE_URL}/images/${post.media.name}`,
                   message: post.description,
                 })
@@ -277,13 +275,12 @@ const SingleStory = ({ post, refetch }) => {
               />
             </TouchableOpacity>
           ) : null}
-          {post.media?.type === "video/mp4" ? (
+          {post.media?.type === 'video/mp4' ? (
             <View
               style={{
-                backgroundColor: "red",
                 height: Height * 0.27,
                 borderRadius: Height * 0.02,
-                overflow: "hidden",
+                overflow: 'hidden',
               }}
             >
               <VideoPlayer
@@ -293,13 +290,13 @@ const SingleStory = ({ post, refetch }) => {
                     video.current.setStatusAsync({
                       shouldPlay: false,
                     });
-                    navigation.navigate("PostView", {
+                    navigation.navigate('PostView', {
                       url: `${BASE_URL}/images/${post.media.name}`,
-                      message: "",
-                      mediatype: "video",
+                      message: '',
+                      mediatype: 'video',
                       description: post.description,
                       autherName: post.postedby.fullName,
-                      screen: "home",
+                      screen: 'home',
                     });
                   },
                   exitFullscreen: (e) => console.log(e),
@@ -312,7 +309,7 @@ const SingleStory = ({ post, refetch }) => {
                     uri: `${BASE_URL}/images/${post.media.name}`,
                   },
                   shouldPlay: false,
-                  resizeMode: "contain",
+                  resizeMode: 'contain',
                 }}
               />
             </View>
@@ -331,17 +328,17 @@ const SingleStory = ({ post, refetch }) => {
               <Text style={styles.comment}>{reactions.length}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigation(post)}>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: 'row' }}>
                 <Octicons name="comment" size={20} color="#000" />
-                <View style={{ marginLeft: 7, alignSelf: "center" }}>
+                <View style={{ marginLeft: 7, alignSelf: 'center' }}>
                   <Text>{post.comments.length}</Text>
                 </View>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleonshare}>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: 'row' }}>
                 <AntDesign name="sharealt" size={20} color="#000" />
-                <View style={{ marginLeft: 7, alignSelf: "center" }}>
+                <View style={{ marginLeft: 7, alignSelf: 'center' }}>
                   <Text>{post.shares.length}</Text>
                 </View>
               </View>
@@ -355,7 +352,7 @@ const SingleStory = ({ post, refetch }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 10,
     borderBottomWidth: 0.3,
     borderBottomColor: Color.DarkGrey,
@@ -365,55 +362,55 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 25,
     paddingHorizontal: Width * 0.04,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   contentContainer: {
     flex: 1,
   },
   username: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 15,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     paddingHorizontal: Width * 0.02,
   },
   content: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
     paddingHorizontal: Width * 0.006,
     paddingVertical: Height * 0.012,
   },
   readMore: {
     marginTop: 5,
-    color: "#1c95e0",
+    color: '#1c95e0',
     fontSize: 14,
   },
   postImage: {
-    width: "100%",
-    resizeMode: "cover",
+    width: '100%',
+    resizeMode: 'cover',
     borderRadius: Height * 0.02,
     height: Height * 0.27,
   },
   actionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: Height * 0.02,
     width: Width * 0.5,
   },
   timestamp: {
-    color: "#999",
+    color: '#999',
     fontSize: Height * 0.017,
     paddingHorizontal: Width * 0.018,
     paddingVertical: Height * 0.002,
   },
   postLikes: {
     fontSize: 21,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   comment: {
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "400",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '400',
     color: Color.Grey,
   },
   icons: {
@@ -423,7 +420,7 @@ const styles = StyleSheet.create({
   },
   adminIcon: {
     marginLeft: -5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: Height * 0.018,
     color: Color.Blue,
   },
