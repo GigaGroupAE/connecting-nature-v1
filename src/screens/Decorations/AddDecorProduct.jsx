@@ -37,6 +37,7 @@ import AffordableSkeletonLoad from './AffordableSkeletonLoad';
 import NoItemIndicater from '../../components/NoItemIndicater';
 import { useStateContext } from '../../contexts/ContextProvider';
 import { FontAwesome, AntDesign } from 'react-native-vector-icons';
+import { ActivityIndicator } from 'react-native';
 
 const AddDecorProduct = ({ navigation }) => {
   const [title, setTitle] = useState('');
@@ -46,6 +47,7 @@ const AddDecorProduct = ({ navigation }) => {
   const [editProductDetails, seteditProductDetails] = useState(null);
   const [isEdit, setisEdit] = useState(false);
   const { showSnackbar } = useStateContext();
+  const [Loading, setLoading] = useState(false);
 
   const { data, isLoading, refetch } = useQuery('decorproducts', getProducts, {
     staleTime: 300000,
@@ -80,6 +82,7 @@ const AddDecorProduct = ({ navigation }) => {
   }, [editProductDetails, ismodalVisible]);
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const data = await addProduct(
         title,
@@ -92,7 +95,10 @@ const AddDecorProduct = ({ navigation }) => {
         setismodalVisible,
         editProductDetails,
       );
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   const hideModal = () => {
@@ -251,10 +257,16 @@ const AddDecorProduct = ({ navigation }) => {
               )}
             </View>
             <TouchableOpacity style={buttonContainer} onPress={handleSubmit}>
-              {isEdit ? (
-                <Text style={buttonTitle}>Update</Text>
+              {Loading ? (
+                <ActivityIndicator />
               ) : (
-                <Text style={buttonTitle}>Add</Text>
+                <View>
+                  {isEdit ? (
+                    <Text style={buttonTitle}>Update</Text>
+                  ) : (
+                    <Text style={buttonTitle}>Add</Text>
+                  )}
+                </View>
               )}
             </TouchableOpacity>
           </View>

@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
@@ -34,6 +35,7 @@ const AddAfforablilityModal = ({
   const hideModal = () => setismodalVisible(false);
   const { showSnackbar } = useStateContext();
   const [isEditt, setisEditt] = useState(isEdit);
+  const [isLoading, setisLoading] = useState(false);
 
   const handleAddAfforadbility = async () => {
     try {
@@ -51,6 +53,7 @@ const AddAfforablilityModal = ({
         minRange: parseInt(minNumber),
         maxRange: parseInt(maxNumber),
       };
+      setisLoading(true);
 
       let response;
       if (isEditt) {
@@ -68,9 +71,11 @@ const AddAfforablilityModal = ({
       showSnackbar(response.data?.message);
       clearInputFields();
       setismodalVisible(false);
+      setisLoading(false);
       refetch();
     } catch (error) {
       showSnackbar('An error occurred. Please try again later.');
+      setisLoading(false);
     }
   };
 
@@ -97,7 +102,10 @@ const AddAfforablilityModal = ({
 
           <View style={styles.priceRangeContainer}>
             <TextInput
-              style={{ ...inputstyle, width: screenWidth * 0.36 }}
+              style={{
+                ...inputstyle,
+                width: screenWidth * 0.36,
+              }}
               onChangeText={setMinNumber}
               value={minNumber}
               placeholder="Min."
@@ -116,10 +124,16 @@ const AddAfforablilityModal = ({
             style={buttonContainer}
             onPress={handleAddAfforadbility}
           >
-            {isEditt ? (
-              <Text style={buttonTitle}>Update</Text>
+            {isLoading ? (
+              <ActivityIndicator />
             ) : (
-              <Text style={buttonTitle}>Add</Text>
+              <View>
+                {isEditt ? (
+                  <Text style={buttonTitle}>Update</Text>
+                ) : (
+                  <Text style={buttonTitle}>Add</Text>
+                )}
+              </View>
             )}
           </TouchableOpacity>
         </View>

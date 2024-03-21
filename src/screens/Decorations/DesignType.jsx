@@ -6,6 +6,7 @@ import {
   View,
   Text,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import HeaderNormal from '../../components/HeaderNormal';
 import Color from '../../../assets/colors/Color';
@@ -40,18 +41,22 @@ const DesignType = () => {
   const [isEdit, setisEdit] = useState(false);
   const [name, setname] = useState(product?.name || '');
   const { showSnackbar } = useStateContext();
+  const [loading, setloading] = useState(false);
 
   const handleAddDecoration = async () => {
     if (!name) {
       alert('Please fill all fields.');
       return;
     }
+    setloading(true);
     try {
       const data = await AddDesignType(name, refetch, isEdit, product);
       setname('');
       setismodalVisible(false);
+      setloading(false);
     } catch (error) {
-      console.log(error);
+      setismodalVisible(false);
+      setloading(false);
     }
   };
 
@@ -170,10 +175,16 @@ it will be list here"
               style={buttonContainer}
               onPress={handleAddDecoration}
             >
-              {isEdit ? (
-                <Text style={buttonTitle}>Update</Text>
+              {isLoading ? (
+                <ActivityIndicator />
               ) : (
-                <Text style={buttonTitle}>Add</Text>
+                <View>
+                  {isEdit ? (
+                    <Text style={buttonTitle}>Update</Text>
+                  ) : (
+                    <Text style={buttonTitle}>Add</Text>
+                  )}
+                </View>
               )}
             </TouchableOpacity>
           </View>
