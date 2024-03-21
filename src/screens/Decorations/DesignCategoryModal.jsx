@@ -7,6 +7,7 @@ import {
   View,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
@@ -64,6 +65,7 @@ const DesignCategoryModal = ({
   const [showProducts, setshowProducts] = useState(product?.products || []);
   const [addedProducts, setaddedProducts] = useState(productItems || null);
   const [totalPrice, settotalPrice] = useState(product?.price || 0);
+  const [Loading, setLoading] = useState(false);
   const [tag, settag] = useState('Affordability (Automatic)');
   const hideModal = () => {
     setisModalVisible(false);
@@ -166,6 +168,7 @@ const DesignCategoryModal = ({
   };
   const handleAdd = async () => {
     const id = product?._id;
+    setLoading(true);
     try {
       const data = await handleAddCatagory(
         selectedDesign,
@@ -180,8 +183,9 @@ const DesignCategoryModal = ({
         id,
       );
       resetState();
+      setLoading(false);
     } catch (error) {
-      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -445,10 +449,16 @@ const DesignCategoryModal = ({
             style={{ ...buttonContainer, marginBottom: screenHeight * 0.04 }}
             onPress={handleAdd}
           >
-            {isEdit ? (
-              <Text style={buttonTitle}>Update</Text>
+            {Loading ? (
+              <ActivityIndicator />
             ) : (
-              <Text style={buttonTitle}>Save</Text>
+              <View>
+                {isEdit ? (
+                  <Text style={buttonTitle}>Update</Text>
+                ) : (
+                  <Text style={buttonTitle}>Save</Text>
+                )}
+              </View>
             )}
           </TouchableOpacity>
         </ScrollView>
