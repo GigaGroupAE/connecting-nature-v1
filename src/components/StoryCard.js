@@ -37,8 +37,8 @@ export default function StoryCard(props) {
         <View style={styles.card}>
           <GradientBottomImage
             style={{
-              height: Dimensions.get('screen').height * 0.17,
-              width: Dimensions.get('screen').width * 0.8,
+              height: Height * 0.17,
+              width: Width * 0.8,
             }}
             source={{
               uri: `${BASE_URL}/images/${props.story.media.name}`,
@@ -54,7 +54,7 @@ export default function StoryCard(props) {
             
             ) : null} */}
 
-            {supportedImageFormats.includes(props.story.media?.type) && (
+            {supportedImageFormats.includes(props?.story?.media?.type) && (
               <View>
                 <TouchableOpacity key={props.index}>
                   <Image
@@ -68,7 +68,7 @@ export default function StoryCard(props) {
             )}
 
             <Text style={styles.userFullName}>
-              {props.story.postedby.fullName}
+              {props?.story?.postedby?.fullName}
             </Text>
           </View>
         </View>

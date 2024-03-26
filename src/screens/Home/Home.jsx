@@ -53,7 +53,6 @@ const Home = () => {
 
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
     useStateContext();
-
   const {
     data: postsData,
     isLoading: postsLoading,
@@ -209,9 +208,10 @@ const Home = () => {
           />
         )}
       </View>
-
       {showMiniWindow && (
-        <View style={styles.showMiniVideo}>{VideoMiniPlayer}</View>
+        <View style={styles.showMiniVideo}>
+          <MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />
+        </View>
       )}
       <TouchableOpacity
         style={styles.decorateButton}
@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '9%',
     bottom: 10,
+    backgroundColor: 'red',
   },
   decorateButton: {
     backgroundColor: Color.Purple,

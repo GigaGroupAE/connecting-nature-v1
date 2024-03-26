@@ -29,6 +29,7 @@ import { useStateContext } from '../../contexts/ContextProvider.js';
 import CustomStatsBar from '../../components/CustomStatsBar';
 import { axiosInstance } from '../../../axiosInstance';
 import { screenHeight } from '../../utils/ScreenDimensions';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function NewPost(props) {
   //images
@@ -95,7 +96,9 @@ export default function NewPost(props) {
           alert('Cannot create a story without an image');
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const pick = async () => {
@@ -111,6 +114,7 @@ export default function NewPost(props) {
     } finally {
     }
   };
+
   const handlePostType = () => {
     if (campaign?.length === 0) {
       handleonPost();
@@ -131,7 +135,6 @@ export default function NewPost(props) {
         setcampaignsName(response?.data?.campaigns);
       } catch (error) {}
     };
-
     fetchData();
   }, []);
 

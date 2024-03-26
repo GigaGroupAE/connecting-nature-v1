@@ -3,6 +3,7 @@ import {
   FontAwesome,
   MaterialIcons,
   Octicons,
+  MaterialCommunityIcons,
 } from 'react-native-vector-icons';
 export const SETTINGS_DATA = [
   {
@@ -35,5 +36,16 @@ export const SETTINGS_DATA = [
     title: 'Decoration',
     icon: <Octicons name="blocked" size={24} color={Color.Black} />,
     screenToNavigate: 'Decoration',
+  },
+  {
+    title: 'Invite Users',
+    icon: (
+      <MaterialCommunityIcons
+        name="account-arrow-up-outline"
+        size={24}
+        color={Color.Black}
+      />
+    ),
+    screenToNavigate: 'InviteUsers',
   },
 ];

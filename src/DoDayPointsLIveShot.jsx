@@ -6,15 +6,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ViewShot from 'react-native-view-shot';
 import { BASE_URL } from '../CONSTANTS';
 import Color from '../assets/colors/Color';
 import { useStateContext } from './contexts/ContextProvider';
-import { useUserState } from './slices/userSlice';
 import { axiosInstance } from '../axiosInstance';
 import { getRemainingTime } from './utils/CampaignsHelper';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -23,9 +21,8 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
 
   const navigation = useNavigation();
 
-  const { campaignViewShortImage, setcampaignViewShortImage, showSnackbar } =
+  const { campaignViewShortImage, setcampaignViewShortImage } =
     useStateContext();
-  const userState = useUserState();
   const viewShotRef = useRef();
   const width = 300;
   const height = 300;
@@ -47,7 +44,8 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
       campaignViewShortImage !== null &&
       doday?.status !== 'archived'
     ) {
-      handleCampaignCompletion();
+      handleEndCampaign();
+      navigation.navigate('Home');
     }
   }, [remainingTime, campaignViewShortImage]);
 
@@ -63,66 +61,63 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
       console.log(error, 'error while campaign archive');
     }
   };
-  const handleCampaignCompletion = async () => {
-    const teamAPoints = doday?.teamA?.points || 0;
-    const teamBPoints = doday?.teamB?.points || 0;
+  // const handleCampaignCompletion = async () => {
+  //   const teamAPoints = doday?.teamA?.points || 0;
+  //   const teamBPoints = doday?.teamB?.points || 0;
 
-    let description;
-    let leadingTeam;
-    let lossingTeam;
+  //   let description;
+  //   let leadingTeam;
+  //   let lossingTeam;
 
-    if (teamAPoints > teamBPoints) {
-      leadingTeam = 'Team A';
-      lossingTeam = 'Team B';
-    } else if (teamAPoints < teamBPoints) {
-      leadingTeam = 'Team B';
-      lossingTeam = 'Team A';
-    } else {
-      description =
-        'In a thrilling showdown, Team A and Team B have battled to a spectacular tie! 🏆 Both teams showcased incredible talent and resilience, and the result reflects the true spirit of competition. 🌟🙌 #TieGame #Sportsmanship #Unstoppable 🥇🥈';
-    }
+  //   // if (teamAPoints > teamBPoints) {
+  //   //   leadingTeam = 'Team A';
+  //   //   lossingTeam = 'Team B';
+  //   // } else if (teamAPoints < teamBPoints) {
+  //   //   leadingTeam = 'Team B';
+  //   //   lossingTeam = 'Team A';
+  //   // } else {
+  //   //   description =
+  //   //     'In a thrilling showdown, Team A and Team B have battled to a spectacular tie! 🏆 Both teams showcased incredible talent and resilience, and the result reflects the true spirit of competition. 🌟🙌 #TieGame #Sportsmanship #Unstoppable 🥇🥈';
+  //   // }
 
-    if (!description) {
-      description = `And the winner is... ${leadingTeam}! 🏆 Their determination and teamwork shone brightly. 🌟 Kudos to ${lossingTeam} for an outstanding effort! 🙌 #Champions #Teamwork`;
-    }
+  //   // if (!description) {
+  //   //   description = `And the winner is... ${leadingTeam}! 🏆 Their determination and teamwork shone brightly. 🌟 Kudos to ${lossingTeam} for an outstanding effort! 🙌 #Champions #Teamwork`;
+  //   // }
 
-    try {
-      const formData = new FormData();
-      formData.append('description', description);
-      formData.append('postedby', JSON.stringify('654fece4d4690e92e1609c6e'));
-      formData.append('media', {
-        name: 'image/jpeg',
-        uri: campaignViewShortImage,
-        type: 'image/jpeg',
-      });
+  //   try {
+  //     // const formData = new FormData();
+  //     // formData.append('description', description);
+  //     // formData.append('postedby', JSON.stringify('654fece4d4690e92e1609c6e'));
+  //     // formData.append('media', {
+  //     //   name: 'image/jpeg',
+  //     //   uri: campaignViewShortImage,
+  //     //   type: 'image/jpeg',
+  //     // });
 
-      console.log(formData);
+  //     // const config = {
+  //     //   headers: {
+  //     //     'Content-Type': 'multipart/form-data',
+  //     //     Accept: 'application/json',
+  //     //     'auth-token': userState.token,
+  //     //   },
+  //     // };
 
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
-          'auth-token': userState.token,
-        },
-      };
+  //     // Uncomment when ready to make the API call
+  //     // const { data } = await axios.post(
+  //     //   `${BASE_URL}/story/addstory/`,
+  //     //   formData,
+  //     //   config,
+  //     // );
 
-      // Uncomment when ready to make the API call
-      const { data } = await axios.post(
-        `${BASE_URL}/story/addstory/`,
-        formData,
-        config,
-      );
-
-      showSnackbar(
-        'The campaign time is over. Thank you for your participation',
-      );
-      handleEndCampaign();
-      navigation.navigate('Home');
-    } catch (error) {
-      console.log(error, 'Error occurred');
-    }
-  };
-
+  //     showSnackbar(
+  //       'The campaign time is over. Thank you for your participation',
+  //     );
+  //     handleEndCampaign();
+  //     navigation.navigate('Home');
+  //   } catch (error) {
+  //     console.log(error, 'Error occurred');
+  //   }
+  // };
   return (
     <View style={{ width: '100%' }}>
       <ViewShot

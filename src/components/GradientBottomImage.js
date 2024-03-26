@@ -5,6 +5,7 @@ import { BASE_URL } from '../../CONSTANTS';
 import { useNavigation } from '@react-navigation/native';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Image } from 'expo-image';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
   const video = React.useRef(null);
@@ -33,7 +34,7 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
           onPress={() => {}}
         >
           <VideoPlayer
-            style={{ height: 130 }}
+            style={{ height: screenHeight * 0.17 }}
             fullscreen={{
               enterFullscreen: () => {
                 handleNavigation(story);
