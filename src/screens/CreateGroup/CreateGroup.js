@@ -37,6 +37,7 @@ export default function CreateGroup() {
     { key: '2', value: 'Departmental Groups' },
     { key: '3', value: 'Social Groups' },
     { key: '4', value: 'Outsource Groups' },
+    { key: '5', value: 'Bidding Chaneel' },
   ];
 
   const normalUserGroup = [{ key: '3', value: 'Social Groups' }];
@@ -73,7 +74,24 @@ export default function CreateGroup() {
     navigation.goBack();
   };
 
+  const generateRandomCode = () => {
+    const min = 100000;
+    const max = 999999;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  // Common prefix for the code
+  const prefix = 'GB';
+
+  const ownerCode = prefix + generateRandomCode();
+  const leadCode = prefix + generateRandomCode();
+
+  console.log(selected, 'selected');
+
   const handleOnCreate = async () => {
+    if (!title && !selected) {
+      return;
+    }
     setLoading(true);
     let type = '';
     if (selected == 1) {
@@ -82,35 +100,30 @@ export default function CreateGroup() {
       type = 'Departmental';
     } else if (selected == 3) {
       type = 'Social';
-    } else {
+    } else if (selected == 3) {
       type = 'Outsource';
+    } else {
+      type = 'Bidding Chaneel';
     }
     const members = [
       { member: userState.id, privilege: 'Owner' },
       { member: groupLeader._id, privilege: 'Lead' },
     ];
-
-    // members.push({
-    //   name: userState.fullName,
-    //   phoneNumber: userState.phoneNumber,
-    //   type: userState.type,
-    //   photo: userState.profile,
-    //   privilege: "Owner",
-    // });
-    // members.push({
-    //   name: groupLeader.fullName,
-    //   phoneNumber: groupLeader.phoneNumber,
-    //   type: groupLeader.type,
-    //   photo: groupLeader.profile,
-    //   privilege: "Lead",
-    // });
+    const Communitymembers = [
+      { member: userState.id, privilege: 'Owner', code: ownerCode },
+      { member: groupLeader._id, privilege: 'Lead', code: leadCode },
+    ];
 
     //creating form here
     const formData = new FormData();
     formData.append('name', userState.fullName);
     formData.append('type', type);
     formData.append('title', title);
-    formData.append('members', JSON.stringify(members));
+    if (type === 'Bidding Chaneel') {
+      formData.append('members', JSON.stringify(Communitymembers));
+    } else {
+      formData.append('members', JSON.stringify(members));
+    }
     if (image !== null) {
       formData.append('groupPic', {
         name: `groupPic.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
@@ -128,12 +141,19 @@ export default function CreateGroup() {
 
     //console.log("form data is ", formData);
 
-    try {
-      const { data } = await axios.post(
-        `${BASE_URL}/groups/creategroup`,
+    let route;
+    if (type === 'Bidding Chaneel') {
+      route = axios.post(
+        `${BASE_URL}/bidChannel/createchannel`,
         formData,
         config,
       );
+    } else {
+      route = axios.post(`${BASE_URL}/groups/creategroup`, formData, config);
+    }
+
+    try {
+      const { data } = await route;
 
       navigation.goBack();
       setLoading(false);
@@ -153,7 +173,11 @@ export default function CreateGroup() {
           <View>
             <TouchableOpacity
               onPress={() => pickImage()}
-              style={{ marginTop: height * 0.02 }}
+              style={{
+                marginTop: height * 0.02,
+                width: width * 0.31,
+                alignSelf: 'center',
+              }}
             >
               <Image
                 style={{
@@ -232,7 +256,7 @@ export default function CreateGroup() {
               />
             ) : (
               <SelectList
-                onSelect={() => selected}
+                onSelect={() => console.log(selected)}
                 placeholder="Group Type"
                 setSelected={(val) => {
                   setSelected(val);

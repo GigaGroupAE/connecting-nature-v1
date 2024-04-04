@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -28,15 +29,16 @@ const SignIn = () => {
   const navigation = useNavigation();
   const [phoneNumber, setPhoneNumber] = useState('');
   // state context
-  const { loading, setLoading, showSnackbar } = useStateContext();
+  const { showSnackbar } = useStateContext();
   const userActions = useUserStateActions();
   const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onHandleClick = () => {
-    // if (phoneNumber.length !== 11) {
-    //   showSnackbar('Phone number should be 11 digits');
-    //   return;
-    // }
+    if (phoneNumber.length !== 11) {
+      showSnackbar('Phone number should be 11 digits');
+      return;
+    }
 
     if (loading) return;
 
@@ -59,15 +61,15 @@ const SignIn = () => {
                 });
               }
             })
-            .catch((e) => {
+            .catch(() => {
               setLoading(false);
-              console.log(e);
             });
         } else {
           showSnackbar(res.data.message);
+          setLoading(false);
         }
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
       });
   };
@@ -108,7 +110,7 @@ const SignIn = () => {
           keyboardType="number-pad"
         />
         <ButtonMain
-          title="Sign In"
+          title={loading ? <ActivityIndicator /> : 'Sign In'}
           callback={onHandleClick}
           disabled={loading}
         />

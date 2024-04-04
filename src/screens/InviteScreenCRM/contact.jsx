@@ -32,7 +32,6 @@ export default function Contact(props) {
   };
   const handleOnCreate = () => {
     const formData = new FormData();
-
     //place profile pic her
     formData.append('fullName', userName);
     formData.append('phoneNumber', item.phoneNumber);
@@ -70,7 +69,7 @@ export default function Contact(props) {
   };
   return (
     <View>
-      <TouchableOpacity onPress={showModal}>
+      <TouchableOpacity onPress={() => console.log('press one')}>
         <View
           style={[
             styles.row,

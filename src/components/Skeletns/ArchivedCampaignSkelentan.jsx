@@ -34,12 +34,12 @@ const ArchivedCampaignSkelentan = () => {
 
   return (
     <View style={styles.container}>
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((index) => (
         <Animated.View
           key={index}
           style={[
             styles.postContainer,
-            { opacity: shimmerOpacity, marginBottom: index === 3 ? 0 : 10 },
+            { opacity: shimmerOpacity, marginBottom: index === 3 ? 8 : 8 },
           ]}
         >
           <Animated.View style={[styles.footer, { opacity: shimmerOpacity }]} />

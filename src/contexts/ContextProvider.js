@@ -1,31 +1,32 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [selectedStory, setSelectedStory] = useState("");
+  const [selectedStory, setSelectedStory] = useState('');
   const [Stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imgloading, setImgloading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarTitle, setSnackbarTitle] = useState("Some Error occured");
+  const [snackbarTitle, setSnackbarTitle] = useState('Some Error occured');
   const [showmembers, setShowMembers] = useState(false);
-  const [videoAutherName, setvideoAutherName] = useState("");
+  const [videoAutherName, setvideoAutherName] = useState('');
   const [reactions, setreactions] = useState(null);
   const [comment, setcomment] = useState(null);
   const [campaignViewShortImage, setcampaignViewShortImage] = useState(null);
   const [campaignPosts, setcampaignPosts] = useState([]);
+  const [biddingChannel, setbiddingChannel] = useState(null);
 
   //mini window video player
   const [showMiniWindow, setShowMiniWindow] = useState(false);
   const [videoURI, setVideoURI] = useState(
-    "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+    'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
   );
 
-  const [videoDescription, setVideoDescription] = useState("");
+  const [videoDescription, setVideoDescription] = useState('');
   const setVideoDescriptionHandler = (str) => {
     if (str.length > 22) {
-      const newStr = str.slice(0, 15) + "...";
+      const newStr = str.slice(0, 15) + '...';
       setVideoDescription(newStr);
     } else {
       return setVideoDescription(str);
@@ -113,6 +114,8 @@ export const ContextProvider = ({ children }) => {
         setcampaignViewShortImage,
         campaignPosts,
         setcampaignPosts,
+        biddingChannel,
+        setbiddingChannel,
       }}
     >
       {children}

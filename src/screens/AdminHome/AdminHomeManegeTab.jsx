@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-import { MaterialCommunityIcons, AntDesign } from 'react-native-vector-icons';
+import { AntDesign } from 'react-native-vector-icons';
 import Color from '../../../assets/colors/Color';
 import { useNavigation } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
@@ -18,15 +18,11 @@ const Width = Dimensions.get('screen').width;
 
 const AdminHomeManegeTab = ({ camapgins, loading }) => {
   const navigation = useNavigation();
-  const handleInviteUser = () => {
-    navigation.navigate('InviteUsers');
-  };
+  // const handleInviteUser = () => {
+  //   navigation.navigate('InviteUsers');
+  // };
   const handleVerificationReq = () => {
     navigation.navigate('UpgradeRequestsScreen');
-  };
-
-  const handleDoDay = () => {
-    navigation.navigate('dodaylist', camapgins);
   };
 
   return (
@@ -44,7 +40,7 @@ const AdminHomeManegeTab = ({ camapgins, loading }) => {
           />
         </Pressable>
       </View>
-      <View style={styles.bodyContainer}>
+      {/* <View style={styles.bodyContainer}>
         <Pressable style={styles.upgradReq} onPress={handleInviteUser}>
           <MaterialCommunityIcons
             name="account-arrow-up-outline"
@@ -56,7 +52,7 @@ const AdminHomeManegeTab = ({ camapgins, loading }) => {
             style={{ fontSize: 20, color: Color.Black }}
           />
         </Pressable>
-      </View>
+      </View> */}
 
       <View style={styles.bodyContainer}>
         <TouchableOpacity
@@ -111,8 +107,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
     borderRadius: 10,
     marginVertical: Height * 0.007,
-    borderColor: Color.LightGrey,
-    backgroundColor: Color.White,
     shadowColor: Color.Black,
     shadowOffset: {
       width: 0,

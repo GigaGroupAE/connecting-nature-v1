@@ -13,7 +13,7 @@ export const inputstyle = {
   padding: screenHeight * 0.015,
   borderRadius: 8,
   width: screenWidth * 0.75,
-  fontSize: 14,
+  fontSize: screenHeight * 0.015,
   fontFamily: 'Roboto_500Medium',
   marginTop: 16,
   backgroundColor: Color.White,

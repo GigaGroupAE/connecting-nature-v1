@@ -15,6 +15,7 @@ import { useUserState } from '../slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
 import { useStateContext } from '../contexts/ContextProvider';
 import { axiosInstance } from '../../axiosInstance';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const GroupMembersList = ({ group }) => {
   const userState = useUserState();
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontFamily: 'Roboto_700Bold',
-    fontSize: scale(14),
+    fontSize: screenHeight * 0.016,
     color: 'rgba(112, 112, 112, 1)',
   },
   nameContainer: {
@@ -199,11 +200,11 @@ const styles = StyleSheet.create({
   userPrivilege: {
     fontFamily: 'Roboto_500Medium',
     color: 'rgba(112, 112, 112, 1)',
-    fontSize: scale(11),
+    fontSize: screenHeight * 0.014,
   },
   userType: {
     color: 'rgba(112, 112, 112, 1)',
     fontFamily: 'Roboto_400Regular',
-    fontSize: scale(12),
+    fontSize: screenHeight * 0.014,
   },
 });
