@@ -32,6 +32,7 @@ import { useQuery } from 'react-query';
 import CustomStatsBar from '../../components/CustomStatsBar';
 import { screenHeight } from '../../utils/ScreenDimensions';
 import BiddingGroup from '../../components/BiddingGroup';
+import { fetchChannels } from '../../utils/BiddingChannel';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -43,13 +44,6 @@ const fetchGroups = async () => {
   } catch (error) {
     console.log(error);
   }
-};
-
-const fetchChannels = async () => {
-  try {
-    const { data } = await axiosInstance.get('/bidChannel/get-channel');
-    return data;
-  } catch (error) {}
 };
 
 export default function AdminHome(props) {

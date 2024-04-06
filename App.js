@@ -119,6 +119,7 @@ import SavedDecoration from './src/screens/DecorationSaved/SavedDecoration';
 import BiddingChannel from './src/screens/BidChannal/BiddingChannel';
 import ChannalSetting from './src/screens/BidChannal/ChannalSetting';
 import ArchivedBidding from './src/screens/BidChannal/ArchivedBidding';
+import SubscriptionRequests from './src/screens/BidChannal/SubscriptionRequests';
 const customFonts = {
   Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
   Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
@@ -218,6 +219,7 @@ function Main() {
         <Stack.Screen name="AddDecorProduct" component={AddDecorProduct} />
         <Stack.Screen name="DesignCategory" component={DesignCategory} />
         <Stack.Screen name="ArchivedBidding" component={ArchivedBidding} />
+        <Stack.Screen name="subscriptionReq" component={SubscriptionRequests} />
         <Stack.Screen
           name="CreateCampaignPost"
           component={CreateCampaignPost}

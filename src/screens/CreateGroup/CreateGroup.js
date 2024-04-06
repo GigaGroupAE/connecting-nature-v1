@@ -86,8 +86,6 @@ export default function CreateGroup() {
   const ownerCode = prefix + generateRandomCode();
   const leadCode = prefix + generateRandomCode();
 
-  console.log(selected, 'selected');
-
   const handleOnCreate = async () => {
     if (!title && !selected) {
       return;

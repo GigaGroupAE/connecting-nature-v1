@@ -25,8 +25,15 @@ import { useStateContext } from '../contexts/ContextProvider';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Color from '../../assets/colors/Color';
 import { BASE_URL } from '../../CONSTANTS';
+import WinerSvg from './SVG/Winner';
+import { announceWinner } from '../utils/BiddingChannel';
 
-const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
+const WinningAnnounModal = ({
+  modalVisible,
+  setModalVisible,
+  item,
+  refetch,
+}) => {
   const { biddingChannel } = useStateContext();
   const [isUserModalOpen, setisUserModalOpen] = useState(false);
   const [selectedUser, setselectedUser] = useState(null);
@@ -35,6 +42,16 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
   );
   const hideModal = () => {
     setModalVisible(false);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedUser) {
+    } else {
+      try {
+        await announceWinner(item?._id, 'Archive', selectedUser?._id);
+        refetch();
+      } catch {}
+    }
   };
 
   return (
@@ -69,7 +86,7 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
                   style={styles.groupContainer}
                 >
                   {selectedUser ? (
-                    <Text>{selectedUser?.member?.fullName}</Text>
+                    <Text>{selectedUser?.bidBy[0]?.fullName}</Text>
                   ) : (
                     <Text style={styles.groupTitle}>Select Winner</Text>
                   )}
@@ -89,8 +106,11 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <View style={styles.designModalContainer}>
                   <FlatList
-                    data={biddingChannel?.members}
-                    renderItem={({ item }) => {
+                    data={item?.bids.sort(
+                      (a, b) => parseInt(b.bidPrice) - parseInt(a.bidPrice),
+                    )}
+                    renderItem={({ item, index }) => {
+                      console.log(item);
                       return (
                         <Pressable
                           style={{
@@ -108,7 +128,7 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
                         >
                           <Image
                             source={{
-                              uri: `${BASE_URL}/images/${item?.member?.profile}`,
+                              uri: `${BASE_URL}/images/${item?.bidBy[0]?.profile}`,
                             }}
                             style={styles.image}
                           />
@@ -120,10 +140,26 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
                               //     setisType(false);
                               //   }}
                             >
-                              <Text style={styles.title}>
-                                {item?.member?.fullName}
-                              </Text>
-                              <Text style={styles.title}>{item?.code}</Text>
+                              <View style={styles.projectFea}>
+                                <Text style={styles.title}>
+                                  {item?.bidBy[0]?.fullName}
+                                </Text>
+                                {index === 0 && <WinerSvg />}
+                              </View>
+
+                              <View style={styles.projectFea}>
+                                <Text style={styles.title}>
+                                  {item?.bidBy[0]?.code}
+                                </Text>
+                                <Text
+                                  style={{
+                                    ...styles.title,
+                                    fontFamily: 'Roboto_700Bold',
+                                  }}
+                                >
+                                  {item?.bidPrice}PKR
+                                </Text>
+                              </View>
                             </View>
                           </View>
                         </Pressable>
@@ -148,7 +184,7 @@ const WinningAnnounModal = ({ modalVisible, setModalVisible, item }) => {
 
             <TouchableOpacity
               style={{ ...buttonContainer, width: '100%' }}
-              //   onPress={handleSubmit}
+              onPress={handleSubmit}
             >
               <Text style={buttonTitle}>Announce Winner</Text>
             </TouchableOpacity>

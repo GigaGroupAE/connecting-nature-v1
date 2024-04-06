@@ -71,8 +71,9 @@ const ArchivedBidding = () => {
               />
             }
             renderItem={({ item }) => {
-              //   console.log(item);
-              const formattedPrice = Number(item?.price).toLocaleString();
+              const formattedPrice = Number(
+                item?.winner?.bidPrice,
+              ).toLocaleString();
               return (
                 <View style={styles.itemCard}>
                   <View style={styles.rowContainer}>

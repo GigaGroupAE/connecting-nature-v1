@@ -1,5 +1,5 @@
-import { SafeAreaView, StyleSheet, View, TextInput } from "react-native";
-import Color from "../../assets/colors/Color";
+import { SafeAreaView, StyleSheet, View, TextInput } from 'react-native';
+import Color from '../../assets/colors/Color';
 
 export default function InputTextLarge(props) {
   return (
@@ -9,9 +9,9 @@ export default function InputTextLarge(props) {
           <TextInput
             style={styles.textInput}
             multiline
-            numberOfLines={6}
+            numberOfLines={10}
             textAlignVertical="top"
-            maxLength={250}
+            maxLength={350}
             placeholder={props.title}
             value={props.value}
             onChangeText={(e) => {
@@ -26,10 +26,10 @@ export default function InputTextLarge(props) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    alignContent: "center",
-    width: "100%",
+    alignContent: 'center',
+    width: '100%',
     marginTop: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
     shadowColor: Color.Grey,
     shadowOffset: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 3,
     zIndex: 100,
-    position: "relative",
+    position: 'relative',
   },
   textInput: {
     // paddingBottom: 59,
@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
     width: 318,
     height: 100,
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });

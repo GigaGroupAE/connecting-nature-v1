@@ -1,18 +1,25 @@
 import {
   FlatList,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../../../CONSTANTS';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
-import { buttonTitle, titleStyle } from '../Decorations/ModalStyle';
+import {
+  buttonTitle,
+  container,
+  descriptionTextStyle,
+  titleStyle,
+  buttonContainer,
+} from '../Decorations/ModalStyle';
 import { MaterialIcons, Entypo } from 'react-native-vector-icons';
 import FileSvg from '../../components/SVG/FIleSvg';
 import StarSvg from '../../components/SVG/Star';
@@ -21,6 +28,15 @@ import WinerSvg from '../../components/SVG/Winner';
 import AddparticipantsSvg from '../../components/SVG/AddParticipant';
 import ArrowLeft from '../../components/SVG/ArrowLeft';
 import { useUserState } from '../../slices/userSlice';
+import AddPropertyModal from '../../components/AddPropertyModal';
+import { axiosInstance } from '../../../axiosInstance';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { useQuery } from 'react-query';
+import {
+  fetchChannels,
+  handleRemoveSubscriber,
+} from '../../utils/BiddingChannel';
+import { Modal, Portal } from 'react-native-paper';
 
 const settingData = [
   {
@@ -53,31 +69,137 @@ const settingData = [
     icon: <AddparticipantsSvg />,
     navigationScreen: '',
   },
+
+  {
+    id: 6,
+    title: 'Subscription Requests',
+    icon: <AddparticipantsSvg />,
+    navigationScreen: '',
+  },
 ];
 
 const approvedRoles = ['Owner', 'Lead'];
 
 const ChannalSetting = () => {
   const { navigate } = useNavigation();
-  const { params } = useRoute();
+
   const userState = useUserState();
-  const groupData = params?.groupData;
-  const admin = params?.groupData?.members.filter(
+  const { showSnackbar } = useStateContext();
+  const [removeModal, setremoveModal] = useState(false);
+  const [removememberDetails, setremovememberDetails] = useState(null);
+  const [currentMember, setcurrentMember] = useState([]);
+
+  const { data: groupData = [], refetch } = useQuery('channal', fetchChannels);
+
+  const admin = groupData[0]?.members?.filter(
     (item) => item?.privilege === 'Owner',
   );
+
+  // const [groupData, setgroupData] = useState(params?.groupData);
+  const [isAddProperty, setisAddProperty] = useState(false);
+
+  const handleNavigation = (item) => {
+    if (item?.title === 'Archived Biddings') {
+      navigate(item?.navigationScreen);
+    } else if (item?.title === 'Add Property') {
+      setisAddProperty(true);
+    } else if (item?.title === 'Add Participant') {
+      navigate('MultiContactSelect', {
+        selectedContacts: selectedcontacts,
+        currentMembers: groupData[0]?.members,
+      });
+    } else if (item?.title === 'Subscription Requests') {
+      navigate('subscriptionReq');
+    }
+  };
+
+  const selectedcontacts = async (members) => {
+    const generateRandomCode = () => {
+      const min = 100000;
+      const max = 999999;
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    const prefix = 'GB';
+    const generateUniqueCode = (usedCodes) => {
+      let code;
+      do {
+        code = prefix + generateRandomCode();
+      } while (usedCodes.has(code));
+      return code;
+    };
+
+    const usedCodes = new Set();
+    const getIdFromMembers = members.map((m) => {
+      const code = generateUniqueCode(usedCodes);
+      usedCodes.add(code);
+      return {
+        member: m._id,
+        privilege: m.privilege,
+        code: code,
+      };
+    });
+
+    const getIdFromExistingMembers = groupData[0]?.members?.map((m) => {
+      return {
+        member: m.member._id,
+        privilege: m.privilege,
+        code: m.code,
+      };
+    });
+    const tempmembers = [...getIdFromExistingMembers, ...getIdFromMembers];
+
+    try {
+      await axiosInstance.patch(`/bidChannel/add-member/${groupData[0]?._id}`, {
+        members: tempmembers,
+      });
+      refetch();
+      showSnackbar('Members Added Successfully');
+    } catch {}
+  };
+
+  const handleRemoveModal = (item) => {
+    setremoveModal(true);
+    setremovememberDetails(item);
+  };
+
+  const handleRemoveMember = async () => {
+    try {
+      await handleRemoveSubscriber(
+        groupData[0]?._id,
+        removememberDetails?._id,
+        removememberDetails?.member?._id,
+      );
+      showSnackbar('Subscriber removed successfully');
+      refetch();
+      setremoveModal(false);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (groupData) {
+      const user = groupData[0]?.members?.filter(
+        (item) => item?.member?.phoneNumber === userState?.phoneNumber,
+      );
+      setcurrentMember(user);
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <HeaderNormal title="Channel Settings" />
       {/* Header  */}
       <View style={styles.header}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${groupData?.groupPic}` }}
+          source={{ uri: `${BASE_URL}/images/${groupData[0]?.groupPic}` }}
           style={styles.profileImage}
         />
         <View style={{ gap: 4 }}>
           <View style={styles.rowContainer}>
-            <Text style={buttonTitle}>{groupData?.title}</Text>
-            <MaterialIcons name="edit" style={styles.icon} />
+            <Text style={buttonTitle}>{groupData[0]?.title}</Text>
+            {currentMember[0]?.privilege !== 'member' && (
+              <MaterialIcons name="edit" style={styles.icon} />
+            )}
           </View>
           <View style={styles.rowContainer}>
             <Text style={styles.title}>{admin[0]?.member?.fullName}</Text>
@@ -85,12 +207,13 @@ const ChannalSetting = () => {
           </View>
         </View>
       </View>
-      <View
+      <ScrollView
         style={{
           flex: 1,
           width: '92%',
           alignSelf: 'center',
         }}
+        showsVerticalScrollIndicator={false}
       >
         {/* Navigation Screens  */}
 
@@ -101,7 +224,7 @@ const ChannalSetting = () => {
               return (
                 <TouchableOpacity
                   style={styles.menuContainer}
-                  onPress={() => navigate(item?.navigationScreen)}
+                  onPress={() => handleNavigation(item)}
                 >
                   <View style={{ ...styles.rowContainer, gap: 13 }}>
                     {item?.icon}
@@ -126,14 +249,14 @@ const ChannalSetting = () => {
           <Text style={styles.itemname}>GROUP MEMBERS</Text>
           <View style={styles.membersContainer}>
             <Text style={styles.regularText}>
-              {groupData?.members?.length} Members
+              {groupData[0]?.members?.length} Members
             </Text>
           </View>
         </View>
 
         <View>
           <FlatList
-            data={groupData?.members}
+            data={groupData[0]?.members}
             renderItem={({ item }) => {
               const role = approvedRoles.includes(item?.privilege);
 
@@ -167,13 +290,16 @@ const ChannalSetting = () => {
                     </View>
                   </View>
 
-                  <View>
-                    {item?.privilege !== 'Owner' && (
-                      <Text style={{ ...styles.username, color: Color.Black }}>
-                        Remove
-                      </Text>
-                    )}
-                  </View>
+                  <TouchableOpacity onPress={() => handleRemoveModal(item)}>
+                    {item?.privilege !== 'Owner' && // Only show if privilege is not 'Owner'
+                      currentMember[0]?.privilege !== 'member' && ( // Only show if member's privilege is not 'admin'
+                        <Text
+                          style={{ ...styles.username, color: Color.Black }}
+                        >
+                          Remove
+                        </Text>
+                      )}
+                  </TouchableOpacity>
                 </View>
               );
             }}
@@ -183,7 +309,51 @@ const ChannalSetting = () => {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
+
+      <AddPropertyModal
+        isVisible={isAddProperty}
+        setisVisible={setisAddProperty}
+        item={groupData}
+      />
+
+      <Portal>
+        <Modal visible={removeModal} onDismiss={() => setremoveModal(false)}>
+          <View style={container}>
+            <Text style={titleStyle}>Remove Member</Text>
+            <View style={{ width: '95%' }}>
+              <Text style={descriptionTextStyle}>
+                Are you sure you want to remove this member? Removed members
+                cannot re-enter the group without resubscribing to the channel.
+              </Text>
+
+              <View style={styles.detailsContainer}>
+                <TouchableOpacity
+                  style={{ ...buttonContainer, width: '48%', marginTop: 0 }}
+                  onPress={handleRemoveMember}
+                >
+                  <Text style={buttonTitle}>Remove</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    ...buttonContainer,
+                    width: '48%',
+                    marginTop: 0,
+                    backgroundColor: Color.White,
+                    borderWidth: 1,
+                  }}
+                  onPress={() => setremoveModal(false)}
+                >
+                  <Text style={{ ...buttonTitle, color: Color.Black }}>
+                    Discard
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };
@@ -258,5 +428,11 @@ const styles = StyleSheet.create({
     color: Color.Grey,
     fontWeight: '900',
     fontSize: screenHeight * 0.017,
+  },
+  detailsContainer: {
+    flexDirection: 'row',
+    gap: 15,
+    alignItems: 'center',
+    marginVertical: screenHeight * 0.009,
   },
 });

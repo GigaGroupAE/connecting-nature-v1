@@ -438,6 +438,7 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
         modalVisible={isWinningModal}
         setModalVisible={setisWinningModal}
         item={selectedItem}
+        refetch={refetch}
       />
     </View>
   );

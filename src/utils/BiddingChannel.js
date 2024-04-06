@@ -111,3 +111,55 @@ export const checkAlreadySubReq = async () => {
     throw error;
   }
 };
+
+export const announceWinner = async (id, status, bidId) => {
+  const data = {
+    status: status,
+    winner: bidId,
+  };
+  try {
+    const response = await axiosInstance.patch(
+      `/bidChannel/winner-announce/${id}`,
+      data,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchChannels = async () => {
+  try {
+    const { data } = await axiosInstance.get('/bidChannel/get-channel');
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleRemoveSubscriber = async (id, memberId, userId) => {
+  console.log(memberId);
+  try {
+    const data = await axiosInstance.patch(
+      `/bidChannel/remove-member-chanel/${id}`,
+      {
+        memberId,
+        userId,
+      },
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getscriptonReq = async () => {
+  try {
+    const { data } = await axiosInstance.get(
+      '/bidChannel/get-subscription-req',
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

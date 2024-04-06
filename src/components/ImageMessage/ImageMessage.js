@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,15 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../../utils/timeDifference";
+} from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { calculateTimeDifference } from '../../utils/timeDifference';
 
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 const ImageMessage = (props) => {
   const [longPress, setLongPress] = useState(false);
@@ -26,7 +26,6 @@ const ImageMessage = (props) => {
   let timePassed = calculateTimeDifference(item.date);
 
   const [modalVisible, setmodalVisible] = useState(false);
-
 
   return (
     <Pressable
@@ -59,7 +58,7 @@ const ImageMessage = (props) => {
           >
             {userState.id !== item?.from?._id ? (
               <View>
-                {props?.groupTitle !== "test" ? (
+                {props?.groupTitle !== 'test' ? (
                   <View>
                     <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
@@ -71,9 +70,8 @@ const ImageMessage = (props) => {
               onPress={props.onPress}
               android_ripple={{ foreground: true, color: Color.LightGrey }}
               onLongPress={() => props?.longPress(item._id, item?.from)}
-
             >
-              {props.image !== "" && (
+              {props.image !== '' && (
                 <Image
                   style={[
                     userState.id === item?.from?._id
@@ -120,10 +118,10 @@ const ImageMessage = (props) => {
                 : styles.receiverShareMessage,
             ]}
             onPress={() =>
-              navigation.navigate("MessageForwardCRM", {
+              navigation.navigate('MessageForwardCRM', {
                 forwardFrom: userState.id,
-                forwardChat: "chatId",
-                forwardType: "image",
+                forwardChat: 'chatId',
+                forwardType: 'image',
                 forwardContent: item.content,
                 socket: socket,
               })
@@ -133,7 +131,7 @@ const ImageMessage = (props) => {
               <MaterialCommunityIcons
                 name="share"
                 size={22}
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               />
             </View>
           </TouchableOpacity>
@@ -146,19 +144,19 @@ const ImageMessage = (props) => {
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   senderTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
     borderWidth: 5,
     borderColor: Color.VeryLightGrey,
     borderTopRightRadius: 15,
@@ -167,44 +165,44 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
   },
   receiverTextMessageContainer: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginTop: "-1%",
-    marginVertical: "1%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginTop: '-1%',
+    marginVertical: '1%',
   },
   OverlayTimeContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 10,
     right: 0,
-    flexDirection: "row",
-    alignSelf: "flex-end",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   overlayTime: {
     fontSize: 12,
     color: Color.LightGrey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   shareMessage: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.62,
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
   },
   receiverShareMessage: {
-    position: "absolute",
-    backgroundColor: "#CFCFCF",
+    position: 'absolute',
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -215,8 +213,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
   receiverImageMessage: {
     backgroundColor: Color.White,
@@ -225,11 +223,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
   },
   senderName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.017,
 
     color: Color.Blue,
