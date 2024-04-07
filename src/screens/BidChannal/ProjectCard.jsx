@@ -28,8 +28,9 @@ import NoDataIndicater from '../NoDataIndicater';
 import { updateProjectStatus } from '../../utils/BiddingChannel';
 import { useStateContext } from '../../contexts/ContextProvider';
 import WinningAnnounModal from '../../components/WinningAnnounModal';
+import { axiosInstance } from '../../../axiosInstance';
 
-const ProjectCard = ({ item, currentuser, refetch }) => {
+const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const userState = useUserState();
   const [isBidOpen, setisBidOpen] = useState(false);
   const [selectedItem, setselectedItem] = useState(null);
@@ -46,6 +47,10 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
     setisBidOpen(false);
     setisEdit(false);
   };
+
+  const memberToNotify = groupData?.members
+    ?.filter((mem) => mem.member.phoneNumber !== userState.phoneNumber) // Filter out members with matching phone numbers
+    .map((mem) => mem.member); // Extract only the member objects
 
   useEffect(() => {
     setbids(item?.bids);
@@ -108,6 +113,7 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
       bidOn: selectedItem?._id,
       bidPrice: bidPrice,
     });
+    handleGroupNotification();
     setbidPrice('');
     refetch();
     setisBidOpen(false);
@@ -126,7 +132,7 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
       const { data } = await updateProjectStatus(id, status);
       showSnackbar(data?.message);
       refetch();
-    } catch (error) {}
+    } catch {}
   };
 
   const handleClose = (item) => {
@@ -137,6 +143,19 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
     }
   };
   const formattedPrice = Number(item?.price).toLocaleString();
+
+  const handleGroupNotification = async (title) => {
+    try {
+      const notificationData = {
+        user: memberToNotify,
+        senderName: currentuser?.code,
+        groupTitle: selectedItem?.ProjectName,
+      };
+
+      await axiosInstance.post(`/bidChannel/notify-new-bid`, notificationData);
+    } catch {}
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -416,7 +435,7 @@ const ProjectCard = ({ item, currentuser, refetch }) => {
               <ProjectDetails item={item} containerStyle={styles.projectFea} />
 
               <TextInput
-                placeholder="Type Name"
+                placeholder="Bidding Price"
                 value={bidPrice}
                 onChangeText={setbidPrice}
                 style={{ ...inputstyle, width: '100%' }}

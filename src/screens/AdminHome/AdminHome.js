@@ -30,9 +30,10 @@ import GroupMembersList from '../../components/GroupMembersList';
 import { axiosInstance } from '../../../axiosInstance';
 import { useQuery } from 'react-query';
 import CustomStatsBar from '../../components/CustomStatsBar';
-import { screenHeight } from '../../utils/ScreenDimensions';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import BiddingGroup from '../../components/BiddingGroup';
 import { fetchChannels } from '../../utils/BiddingChannel';
+import NotificationIcon from '../../components/SVG/NotificationsIcon';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -217,12 +218,22 @@ export default function AdminHome(props) {
           backgroundColor: Color.White,
           borderBottomColor: Color.LightGrey,
           borderBottomWidth: Width * 0.005,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+
+          paddingHorizontal: screenWidth * 0.06,
         }}
       >
         <Image
           source={require('../../../assets/crmlogo.png')}
           style={styles.logo}
         />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('BidddingNotifications')}
+        >
+          <NotificationIcon />
+        </TouchableOpacity>
       </View>
       <ScrollView
         style={{ height: '93%' }}
@@ -750,7 +761,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   logo: {
-    marginLeft: Width * 0.05,
     width: 90,
     height: 58,
     resizeMode: 'contain',

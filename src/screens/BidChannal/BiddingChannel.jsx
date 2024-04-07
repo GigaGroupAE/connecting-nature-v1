@@ -14,6 +14,8 @@ import { useRoute } from '@react-navigation/native';
 import BidChannelHeader from '../../components/BidChannelHeader';
 import ProjectCard from './ProjectCard';
 import { screenWidth } from '../../utils/ScreenDimensions';
+import NoDataIndicater from '../NoDataIndicater';
+import BiddingChannelHome from '../../components/Skeletns/BiddingChannelHome';
 
 const BiddingChannel = () => {
   const userState = useUserState();
@@ -65,7 +67,18 @@ const BiddingChannel = () => {
     <View style={styles.container}>
       <BidChannelHeader item={groupData} />
       <View style={{ flex: 1 }}>
-        {!isLoading && (
+        {!isLoading && data?.pages.flatMap((page) => page.data.length) < 1 && (
+          <View style={{ width: '90%', alignSelf: 'center' }}>
+            <NoDataIndicater
+              title="No Properties Available"
+              subTitle="Oh no! It seems there are no properties available for bidding at the moment. Stay tuned for updates or check your notifications for the latest property listings. "
+            />
+          </View>
+        )}
+
+        {isLoading ? (
+          <BiddingChannelHome />
+        ) : (
           <FlatList
             data={data?.pages.flatMap((page) => page.data) || []}
             keyExtractor={(item) => item._id}
@@ -83,6 +96,7 @@ const BiddingChannel = () => {
                   item={item}
                   currentuser={currentuser}
                   refetch={refetch}
+                  groupData={groupData}
                 />
               );
             }}

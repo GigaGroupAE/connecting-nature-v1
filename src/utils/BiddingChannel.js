@@ -163,3 +163,23 @@ export const getscriptonReq = async () => {
     throw error;
   }
 };
+
+export const fetchClosedBidApartments = async () => {
+  try {
+    const { data } = await axiosInstance.get(
+      '/bidChannel/closed-bid-apartments',
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleDownloadProject = async (id) => {
+  try {
+    const data = await axiosInstance.get(`/bidChannel/download-report/${id}`);
+    throw data;
+  } catch (error) {
+    throw error;
+  }
+};

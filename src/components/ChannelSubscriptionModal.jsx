@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import React, { useState } from 'react';
 import { Modal, Portal } from 'react-native-paper';
@@ -29,9 +30,15 @@ const initialState = {
   phoneNumber: '',
 };
 
+const inputErrors = {
+  fullName: '',
+  phoneNumber: '',
+};
+
 const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
   const userState = useUserState();
   const [inputs, setinputs] = useState(initialState);
+  const [error, seterror] = useState(inputErrors);
   const [image, setImage] = useState(null);
   const [loading, setloading] = useState(false);
   const { showSnackbar } = useStateContext();
@@ -43,6 +50,7 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
 
   const handleOnchange = (text, input) => {
     setinputs((prevState) => ({ ...prevState, [input]: text }));
+    seterror((prevErrors) => ({ ...prevErrors, [input]: '' }));
   };
 
   const pickImage = async () => {
@@ -59,6 +67,32 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
     }
   };
   const handleSubmit = async () => {
+    if (!image) {
+      Alert.alert(
+        'Image Required',
+        'Oops! It seems you forgot to attach an image of the bank receipt or transaction receipt. Please provide an image to proceed with the submission.',
+        [{ text: 'OK' }],
+      );
+      return;
+    }
+
+    const updatedErrors = { ...inputErrors };
+    let hasError = false;
+
+    for (const field in inputErrors) {
+      if (!inputs[field]) {
+        updatedErrors[field] = 'This field is required.';
+        hasError = true;
+      } else {
+        updatedErrors[field] = '';
+      }
+    }
+
+    seterror(updatedErrors);
+
+    if (hasError) {
+      return;
+    }
     setloading(true);
     try {
       const data = await subscriptionRequest(inputs, userState?.id, image);
@@ -130,6 +164,10 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
             placeholder="Full Name"
           />
 
+          {error?.fullName !== '' && (
+            <Text style={styles.inputError}>{error?.fullName}</Text>
+          )}
+
           <TextInput
             style={{
               ...inputstyle,
@@ -140,6 +178,9 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
             placeholder="Phone Number"
             keyboardType="numeric"
           />
+          {error?.phoneNumber !== '' && (
+            <Text style={styles.inputError}>{error?.phoneNumber}</Text>
+          )}
 
           {image && (
             <View>
@@ -209,5 +250,13 @@ const styles = StyleSheet.create({
     height: screenHeight * 0.22,
     resizeMode: 'cover',
     marginTop: '2%',
+  },
+  inputError: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: screenHeight * 0.014,
+    color: Color.Red,
+    paddingVertical: screenHeight * 0.005,
+    paddingHorizontal: screenWidth * 0.004,
+    width: '90%',
   },
 });

@@ -1,16 +1,16 @@
-import React from "react";
-import { Text, View, Pressable, StyleSheet } from "react-native";
+import React from 'react';
+import { Text, View, Pressable, StyleSheet } from 'react-native';
 
 //theme
-import Color from "../../assets/colors/Color";
+import Color from '../../assets/colors/Color';
 
-import { Entypo } from "@expo/vector-icons";
-import axios from "axios";
-import { BASE_URL } from "../../CONSTANTS";
-import { useUserState } from "../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
+import { Entypo } from '@expo/vector-icons';
+import axios from 'axios';
+import { BASE_URL } from '../../CONSTANTS';
+import { useUserState } from '../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
 
-import { useStateContext } from "../contexts/ContextProvider.js";
+import { useStateContext } from '../contexts/ContextProvider.js';
 
 const Stats = ({ data, volunteers, campaignId }) => {
   const userState = useUserState();
@@ -20,10 +20,10 @@ const Stats = ({ data, volunteers, campaignId }) => {
   const inviteAllVolunteers = async () => {
     setLoading(true);
     const headers = {
-      headers: { "auth-token": userState.token },
+      headers: { 'auth-token': userState.token },
     };
     volunteers.forEach((element) => {
-      console.log("for each of invitesms----", element);
+      console.log('for each of invitesms----', element);
       // comment this code on 10-27-23 due to sms api restriction will be uncomment when clear
       // if (element.status === "invite") {
       //   axios
@@ -44,7 +44,7 @@ const Stats = ({ data, volunteers, campaignId }) => {
       // }
     });
     // making data for notifications like this [{user,body,data}]
-    let filterData = volunteers.filter((v) => v.status === "invite");
+    let filterData = volunteers.filter((v) => v.status === 'invite');
     let notifications = filterData.map((f) => {
       return {
         user: f.number,
@@ -52,7 +52,7 @@ const Stats = ({ data, volunteers, campaignId }) => {
           title: "you've been invited to a campaign!",
         },
         data: {
-          title: "campaign-invite",
+          title: 'campaign-invite',
           content: campaignId,
         },
       };
@@ -61,10 +61,10 @@ const Stats = ({ data, volunteers, campaignId }) => {
     let { data } = await axios.post(
       `${BASE_URL}/notify/addMultipleNotifications`,
       { notifications },
-      headers
+      headers,
     );
     if (data.success) {
-      console.log("data is ", data.newNotifications);
+      console.log('data is ', data.newNotifications);
     }
     // now i have to update the status to sent
     // TRANSFORMING DATA INTO HOW BACKEND WANTS IT.
@@ -73,20 +73,20 @@ const Stats = ({ data, volunteers, campaignId }) => {
     const { data: updateVolunteersResponse } = await axios.put(
       `${BASE_URL}/today/update-multiple-volunteers/${campaignId}`,
       usersToUpdate,
-      headers
+      headers,
     );
     if (updateVolunteersResponse.success) {
       console.log(updateVolunteersResponse.updatedVolunteers);
     }
     setLoading(false);
-    showSnackbar("Volunteers have been invited!");
+    showSnackbar('Volunteers have been invited!');
     navigate.reset({
       index: 0,
-      routes: [{ name: "Home" }],
+      routes: [{ name: 'Home' }],
     });
   };
   return (
-    <View style={{ margin: "4%" }}>
+    <View style={{ margin: '4%' }}>
       {/* <Pressable
         style={({ pressed }) =>
           pressed ? [styles.inviteAllBtn, styles.pressed] : styles.inviteAllBtn
@@ -110,7 +110,7 @@ const Stats = ({ data, volunteers, campaignId }) => {
           <View style={styles.statsRow} key={idx}>
             <Text style={styles.statsTitle}>
               {data.title}
-              {"  "}
+              {'  '}
               <Entypo name="info-with-circle" color={Color.Blue} />
             </Text>
             <Text style={styles.statsCount}>{data.count}</Text>
@@ -125,17 +125,17 @@ export default Stats;
 
 const styles = StyleSheet.create({
   statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 4,
   },
   statsTitle: {
-    fontFamily: "Roboto_400Regular",
-    color: "#707070",
+    fontFamily: 'Roboto_400Regular',
+    color: '#707070',
   },
   statsCount: {
-    fontFamily: "Roboto_600SemiBold",
-    color: "#707070",
+    fontFamily: 'Roboto_600SemiBold',
+    color: '#707070',
   },
   inviteAllBtn: {
     marginBottom: 10,

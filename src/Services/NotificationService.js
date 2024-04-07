@@ -1,14 +1,9 @@
-import axios from "axios";
-import { BASE_URL } from "../../CONSTANTS";
-export const SendNotifications = async ({
-  title,
-
-  postId,
-  userState,
-}) => {
+import axios from 'axios';
+import { BASE_URL } from '../../CONSTANTS';
+export const SendNotifications = async ({ title, postId, userState }) => {
   const config = {
     headers: {
-      "auth-token": userState.token,
+      'auth-token': userState.token,
     },
   };
 
@@ -31,7 +26,7 @@ export const SendNotifications = async ({
           content: postId,
         },
       },
-      config
+      config,
     )
     .then((res) => {
       //any logic you want here

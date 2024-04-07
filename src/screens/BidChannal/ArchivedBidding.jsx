@@ -11,7 +11,10 @@ import React from 'react';
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
 import { useInfiniteQuery } from 'react-query';
-import { fetchArchiveProjects } from '../../utils/BiddingChannel';
+import {
+  fetchArchiveProjects,
+  handleDownloadProject,
+} from '../../utils/BiddingChannel';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import {
   buttonContainer,
@@ -52,6 +55,12 @@ const ArchivedBidding = () => {
     if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
+  };
+
+  const handleDownload = async (item) => {
+    try {
+      const data = await handleDownloadProject(item?._id);
+    } catch (error) {}
   };
 
   return (
@@ -108,6 +117,7 @@ const ArchivedBidding = () => {
                   <View style={styles.detailsContainer}>
                     <TouchableOpacity
                       style={{ ...buttonContainer, width: '48%', marginTop: 0 }}
+                      onPress={() => handleDownload(item)}
                     >
                       <Text style={buttonTitle}>Download CSV</Text>
                     </TouchableOpacity>

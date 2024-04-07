@@ -49,6 +49,27 @@ const PendingSubscriptions = ({ item, refetch }) => {
       item: item?._id,
     };
     try {
+      const notificationData = {
+        user: item?.requestedBy?._id,
+        body: {
+          user: {
+            fullName: 'Connecting Nature', // Change if needed
+            expoPushToken: item?.requestedBy?.expoPushToken,
+          },
+          content: {
+            description:
+              'Your subscription request has been approved. You are now able to bid on properties.',
+          },
+        },
+        data: {
+          title: 'req-approve',
+        },
+      };
+      await axiosInstance.post(
+        `/bidChannel/add-crm-notification`,
+        notificationData,
+      );
+
       await axiosInstance.post('/bidChannel/approve-subscription', {
         data: memberData,
       });
@@ -58,22 +79,52 @@ const PendingSubscriptions = ({ item, refetch }) => {
   };
 
   const handleReject = async () => {
-    const rejectReason = {
-      id: rejectUser?._id,
-      denyingReason: description,
-      status: 'rejected',
-    };
     try {
-      const data = await axiosInstance.post('/bidChannel/reject-subscription', {
+      // Create rejectReason object
+      const rejectReason = {
+        id: rejectUser?._id,
+        denyingReason: description,
+        status: 'rejected',
+      };
+
+      // Prepare notification data
+      const notificationData = {
+        user: rejectUser?.requestedBy?._id,
+        body: {
+          user: {
+            fullName: 'Connecting Nature',
+            expoPushToken: rejectUser?.requestedBy?.expoPushToken,
+          },
+          content: {
+            description: description,
+          },
+        },
+        data: {
+          title: 'req-denied',
+        },
+      };
+
+      // Send notification
+      await axiosInstance.post(
+        `/bidChannel/add-crm-notification`,
+        notificationData,
+      );
+
+      // Reject subscription
+      await axiosInstance.post('/bidChannel/reject-subscription', {
         rejectReason,
       });
 
+      // Reset state and show success message
       setisDenyModal(false);
       setDescription('');
       refetch();
       showSnackbar('Subscription rejected successfully');
-    } catch {}
+    } catch {
+      // Handle errors (e.g., show error message to user)
+    }
   };
+
   return (
     <View style={styles.container}>
       <FlatList

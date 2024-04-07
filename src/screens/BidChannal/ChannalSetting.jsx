@@ -37,6 +37,9 @@ import {
   handleRemoveSubscriber,
 } from '../../utils/BiddingChannel';
 import { Modal, Portal } from 'react-native-paper';
+import WinningAnnounModal from '../../components/WinningAnnounModal';
+import WinAnnouncSettings from '../../components/WinAnnouncSettings';
+import SubscriptionSvg from '../../components/SVG/SubscriptionSvg';
 
 const settingData = [
   {
@@ -59,20 +62,19 @@ const settingData = [
   },
   {
     id: 4,
+    title: 'Subscription Requests',
+    icon: <SubscriptionSvg />,
+    navigationScreen: '',
+  },
+  {
+    id: 5,
     title: 'Announce Winner',
     icon: <WinerSvg />,
     navigationScreen: '',
   },
   {
-    id: 5,
-    title: 'Add Participant',
-    icon: <AddparticipantsSvg />,
-    navigationScreen: '',
-  },
-
-  {
     id: 6,
-    title: 'Subscription Requests',
+    title: 'Add Participant',
     icon: <AddparticipantsSvg />,
     navigationScreen: '',
   },
@@ -88,6 +90,7 @@ const ChannalSetting = () => {
   const [removeModal, setremoveModal] = useState(false);
   const [removememberDetails, setremovememberDetails] = useState(null);
   const [currentMember, setcurrentMember] = useState([]);
+  const [isWinningModal, setisWinningModal] = useState(false);
 
   const { data: groupData = [], refetch } = useQuery('channal', fetchChannels);
 
@@ -110,6 +113,8 @@ const ChannalSetting = () => {
       });
     } else if (item?.title === 'Subscription Requests') {
       navigate('subscriptionReq');
+    } else if (item?.title === 'Announce Winner') {
+      setisWinningModal(true);
     }
   };
 
@@ -221,24 +226,41 @@ const ChannalSetting = () => {
           <FlatList
             data={settingData}
             renderItem={({ item }) => {
-              return (
-                <TouchableOpacity
-                  style={styles.menuContainer}
-                  onPress={() => handleNavigation(item)}
-                >
-                  <View style={{ ...styles.rowContainer, gap: 13 }}>
-                    {item?.icon}
-                    <Text style={styles.itemname}>{item?.title}</Text>
-                  </View>
-                  <View>
-                    <ArrowLeft />
-                  </View>
-                </TouchableOpacity>
-              );
+              // Determine whether to show all fields or limited fields based on user's privilege
+              const showAllFields = currentMember[0]?.privilege !== 'member';
+              const allowedFieldsForMember = [
+                'Archived Biddings',
+                'Add Property',
+                'Starred Messages',
+              ];
+
+              // Check if the current item should be rendered based on user's privilege
+              if (
+                showAllFields ||
+                allowedFieldsForMember.includes(item.title)
+              ) {
+                return (
+                  <TouchableOpacity
+                    style={styles.menuContainer}
+                    onPress={() => handleNavigation(item)}
+                  >
+                    <View style={{ ...styles.rowContainer, gap: 13 }}>
+                      {item?.icon}
+                      <Text style={styles.itemname}>{item?.title}</Text>
+                    </View>
+                    <View>
+                      <ArrowLeft />
+                    </View>
+                  </TouchableOpacity>
+                );
+              } else {
+                return null;
+              }
             }}
             contentContainerStyle={{
-              gap: 30,
               marginVertical: screenHeight * 0.025,
+              gap: 30,
+              // ...(settingData.length === 0 && { gap: 16 }), // Remove gap if there are no items to render
             }}
           />
         </View>
@@ -253,62 +275,64 @@ const ChannalSetting = () => {
             </Text>
           </View>
         </View>
+        {currentMember[0]?.privilege !== 'member' && (
+          <View>
+            <FlatList
+              data={groupData[0]?.members}
+              renderItem={({ item }) => {
+                const role = approvedRoles.includes(item?.privilege);
 
-        <View>
-          <FlatList
-            data={groupData[0]?.members}
-            renderItem={({ item }) => {
-              const role = approvedRoles.includes(item?.privilege);
+                return (
+                  <View style={styles.memberContainer}>
+                    <View style={styles.rowContainer}>
+                      <Image
+                        source={{
+                          uri: `${BASE_URL}/images/${item?.member?.profile}`,
+                        }}
+                        style={styles.profileImage}
+                      />
+                      <View style={{ gap: 4 }}>
+                        <View style={styles.rowContainer}>
+                          <Text style={styles.username}>
+                            {item?.member?.phoneNumber ===
+                            userState?.phoneNumber
+                              ? 'You'
+                              : item?.member?.fullName}
+                          </Text>
 
-              return (
-                <View style={styles.memberContainer}>
-                  <View style={styles.rowContainer}>
-                    <Image
-                      source={{
-                        uri: `${BASE_URL}/images/${item?.member?.profile}`,
-                      }}
-                      style={styles.profileImage}
-                    />
-                    <View style={{ gap: 4 }}>
-                      <View style={styles.rowContainer}>
-                        <Text style={styles.username}>
-                          {item?.member?.phoneNumber === userState?.phoneNumber
-                            ? 'You'
-                            : item?.member?.fullName}
-                        </Text>
+                          {role && (
+                            <View style={styles.rowContainer}>
+                              <Entypo name="dot-single" />
 
-                        {role && (
-                          <View style={styles.rowContainer}>
-                            <Entypo name="dot-single" />
-
-                            <Text style={styles.regularText}>
-                              {item?.privilege}
-                            </Text>
-                          </View>
-                        )}
+                              <Text style={styles.regularText}>
+                                {item?.privilege}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
                       </View>
                     </View>
-                  </View>
 
-                  <TouchableOpacity onPress={() => handleRemoveModal(item)}>
-                    {item?.privilege !== 'Owner' && // Only show if privilege is not 'Owner'
-                      currentMember[0]?.privilege !== 'member' && ( // Only show if member's privilege is not 'admin'
-                        <Text
-                          style={{ ...styles.username, color: Color.Black }}
-                        >
-                          Remove
-                        </Text>
-                      )}
-                  </TouchableOpacity>
-                </View>
-              );
-            }}
-            contentContainerStyle={{
-              gap: 12,
-              marginVertical: screenHeight * 0.02,
-            }}
-          />
-        </View>
+                    <TouchableOpacity onPress={() => handleRemoveModal(item)}>
+                      {item?.privilege !== 'Owner' &&
+                        currentMember[0]?.privilege !== 'member' && ( // Only show if member's privilege is not 'admin'
+                          <Text
+                            style={{ ...styles.username, color: Color.Black }}
+                          >
+                            Remove
+                          </Text>
+                        )}
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+              contentContainerStyle={{
+                gap: 12,
+                marginVertical: screenHeight * 0.02,
+              }}
+            />
+          </View>
+        )}
       </ScrollView>
 
       <AddPropertyModal
@@ -354,6 +378,10 @@ const ChannalSetting = () => {
           </View>
         </Modal>
       </Portal>
+      <WinAnnouncSettings
+        modalVisible={isWinningModal}
+        setModalVisible={setisWinningModal}
+      />
     </View>
   );
 };

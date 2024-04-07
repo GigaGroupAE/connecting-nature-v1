@@ -1,7 +1,10 @@
 import {
+  ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -54,22 +57,31 @@ const initialState = {
   unit: '',
   bedrooms: '',
   description: '',
-  // biddingTime: Date.now(),
   price: '',
+};
+
+const inputErrors = {
+  ProjectName: '',
+  price: '',
+  bedrooms: '',
+  description: '',
 };
 
 const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
   const userState = useUserState();
   const [propertyImage, setpropertyImage] = useState(null);
+  const [error, seterror] = useState(inputErrors);
   const [isType, setisType] = useState(false);
   const [inputs, setinputs] = useState(initialState);
   const { showSnackbar } = useStateContext();
+  const [isLoading, setisLoading] = useState(false);
   const hideModal = () => {
     setisVisible(false);
   };
 
   const handleOnchange = (text, input) => {
     setinputs((prevState) => ({ ...prevState, [input]: text }));
+    seterror((prevErrors) => ({ ...prevErrors, [input]: '' }));
   };
 
   const pickImage = async () => {
@@ -87,204 +99,245 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
   };
 
   const handleSubmit = async () => {
+    if (!propertyImage) {
+      Alert.alert(
+        'Images Required',
+        'Oops! It looks like you forgot to add images of the property. Providing at least one image will help showcase your property to potential buyers.',
+        [{ text: 'OK' }],
+      );
+      return;
+    }
+
+    const updatedErrors = { ...inputErrors };
+    let hasError = false;
+
+    for (const field in inputErrors) {
+      if (!inputs[field]) {
+        updatedErrors[field] = 'This field is required.';
+        hasError = true;
+      } else {
+        updatedErrors[field] = '';
+      }
+    }
+
+    seterror(updatedErrors);
+
+    if (hasError) {
+      return;
+    }
+    setisLoading(true);
     const from = userState?.id;
     const channel = item?._id;
-    // const
+
     try {
       await createBiddingProject(inputs, from, channel, propertyImage);
       showSnackbar('Property Added successfully');
       setinputs(initialState);
       setpropertyImage(null);
-    } catch {}
+      setisLoading(false);
+      setisVisible(false);
+    } catch {
+      setisLoading(false);
+    }
   };
 
   return (
     <Portal>
       <Modal visible={isVisible} onDismiss={hideModal}>
-        <View style={container}>
-          <Text style={titleStyle}>Add Property</Text>
-          <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
-            {propertyImage ? (
-              <Image
-                source={{ uri: propertyImage[0]?.uri }}
-                style={styles.image}
-              />
-            ) : (
-              <CameraSvg />
-            )}
-          </TouchableOpacity>
-
-          {propertyImage && (
-            <View
-              style={{
-                maxHeight: screenHeight * 0.09,
-                width: '100%',
-                paddingHorizontal: screenWidth * 0.04,
-              }}
-            >
-              <FlatList
-                data={propertyImage}
-                renderItem={({ item, index }) => {
-                  // Skip rendering the first item
-                  if (index === 0) {
-                    return null;
-                  }
-                  return (
-                    <View>
-                      <Image
-                        source={{ uri: item?.uri }}
-                        style={{
-                          width: 100,
-                          height: 69,
-                          resizeMode: 'cover',
-                          borderRadius: 4,
-                        }}
-                      />
-                    </View>
-                  );
-                }}
-                horizontal
-                contentContainerStyle={{ gap: 10, marginVertical: '2%' }}
-                showsHorizontalScrollIndicator={false}
-              />
-            </View>
-          )}
-
-          <TextInput
-            style={{
-              ...inputstyle,
-              width: '90%',
-            }}
-            onChangeText={(e) => handleOnchange(e, 'ProjectName')}
-            value={inputs.ProjectName}
-            placeholder="Property/Project Name"
-          />
-
-          <View
-            style={{
-              ...inputstyle,
-              width: '90%',
-            }}
-          >
-            <TouchableOpacity>
-              <Pressable
-                onPress={() => setisType(!isType)}
-                style={styles.groupContainer}
-              >
-                <Text style={styles.groupTitle}>{inputs.PropertyType}</Text>
-                <MaterialIcons
-                  name={isType ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-                  style={{ fontSize: scale(20) }}
+        <ScrollView>
+          <View style={container}>
+            <Text style={titleStyle}>Add Property</Text>
+            <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
+              {propertyImage ? (
+                <Image
+                  source={{ uri: propertyImage[0]?.uri }}
+                  style={styles.image}
                 />
-              </Pressable>
+              ) : (
+                <CameraSvg />
+              )}
             </TouchableOpacity>
-          </View>
-
-          {isType && (
-            <Animated.View entering={FadeIn} exiting={FadeOut}>
-              <View style={styles.designModalContainer}>
+            {propertyImage && (
+              <View
+                style={{
+                  maxHeight: screenHeight * 0.09,
+                  width: '100%',
+                  paddingHorizontal: screenWidth * 0.04,
+                }}
+              >
                 <FlatList
-                  data={propertyType}
-                  renderItem={({ item }) => {
+                  data={propertyImage}
+                  renderItem={({ item, index }) => {
+                    // Skip rendering the first item
+                    if (index === 0) {
+                      return null;
+                    }
                     return (
-                      <TouchableOpacity
-                        style={styles.desingContainer}
-                        onPress={() => {
-                          handleOnchange(item?.title, 'PropertyType');
-                          setisType(false);
-                        }}
-                      >
-                        <Text style={styles.title}>{item?.title}</Text>
-                      </TouchableOpacity>
+                      <View>
+                        <Image
+                          source={{ uri: item?.uri }}
+                          style={{
+                            width: 100,
+                            height: 69,
+                            resizeMode: 'cover',
+                            borderRadius: 4,
+                          }}
+                        />
+                      </View>
                     );
                   }}
-                  keyExtractor={(item) => item._id}
-                  showsVerticalScrollIndicator={false}
+                  horizontal
+                  contentContainerStyle={{ gap: 10, marginVertical: '2%' }}
+                  showsHorizontalScrollIndicator={false}
                 />
               </View>
-            </Animated.View>
-          )}
-
-          <View style={styles.priceRangeContainer}>
+            )}
             <TextInput
               style={{
                 ...inputstyle,
-                width: screenWidth * 0.39,
+                width: '90%',
               }}
-              value={inputs.unit}
-              onChangeText={(e) => handleOnchange(e, 'unit')}
-              placeholder="Unit"
+              onChangeText={(e) => handleOnchange(e, 'ProjectName')}
+              value={inputs.ProjectName}
+              placeholder="Property/Project Name"
+            />
+            {error?.ProjectName !== '' && (
+              <Text style={styles.inputError}>{error?.ProjectName}</Text>
+            )}
+            <View
+              style={{
+                ...inputstyle,
+                width: '90%',
+              }}
+            >
+              <TouchableOpacity>
+                <Pressable
+                  onPress={() => setisType(!isType)}
+                  style={styles.groupContainer}
+                >
+                  <Text style={styles.groupTitle}>{inputs.PropertyType}</Text>
+                  <MaterialIcons
+                    name={isType ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+                    style={{ fontSize: scale(20) }}
+                  />
+                </Pressable>
+              </TouchableOpacity>
+            </View>
+            {isType && (
+              <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <View style={styles.designModalContainer}>
+                  <FlatList
+                    data={propertyType}
+                    renderItem={({ item }) => {
+                      return (
+                        <TouchableOpacity
+                          style={styles.desingContainer}
+                          onPress={() => {
+                            handleOnchange(item?.title, 'PropertyType');
+                            setisType(false);
+                          }}
+                        >
+                          <Text style={styles.title}>{item?.title}</Text>
+                        </TouchableOpacity>
+                      );
+                    }}
+                    keyExtractor={(item) => item._id}
+                    showsVerticalScrollIndicator={false}
+                  />
+                </View>
+              </Animated.View>
+            )}
+            <View style={styles.priceRangeContainer}>
+              <TextInput
+                style={{
+                  ...inputstyle,
+                  width: screenWidth * 0.39,
+                }}
+                value={inputs.unit}
+                onChangeText={(e) => handleOnchange(e, 'unit')}
+                placeholder="Unit"
+              />
+              <TextInput
+                placeholder="Bedrooms"
+                style={{ ...inputstyle, width: screenWidth * 0.39 }}
+                value={inputs.bedrooms}
+                onChangeText={(e) => handleOnchange(e, 'bedrooms')}
+              />
+            </View>
+            {error?.bedrooms !== '' && (
+              <Text style={styles.inputError}>{error?.bedrooms}</Text>
+            )}
+            <TextInput
+              style={{
+                ...inputstyle,
+                width: '90%',
+              }}
+              value={inputs.description}
+              onChangeText={(e) => handleOnchange(e, 'description')}
+              placeholder="Description/Notes"
+              multiline
+            />
+            {error?.description !== '' && (
+              <Text style={styles.inputError}>{error?.description}</Text>
+            )}
+            <TextInput
+              style={{
+                ...inputstyle,
+                width: '90%',
+              }}
+              // value={inputs.biddingTime}
+              // onChangeText={(e) => handleOnchange(e, 'description')}
+              placeholder="Bidding Time"
             />
             <TextInput
-              placeholder="Bedrooms"
-              style={{ ...inputstyle, width: screenWidth * 0.39 }}
-              value={inputs.bedrooms}
-              onChangeText={(e) => handleOnchange(e, 'bedrooms')}
-            />
-          </View>
-
-          <TextInput
-            style={{
-              ...inputstyle,
-              width: '90%',
-            }}
-            value={inputs.description}
-            onChangeText={(e) => handleOnchange(e, 'description')}
-            placeholder="Description/Notes"
-            multiline
-          />
-
-          <TextInput
-            style={{
-              ...inputstyle,
-              width: '90%',
-            }}
-            // value={inputs.biddingTime}
-            // onChangeText={(e) => handleOnchange(e, 'description')}
-            placeholder="Bidding Time"
-          />
-          <TextInput
-            style={{
-              ...inputstyle,
-              width: '90%',
-            }}
-            value={inputs.price}
-            onChangeText={(e) => handleOnchange(e, 'price')}
-            placeholder="Set Property Price"
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: screenWidth * 0.8,
-              justifyContent: 'center',
-              gap: 10,
-            }}
-          >
-            <TouchableOpacity
-              style={{ ...buttonContainer, width: screenWidth * 0.39 }}
-              onPress={handleSubmit}
-            >
-              <Text style={buttonTitle}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
               style={{
-                ...buttonContainer,
-                width: screenWidth * 0.39,
-                backgroundColor: Color.White,
-                borderWidth: 1,
+                ...inputstyle,
+                width: '90%',
               }}
-              onPress={() => setisVisible(false)}
+              value={inputs.price}
+              onChangeText={(e) => handleOnchange(e, 'price')}
+              placeholder="Set Property Price"
+            />
+            {error?.price !== '' && (
+              <Text style={styles.inputError}>{error?.price}</Text>
+            )}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: screenWidth * 0.8,
+                justifyContent: 'center',
+                gap: 10,
+              }}
             >
-              <Text
-                style={{ ...editButtonTitle, fontFamily: 'Roboto_700Bold' }}
+              <TouchableOpacity
+                style={{ ...buttonContainer, width: screenWidth * 0.39 }}
+                onPress={handleSubmit}
               >
-                Discard
-              </Text>
-            </TouchableOpacity>
+                {isLoading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text style={buttonTitle}>Save</Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...buttonContainer,
+                  width: screenWidth * 0.39,
+                  backgroundColor: Color.White,
+                  borderWidth: 1,
+                }}
+                onPress={() => setisVisible(false)}
+              >
+                <Text
+                  style={{ ...editButtonTitle, fontFamily: 'Roboto_700Bold' }}
+                >
+                  Discard
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </Portal>
   );
@@ -358,5 +411,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
+  },
+  inputError: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: screenHeight * 0.014,
+    color: Color.Red,
+    paddingVertical: screenHeight * 0.005,
+    paddingHorizontal: screenWidth * 0.004,
+    width: '90%',
   },
 });
