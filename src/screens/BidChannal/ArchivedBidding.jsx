@@ -23,6 +23,9 @@ import {
 } from '../Decorations/ModalStyle';
 import ProjectDetails from '../../components/ProjectDetails';
 import WinerSvg from '../../components/SVG/Winner';
+import * as Print from 'expo-print';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 const ArchivedBidding = () => {
   const {
@@ -59,8 +62,87 @@ const ArchivedBidding = () => {
 
   const handleDownload = async (item) => {
     try {
-      const data = await handleDownloadProject(item?._id);
-    } catch (error) {}
+      // Construct HTML content dynamically based on item data
+      const htmlContent = `
+   <html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bid Data</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+    <h1>${item?.ProjectName}</h1>
+    <h4>${item?.description}</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>User Code</th>
+                <th>Bid Price</th>
+            </tr>
+        </thead>
+        <tbody>
+              <tr>
+                    <td>${item?.winner?.bidBy[0]?.fullName} Winner</td>
+                    <td>${item?.winner?.bidBy[0]?.code}</td>
+                    <td>${item?.winner?.bidPrice}</td>
+                </tr>
+          ${item?.bids
+            .filter((bid) => bid._id !== item?.winner?._id) // Filter out the winner from the bids
+            .map(
+              (bid) => `
+                    <tr>
+                        <td>${bid.bidBy[0].fullName}</td>
+                        <td>${bid.bidBy[0].code}</td>
+                        <td>${bid.bidPrice}</td>
+                    </tr>
+                `,
+            )
+            .join('')}
+        </tbody>
+    </table>
+</body>
+</html>
+
+            `;
+
+      // Generate PDF file
+      const { uri } = await Print.printToFileAsync({
+        html: htmlContent,
+        width: 612, // 8.5 inch
+        height: 792, // 11 inch
+      });
+
+      const pdfUri = Platform.OS === 'ios' ? uri : 'file://' + uri; // Adjust URI for Android
+      console.log('PDF URI:', pdfUri);
+
+      // Share PDF file
+      await Sharing.shareAsync(pdfUri, {
+        mimeType: 'application/pdf',
+        dialogTitle: 'Share PDF',
+        UTI: 'com.adobe.pdf',
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
   };
 
   return (

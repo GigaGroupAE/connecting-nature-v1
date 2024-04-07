@@ -47,6 +47,7 @@
     "expo-modules-core": "~1.5.12",
     "expo-notifications": "~0.20.1",
     "expo-permissions": "~14.2.1",
+    "expo-print": "~12.4.2",
     "expo-sharing": "~11.5.0",
     "expo-status-bar": "~1.6.0",
     "expo-updates": "~0.18.19",

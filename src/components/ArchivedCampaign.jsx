@@ -7,44 +7,44 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import React, { useMemo, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { scale } from "react-native-size-matters";
-import CampaignHeader from "./CampaignHeader";
-import LivePointsTeamPoints from "./LivePointsTeamPoints";
-import LivePointsTeamMember from "./LivePointsTeamMember";
-import LivePointsAction from "./LivePointsAction";
-import Color from "../../assets/colors/Color";
-import CampaignPosts from "../screens/CampaignsScreen/CampaignPosts";
-import ArchivedTeams from "./ArchivedTeams";
+} from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { scale } from 'react-native-size-matters';
+import CampaignHeader from './CampaignHeader';
+import LivePointsTeamPoints from './LivePointsTeamPoints';
+import LivePointsTeamMember from './LivePointsTeamMember';
+import LivePointsAction from './LivePointsAction';
+import Color from '../../assets/colors/Color';
+import CampaignPosts from '../screens/CampaignsScreen/CampaignPosts';
+import ArchivedTeams from './ArchivedTeams';
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
   Easing,
-} from "react-native-reanimated";
-import DoDayPointsLIveShot from "../DoDayPointsLIveShot";
-import { useInfiniteQuery } from "react-query";
-import { fetchPostsByCampaign } from "../Api/GetPost";
-import PostSkeleton from "./PostSkeleton";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "./CustomStatsBar";
+} from 'react-native-reanimated';
+import DoDayPointsLIveShot from '../DoDayPointsLIveShot';
+import { useInfiniteQuery } from 'react-query';
+import { fetchPostsByCampaign } from '../Api/GetPost';
+import PostSkeleton from './PostSkeleton';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from './CustomStatsBar';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const EmptyState = ({ navigation }) => (
   <View
     style={{
-      alignItems: "center",
+      alignItems: 'center',
       backgroundColor: Color.White,
-      height: "100%",
-      justifyContent: "center",
+      height: '100%',
+      justifyContent: 'center',
     }}
   >
     <Image
-      source={require("../../assets/newPost.png")}
+      source={require('../../assets/newPost.png')}
       style={styles.bellIcon}
     />
     <Text style={styles.heading}>Currently No Post Shared</Text>
@@ -55,7 +55,7 @@ const EmptyState = ({ navigation }) => (
 
     <TouchableOpacity
       style={styles.button}
-      onPress={() => navigation.navigate("Home")}
+      onPress={() => navigation.navigate('Home')}
     >
       <Text style={styles.buttonTitle}>Back to Home</Text>
     </TouchableOpacity>
@@ -66,8 +66,8 @@ const ArchivedCampaign = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
+  const [teamAuser, setteamAuser] = useState('');
+  const [teamBuser, setteamBuser] = useState('');
   const [campaignTimeLeftVisible, setCampaignTimeLeftVisible] = useState(true);
   const [newImageVisible, setNewImageVisible] = useState(false);
   const campaign = route?.params;
@@ -94,7 +94,7 @@ const ArchivedCampaign = () => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery(
-    ["campaignPosts", campaign?._id],
+    ['campaignPosts', campaign?._id],
     ({ pageParam = 1 }) =>
       fetchPostsByCampaign({ pageParam, campaignId: campaign?._id }),
     {
@@ -108,11 +108,11 @@ const ArchivedCampaign = () => {
       },
       refetchOnWindowFocus: false,
       cacheTime: 1000 * 60 * 5,
-    }
+    },
   );
 
   const handleShareNavigaton = () => {
-    navigation.navigate("LivePoll", { campaign });
+    navigation.navigate('LivePoll', { campaign });
   };
   const scrollY = useSharedValue(0);
 
@@ -175,12 +175,12 @@ const ArchivedCampaign = () => {
           {/* container points  */}
           {/* <LivePointsTeamPoints campaign={campaign} /> */}
           {newImageVisible && (
-            <Animated.View style={[{ width: "100%" }, animatedLeftStyle]}>
+            <Animated.View style={[{ width: '100%' }, animatedLeftStyle]}>
               <LivePointsTeamPoints campaign={campaign} />
             </Animated.View>
           )}
           {!newImageVisible && (
-            <Animated.View style={[{ width: "100%" }, animatedTimeLeftStyle]}>
+            <Animated.View style={[{ width: '100%' }, animatedTimeLeftStyle]}>
               <DoDayPointsLIveShot doday={campaign} loading={isLoading} />
             </Animated.View>
           )}
@@ -207,7 +207,7 @@ const ArchivedCampaign = () => {
           )}
           {!isLoading &&
             campaignPosts?.pages.flatMap((item) => item?.posts.length) < 1 && (
-              <EmptyState navigation={() => navigation.navigate("Home")} />
+              <EmptyState navigation={() => navigation.navigate('Home')} />
             )}
           {!isLoading && (
             <View style={{ marginTop: 10 }}>
@@ -253,54 +253,54 @@ const styles = StyleSheet.create({
   },
   scoreCard: {
     backgroundColor: Color.LightBg,
-    alignItems: "center",
-    overflow: "hidden",
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   pointsContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
     paddingVertical: scale(10),
     paddingHorizontal: scale(16),
   },
   countDown: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   time: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: scale(12),
     paddingHorizontal: scale(4),
   },
   lead: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   subTitle: {
     fontSize: scale(12),
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
   postContainer: {
     flex: 1,
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: Height * 0.016,
     width: Width * 0.7,
-    textAlign: "center",
+    textAlign: 'center',
   },
   bellIcon: {
     width: Width * 0.26,
     height: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.019,
   },
