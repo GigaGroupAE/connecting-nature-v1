@@ -100,7 +100,7 @@ const CelebrityForm = () => {
       setcnicBack(null);
       setutilityBill(null);
       setisLoading(false);
-    } catch (error) {
+    } catch {
       setisLoading(false);
     }
   };
@@ -121,7 +121,7 @@ const CelebrityForm = () => {
           setutilityBill(result.assets[0]);
         }
       }
-    } catch (error) {}
+    } catch {}
   };
 
   return (

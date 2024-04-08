@@ -16,7 +16,7 @@ export const createBiddingProject = async (inputs, from, channel, image) => {
         formData.append(`image`, {
           name: `${from}image.jpg`,
           uri: link.uri,
-          type: 'image/jpg',
+          type: link.type,
         });
       });
     }

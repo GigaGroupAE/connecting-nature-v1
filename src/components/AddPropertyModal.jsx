@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   Image,
+  KeyboardAvoidingView,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
 import { Modal, Portal } from 'react-native-paper';
 import {
   buttonTitle,
@@ -35,7 +37,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 const propertyType = [
   {
     id: 1,
-    title: 'Residential Apartment',
+    title: 'Residential',
   },
   {
     id: 1,
@@ -90,7 +92,10 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
       quality: 1,
       allowsMultipleSelection: true,
       selectionLimit: 5,
+      mediaTypes: 'All',
     });
+
+    console.log(result);
 
     if (!result.canceled) {
       const imagesData = result.assets.map((item) => item);
@@ -147,63 +152,7 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
         <ScrollView>
           <View style={container}>
             <Text style={titleStyle}>Add Property</Text>
-            <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
-              {propertyImage ? (
-                <Image
-                  source={{ uri: propertyImage[0]?.uri }}
-                  style={styles.image}
-                />
-              ) : (
-                <CameraSvg />
-              )}
-            </TouchableOpacity>
-            {propertyImage && (
-              <View
-                style={{
-                  maxHeight: screenHeight * 0.09,
-                  width: '100%',
-                  paddingHorizontal: screenWidth * 0.04,
-                }}
-              >
-                <FlatList
-                  data={propertyImage}
-                  renderItem={({ item, index }) => {
-                    // Skip rendering the first item
-                    if (index === 0) {
-                      return null;
-                    }
-                    return (
-                      <View>
-                        <Image
-                          source={{ uri: item?.uri }}
-                          style={{
-                            width: 100,
-                            height: 69,
-                            resizeMode: 'cover',
-                            borderRadius: 4,
-                          }}
-                        />
-                      </View>
-                    );
-                  }}
-                  horizontal
-                  contentContainerStyle={{ gap: 10, marginVertical: '2%' }}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-            )}
-            <TextInput
-              style={{
-                ...inputstyle,
-                width: '90%',
-              }}
-              onChangeText={(e) => handleOnchange(e, 'ProjectName')}
-              value={inputs.ProjectName}
-              placeholder="Property/Project Name"
-            />
-            {error?.ProjectName !== '' && (
-              <Text style={styles.inputError}>{error?.ProjectName}</Text>
-            )}
+
             <View
               style={{
                 ...inputstyle,
@@ -247,6 +196,19 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
                 </View>
               </Animated.View>
             )}
+            <TextInput
+              style={{
+                ...inputstyle,
+                width: '90%',
+              }}
+              onChangeText={(e) => handleOnchange(e, 'ProjectName')}
+              value={inputs.ProjectName}
+              placeholder="Property/Project Name"
+            />
+            {error?.ProjectName !== '' && (
+              <Text style={styles.inputError}>{error?.ProjectName}</Text>
+            )}
+
             <View style={styles.priceRangeContainer}>
               <TextInput
                 style={{
@@ -256,12 +218,14 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
                 value={inputs.unit}
                 onChangeText={(e) => handleOnchange(e, 'unit')}
                 placeholder="Unit"
+                keyboardType="number-pad"
               />
               <TextInput
                 placeholder="Bedrooms"
                 style={{ ...inputstyle, width: screenWidth * 0.39 }}
                 value={inputs.bedrooms}
                 onChangeText={(e) => handleOnchange(e, 'bedrooms')}
+                keyboardType="number-pad"
               />
             </View>
             {error?.bedrooms !== '' && (
@@ -275,20 +239,11 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
               value={inputs.description}
               onChangeText={(e) => handleOnchange(e, 'description')}
               placeholder="Description/Notes"
-              multiline
+              // multiline
             />
             {error?.description !== '' && (
               <Text style={styles.inputError}>{error?.description}</Text>
             )}
-            <TextInput
-              style={{
-                ...inputstyle,
-                width: '90%',
-              }}
-              // value={inputs.biddingTime}
-              // onChangeText={(e) => handleOnchange(e, 'description')}
-              placeholder="Bidding Time"
-            />
             <TextInput
               style={{
                 ...inputstyle,
@@ -300,6 +255,53 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
             />
             {error?.price !== '' && (
               <Text style={styles.inputError}>{error?.price}</Text>
+            )}
+
+            <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
+              {propertyImage ? (
+                <Image
+                  source={{ uri: propertyImage[0]?.uri }}
+                  style={styles.image}
+                />
+              ) : (
+                <CameraSvg />
+              )}
+            </TouchableOpacity>
+            {propertyImage && (
+              <View
+                style={{
+                  maxHeight: screenHeight * 0.09,
+                  width: '100%',
+                  paddingHorizontal: screenWidth * 0.04,
+                }}
+              >
+                <FlatList
+                  data={propertyImage}
+                  animationEnabled={false}
+                  renderItem={({ item, index }) => {
+                    // Skip rendering the first item
+                    if (index === 0) {
+                      return null;
+                    }
+                    return (
+                      <View>
+                        <Image
+                          source={{ uri: item?.uri }}
+                          style={{
+                            width: screenWidth * 0.18,
+                            height: screenHeight * 0.05,
+                            resizeMode: 'cover',
+                            borderRadius: 4,
+                          }}
+                        />
+                      </View>
+                    );
+                  }}
+                  horizontal
+                  contentContainerStyle={{ gap: 10, marginVertical: '2%' }}
+                  showsHorizontalScrollIndicator={false}
+                />
+              </View>
             )}
             <View
               style={{
