@@ -1,25 +1,25 @@
-import * as React from "react";
-import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
-import { Modal, Portal, Button, Provider } from "react-native-paper";
-import { FontAwesome5, Entypo, Ionicons } from "react-native-vector-icons";
-import Color from "../../../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
-import { useUserState } from "../../../slices/userSlice";
+import * as React from 'react';
+import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { Modal, Portal, Provider } from 'react-native-paper';
+import { Entypo } from 'react-native-vector-icons';
+import Color from '../../../../assets/colors/Color';
+import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../../../slices/userSlice';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const CreateNew = (props) => {
   const navigation = useNavigation();
   const userState = useUserState();
 
   const handleGroupNavigation = () => {
-    navigation.navigate("CreateGroup");
+    navigation.navigate('CreateGroup');
     props.hideModal();
   };
 
   const handleCampaignNavigation = () => {
-    navigation.navigate("CreateDoDay");
+    navigation.navigate('CreateDoDay');
     props.hideModal();
   };
 
@@ -46,7 +46,7 @@ const CreateNew = (props) => {
             </View>
             <Entypo name="chevron-right" style={styles.icon} />
           </Pressable>
-          {userState.type === "Admin" && (
+          {userState.type === 'Admin' && (
             <Pressable
               android_ripple={{ color: Color.LightGrey }}
               style={[styles.buttonWrapper]}
@@ -85,24 +85,24 @@ const CreateNew = (props) => {
 const styles = StyleSheet.create({
   subTitle: {
     color: Color.Grey,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.017,
   },
   title: {
     color: Color.Black,
-    fontFamily: "Roboto_600SemiBold",
-    width: "100%",
-    fontWeight: "600",
+    fontFamily: 'Roboto_600SemiBold',
+    width: '100%',
+    fontWeight: '600',
     fontSize: Height * 0.02,
   },
   buttonWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Width * 0.06,
     paddingVertical: Height * 0.015,
   },
   icon: {
-    position: "absolute",
+    position: 'absolute',
     right: Width * 0.045,
     color: Color.Black,
     fontSize: Height * 0.028,

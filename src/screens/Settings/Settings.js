@@ -15,7 +15,6 @@ import CustomStatsBar from '../../components/CustomStatsBar';
 
 export default function Settings() {
   const CartActions = useCartStateActions();
-
   const userActions = useUserStateActions();
   const navigation = useNavigation();
   const userstate = useUserState();

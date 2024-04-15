@@ -1,13 +1,13 @@
-import React from "react";
-import { StyleSheet, View, Pressable, Dimensions } from "react-native";
-import { FontAwesome, Ionicons } from "react-native-vector-icons";
-import Color from "../../assets/colors/Color";
-import { screenHeight, screenWidth } from "../utils/ScreenDimensions";
+import React from 'react';
+import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
+import { FontAwesome, Ionicons } from 'react-native-vector-icons';
+import Color from '../../assets/colors/Color';
+import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
 
 export default function AddButton(props) {
   return (
     <>
-      {props.activeScreen === "bottomTab" ? (
+      {props.activeScreen === 'bottomTab' ? (
         <Pressable
           style={styles.tabStyle}
           android_ripple={{ color: Color.LightGrey, borderless: true }}
@@ -36,41 +36,41 @@ export default function AddButton(props) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    position: "absolute",
-    bottom: "12%",
+    position: 'absolute',
+    bottom: '12%',
     paddingHorizontal: 17,
-    marginLeft: "75%",
+    marginLeft: '75%',
   },
   addPost: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: Color.Blue,
     borderRadius: screenHeight * 0.1,
     width: screenWidth * 0.15,
     height: screenHeight * 0.07,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   tabStyle: {
-    alignContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    alignItems: 'center',
   },
   tabCart: {
-    alignContent: "center",
-    alignItems: "center",
-    borderRadius: Dimensions.get("screen").height * 0.1,
+    alignContent: 'center',
+    alignItems: 'center',
+    borderRadius: Dimensions.get('screen').height * 0.1,
     padding: 17,
     marginTop: 0,
   },
   tabText: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     marginTop: 2,
     fontSize: 13,
     color: Color.Grey,
   },
   activeTabText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 13,
     color: Color.Grey,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
 });

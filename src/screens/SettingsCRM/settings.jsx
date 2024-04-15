@@ -6,9 +6,15 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../../../CONSTANTS.js';
-import { Entypo } from 'react-native-vector-icons';
+import {
+  Entypo,
+  MaterialCommunityIcons,
+  AntDesign,
+  EvilIcons,
+  FontAwesome,
+} from 'react-native-vector-icons';
 import { IconButton, Avatar } from 'react-native-paper';
 import { useUserState, useUserStateActions } from './../../slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -16,13 +22,22 @@ import HeaderNormal from '../../components/HeaderNormal.js';
 import Color from '../../../assets/colors/Color';
 import { useCartStateActions } from '../../slices/cartSlice.js';
 import axios from 'axios';
+import * as Contacts from 'expo-contacts';
+import {
+  useContactState,
+  useContactsStateActions,
+} from '../../slices/contactslice.js';
+import { screenWidth } from '../../utils/ScreenDimensions.js';
 function ProfileSettings(props) {
   const userState = useUserState();
   const navigation = useNavigation();
   const CartActions = useCartStateActions();
-
+  const contactstateactions = useContactsStateActions();
   const userActions = useUserStateActions();
   const userstate = useUserState();
+  const [contacts, setcontacts] = useState([]);
+  const contactstate = useContactState();
+  console.log(contactstate?.resolvedContacts?.length, 'contact');
 
   const Logout = () => {
     //delete the expo token from database
@@ -53,6 +68,57 @@ function ProfileSettings(props) {
   const handleSupport = () => {
     props.navigation.navigate('Support');
   };
+
+  const handleInviteUser = () => {
+    props.navigation.navigate('InviteUsers');
+  };
+
+  useEffect(() => {
+    // Check if contactstate?.result?.length is zero
+    if (!contactstate?.resolvedContacts?.length) {
+      const fetchContacts = async () => {
+        try {
+          const { status } = await Contacts.requestPermissionsAsync({});
+
+          if (status !== 'granted') {
+            console.log('Permission not granted');
+            return;
+          }
+
+          const { data } = await Contacts.getContactsAsync();
+
+          if (data.length === 0) {
+            console.log('No contacts found');
+            return;
+          }
+
+          const resolvedContacts = [];
+
+          // Iterate over the array and extract name and phoneNumber
+          for (let i = 0; i < data.length; i++) {
+            const contact = data[i];
+            if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+              resolvedContacts.push({
+                name: contact.name,
+                phoneNumber: contact.phoneNumbers[0].number,
+              });
+            }
+          }
+
+          // Sort the result array alphabetically by name
+          resolvedContacts.sort((a, b) => a.name.localeCompare(b.name));
+
+          // Set the sorted result into state
+          contactstateactions.setContacts(resolvedContacts);
+        } catch (err) {
+          console.log('Error fetching contacts:', err);
+        }
+      };
+
+      fetchContacts();
+    }
+  }, []);
+
   return (
     <View style={styles.body}>
       <HeaderNormal title="Profile Settings" />
@@ -154,6 +220,38 @@ function ProfileSettings(props) {
             style={styles.chevronIcon}
           />
         </Pressable>
+        <View
+          style={{
+            paddingHorizontal: screenWidth * 0.01,
+          }}
+        >
+          <Pressable
+            android_ripple={{ color: Color.LightGrey }}
+            onPress={handleInviteUser}
+            style={styles.row}
+          >
+            <FontAwesome
+              name="user-circle-o"
+              color={Color.Black}
+              size={20}
+              style={{
+                ...styles.leftIcons,
+                // backgroundColor: 'red',
+                padding: 6,
+                borderRadius: 60,
+              }}
+            />
+            <View style={{ paddingLeft: 4 }}>
+              <Text style={styles.listText}>Invite Users</Text>
+            </View>
+            <Entypo
+              name="chevron-small-right"
+              size={25}
+              color={Color.Black}
+              style={styles.chevronIcon}
+            />
+          </Pressable>
+        </View>
         <Pressable
           android_ripple={{ color: Color.LightGrey }}
           onPress={Logout}

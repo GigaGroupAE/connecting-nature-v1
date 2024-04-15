@@ -30,6 +30,10 @@ import GroupMembersList from '../../components/GroupMembersList';
 import { axiosInstance } from '../../../axiosInstance';
 import { useQuery } from 'react-query';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
+import BiddingGroup from '../../components/BiddingGroup';
+import { fetchChannels } from '../../utils/BiddingChannel';
+import NotificationIcon from '../../components/SVG/NotificationsIcon';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -47,6 +51,7 @@ export default function AdminHome(props) {
   const [visible, setVisible] = React.useState(false);
   const [isChatListOpen, setisChatListOpen] = useState({});
   const [groupDetails, setgroupDetails] = useState('');
+  const [isBiddingOpen, setisBiddingOpen] = useState(false);
 
   const showModal = useCallback(() => {
     setVisible(true);
@@ -70,6 +75,8 @@ export default function AdminHome(props) {
     isLoading: loading,
     refetch,
   } = useQuery('groups', fetchGroups);
+
+  const { data: channal = [] } = useQuery('channal', fetchChannels);
 
   //fetch user contacts in this useEffect
   useEffect(() => {
@@ -127,66 +134,6 @@ export default function AdminHome(props) {
     },
   ];
   const navigation = useNavigation();
-  // const selectcontact = (props) => {
-  //   let first = false;
-  //   let second = false;
-  //   let foundGroup = {};
-  //   const individualGroups = groups.filter((group) => {
-  //     return group.type === 'individual';
-  //   });
-  //   individualGroups.map((group) => {
-  //     if (
-  //       group.members[0].phoneNumber === userState.phoneNumber ||
-  //       group.members[0].phoneNumber === props.phoneNumber
-  //     ) {
-  //       first = true;
-  //       if (
-  //         group.members[1].phoneNumber === userState.phoneNumber ||
-  //         group.members[1].phoneNumber === props.phoneNumber
-  //       ) {
-  //         second = true;
-  //         foundGroup = group;
-  //       }
-  //     }
-  //   });
-  //   if (first === true && second === true) {
-  //     setgroup(foundGroup);
-  //     navigation.navigate('ChatCRM', { group: foundGroup });
-  //   } else {
-  //     let members = [];
-  //     members.push({
-  //       name: userState.fullName,
-  //       phoneNumber: userState.phoneNumber,
-  //       type: userState.type,
-  //       photo: userState.profile,
-  //     });
-  //     members.push({
-  //       name: props.fullName,
-  //       phoneNumber: props.phoneNumber,
-  //       type: props.type,
-  //       photo: props.profile,
-  //     });
-  //     const formData = new FormData();
-  //     formData.append('name', userState.fullName);
-  //     formData.append('type', 'individual');
-  //     formData.append('title', 'test');
-  //     formData.append('members', JSON.stringify(members));
-  //     axios
-  //       .post(`${BASE_URL}/groups/creategroup`, formData, {
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //           Accept: 'application/json',
-  //           'auth-token': userState.token,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         setgroup(res.data);
-  //         navigation.navigate('ChatCRM', { group: res.data });
-  //       })
-  //       .catch((e) => console.log(e));
-  //   }
-  // };
-
   useFocusEffect(
     React.useCallback(() => {
       refetch();
@@ -260,7 +207,9 @@ export default function AdminHome(props) {
       [id]: !isChatListOpen[id],
     });
     setgroupDetails(group);
+    setisBiddingOpen(false);
   };
+
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
@@ -269,12 +218,22 @@ export default function AdminHome(props) {
           backgroundColor: Color.White,
           borderBottomColor: Color.LightGrey,
           borderBottomWidth: Width * 0.005,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+
+          paddingHorizontal: screenWidth * 0.06,
         }}
       >
         <Image
           source={require('../../../assets/crmlogo.png')}
           style={styles.logo}
         />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('BidddingNotifications')}
+        >
+          <NotificationIcon />
+        </TouchableOpacity>
       </View>
       <ScrollView
         style={{ height: '93%' }}
@@ -300,6 +259,45 @@ export default function AdminHome(props) {
           />
           <View>
             <Text style={styles.groupHeading}>GROUPS</Text>
+            <View style={{ paddingHorizontal: Width * 0.045 }}>
+              <Text
+                style={{
+                  ...styles.titleStyle,
+                  paddingHorizontal: Width * 0.05,
+                  marginVertical: Height * 0.01,
+                }}
+              >
+                Bidding Channel
+              </Text>
+              <FlatList
+                data={channal}
+                renderItem={({ item }) => {
+                  return (
+                    <View>
+                      <View style={styles.List}>
+                        <TouchableOpacity
+                          // onPress={() => navigation.navigate('BidChannal', item)}
+                          onPress={() => setisBiddingOpen(!isBiddingOpen)}
+                        >
+                          <View style={styles.groupContainer}>
+                            <Text style={styles.groupTitle}>{item.title}</Text>
+                            <MaterialIcons
+                              name={
+                                isBiddingOpen
+                                  ? 'keyboard-arrow-up'
+                                  : 'keyboard-arrow-down'
+                              }
+                              style={{ fontSize: scale(20) }}
+                            />
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                      {isBiddingOpen && <BiddingGroup item={item} />}
+                    </View>
+                  );
+                }}
+              />
+            </View>
             <FlatList
               data={sections}
               renderItem={({ item, index }) => (
@@ -308,7 +306,7 @@ export default function AdminHome(props) {
                     <List.Accordion
                       title={item.title}
                       key={index}
-                      titleStyle={{ color: 'black' }}
+                      titleStyle={styles.titleStyle}
                       expanded
                       style={{
                         icon: {
@@ -672,16 +670,13 @@ const styles = StyleSheet.create({
     borderColor: Color.LightGrey,
     backgroundColor: Color.White,
     shadowColor: Color.Black,
-
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
-
     position: 'relative',
     zIndex: 900,
     width: '90%',
@@ -717,30 +712,26 @@ const styles = StyleSheet.create({
     color: Color.Black,
   },
   groupHeading: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: Height * 0.023,
+    fontFamily: 'Roboto_700Bold',
+    fontSize: Height * 0.022,
     fontWeight: '600',
     marginLeft: Width * 0.059,
     marginTop: Height * 0.015,
     color: Color.Black,
   },
   List: {
-    borderColor: Color.VeryLightGrey,
     marginBottom: Height * 0.01,
-    backgroundColor: Color.White,
     borderRadius: 10,
-    marginVertical: Height * 0.007,
+    marginVertical: Height * 0.006,
     borderColor: Color.LightGrey,
     backgroundColor: Color.White,
     shadowColor: Color.Black,
-
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
     position: 'relative',
     zIndex: 900,
@@ -758,9 +749,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(12),
   },
   groupTitle: {
-    fontSize: Height * 0.02,
-    fontFamily: 'Roboto',
-    paddingVertical: Height * 0.02,
+    fontSize: Height * 0.017,
+    fontFamily: 'Roboto_500Medium',
+    paddingVertical: Height * 0.018,
     marginLeft: Width * 0.02,
     color: Color.Black,
   },
@@ -770,7 +761,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   logo: {
-    marginLeft: Width * 0.05,
     width: 90,
     height: 58,
     resizeMode: 'contain',
@@ -788,7 +778,12 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     color: Color.Blue,
-    fontSize: scale(15),
+    fontSize: screenHeight * 0.018,
     fontFamily: 'Roboto_700Bold',
+  },
+  titleStyle: {
+    color: 'black',
+    fontFamily: 'Roboto_700Bold',
+    fontSize: screenHeight * 0.018,
   },
 });

@@ -109,10 +109,9 @@ const DesignCategoryModal = ({
 
   const handleImagePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-
       quality: 1,
       allowsMultipleSelection: true,
+      selectionLimit: 10,
     });
 
     if (!result.canceled) {

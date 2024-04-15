@@ -1,15 +1,15 @@
 export const returnCountDown = (toDate) => {
-  let dateEntered = toDate;
-  let now = new Date();
-  let difference = dateEntered.getTime() - now.getTime();
+  const dateEntered = toDate;
+  const now = new Date();
+  const difference = dateEntered.getTime() - now.getTime();
 
   if (difference <= 0) {
-    return '-1'
+    return '-1';
   } else {
-    var seconds = Math.floor(difference / 1000);
-    var minutes = Math.floor(seconds / 60);
-    var hours = Math.floor(minutes / 60);
-    var days = Math.floor(hours / 24);
+    let seconds = Math.floor(difference / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
     hours %= 24;
     minutes %= 60;
@@ -22,4 +22,14 @@ export const returnCountDown = (toDate) => {
       seconds,
     };
   }
+};
+
+export const formatSingleDate = (dateString) => {
+  const date = new Date(dateString);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const formattedHours = hours % 12 || 12;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const period = hours < 12 ? 'am' : 'pm';
+  return `${formattedHours}:${formattedMinutes} ${period}`;
 };

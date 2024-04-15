@@ -1,101 +1,90 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
-  Alert,
   Dimensions,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
-  Text,
   View,
-} from "react-native";
+} from 'react-native';
 
 //state import
-import { useUserState } from "../../slices/userSlice";
 
 //network imports
 
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import ButtonMain from "../../components/ButtonMain";
-import SelectList from "react-native-dropdown-select-list";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import KeybordWrapper from "../../components/KeyboardWrappers";
-import { useAddRequestMutation } from "../../slices/AccoutUpgradeApi";
-import { useStateContext } from "../../contexts/ContextProvider";
-import InputTextLink from "./InputTextLink";
+import Color from '../../../assets/colors/Color';
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+import SelectList from 'react-native-dropdown-select-list';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import HeaderNormal from '../../components/HeaderNormal';
+import { screenWidth } from '../../utils/ScreenDimensions';
+import CelebrityForm from '../../components/CelebrityForm';
+import SpecialVolunteerForm from '../../components/SpecialVolunteerForm';
+import VendorForm from '../../components/VendorForm';
+
+const width = Dimensions.get('screen').width;
 
 const UpgradeAccountScreen = () => {
-  const navigation = useNavigation();
-  const userState = useUserState();
-  const { setLoading, showSnackbar } = useStateContext();
-
-  const [facebookProfile, setFacebookProfile] = useState("");
-  const [instagramProfile, setInstaProfile] = useState("");
-  const [twitterProfile, setTwitterProfile] = useState("");
-
   const [selected, setSelected] = useState(null);
 
-  const [addRequest] = useAddRequestMutation();
-
   const groupType = [
-    { key: "1", value: "celebrity" },
-    { key: "2", value: "volunteer" },
+    { key: '1', value: 'Celebrity' },
+    { key: '2', value: 'Special Volunteer' },
+    { key: '3', value: 'Vendor' },
   ];
 
-  const submitRequest = async () => {
-    let requestedRole = selected === "1" ? "celebrity" : "volunteer";
-    let body = {
-      facebookProfile,
-      instagramProfile,
-      twitterProfile,
-      requestedRole,
-    };
+  // const submitRequest = async () => {
+  //   let requestedRole = selected === '1' ? 'celebrity' : 'volunteer';
+  //   let body = {
+  //     facebookProfile,
+  //     instagramProfile,
+  //     twitterProfile,
+  //     requestedRole,
+  //   };
 
-    if (
-      requestedRole === "celebrity" &&
-      (instagramProfile.length <= 0 ||
-        facebookProfile.length <= 0 ||
-        twitterProfile.length <= 0)
-    ) {
-      Alert.alert("All social links are required");
-      return;
-    }
+  //   if (
+  //     requestedRole === 'celebrity' &&
+  //     (instagramProfile.length <= 0 ||
+  //       facebookProfile.length <= 0 ||
+  //       twitterProfile.length <= 0)
+  //   ) {
+  //     Alert.alert('All social links are required');
+  //     return;
+  //   }
 
-    try {
-      setLoading(true);
-      const { data } = await addRequest({
-        token: userState.token,
-        body,
-      });
-      if (data.success) {
-        showSnackbar("Request submitted successfully");
-        navigation.goBack();
-      }
-    } catch (error) {
-      console.log("error is ", error);
-      Alert.alert(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     setLoading(true);
+  //     const { data } = await addRequest({
+  //       token: userState.token,
+  //       body,
+  //     });
+  //     if (data.success) {
+  //       showSnackbar('Request submitted successfully');
+  //       navigation.goBack();
+  //     }
+  //   } catch (error) {
+  //     console.log('error is ', error);
+  //     Alert.alert(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeybordWrapper>
+      <HeaderNormal title="Account Upgradation" />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
-            height: height * 0.9,
             backgroundColor: Color.White,
             flex: 1,
           }}
         >
-          <View
+          {/* <View
             style={{
               height: height * 0.27,
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
               backgroundColor: Color.Blue,
             }}
           >
@@ -103,70 +92,66 @@ const UpgradeAccountScreen = () => {
               style={{
                 fontSize: 25,
                 color: Color.White,
-                fontWeight: "500",
+                fontWeight: '500',
               }}
             >
               Account Upgradation
             </Text>
-          </View>
+          </View> */}
           <View
             style={{
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
-              marginTop: -20,
+              // marginTop: -20,
               backgroundColor: Color.White,
-              height: height * 0.6,
             }}
           >
             <View
               style={{
-                marginLeft: 40,
-                width: width * 0.6,
+                // marginLeft: 40,
+                width: width * 0.9,
+                alignSelf: 'center',
               }}
             >
               <SelectList
                 onSelect={() => selected}
-                placeholder={"Account preference"}
+                placeholder="Account preference"
                 setSelected={(val) => {
                   setSelected(val);
                 }}
                 save="value"
                 data={groupType}
                 arrowicon={
-                  <FontAwesome
-                    name="chevron-down"
-                    size={14}
-                    color={"#707070"}
-                  />
+                  <FontAwesome name="chevron-down" size={14} color="#707070" />
                 }
                 searchicon={
-                  <FontAwesome name="search" size={14} color={"#707070"} />
+                  <FontAwesome name="search" size={14} color="#707070" />
                 }
                 search={false}
                 boxStyles={{
                   marginTop: 15,
                   borderRadius: 8,
-                  backgroundColor: "white",
+                  backgroundColor: 'white',
                   borderWidth: 0,
                   elevation: 8,
-                  shadowColor: "#707070",
+                  shadowColor: '#707070',
                   paddingVertical: 15,
-                  color: "#707070",
-                  width: width * 0.8,
+                  color: '#707070',
+                  width: width * 0.9,
                 }} //override default styles
                 inputStyles={{
                   fontSize: 16,
-                  fontFamily: "Roboto_500Medium",
+                  fontFamily: 'Roboto_500Medium',
                   color: Color.LightGrey,
                 }}
                 dropdownStyles={{
                   borderWidth: 0,
                   backgroundColor: Color.White,
-                  width: width * 0.8,
-                  shadowColor: "#433",
+                  width: width * 0.9,
+                  shadowColor: '#433',
                   elevation: 8,
                   fontSize: 16,
-                  fontFamily: "Roboto_500Medium",
+                  fontFamily: 'Roboto_500Medium',
                   color: Color.LightGrey,
                   // flex: 1,
                   // height: 100,
@@ -179,8 +164,8 @@ const UpgradeAccountScreen = () => {
                 } //default selected option
               />
             </View>
-            {selected === "1" ? (
-              <View style={{ alignItems: "center" }}>
+            {/* {selected === '1' ? (
+              <View style={{ alignItems: 'center' }}>
                 <View style={{ width: width * 0.8 }}>
                   <InputTextLink
                     title="Paste your facebook link"
@@ -204,15 +189,29 @@ const UpgradeAccountScreen = () => {
                 </View>
               </View>
             ) : (
-              ""
+              ''
+            )} */}
+
+            {selected === '1' && (
+              <View style={styles.contentContainer}>
+                <CelebrityForm />
+              </View>
             )}
 
-            <View style={{ alignItems: "center" }}>
-              <ButtonMain title="Submit Request" callback={submitRequest} />
-            </View>
+            {selected === '2' && (
+              <View style={styles.contentContainer}>
+                <SpecialVolunteerForm />
+              </View>
+            )}
+
+            {selected === '3' && (
+              <View style={styles.contentContainer}>
+                <VendorForm />
+              </View>
+            )}
           </View>
         </View>
-      </KeybordWrapper>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -220,8 +219,13 @@ const UpgradeAccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Color.White,
   },
-  InputContainer: {},
+  contentContainer: {
+    width: screenWidth * 0.9,
+    alignSelf: 'center',
+    flex: 1,
+  },
 });
 
 export default UpgradeAccountScreen;

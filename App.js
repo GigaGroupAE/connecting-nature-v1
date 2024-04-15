@@ -116,12 +116,22 @@ import DesignCategory from './src/screens/Decorations/DesignCategory';
 import Decoration from './src/screens/Decorations/Decoration';
 import DecorationProductDetails from './src/screens/Decorations/DecorationProductDetails';
 import SavedDecoration from './src/screens/DecorationSaved/SavedDecoration';
+import BiddingChannel from './src/screens/BidChannal/BiddingChannel';
+import ChannalSetting from './src/screens/BidChannal/ChannalSetting';
+import ArchivedBidding from './src/screens/BidChannal/ArchivedBidding';
+import SubscriptionRequests from './src/screens/BidChannal/SubscriptionRequests';
+import BidddingNotifications from './src/screens/notification/BidddingNotifications';
+import BiddingPropertyDetails from './src/screens/BidChannal/PropertyDetails';
+import RequestAddProperty from './src/screens/BidChannal/RequestAddProperty';
 const customFonts = {
   Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
   Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
   Roboto_500Medium: require('./assets/fonts/Roboto-Medium.ttf'),
   Roboto_600SemiBold: require('./assets/fonts/Roboto-Bold.ttf'),
   Roboto_700Bold: require('./assets/fonts/Roboto-Bold.ttf'),
+  Poppins_400Regular: require('./assets/fonts/poppins-regular.ttf'),
+  Poppins_500Medium: require('./assets/fonts/poppins-medium.ttf'),
+  Poppins_700Bold: require('./assets/fonts/poppins-bold.ttf'),
 };
 
 const Stack = createStackNavigator();
@@ -211,6 +221,21 @@ function Main() {
         <Stack.Screen name="DesignType" component={DesignType} />
         <Stack.Screen name="AddDecorProduct" component={AddDecorProduct} />
         <Stack.Screen name="DesignCategory" component={DesignCategory} />
+        <Stack.Screen name="ArchivedBidding" component={ArchivedBidding} />
+        <Stack.Screen name="subscriptionReq" component={SubscriptionRequests} />
+        <Stack.Screen
+          name="requestAddProperty"
+          component={RequestAddProperty}
+        />
+        <Stack.Screen
+          name="projectdetails"
+          component={BiddingPropertyDetails}
+        />
+
+        <Stack.Screen
+          name="BidddingNotifications"
+          component={BidddingNotifications}
+        />
         <Stack.Screen
           name="CreateCampaignPost"
           component={CreateCampaignPost}
@@ -241,6 +266,9 @@ function Main() {
         <Stack.Screen name="BlockedUsers" component={BlockedUsers} />
         <Stack.Screen name="DecorationClient" component={Decoration} />
         <Stack.Screen name="SavedDecoration" component={SavedDecoration} />
+        <Stack.Screen name="BidChannal" component={BiddingChannel} />
+        <Stack.Screen name="channelSetting" component={ChannalSetting} />
+
         <Stack.Screen
           name="DecorationProductDetails"
           component={DecorationProductDetails}

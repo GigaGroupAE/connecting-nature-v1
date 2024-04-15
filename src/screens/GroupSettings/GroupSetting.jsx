@@ -315,7 +315,7 @@ function GroupSettings(props) {
 
             <Avatar.Image
               size={Dimensions.get('screen').height * 0.13}
-              style={{ backgroundColor: '#707070' }}
+              style={{ backgroundColor: 'white' }}
               source={
                 groupImage === null
                   ? {

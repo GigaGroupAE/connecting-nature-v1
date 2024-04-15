@@ -7,8 +7,10 @@ import Color from '../../../assets/colors/Color';
 import { useUserState } from '../../slices/userSlice';
 import { Image } from 'react-native';
 import { scale } from 'react-native-size-matters';
-import { screenHeight } from '../../utils/ScreenDimensions';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AddPostSvg from '../SVG/AddPostSvg';
+import StoryIcon from '../SVG/StoryIcon';
 
 const CreatePost = (props) => {
   const navigation = useNavigation();
@@ -39,21 +41,28 @@ const CreatePost = (props) => {
                 props.closeModal();
               }}
             >
-              <Image
+              <StoryIcon />
+              {/* <Image
                 source={require('../../../assets/story.png')}
                 style={styles.imageStyle}
-              />
+              /> */}
             </TouchableOpacity>
           </View>
         )}
 
         <View style={styles.createPost}>
           <Text style={styles.text}>Create New Post</Text>
+          <TouchableOpacity
+            style={styles.addPostContainer}
+            onPress={() => props.onAddPost()}
+          >
+            <AddPostSvg />
+          </TouchableOpacity>
         </View>
-        <AddButton
+        {/* <AddButton
           clicktrigger={() => props.onAddPost()}
           activeScreen={'CreatePost'}
-        />
+        /> */}
       </View>
     </Modal>
   );
@@ -80,9 +89,13 @@ const styles = StyleSheet.create({
   },
   createPost: {
     position: 'absolute',
-    bottom: '14.5%',
-    right: '38%',
-    alignSelf: 'flex-end',
+    right: screenWidth * 0.13,
+    bottom: screenHeight * 0.15,
+    width: screenWidth * 0.52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 17,
+    justifyContent: 'space-between',
   },
   cancelIcon: {
     alignSelf: 'flex-end',
@@ -92,7 +105,7 @@ const styles = StyleSheet.create({
   addPost: {
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: Color.LightGrey,
+    // backgroundColor: Color.LightGrey,
     borderRadius: 50,
     padding: 17,
     width: 58,
@@ -107,6 +120,12 @@ const styles = StyleSheet.create({
   imageStyle: {
     width: scale(28),
     height: scale(28),
+  },
+  addPostContainer: {
+    // backgroundColor: 'red',
+    // position: 'absolute',
+    // right: screenWidth * 0.1,
+    // bottom: screenHeight * 0.12,
   },
 });
 

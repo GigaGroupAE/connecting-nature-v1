@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { useSelector, shallowEqual } from "react-redux";
-import { useActions } from "../hooks/useAction";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useSelector, shallowEqual } from 'react-redux';
+import { useActions } from '../hooks/useAction';
 
 export const initialState = {
   contacts: [],
@@ -8,7 +8,7 @@ export const initialState = {
 };
 
 export const contactslice = createSlice({
-  name: "contacts",
+  name: 'contacts',
   initialState,
   reducers: {
     resetState: () => {

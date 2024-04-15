@@ -4,37 +4,33 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { Pressable } from "react-native";
-import { MaterialCommunityIcons, AntDesign } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useNavigation } from "@react-navigation/native";
-import { Image } from "react-native";
-import { scale } from "react-native-size-matters";
+  Pressable,
+  Image,
+} from 'react-native';
+import React from 'react';
+import { AntDesign } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useNavigation } from '@react-navigation/native';
+import { scale } from 'react-native-size-matters';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const AdminHomeManegeTab = ({ camapgins, loading }) => {
   const navigation = useNavigation();
-  const handleInviteUser = () => {
-    navigation.navigate("InviteUsers");
-  };
+  // const handleInviteUser = () => {
+  //   navigation.navigate('InviteUsers');
+  // };
   const handleVerificationReq = () => {
-    navigation.navigate("UpgradeRequestsScreen");
-  };
-
-  const handleDoDay = () => {
-    navigation.navigate("dodaylist", camapgins);
+    navigation.navigate('UpgradeRequestsScreen');
   };
 
   return (
-    <View style={{ marginBottom: "23%" }}>
+    <View style={{ marginBottom: '23%' }}>
       <View style={styles.bodyContainer}>
         <Pressable style={styles.upgradReq} onPress={handleVerificationReq}>
           <Image
-            source={require("../../../assets/updatereq.png")}
+            source={require('../../../assets/updatereq.png')}
             style={styles.image}
           />
           <Text style={styles.reqText}>Verification Request</Text>
@@ -44,7 +40,7 @@ const AdminHomeManegeTab = ({ camapgins, loading }) => {
           />
         </Pressable>
       </View>
-      <View style={styles.bodyContainer}>
+      {/* <View style={styles.bodyContainer}>
         <Pressable style={styles.upgradReq} onPress={handleInviteUser}>
           <MaterialCommunityIcons
             name="account-arrow-up-outline"
@@ -56,7 +52,7 @@ const AdminHomeManegeTab = ({ camapgins, loading }) => {
             style={{ fontSize: 20, color: Color.Black }}
           />
         </Pressable>
-      </View>
+      </View> */}
 
       <View style={styles.bodyContainer}>
         <TouchableOpacity
@@ -65,7 +61,7 @@ const AdminHomeManegeTab = ({ camapgins, loading }) => {
           // onPress={handleDoDay}
         >
           <Image
-            source={require("../../../assets/portal.png")}
+            source={require('../../../assets/portal.png')}
             style={styles.image}
           />
 
@@ -84,26 +80,26 @@ export default AdminHomeManegeTab;
 
 const styles = StyleSheet.create({
   upgradReq: {
-    flexDirection: "row",
-    alignSelf: "center",
-    width: "100%",
+    flexDirection: 'row',
+    alignSelf: 'center',
+    width: '100%',
     paddingHorizontal: Width * 0.025,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   reqText: {
     paddingVertical: Height * 0.022,
     marginLeft: Width * 0.025,
     fontSize: Height * 0.02,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     flex: 1,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Black,
-    fontWeight: "400",
+    fontWeight: '400',
   },
   groupContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   bodyContainer: {
     borderColor: Color.VeryLightGrey,
@@ -111,8 +107,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
     borderRadius: 10,
     marginVertical: Height * 0.007,
-    borderColor: Color.LightGrey,
-    backgroundColor: Color.White,
     shadowColor: Color.Black,
     shadowOffset: {
       width: 0,
@@ -121,10 +115,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    position: "relative",
+    position: 'relative',
     zIndex: 900,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
   },
   image: {
     width: scale(18),

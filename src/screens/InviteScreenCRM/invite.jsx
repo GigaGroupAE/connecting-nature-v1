@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import { useContactState } from './../../slices/contactslice';
+import {
+  useContactState,
+  useContactsStateActions,
+} from './../../slices/contactslice';
 import Color from '../../../assets/colors/Color';
 import Contact from './contact';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -19,6 +22,7 @@ import CustomStatsBar from '../../components/CustomStatsBar';
 export default function Invite() {
   //const contactstate = useContactsState();
   const [searchQuery, setSearchQuery] = useState('');
+  const contactstateactions = useContactsStateActions();
 
   const onChangeSearch = (query) => setSearchQuery(query);
   const contactstate = useContactState();
@@ -87,7 +91,7 @@ export default function Invite() {
           />
         </Appbar.Header> */}
 
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{}}>
           <Searchbar
             placeholder="Search"
             onChangeText={onChangeSearch}
@@ -120,8 +124,6 @@ const styles = StyleSheet.create({
     //flex: 1,
     flexDirection: 'column',
     backgroundColor: Color.White,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
   },
   // use this attribute with View to create a new row
   row: {
