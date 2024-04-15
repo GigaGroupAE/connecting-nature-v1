@@ -121,6 +121,8 @@ import ChannalSetting from './src/screens/BidChannal/ChannalSetting';
 import ArchivedBidding from './src/screens/BidChannal/ArchivedBidding';
 import SubscriptionRequests from './src/screens/BidChannal/SubscriptionRequests';
 import BidddingNotifications from './src/screens/notification/BidddingNotifications';
+import BiddingPropertyDetails from './src/screens/BidChannal/PropertyDetails';
+import RequestAddProperty from './src/screens/BidChannal/RequestAddProperty';
 const customFonts = {
   Roboto_300Light: require('./assets/fonts/Roboto-Light.ttf'),
   Roboto_400Regular: require('./assets/fonts/Roboto-Regular.ttf'),
@@ -221,6 +223,15 @@ function Main() {
         <Stack.Screen name="DesignCategory" component={DesignCategory} />
         <Stack.Screen name="ArchivedBidding" component={ArchivedBidding} />
         <Stack.Screen name="subscriptionReq" component={SubscriptionRequests} />
+        <Stack.Screen
+          name="requestAddProperty"
+          component={RequestAddProperty}
+        />
+        <Stack.Screen
+          name="projectdetails"
+          component={BiddingPropertyDetails}
+        />
+
         <Stack.Screen
           name="BidddingNotifications"
           component={BidddingNotifications}

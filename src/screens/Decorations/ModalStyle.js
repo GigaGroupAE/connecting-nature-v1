@@ -27,6 +27,9 @@ export const inputstyle = {
   elevation: 3,
   zIndex: 100,
   position: 'relative',
+
+  // paddingVertical:
+  //   Platform.OS === 'ios' ? screenHeight * 0.018 : screenHeight * 0.01,
 };
 
 export const titleStyle = {
@@ -107,4 +110,9 @@ export const iconsContainer = {
 };
 export const icon = {
   fontSize: screenHeight * 0.022,
+};
+
+export const modalTitle = {
+  fontSize: screenHeight * 0.02,
+  fontFamily: 'Roboto_700Bold',
 };

@@ -15,11 +15,11 @@ const ProjectDetails = ({ item, containerStyle }) => {
         </View>
         <View style={styles.details}>
           <BedRoomSvg />
-          <Text style={styles.descriptionTitle}>{item?.bedrooms}</Text>
+          <Text style={styles.descriptionTitle}>{item?.bedrooms} Bedrooms</Text>
         </View>
         <View style={styles.details}>
           <UnitSvg />
-          <Text style={styles.descriptionTitle}>{item?.unit}</Text>
+          <Text style={styles.descriptionTitle}>Unit {item?.unit}</Text>
         </View>
       </View>
     </View>

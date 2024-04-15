@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Modal, Portal } from 'react-native-paper';
 import {
@@ -29,9 +29,14 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { scale } from 'react-native-size-matters';
 import Color from '../../assets/colors/Color';
 import * as ImagePicker from 'expo-image-picker';
-import { createBiddingProject } from '../utils/BiddingChannel';
+import {
+  createBiddingProject,
+  updateBiddingProject,
+} from '../utils/BiddingChannel';
 import { useUserState } from '../slices/userSlice';
 import { useStateContext } from '../contexts/ContextProvider';
+import { BASE_URL } from '../../CONSTANTS';
+import VideoPlayer from 'expo-video-player';
 
 const propertyType = [
   {
@@ -48,14 +53,14 @@ const propertyType = [
   },
 ];
 
-const initialState = {
-  ProjectName: '',
-  PropertyType: 'Select Property Type',
-  unit: '',
-  bedrooms: '',
-  description: '',
-  price: '',
-};
+// const initialState = {
+//   ProjectName:pr '',
+//   PropertyType: 'Select Property Type',
+//   unit: '',
+//   bedrooms: '',
+//   description: '',
+//   price: '',
+// };
 
 const inputErrors = {
   ProjectName: '',
@@ -64,19 +69,27 @@ const inputErrors = {
   description: '',
 };
 
-const AddPropertyModal = ({
+const EditBiddingProjectModal = ({
   isVisible,
-  item,
   setisVisible,
-  screen,
-  currentMember,
+  project,
+  refetch,
 }) => {
-  const userState = useUserState();
-  const [propertyImage, setpropertyImage] = useState(null);
+  const [propertyImage, setpropertyImage] = useState([]);
   const [error, seterror] = useState(inputErrors);
   const [isType, setisType] = useState(false);
-  const [inputs, setinputs] = useState(initialState);
+  const [editProductImages, seteditProductImages] = useState([]);
   const { showSnackbar } = useStateContext();
+
+  const initialState = {
+    ProjectName: project?.ProjectName,
+    PropertyType: project?.PropertyType,
+    unit: project?.unit,
+    bedrooms: project?.bedrooms,
+    description: project?.description,
+    price: project?.price,
+  };
+  const [inputs, setinputs] = useState(initialState);
 
   const [isLoading, setisLoading] = useState(false);
   const hideModal = () => {
@@ -133,36 +146,30 @@ const AddPropertyModal = ({
       return;
     }
     setisLoading(true);
-    const from = userState?.id;
-    let channel;
-    if (screen === 'setting') {
-      channel = item[0]?._id;
-    } else {
-      channel = item?._id;
-    }
 
-    let status = 'Starting Soon';
-
-    if (screen === 'setting' && currentMember[0]?.privilege === 'member') {
-      status = 'Under Review';
-    }
     try {
-      await createBiddingProject(inputs, from, channel, propertyImage, status);
-      if (screen === 'setting' && currentMember[0]?.privilege === 'member') {
-        showSnackbar(
-          'Property Added Successfully! Your listing is under review. Thank you!',
-        );
-      } else {
-        showSnackbar('Property Added successfully');
-      }
-      setinputs(initialState);
-      setpropertyImage(null);
+      await updateBiddingProject(inputs, propertyImage, project?._id);
+
       setisLoading(false);
       setisVisible(false);
-    } catch {
+      setinputs(initialState);
+      setpropertyImage([]);
+      refetch();
+    } catch (error) {
       setisLoading(false);
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    const images = project?.image
+      ?.filter((imageItem) => imageItem?.mimetype === 'image/jpeg')
+      .map((imageItem) => ({
+        uri: `${BASE_URL}/images/${imageItem?.filename}`,
+      }));
+
+    seteditProductImages(images);
+  }, []);
 
   return (
     <Portal>
@@ -275,17 +282,178 @@ const AddPropertyModal = ({
               <Text style={styles.inputError}>{error?.price}</Text>
             )}
 
-            <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
-              {propertyImage ? (
-                <Image
-                  source={{ uri: propertyImage[0]?.uri }}
-                  style={styles.image}
-                />
-              ) : (
-                <CameraSvg />
-              )}
+            <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+              <Image
+                source={{ uri: editProductImages[0]?.uri }}
+                style={styles.image}
+              />
             </TouchableOpacity>
-            {propertyImage && (
+            <View>
+              {propertyImage?.length === 0 ? (
+                <View>
+                  {propertyImage && (
+                    <View
+                      style={{
+                        maxHeight: screenHeight * 0.09,
+                        width: '100%',
+                        paddingHorizontal: screenWidth * 0.04,
+                      }}
+                    >
+                      <FlatList
+                        data={editProductImages}
+                        animationEnabled={false}
+                        renderItem={({ item, index }) => {
+                          // Skip rendering the first item
+
+                          if (index === 0) {
+                            return null;
+                          }
+                          return (
+                            <View>
+                              <Image
+                                source={{ uri: item?.uri }}
+                                style={{
+                                  width: screenWidth * 0.18,
+                                  height: screenHeight * 0.05,
+                                  resizeMode: 'cover',
+                                  borderRadius: 4,
+                                }}
+                              />
+                            </View>
+                          );
+                        }}
+                        horizontal
+                        contentContainerStyle={{
+                          gap: 10,
+                          marginVertical: '2%',
+                        }}
+                        showsHorizontalScrollIndicator={false}
+                      />
+                    </View>
+                  )}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: screenWidth * 0.8,
+                      justifyContent: 'center',
+                      gap: 10,
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{ ...buttonContainer, width: screenWidth * 0.39 }}
+                      onPress={handleSubmit}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <Text style={buttonTitle}>Save</Text>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        ...buttonContainer,
+                        width: screenWidth * 0.39,
+                        backgroundColor: Color.White,
+                        borderWidth: 1,
+                      }}
+                      onPress={() => setisVisible(false)}
+                    >
+                      <Text
+                        style={{
+                          ...editButtonTitle,
+                          fontFamily: 'Roboto_700Bold',
+                        }}
+                      >
+                        Discard
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <View>
+                  {propertyImage && (
+                    <View
+                      style={{
+                        maxHeight: screenHeight * 0.09,
+                        width: '100%',
+                        paddingHorizontal: screenWidth * 0.04,
+                      }}
+                    >
+                      <FlatList
+                        data={propertyImage}
+                        animationEnabled={false}
+                        renderItem={({ item, index }) => {
+                          // Skip rendering the first item
+
+                          if (index === 0) {
+                            return null;
+                          }
+                          return (
+                            <View>
+                              <Image
+                                source={{ uri: item?.uri }}
+                                style={{
+                                  width: screenWidth * 0.18,
+                                  height: screenHeight * 0.05,
+                                  resizeMode: 'cover',
+                                  borderRadius: 4,
+                                }}
+                              />
+                            </View>
+                          );
+                        }}
+                        horizontal
+                        contentContainerStyle={{
+                          gap: 10,
+                          marginVertical: '2%',
+                        }}
+                        showsHorizontalScrollIndicator={false}
+                      />
+                    </View>
+                  )}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: screenWidth * 0.8,
+                      justifyContent: 'center',
+                      gap: 10,
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{ ...buttonContainer, width: screenWidth * 0.39 }}
+                      onPress={handleSubmit}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <Text style={buttonTitle}>Save</Text>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        ...buttonContainer,
+                        width: screenWidth * 0.39,
+                        backgroundColor: Color.White,
+                        borderWidth: 1,
+                      }}
+                      onPress={() => setisVisible(false)}
+                    >
+                      <Text
+                        style={{
+                          ...editButtonTitle,
+                          fontFamily: 'Roboto_700Bold',
+                        }}
+                      >
+                        Discard
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
+            {/* {propertyImage && (
               <View
                 style={{
                   maxHeight: screenHeight * 0.09,
@@ -298,6 +466,7 @@ const AddPropertyModal = ({
                   animationEnabled={false}
                   renderItem={({ item, index }) => {
                     // Skip rendering the first item
+
                     if (index === 0) {
                       return null;
                     }
@@ -355,7 +524,7 @@ const AddPropertyModal = ({
                   Discard
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </Modal>
@@ -363,7 +532,7 @@ const AddPropertyModal = ({
   );
 };
 
-export default AddPropertyModal;
+export default EditBiddingProjectModal;
 
 const styles = StyleSheet.create({
   buttonTitle: {

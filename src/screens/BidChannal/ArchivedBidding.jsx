@@ -22,10 +22,11 @@ import {
 import ProjectDetails from '../../components/ProjectDetails';
 import WinerSvg from '../../components/SVG/Winner';
 import * as Print from 'expo-print';
-import gigalogo from '../../../assets/giga.png';
 
 import * as Sharing from 'expo-sharing';
-import HomeSvg from '../../components/SVG/HomeSvg';
+
+import ArchivedBiddingSkeletn from '../../components/Skeletns/ArchivedBiddingSkeletn';
+import NoDataIndicater from '../NoDataIndicater';
 
 const ArchivedBidding = () => {
   const {
@@ -36,7 +37,7 @@ const ArchivedBidding = () => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery(
-    'bidprojects',
+    'archivedProject',
     ({ pageParam = 1 }) => fetchArchiveProjects({ pageParam }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -63,7 +64,6 @@ const ArchivedBidding = () => {
   //   'https://thegigamall.com/wp-content/uploads/2021/06/Giga-Mall-World-Trade-Center-Islamabad.png';
 
   const handleDownload = async (item) => {
-    console.log(item);
     try {
       // Construct HTML content dynamically based on item data
       const htmlContent = `
@@ -236,7 +236,19 @@ th {
     <View style={styles.container}>
       <HeaderNormal title="Archived Biddings" />
       <View style={styles.contentContainer}>
-        {!isLoading && (
+        {!isLoading && data?.pages.flatMap((page) => page.data.length) < 1 && (
+          <View style={{ width: '90%', alignSelf: 'center' }}>
+            <NoDataIndicater
+              title="No Archived Properties"
+              subTitle="There are no archived properties available at the moment. Please check back later for archived property listings."
+            />
+          </View>
+        )}
+        {isLoading ? (
+          <View>
+            <ArchivedBiddingSkeletn />
+          </View>
+        ) : (
           <FlatList
             data={data?.pages.flatMap((page) => page.data) || []}
             keyExtractor={(item) => item._id}
@@ -285,7 +297,12 @@ th {
 
                   <View style={styles.detailsContainer}>
                     <TouchableOpacity
-                      style={{ ...buttonContainer, width: '48%', marginTop: 0 }}
+                      style={{
+                        ...buttonContainer,
+                        width: '48%',
+                        marginTop: 0,
+                        paddingVertical: screenHeight * 0.012,
+                      }}
                       onPress={() => handleDownload(item)}
                     >
                       <Text style={buttonTitle}>Download CSV</Text>
@@ -298,6 +315,7 @@ th {
                         marginTop: 0,
                         backgroundColor: Color.White,
                         borderWidth: 1,
+                        paddingVertical: screenHeight * 0.011,
                       }}
                     >
                       <Text style={{ ...buttonTitle, color: Color.Black }}>
@@ -372,9 +390,9 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flexDirection: 'row',
-    gap: 15,
+    gap: 10,
     alignItems: 'center',
-    marginVertical: screenHeight * 0.009,
+    marginVertical: screenHeight * 0.0062,
   },
   winningTitle: {
     fontFamily: 'Poppins_700Bold',

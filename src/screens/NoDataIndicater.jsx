@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import React from 'react';
 import noPostIcon from '../../assets/newPost.png';
 import Color from '../../assets/colors/Color';
