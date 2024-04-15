@@ -2,10 +2,10 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   TextInput,
   FlatList,
+  Pressable,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Color from '../../../assets/colors/Color';
@@ -17,7 +17,6 @@ import {
   buttonContainer,
   container,
   inputstyle,
-  descriptionTextStyle,
 } from '../Decorations/ModalStyle';
 import { useUserState } from '../../slices/userSlice';
 import { Modal, Portal } from 'react-native-paper';
@@ -32,9 +31,16 @@ import WinningAnnounModal from '../../components/WinningAnnounModal';
 import { axiosInstance } from '../../../axiosInstance';
 import SendIcon from '../../components/SVG/SendIcon';
 import moment from 'moment';
+import { Image } from 'expo-image';
+
+import { useNavigation } from '@react-navigation/native';
+
+import EditBiddingProjectModal from '../../components/EditBiddingProjectModal';
 
 const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const userState = useUserState();
+  const { navigate } = useNavigation();
+
   const date = moment().utcOffset('+05:00');
   const [isBidOpen, setisBidOpen] = useState(false);
   const [selectedItem, setselectedItem] = useState(null);
@@ -46,6 +52,9 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const [editItem, seteditItem] = useState(null);
   const { showSnackbar } = useStateContext();
   const [isWinningModal, setisWinningModal] = useState(false);
+  const [announcement, setannouncement] = useState('');
+  const [isEditProject, setisEditProject] = useState(null);
+  const [isEditProjectModal, setisEditProjectModal] = useState(false);
 
   const hideModal = () => {
     setisBidOpen(false);
@@ -57,20 +66,8 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
     .map((mem) => mem.member); // Extract only the member objects
 
   useEffect(() => {
-    setbids(item?.bids);
-    if (item?.status === 'Starting Soon' || item?.status === 'Closed') {
-      setisUserBid(true);
-    } else {
-      const isUserBit = item?.bids?.some(
-        (item) => item?.bidBy[0]?.phoneNumber === userState?.phoneNumber,
-      );
-      setisUserBid(isUserBit);
-    }
-  }, [item?.bids, selectedItem]);
-
-  useEffect(() => {
     const mergedArray = item.bids.concat(item.announcement);
-    console.log(mergedArray);
+
     mergedArray.sort((a, b) => {
       const timeA = a.bidTime || a.announcementItem.createdAt;
       const timeB = b.bidTime || b.announcementItem.createdAt;
@@ -79,21 +76,58 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
 
     // Update the state with the sorted array
     setbids(mergedArray);
+    if (item?.status === 'Starting Soon' || item?.status === 'Closed') {
+      setisUserBid(true);
+    } else {
+      const isUserBit = item?.bids?.some(
+        (item) => item?.bidBy[0]?.phoneNumber === userState?.phoneNumber,
+      );
+      setisUserBid(isUserBit);
+    }
+  }, [selectedItem]);
 
+  useEffect(() => {
     const newSocket = io(BASE_URL, { auth: { token: userState.token } });
-    newSocket.on('receive_bid', (data) => {
-      // setbids((prevBids) => {
-      //   return [...prevBids, data];
-      // });
-      refetch();
+    newSocket.on('receive_bid', (data, serverId) => {
+      const isUserBit = data?.bidBy?.some(
+        (item) => item?.phoneNumber === userState?.phoneNumber,
+      );
+      if (serverId === item?._id) {
+        setisUserBid(isUserBit);
+      }
+
+      setbids((prevBids) => {
+        if (serverId === item?._id) {
+          return [...prevBids, data];
+        }
+        return prevBids;
+      });
     });
 
-    newSocket.on('updated_bid', (data) => {
-      // setbids((prevBids) => {
-      //   const updatedBids = prevBids.filter((bid) => bid._id !== data._id);
-      //   return [...updatedBids, data];
-      // });
-      refetch();
+    newSocket.on('updated_bid', (data, serverId) => {
+      const isUserBit = data?.bidBy?.some(
+        (item) => item?.phoneNumber === userState?.phoneNumber,
+      );
+      if (serverId === item?._id) {
+        setisUserBid(isUserBit);
+      }
+
+      setbids((prevBids) => {
+        const updatedBid = prevBids?.filter((item) => item?._id !== data?._id);
+        if (serverId === item?._id) {
+          return [...updatedBid, data];
+        }
+        return prevBids;
+      });
+    });
+
+    newSocket.on('receive_announcement', (data, serverId) => {
+      setbids((prevBids) => {
+        if (serverId === item?._id) {
+          return [...prevBids, data];
+        }
+        return prevBids;
+      });
     });
 
     setSocket(newSocket);
@@ -104,10 +138,14 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
 
   const handleSubmit = async () => {
     if (isEdit) {
-      socket.emit('update_bid', {
-        id: editItem?._id,
-        newPrice: bidPrice,
-      });
+      socket.emit(
+        'update_bid',
+        {
+          id: editItem?._id,
+          newPrice: bidPrice,
+        },
+        selectedItem?._id,
+      );
       setbidPrice('');
       setisBidOpen(false);
       setisEdit(false);
@@ -123,14 +161,19 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       expoPushToken: currentuser?.member?.expoPushToken,
       code: currentuser?.code,
     };
-    socket.emit('send_bid', {
-      bidBy: bidBy,
-      bidOn: selectedItem?._id,
-      bidPrice: bidPrice,
-    });
+    socket.emit(
+      'send_bid',
+      {
+        bidBy: bidBy,
+        bidOn: selectedItem?._id,
+        bidPrice: bidPrice,
+      },
+      selectedItem?._id,
+    );
+
     handleGroupNotification();
     setbidPrice('');
-    refetch();
+    // refetch();
     setisBidOpen(false);
   };
 
@@ -171,43 +214,92 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
         senderName: currentuser?.code,
         groupTitle: selectedItem?.ProjectName,
       };
-
       await axiosInstance.post(`/bidChannel/notify-new-bid`, notificationData);
     } catch {}
   };
 
   const handleAnnouncement = (id, content) => {
-    socket.emit('bid_announcement', {
-      bidOn: id,
-      announcement: content,
-    });
+    socket.emit(
+      'bid_announcement',
+      {
+        bidOn: id,
+        announcement: content,
+      },
+      id,
+    );
+  };
+
+  const handleAnnouncmentMsg = (item) => {
+    if (announcement === '') {
+    } else {
+      handleAnnouncement(item?._id, announcement);
+      setannouncement('');
+    }
+  };
+
+  const handleEditProject = (item) => {
+    setisEditProject(item);
+    setisEditProjectModal(true);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Image
-          source={{ uri: `${BASE_URL}/images/${item?.image[0]}` }}
-          style={styles.image}
-        />
-        <View style={styles.titleContainer}>
-          <Text style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}>
-            {item?.ProjectName}
-          </Text>
-          <TouchableOpacity style={styles.soonButton}>
-            <Text style={styles.subTitle}>{item?.status}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.contentContainer}>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionTitle}>{item?.description}</Text>
-          </View>
-          <ProjectDetails
-            item={item}
-            containerStyle={styles.detailsContainer}
+        <View
+          style={{
+            width: '100%',
+            height: screenHeight * 0.12,
+          }}
+        >
+          <FlatList
+            data={item?.image?.filter(
+              (imageItem) => imageItem?.mimetype === 'image/jpeg',
+            )}
+            renderItem={({ item: imageItem }) => {
+              return (
+                <View
+                  style={{
+                    width: '100%',
+                    height: screenHeight * 0.12,
+                  }}
+                >
+                  <Image
+                    source={{
+                      uri: `${BASE_URL}/images/${imageItem?.filename}`,
+                    }}
+                    style={styles.image}
+                    contentFit="cover"
+                  />
+                </View>
+              );
+            }}
           />
         </View>
+
+        {/* <Image
+          source={{ uri: `${BASE_URL}/images/${item?.image[0].filename}` }}
+          style={styles.image}
+        /> */}
+        <Pressable onPress={() => navigate('projectdetails', { item: item })}>
+          <View style={styles.titleContainer}>
+            <Text style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}>
+              {item?.ProjectName}
+            </Text>
+            <TouchableOpacity style={styles.soonButton}>
+              <Text style={styles.subTitle}>{item?.status}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.contentContainer}>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>{item?.description}</Text>
+            </View>
+            <ProjectDetails
+              item={item}
+              containerStyle={styles.detailsContainer}
+            />
+          </View>
+        </Pressable>
 
         <View style={styles.priceContainer}>
           <Text style={{ ...titleStyle, fontSize: screenHeight * 0.015 }}>
@@ -227,7 +319,12 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                   : styles.disableEdit
               }
             >
-              <TouchableOpacity>
+              <TouchableOpacity
+                disabled={
+                  item?.status === 'Started' || item?.status === 'Closed'
+                }
+                onPress={() => handleEditProject(item)}
+              >
                 <Text
                   style={
                     item?.status === 'Starting Soon'
@@ -320,7 +417,6 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
         {item?.status === 'Starting Soon' ? (
           <View
             style={{
-              backgroundColor: 'red',
               width: '80%',
               alignSelf: 'center',
             }}
@@ -343,27 +439,16 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
               const formattedPrice = Number(item?.bidPrice).toLocaleString();
               const time = formatSingleDate(item?.bidTime);
 
-              console.log(item);
-
               return (
                 <View
                   style={{
                     flex: 1,
-                    // backgroundColor: 'red',
                     alignItems: isUserBid ? 'flex-end' : 'flex-start',
                     paddingHorizontal: screenWidth * 0.06,
                   }}
                 >
                   {item?.announcementItem ? (
-                    <View
-                      style={{
-                        backgroundColor: Color.Disable,
-                        width: screenWidth * 0.8,
-                        alignSelf: 'center',
-                        paddingHorizontal: 10,
-                        paddingVertical: 3,
-                      }}
-                    >
+                    <View style={styles.announcementItem}>
                       <Text style={styles.descriptionTitle}>
                         {item?.announcementItem?.content}
                       </Text>
@@ -378,27 +463,22 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                     >
                       {isUserBid ? (
                         <View style={styles.biddIngContainer}>
-                          <Text style={titleStyle}>Your Bid</Text>
+                          <Text style={styles.activeEditTitle}>Your Bid</Text>
                           <Text
-                            style={{
-                              ...titleStyle,
-                              fontFamily: 'Roboto_500Medium',
-                            }}
+                            style={styles.activeEditTitle}
                             onPress={() => handleEdit(item)}
                           >
                             Eidt
                           </Text>
                         </View>
                       ) : (
-                        <Text style={titleStyle}>{item?.bidBy[0]?.code}</Text>
+                        <View style={styles.biddIngContainer}>
+                          <Text style={styles.activeEditTitle}>
+                            {item?.bidBy[0]?.code}
+                          </Text>
+                        </View>
                       )}
-                      <Text
-                        style={{
-                          ...titleStyle,
-                          fontSize: screenHeight * 0.016,
-                          marginVertical: '1%',
-                        }}
-                      >
+                      <Text style={styles.activeEditTitle}>
                         {item?.bidOn?.ProjectName}
                       </Text>
                       <View style={styles.biddIngContainer}>
@@ -411,13 +491,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                           Bidding Price
                         </Text>
                         <View style={styles.bidPrice}>
-                          <Text
-                            style={{
-                              ...titleStyle,
-                              fontSize: screenHeight * 0.016,
-                              // marginVertical: '1%',
-                            }}
-                          >
+                          <Text style={styles.activeEditTitle}>
                             {formattedPrice}PKR
                           </Text>
                         </View>
@@ -464,42 +538,48 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
           />
         )}
       </View>
+      {isBidOpen && (
+        <Portal>
+          <Modal visible={isBidOpen} onDismiss={hideModal}>
+            <View style={container}>
+              <Text style={titleStyle}>Bidding Form</Text>
+              <View style={{ width: '90%' }}>
+                <View>
+                  <Text
+                    style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}
+                  >
+                    {selectedItem?.ProjectName}
+                  </Text>
+                  <Text
+                    style={{ ...styles.descriptionTitle, marginVertical: '2%' }}
+                  >
+                    {selectedItem?.description}
+                  </Text>
+                </View>
+                <ProjectDetails
+                  item={item}
+                  containerStyle={styles.projectFea}
+                />
 
-      <Portal>
-        <Modal visible={isBidOpen} onDismiss={hideModal}>
-          <View style={container}>
-            <Text style={titleStyle}>Bidding Form</Text>
-            <View style={{ width: '90%' }}>
-              <View>
-                <Text style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}>
-                  {selectedItem?.ProjectName}
-                </Text>
-                <Text
-                  style={{ ...styles.descriptionTitle, marginVertical: '2%' }}
+                <TextInput
+                  placeholder="Bidding Price"
+                  value={bidPrice}
+                  onChangeText={setbidPrice}
+                  style={{ ...inputstyle, width: '100%' }}
+                  keyboardType="numeric"
+                />
+
+                <TouchableOpacity
+                  style={{ ...buttonContainer, width: '100%' }}
+                  onPress={handleSubmit}
                 >
-                  {selectedItem?.description}
-                </Text>
+                  <Text style={buttonTitle}>Submit</Text>
+                </TouchableOpacity>
               </View>
-              <ProjectDetails item={item} containerStyle={styles.projectFea} />
-
-              <TextInput
-                placeholder="Bidding Price"
-                value={bidPrice}
-                onChangeText={setbidPrice}
-                style={{ ...inputstyle, width: '100%' }}
-                keyboardType="numeric"
-              />
-
-              <TouchableOpacity
-                style={{ ...buttonContainer, width: '100%' }}
-                onPress={handleSubmit}
-              >
-                <Text style={buttonTitle}>Submit</Text>
-              </TouchableOpacity>
             </View>
-          </View>
-        </Modal>
-      </Portal>
+          </Modal>
+        </Portal>
+      )}
 
       {currentuser?.privilege === 'Owner' && (
         <View
@@ -518,24 +598,36 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
               ...inputstyle,
               width: '90%',
               borderRadius: screenHeight * 0.1,
-              padding: screenHeight * 0.01,
+              // padding: screenHeight * 0.01,
               marginTop: 0,
             }}
-            // onChangeText={(e) => handleOnchange(e, 'website')}
-            // value={inputs.website}
+            onChangeText={setannouncement}
+            value={announcement}
             placeholder="Type your message"
           />
-
-          <SendIcon />
+          <TouchableOpacity onPress={() => handleAnnouncmentMsg(item)}>
+            <SendIcon />
+          </TouchableOpacity>
         </View>
       )}
+      {isWinningModal && (
+        <WinningAnnounModal
+          modalVisible={isWinningModal}
+          setModalVisible={setisWinningModal}
+          item={selectedItem}
+          refetch={refetch}
+        />
+      )}
 
-      <WinningAnnounModal
-        modalVisible={isWinningModal}
-        setModalVisible={setisWinningModal}
-        item={selectedItem}
-        refetch={refetch}
-      />
+      {isEditProject && (
+        <EditBiddingProjectModal
+          item={groupData}
+          isVisible={isEditProjectModal}
+          setisVisible={setisEditProjectModal}
+          project={isEditProject}
+          refetch={refetch}
+        />
+      )}
     </View>
   );
 };
@@ -580,7 +672,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   descriptionContainer: {
     width: screenWidth * 0.6,
@@ -635,7 +727,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderWidth: 1,
     justifyContent: 'center',
-    paddingHorizontal: screenWidth * 0.06,
+    paddingHorizontal: screenWidth * 0.083,
     fontFamily: 'Roboto_700Bold',
     fontSize: screenHeight * 0.016,
     borderRadius: screenHeight * 0.01,
@@ -663,5 +755,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: screenWidth * 0.02,
     paddingVertical: screenHeight * 0.004,
     borderRadius: screenHeight * 0.01,
+  },
+  announcementItem: {
+    backgroundColor: Color.Disable,
+    width: screenWidth * 0.8,
+    alignSelf: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: screenHeight * 0.006,
+    borderRadius: 5,
   },
 });

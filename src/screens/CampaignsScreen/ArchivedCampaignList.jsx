@@ -6,27 +6,27 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-} from "react-native";
-import React, { memo, useCallback } from "react";
-import HeaderNormal from "../../components/HeaderNormal";
-import { useNavigation } from "@react-navigation/native";
-import Color from "../../../assets/colors/Color";
-import { FontAwesome, MaterialIcons } from "react-native-vector-icons";
-import { scale } from "react-native-size-matters";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { fetchArchivedCampaigns } from "../../utils/CampaignsHelper";
-import { useQuery } from "react-query";
-import ArchivedCampaignSkelentan from "../../components/Skeletns/ArchivedCampaignSkelentan";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+} from 'react-native';
+import React, { memo, useCallback } from 'react';
+import HeaderNormal from '../../components/HeaderNormal';
+import { useNavigation } from '@react-navigation/native';
+import Color from '../../../assets/colors/Color';
+import { FontAwesome, MaterialIcons } from 'react-native-vector-icons';
+import { scale } from 'react-native-size-matters';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { fetchArchivedCampaigns } from '../../utils/CampaignsHelper';
+import { useQuery } from 'react-query';
+import ArchivedCampaignSkelentan from '../../components/Skeletns/ArchivedCampaignSkelentan';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 const EmptyArchivedCampaigns = () => (
   <View style={styles.emptyContainer}>
-    <View style={{ alignItems: "center" }}>
+    <View style={{ alignItems: 'center' }}>
       <Image
-        source={require("../../../assets/campaignICon.png")}
+        source={require('../../../assets/campaignICon.png')}
         style={styles.bellIcon}
       />
       <Text style={styles.heading}>Currently No Archived Campaigns </Text>
@@ -51,7 +51,7 @@ const ArchivedCampaignItem = memo(({ item, handleNavigation }) => {
           <Text style={styles.campaginTitle}>{item.campaignName}</Text>
           <View style={styles.campaignPostsCount}>
             <Text style={styles.days}>{endTime}</Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={styles.posts}>{item?.count}</Text>
               <Text style={styles.postTitle}>post</Text>
             </View>
@@ -67,7 +67,7 @@ const ArchivedCampaignItem = memo(({ item, handleNavigation }) => {
 
 const ArchivedCampaign = () => {
   const { data: archivedCampaigns, isLoading } = useQuery(
-    "archived",
+    'archived',
     fetchArchivedCampaigns,
   );
   const navigation = useNavigation();
@@ -77,7 +77,7 @@ const ArchivedCampaign = () => {
     (item) => {
       setreactions(item?.reactions);
       setcomment(item?.messages);
-      navigation.navigate("ArchivedCampaign", item);
+      navigation.navigate('ArchivedCampaign', item);
     },
     [navigation, setreactions, setcomment],
   );
@@ -123,35 +123,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerMain: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderBottomWidth: scale(0.8),
     borderBottomColor: Color.LightGrey,
     paddingHorizontal: scale(16),
     paddingVertical: scale(12),
   },
   leftSide: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   campaginName: {
-    flexDirection: "column",
+    flexDirection: 'column',
     paddingHorizontal: scale(9),
   },
   campaignPostsCount: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   campaginTitle: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     fontSize: scale(16),
   },
   hashicon: {
     fontSize: scale(21),
   },
   posts: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
     paddingLeft: scale(12),
   },
@@ -159,27 +159,27 @@ const styles = StyleSheet.create({
     fontSize: scale(22),
   },
   days: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: Height * 0.019,
     paddingVertical: Height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Grey,
     fontSize: Height * 0.016,
     width: scale(270),
     lineHeight: scale(17),
-    textAlign: "center",
+    textAlign: 'center',
   },
   bellIcon: {
     width: Width * 0.3,
     height: Height * 0.13,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     marginBottom: Height * 0.01,
   },
   button: {
@@ -190,19 +190,19 @@ const styles = StyleSheet.create({
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.02,
   },
   postTitle: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
     paddingLeft: scale(4),
   },
   emptyContainer: {
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: Height * 0.2,
   },
 });

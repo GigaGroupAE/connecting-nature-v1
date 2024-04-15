@@ -21,6 +21,7 @@ import { axiosInstance } from '../../axiosInstance';
 import { Modal, Portal } from 'react-native-paper';
 import InputTextLarge from './InputTextLarge';
 import { useStateContext } from '../contexts/ContextProvider';
+import NoDataIndicater from '../screens/NoDataIndicater';
 
 const PendingSubscriptions = ({ item, refetch }) => {
   const { navigate } = useNavigation();
@@ -125,85 +126,99 @@ const PendingSubscriptions = ({ item, refetch }) => {
     }
   };
 
+  console.log(item?.length);
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={item}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.itemCard}>
-              <View style={styles.contentContainer}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigate('UserProfile', {
-                      userPhoneNumber: item?.requestedBy?.phoneNumber,
-                    })
-                  }
-                  style={styles.leftContainer}
-                >
-                  <Image
-                    source={{ uri: item?.requestedBy?.profile }}
-                    style={styles.image}
-                  />
+      {item?.length === 0 ? (
+        <View>
+          <NoDataIndicater
+            title="No Pending Requests"
+            subTitle="This section will update with new subscription requests. Stay tuned for updates."
+          />
+        </View>
+      ) : (
+        <FlatList
+          data={item}
+          renderItem={({ item }) => {
+            return (
+              <View style={styles.itemCard}>
+                <View style={styles.contentContainer}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigate('UserProfile', {
+                        userPhoneNumber: item?.requestedBy?.phoneNumber,
+                      })
+                    }
+                    style={styles.leftContainer}
+                  >
+                    <Image
+                      source={{ uri: item?.requestedBy?.profile }}
+                      style={styles.image}
+                    />
 
-                  <View style={{ gap: 3 }}>
-                    <Text style={titleStyle}>{item?.fullName}</Text>
-                    <Text style={styles.phoneNumber}>{item?.phoneNumber}</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setisViewReceipt(true);
-                    setreceiptData(item);
-                  }}
-                >
-                  <Text style={styles.phoneNumber}>View Receipt</Text>
-                </TouchableOpacity>
+                    <View style={{ gap: 3 }}>
+                      <Text style={titleStyle}>{item?.fullName}</Text>
+                      <Text style={styles.phoneNumber}>
+                        {item?.phoneNumber}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setisViewReceipt(true);
+                      setreceiptData(item);
+                    }}
+                  >
+                    <Text style={styles.phoneNumber}>View Receipt</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.detailsContainer}>
+                  <TouchableOpacity
+                    style={{
+                      ...buttonContainer,
+                      width: '48%',
+                      marginTop: 0,
+                      paddingVertical: screenHeight * 0.007,
+                    }}
+                    onPress={() => handleApprove(item)}
+                  >
+                    <Text style={buttonTitle}>Approve</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      ...buttonContainer,
+                      width: '48%',
+                      marginTop: 0,
+                      backgroundColor: Color.White,
+                      borderWidth: 1,
+                      paddingVertical: screenHeight * 0.007,
+                    }}
+                    onPress={() => {
+                      setisDenyModal(true);
+                      setrejectUser(item);
+                    }}
+                  >
+                    <Text style={{ ...buttonTitle, color: Color.Black }}>
+                      Deny
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-
-              <View style={styles.detailsContainer}>
-                <TouchableOpacity
-                  style={{
-                    ...buttonContainer,
-                    width: '48%',
-                    marginTop: 0,
-                    paddingVertical: screenHeight * 0.007,
-                  }}
-                  onPress={() => handleApprove(item)}
-                >
-                  <Text style={buttonTitle}>Approve</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    ...buttonContainer,
-                    width: '48%',
-                    marginTop: 0,
-                    backgroundColor: Color.White,
-                    borderWidth: 1,
-                    paddingVertical: screenHeight * 0.007,
-                  }}
-                  onPress={() => {
-                    setisDenyModal(true);
-                    setrejectUser(item);
-                  }}
-                >
-                  <Text style={{ ...buttonTitle, color: Color.Black }}>
-                    Deny
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }}
-      />
-
-      <ShowScriptionDetailsModal
-        isVisible={isViewReceipt}
-        setisVisible={setisViewReceipt}
-        item={receiptData}
-        refetch={refetch}
-      />
+            );
+          }}
+        />
+      )}
+      {isViewReceipt && (
+        <ShowScriptionDetailsModal
+          isVisible={isViewReceipt}
+          setisVisible={setisViewReceipt}
+          item={receiptData}
+          refetch={refetch}
+        />
+      )}
 
       <Portal>
         <Modal visible={isDenyModal} onDismiss={() => setisDenyModal(false)}>

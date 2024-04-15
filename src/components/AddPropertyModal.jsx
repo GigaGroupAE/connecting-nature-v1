@@ -3,7 +3,6 @@ import {
   Alert,
   FlatList,
   Image,
-  KeyboardAvoidingView,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -13,15 +12,15 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-import * as DocumentPicker from 'expo-document-picker';
+
 import { Modal, Portal } from 'react-native-paper';
 import {
   buttonTitle,
   container,
-  titleStyle,
   editButtonTitle,
   inputstyle,
   buttonContainer,
+  modalTitle,
 } from '../screens/Decorations/ModalStyle';
 import CameraSvg from './SVG/CameraSvg';
 import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
@@ -40,16 +39,12 @@ const propertyType = [
     title: 'Residential',
   },
   {
-    id: 1,
+    id: 2,
     title: 'Commercial',
   },
   {
-    id: 1,
-    title: 'Studio',
-  },
-  {
-    id: 1,
-    title: 'Kiosk Place',
+    id: 3,
+    title: 'Other',
   },
 ];
 
@@ -69,13 +64,20 @@ const inputErrors = {
   description: '',
 };
 
-const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
+const AddPropertyModal = ({
+  isVisible,
+  item,
+  setisVisible,
+  screen,
+  currentMember,
+}) => {
   const userState = useUserState();
   const [propertyImage, setpropertyImage] = useState(null);
   const [error, seterror] = useState(inputErrors);
   const [isType, setisType] = useState(false);
   const [inputs, setinputs] = useState(initialState);
   const { showSnackbar } = useStateContext();
+
   const [isLoading, setisLoading] = useState(false);
   const hideModal = () => {
     setisVisible(false);
@@ -87,7 +89,6 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
   };
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 1,
       allowsMultipleSelection: true,
@@ -95,11 +96,12 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
       mediaTypes: 'All',
     });
 
-    console.log(result);
-
-    if (!result.canceled) {
+    if (!result.canceled && result.assets.length > 0) {
       const imagesData = result.assets.map((item) => item);
       setpropertyImage(imagesData);
+    } else {
+      // Display an alert or toast to inform the user
+      Alert.alert('Error', 'Please select at least one image.');
     }
   };
 
@@ -132,11 +134,27 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
     }
     setisLoading(true);
     const from = userState?.id;
-    const channel = item?._id;
+    let channel;
+    if (screen === 'setting') {
+      channel = item[0]?._id;
+    } else {
+      channel = item?._id;
+    }
 
+    let status = 'Starting Soon';
+
+    if (screen === 'setting' && currentMember[0]?.privilege === 'member') {
+      status = 'Under Review';
+    }
     try {
-      await createBiddingProject(inputs, from, channel, propertyImage);
-      showSnackbar('Property Added successfully');
+      await createBiddingProject(inputs, from, channel, propertyImage, status);
+      if (screen === 'setting' && currentMember[0]?.privilege === 'member') {
+        showSnackbar(
+          'Property Added Successfully! Your listing is under review. Thank you!',
+        );
+      } else {
+        showSnackbar('Property Added successfully');
+      }
       setinputs(initialState);
       setpropertyImage(null);
       setisLoading(false);
@@ -151,7 +169,7 @@ const AddPropertyModal = ({ isVisible, item, setisVisible }) => {
       <Modal visible={isVisible} onDismiss={hideModal}>
         <ScrollView>
           <View style={container}>
-            <Text style={titleStyle}>Add Property</Text>
+            <Text style={modalTitle}>Add Property</Text>
 
             <View
               style={{

@@ -90,7 +90,7 @@ const VideoMessageCn = (props) => {
                       },
                       exitFullscreen: (e) => console.log(e),
                     }}
-                    defaultControlsVisible={true}
+                    defaultControlsVisible
                     // timeVisible={false}
                     // slider={false}
                     videoProps={{

@@ -2,7 +2,13 @@ import { axiosInstance } from '../../axiosInstance';
 
 const LIMIT = '10';
 
-export const createBiddingProject = async (inputs, from, channel, image) => {
+export const createBiddingProject = async (
+  inputs,
+  from,
+  channel,
+  image,
+  status,
+) => {
   try {
     const formData = new FormData();
     for (const field in inputs) {
@@ -10,13 +16,18 @@ export const createBiddingProject = async (inputs, from, channel, image) => {
     }
     formData.append('from', from);
     formData.append('channel', channel);
-
+    if (status !== '') {
+      formData.append('status', status);
+    }
     if (image?.length !== 0) {
       image.forEach((link, index) => {
+        const fileExtension = link.type === 'image' ? 'jpeg' : 'mp4';
+        const fileType = link.type === 'image' ? 'image/jpeg' : 'video/mp4';
+
         formData.append(`image`, {
-          name: `${from}image.jpg`,
+          name: `${from}_media_${index}.${fileExtension}`,
           uri: link.uri,
-          type: link.type,
+          type: fileType,
         });
       });
     }
@@ -26,8 +37,6 @@ export const createBiddingProject = async (inputs, from, channel, image) => {
     //   uri: image.uri,
     //   type: 'image/jpeg',
     // });
-
-    // console.log(formData);
 
     const config = {
       headers: {
@@ -40,6 +49,49 @@ export const createBiddingProject = async (inputs, from, channel, image) => {
       formData,
       config,
     );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const updateBiddingProject = async (inputs, images, id) => {
+  try {
+    const formData = new FormData();
+
+    // Append inputs to formData
+    for (const field in inputs) {
+      formData.append(field, inputs[field]);
+    }
+
+    // Append images to formData
+    if (images && images.length > 0) {
+      images.forEach((image, index) => {
+        const fileExtension = image.uri.endsWith('.jpeg') ? 'jpeg' : 'mp4';
+        const fileType = image.uri.endsWith('.jpeg')
+          ? 'image/jpeg'
+          : 'video/mp4';
+
+        formData.append('image', {
+          name: `_media_${index}.${fileExtension}`,
+          uri: image.uri,
+          type: fileType,
+        });
+      });
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+      },
+    };
+
+    const { data } = await axiosInstance.patch(
+      `/bidChannel/update-project/${id}`,
+      formData,
+      config,
+    );
+
     return data;
   } catch (error) {
     throw error;
@@ -60,11 +112,27 @@ export const fetchArchiveProjects = async ({ pageParam = 1 }) => {
   return response.data;
 };
 
-export const updateProjectStatus = async (id, status) => {
+export const fetchUnderReviewProjects = async ({ pageParam = 1 }) => {
+  const response = await axiosInstance.get(
+    `/bidChannel/get-under-review?page=${pageParam}&limit=${LIMIT}`,
+  );
+  return response.data;
+};
+
+export const updateProjectStatus = async (id, status, denyReason) => {
+  let data = {
+    status: status,
+  };
+
+  if (denyReason) {
+    data.denyReason = denyReason;
+    data.thirdParty = status;
+  }
+
   try {
     const response = await axiosInstance.patch(
       `/bidChannel/update-status/${id}`,
-      { status: status },
+      data,
     );
     return response;
   } catch (error) {
@@ -138,7 +206,6 @@ export const fetchChannels = async () => {
 };
 
 export const handleRemoveSubscriber = async (id, memberId, userId) => {
-  console.log(memberId);
   try {
     const data = await axiosInstance.patch(
       `/bidChannel/remove-member-chanel/${id}`,

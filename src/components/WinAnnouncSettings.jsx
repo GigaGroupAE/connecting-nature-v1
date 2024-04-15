@@ -16,6 +16,7 @@ import {
   titleStyle,
   container,
   inputstyle,
+  modalTitle,
 } from '../screens/Decorations/ModalStyle';
 import { screenHeight } from '../utils/ScreenDimensions';
 import ProjectDetails from './ProjectDetails';
@@ -70,14 +71,17 @@ const WinAnnouncSettings = ({ modalVisible, setModalVisible }) => {
     <Portal>
       <Modal visible={modalVisible} onDismiss={hideModal}>
         <View style={container}>
-          <Text style={{ ...titleStyle, fontSize: screenHeight * 0.02 }}>
-            Winner Announcement
-          </Text>
+          <Text style={modalTitle}>Winner Announcement</Text>
 
-          <View style={{ width: '90%' }}>
+          <View style={{ width: '90%', paddingTop: screenHeight * 0.009 }}>
             {selectedProject && (
               <View>
-                <Text style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}>
+                <Text
+                  style={{
+                    ...titleStyle,
+                    fontSize: screenHeight * 0.017,
+                  }}
+                >
                   {selectedProject?.ProjectName}
                 </Text>
                 <Text

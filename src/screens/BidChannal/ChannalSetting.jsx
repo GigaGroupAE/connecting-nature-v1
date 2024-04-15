@@ -17,8 +17,8 @@ import {
   buttonTitle,
   container,
   descriptionTextStyle,
-  titleStyle,
   buttonContainer,
+  modalTitle,
 } from '../Decorations/ModalStyle';
 import { MaterialIcons, Entypo } from 'react-native-vector-icons';
 import FileSvg from '../../components/SVG/FIleSvg';
@@ -37,48 +37,54 @@ import {
   handleRemoveSubscriber,
 } from '../../utils/BiddingChannel';
 import { Modal, Portal } from 'react-native-paper';
-import WinningAnnounModal from '../../components/WinningAnnounModal';
 import WinAnnouncSettings from '../../components/WinAnnouncSettings';
 import SubscriptionSvg from '../../components/SVG/SubscriptionSvg';
 
-const settingData = [
-  {
-    id: 1,
-    title: 'Archived Biddings',
-    icon: <FileSvg />,
-    navigationScreen: 'ArchivedBidding',
-  },
-  {
-    id: 2,
-    title: 'Starred Messages',
-    icon: <StarSvg />,
-    navigationScreen: '',
-  },
-  {
-    id: 3,
-    title: 'Add Property',
-    icon: <PropertySvg />,
-    navigationScreen: '',
-  },
-  {
-    id: 4,
-    title: 'Subscription Requests',
-    icon: <SubscriptionSvg />,
-    navigationScreen: '',
-  },
-  {
-    id: 5,
-    title: 'Announce Winner',
-    icon: <WinerSvg />,
-    navigationScreen: '',
-  },
-  {
-    id: 6,
-    title: 'Add Participant',
-    icon: <AddparticipantsSvg />,
-    navigationScreen: '',
-  },
-];
+// const settingData = [
+//   {
+//     id: 1,
+//     title: 'Archived Biddings',
+//     icon: <FileSvg />,
+//     navigationScreen: 'ArchivedBidding',
+//   },
+//   {
+//     id: 2,
+//     title: 'Starred Messages',
+//     icon: <StarSvg />,
+//     navigationScreen: '',
+//   },
+//   {
+//     id: 3,
+//     title: 'Add Property',
+//     icon: <PropertySvg />,
+//     navigationScreen: '',
+//   },
+//   {
+//     id: 4,
+
+//     navigationScreen: '',
+//     title: 'Requests Add Property',
+//     icon: <PropertySvg />,
+//   },
+//   {
+//     id: 5,
+//     title: 'Subscription Requests',
+//     icon: <SubscriptionSvg />,
+//     navigationScreen: '',
+//   },
+//   {
+//     id: 6,
+//     title: 'Announce Winner',
+//     icon: <WinerSvg />,
+//     navigationScreen: '',
+//   },
+//   {
+//     id: 7,
+//     title: 'Add Participant',
+//     icon: <AddparticipantsSvg />,
+//     navigationScreen: '',
+//   },
+// ];
 
 const approvedRoles = ['Owner', 'Lead'];
 
@@ -92,7 +98,11 @@ const ChannalSetting = () => {
   const [currentMember, setcurrentMember] = useState([]);
   const [isWinningModal, setisWinningModal] = useState(false);
 
-  const { data: groupData = [], refetch } = useQuery('channal', fetchChannels);
+  const {
+    data: groupData = [],
+    refetch,
+    isLoading,
+  } = useQuery('channal', fetchChannels);
 
   const admin = groupData[0]?.members?.filter(
     (item) => item?.privilege === 'Owner',
@@ -101,22 +111,24 @@ const ChannalSetting = () => {
   // const [groupData, setgroupData] = useState(params?.groupData);
   const [isAddProperty, setisAddProperty] = useState(false);
 
-  const handleNavigation = (item) => {
-    if (item?.title === 'Archived Biddings') {
-      navigate(item?.navigationScreen);
-    } else if (item?.title === 'Add Property') {
-      setisAddProperty(true);
-    } else if (item?.title === 'Add Participant') {
-      navigate('MultiContactSelect', {
-        selectedContacts: selectedcontacts,
-        currentMembers: groupData[0]?.members,
-      });
-    } else if (item?.title === 'Subscription Requests') {
-      navigate('subscriptionReq');
-    } else if (item?.title === 'Announce Winner') {
-      setisWinningModal(true);
-    }
-  };
+  // const handleNavigation = (item) => {
+  //   if (item?.title === 'Archived Biddings') {
+  //     navigate(item?.navigationScreen);
+  //   } else if (item?.title === 'Add Property') {
+  //     setisAddProperty(true);
+  //   } else if (item?.title === 'Add Participant') {
+  //     navigate('MultiContactSelect', {
+  //       selectedContacts: selectedcontacts,
+  //       currentMembers: groupData[0]?.members,
+  //     });
+  //   } else if (item?.title === 'Subscription Requests') {
+  //     navigate('subscriptionReq');
+  //   } else if (item?.title === 'Announce Winner') {
+  //     setisWinningModal(true);
+  //   } else if (item?.title === 'Requests Add Property') {
+  //     navigate('requestAddProperty');
+  //   }
+  // };
 
   const selectedcontacts = async (members) => {
     const generateRandomCode = () => {
@@ -223,7 +235,7 @@ const ChannalSetting = () => {
         {/* Navigation Screens  */}
 
         <View>
-          <FlatList
+          {/* <FlatList
             data={settingData}
             renderItem={({ item }) => {
               // Determine whether to show all fields or limited fields based on user's privilege
@@ -239,20 +251,154 @@ const ChannalSetting = () => {
                 showAllFields ||
                 allowedFieldsForMember.includes(item.title)
               ) {
-                return (
-                  <TouchableOpacity
-                    style={styles.menuContainer}
-                    onPress={() => handleNavigation(item)}
+                return ( */}
+          <View
+            style={{
+              marginVertical: screenHeight * 0.02,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.menuContainer}
+              onPress={() => navigate('ArchivedBidding')}
+            >
+              <View
+                style={{
+                  ...styles.rowContainer,
+                  gap: 13,
+                  marginVertical: screenHeight * 0.015,
+                }}
+              >
+                <FileSvg />
+                <Text style={styles.itemname}>Archived Biddings </Text>
+              </View>
+              <View>
+                <ArrowLeft />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuContainer}
+              // onPress={() => handleNavigation(item)}
+            >
+              <View
+                style={{
+                  ...styles.rowContainer,
+                  gap: 13,
+                  marginVertical: screenHeight * 0.015,
+                }}
+              >
+                <StarSvg />
+                <Text style={styles.itemname}>Starred Message </Text>
+              </View>
+              <View>
+                <ArrowLeft />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuContainer}
+              onPress={() => setisAddProperty(true)}
+            >
+              <View
+                style={{
+                  ...styles.rowContainer,
+                  gap: 13,
+                  marginVertical: screenHeight * 0.015,
+                }}
+              >
+                <PropertySvg />
+                <Text style={styles.itemname}>Add Property</Text>
+              </View>
+              <View>
+                <ArrowLeft />
+              </View>
+            </TouchableOpacity>
+
+            {currentMember[0]?.privilege !== 'member' && (
+              <View>
+                <TouchableOpacity
+                  style={styles.menuContainer}
+                  onPress={() => navigate('requestAddProperty')}
+                >
+                  <View
+                    style={{
+                      ...styles.rowContainer,
+                      gap: 13,
+                      marginVertical: screenHeight * 0.015,
+                    }}
                   >
-                    <View style={{ ...styles.rowContainer, gap: 13 }}>
-                      {item?.icon}
-                      <Text style={styles.itemname}>{item?.title}</Text>
-                    </View>
-                    <View>
-                      <ArrowLeft />
-                    </View>
-                  </TouchableOpacity>
-                );
+                    <PropertySvg />
+                    <Text style={styles.itemname}>Requests Add Property</Text>
+                  </View>
+                  <View>
+                    <ArrowLeft />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuContainer}
+                  onPress={() => navigate('subscriptionReq')}
+                >
+                  <View
+                    style={{
+                      ...styles.rowContainer,
+                      gap: 13,
+                      marginVertical: screenHeight * 0.015,
+                    }}
+                  >
+                    <SubscriptionSvg />
+                    <Text style={styles.itemname}>Subscription Requests</Text>
+                  </View>
+                  <View>
+                    <ArrowLeft />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuContainer}
+                  onPress={() => setisWinningModal(true)}
+                >
+                  <View
+                    style={{
+                      ...styles.rowContainer,
+                      gap: 13,
+                      marginVertical: screenHeight * 0.015,
+                    }}
+                  >
+                    <WinerSvg />
+                    <Text style={styles.itemname}>Announce Winner</Text>
+                  </View>
+                  <View>
+                    <ArrowLeft />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuContainer}
+                  onPress={() =>
+                    navigate('MultiContactSelect', {
+                      selectedContacts: selectedcontacts,
+                      currentMembers: groupData[0]?.members,
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      ...styles.rowContainer,
+                      gap: 13,
+                      marginVertical: screenHeight * 0.015,
+                    }}
+                  >
+                    <AddparticipantsSvg />
+                    <Text style={styles.itemname}>Add Participant</Text>
+                  </View>
+                  <View>
+                    <ArrowLeft />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+          {/* );
               } else {
                 return null;
               }
@@ -262,7 +408,7 @@ const ChannalSetting = () => {
               gap: 30,
               // ...(settingData.length === 0 && { gap: 16 }), // Remove gap if there are no items to render
             }}
-          />
+          /> */}
         </View>
 
         {/* Members Details  */}
@@ -315,7 +461,7 @@ const ChannalSetting = () => {
 
                     <TouchableOpacity onPress={() => handleRemoveModal(item)}>
                       {item?.privilege !== 'Owner' &&
-                        currentMember[0]?.privilege !== 'member' && ( // Only show if member's privilege is not 'admin'
+                        currentMember[0]?.privilege !== 'member' && (
                           <Text
                             style={{ ...styles.username, color: Color.Black }}
                           >
@@ -334,18 +480,21 @@ const ChannalSetting = () => {
           </View>
         )}
       </ScrollView>
-
-      <AddPropertyModal
-        isVisible={isAddProperty}
-        setisVisible={setisAddProperty}
-        item={groupData}
-      />
+      {!isLoading && (
+        <AddPropertyModal
+          isVisible={isAddProperty}
+          setisVisible={setisAddProperty}
+          item={groupData}
+          screen="setting"
+          currentMember={currentMember}
+        />
+      )}
 
       <Portal>
         <Modal visible={removeModal} onDismiss={() => setremoveModal(false)}>
-          <View style={container}>
-            <Text style={titleStyle}>Remove Member</Text>
-            <View style={{ width: '95%' }}>
+          <View style={{ ...container }}>
+            <Text style={modalTitle}>Remove Member</Text>
+            <View style={{ width: '92%' }}>
               <Text style={descriptionTextStyle}>
                 Are you sure you want to remove this member? Removed members
                 cannot re-enter the group without resubscribing to the channel.
@@ -378,10 +527,13 @@ const ChannalSetting = () => {
           </View>
         </Modal>
       </Portal>
-      <WinAnnouncSettings
-        modalVisible={isWinningModal}
-        setModalVisible={setisWinningModal}
-      />
+
+      {isWinningModal && (
+        <WinAnnouncSettings
+          modalVisible={isWinningModal}
+          setModalVisible={setisWinningModal}
+        />
+      )}
     </View>
   );
 };
@@ -462,5 +614,7 @@ const styles = StyleSheet.create({
     gap: 15,
     alignItems: 'center',
     marginVertical: screenHeight * 0.009,
+    position: 'relative',
+    top: screenHeight * 0.012,
   },
 });

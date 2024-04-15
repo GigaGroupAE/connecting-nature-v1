@@ -7,6 +7,7 @@ import { getscriptonReq } from '../../utils/BiddingChannel';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import PendingSubscriptions from '../../components/PendingSubscriptions';
 import ApprovedSubscriptions from '../../components/ApprovedSubscriptions';
+import ArchivedCampaignSkelentan from '../../components/Skeletns/ArchivedCampaignSkelentan';
 
 const SubscriptionRequests = () => {
   const [activeTab, setactiveTab] = useState('Pending');
@@ -60,11 +61,17 @@ const SubscriptionRequests = () => {
           <Text style={styles.title}>Approved</Text>
         </Pressable>
       </View>
-      {activeTab === 'Pending' && (
-        <PendingSubscriptions item={requests} refetch={refetch} />
-      )}
-      {activeTab == 'Approved' && (
-        <ApprovedSubscriptions item={requests} refetch={refetch} />
+      {isLoading ? (
+        <ArchivedCampaignSkelentan />
+      ) : (
+        <View style={{ flex: 1 }}>
+          {activeTab === 'Pending' && (
+            <PendingSubscriptions item={requests} refetch={refetch} />
+          )}
+          {activeTab == 'Approved' && (
+            <ApprovedSubscriptions item={requests} refetch={refetch} />
+          )}
+        </View>
       )}
     </View>
   );
@@ -79,17 +86,22 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    width: screenWidth * 0.8,
+    borderBottomWidth: 1,
+    borderBottomColor: Color.VeryLightGrey,
   },
   leftContainer: {
     flex: 1,
     paddingVertical: screenHeight * 0.015,
     paddingHorizontal: screenWidth * 0.02,
+    alignItems: 'center',
   },
   RightContainer: {
     // backgroundColor: 'yellow',
     flex: 1,
     paddingVertical: screenHeight * 0.015,
     paddingHorizontal: screenWidth * 0.02,
+    alignItems: 'center',
   },
   title: {
     fontFamily: 'Roboto_700Bold',
