@@ -89,7 +89,7 @@ const Home = () => {
         if (isMounted && isFocused) {
           await refetch();
         }
-      } catch (error) {
+      } catch {
         // Handle errors
       }
     };
@@ -143,7 +143,7 @@ const Home = () => {
               .then((res) => {
                 userActions.setExpoPushToken(res.data.expoPushToken);
               })
-              .catch((err) => {});
+              .catch(() => {});
           }
         });
 
@@ -165,12 +165,12 @@ const Home = () => {
   }, [isFocused]);
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
-  const VideoMiniPlayer = useMemo(
-    () =>
-      (<MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />)[
-        videoURI
-      ],
-  );
+  // const VideoMiniPlayer = useMemo(
+  //   () =>
+  //     (<MiniVideoPlayer uri={videoURI} videoAutherName={videoAutherName} />)[
+  //       videoURI
+  //     ],
+  // );
 
   const storyHeaderComponent = useMemo(() => <StoryHeader />, [Stories]);
   const ActivCampaignHeader = useMemo(

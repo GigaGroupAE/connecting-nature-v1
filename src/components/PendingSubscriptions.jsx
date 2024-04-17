@@ -126,8 +126,6 @@ const PendingSubscriptions = ({ item, refetch }) => {
     }
   };
 
-  console.log(item?.length);
-
   return (
     <View style={styles.container}>
       {item?.length === 0 ? (

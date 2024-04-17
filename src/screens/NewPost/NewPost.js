@@ -53,7 +53,6 @@ export default function NewPost(props) {
       showSnackbar("You can't share empty Post");
       return;
     }
-    navigation.goBack();
 
     //creating form data
     const formData = new FormData();
@@ -80,6 +79,8 @@ export default function NewPost(props) {
 
     try {
       if (props.route.params.origin === 'post') {
+        navigation.goBack();
+
         await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
         showSnackbar('Post created successfully');
       } else {
@@ -92,6 +93,7 @@ export default function NewPost(props) {
 
           showSnackbar('Story created successfully');
           setStories([data]);
+          navigation.goBack();
         } else {
           alert('Cannot create a story without an image');
         }

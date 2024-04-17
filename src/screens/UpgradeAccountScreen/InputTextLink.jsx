@@ -4,13 +4,13 @@ import {
   View,
   TextInput,
   KeyboardAvoidingView,
-} from "react-native";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import Color from '../../../assets/colors/Color';
 
 export default function InputTextLink({
   title,
   onchange,
-  keyboardType = "default",
+  keyboardType = 'default',
   value = null,
   defaultValue = null,
   editable = editable,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   textInput: {
     padding: 15,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     width: 318,
     height: 50,
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
-    overflow: "hidden",
+    fontFamily: 'Roboto_500Medium',
+    overflow: 'hidden',
   },
 });

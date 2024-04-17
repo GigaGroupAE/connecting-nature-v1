@@ -36,6 +36,7 @@ import { Image } from 'expo-image';
 import { useNavigation } from '@react-navigation/native';
 
 import EditBiddingProjectModal from '../../components/EditBiddingProjectModal';
+import { shortenText } from '../../utils/isFollowing';
 
 const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const userState = useUserState();
@@ -84,7 +85,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       );
       setisUserBid(isUserBit);
     }
-  }, [selectedItem]);
+  }, [item?.status]);
 
   useEffect(() => {
     const newSocket = io(BASE_URL, { auth: { token: userState.token } });
@@ -95,12 +96,14 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       if (serverId === item?._id) {
         setisUserBid(isUserBit);
       }
-
       setbids((prevBids) => {
-        if (serverId === item?._id) {
-          return [...prevBids, data];
-        }
-        return prevBids;
+        const updatedBids = [...prevBids, data];
+
+        return updatedBids.sort((a, b) => {
+          const timeA = a.bidTime || a.announcementItem.createdAt;
+          const timeB = b.bidTime || b.announcementItem.createdAt;
+          return new Date(timeB) - new Date(timeA);
+        });
       });
     });
 
@@ -122,6 +125,10 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
     });
 
     newSocket.on('receive_announcement', (data, serverId) => {
+      const startedRegex = /\bstarted\b/i;
+      if (startedRegex.test(data?.announcementItem?.content)) {
+        refetch();
+      }
       setbids((prevBids) => {
         if (serverId === item?._id) {
           return [...prevBids, data];
@@ -188,7 +195,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const startedAt = formatSingleDate(date);
   const handleUpdateStatus = async (id, status) => {
     const content = `Bidding has been started ${startedAt}`;
-    handleAnnouncement(id, content);
+    handleAnnouncement(id, content, 'started');
     try {
       const { data } = await updateProjectStatus(id, status);
       showSnackbar(data?.message);
@@ -242,6 +249,8 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
     setisEditProjectModal(true);
   };
 
+  const shortDesciption = shortenText(item?.description, 35);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -292,7 +301,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
 
           <View style={styles.contentContainer}>
             <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>{item?.description}</Text>
+              <Text style={styles.descriptionTitle}>{shortDesciption}</Text>
             </View>
             <ProjectDetails
               item={item}

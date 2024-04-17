@@ -43,7 +43,7 @@ const fetchGroups = async () => {
     const { data } = await axiosInstance.get('/groups/getgroups');
     return data;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Text, FlatList } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Dimensions, FlatList } from 'react-native';
 
 import Color from '../../../assets/colors/Color';
 import HeaderNormal from '../../components/HeaderNormal';
@@ -11,7 +11,6 @@ import { axiosInstance } from '../../../axiosInstance';
 import { useQuery } from 'react-query';
 import ArchivedCampaignSkelentan from '../../components/Skeletns/ArchivedCampaignSkelentan';
 import VerificationUsersDetials from '../../components/VerificationUsersDetials';
-import { inputstyle } from '../Decorations/ModalStyle';
 
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
@@ -46,7 +45,7 @@ const UserList = () => {
           <FlatList
             data={data?.requests}
             renderItem={({ item }) => {
-              return <VerificationUsersDetials item={item} />;
+              return <VerificationUsersDetials item={item} refetch={refetch} />;
             }}
             keyExtractor={(item) => item._id}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
