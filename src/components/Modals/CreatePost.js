@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import AddButton from '../AddButton';
-import { MaterialIcons, Entypo } from 'react-native-vector-icons';
+
 import { useNavigation } from '@react-navigation/native';
 import Color from '../../../assets/colors/Color';
 import { useUserState } from '../../slices/userSlice';
-import { Image } from 'react-native';
+
 import { scale } from 'react-native-size-matters';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Entypo } from 'react-native-vector-icons';
+
 import AddPostSvg from '../SVG/AddPostSvg';
 import StoryIcon from '../SVG/StoryIcon';
 

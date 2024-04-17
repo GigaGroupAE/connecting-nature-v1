@@ -3,10 +3,16 @@
 export const isFollowing = (followingList, phoneNumber) =>
   followingList?.some((user) => user.phoneNumber === phoneNumber);
 
-export const shortenText = (text, maxLength) => {
-  if (!text || text.length <= maxLength) {
+export const shortenText = (text, maxWords) => {
+  if (!text) {
+    return text;
+  }
+
+  const words = text.split(' ');
+
+  if (words.length <= maxWords) {
     return text;
   } else {
-    return text.slice(0, maxLength) + '...';
+    return words.slice(0, maxWords).join(' ') + '...';
   }
 };

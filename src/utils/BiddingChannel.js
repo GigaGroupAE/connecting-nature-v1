@@ -120,7 +120,7 @@ export const fetchUnderReviewProjects = async ({ pageParam = 1 }) => {
 };
 
 export const updateProjectStatus = async (id, status, denyReason) => {
-  let data = {
+  const data = {
     status: status,
   };
 
@@ -214,6 +214,17 @@ export const handleRemoveSubscriber = async (id, memberId, userId) => {
         userId,
       },
     );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleMakeLead = async (id, userId) => {
+  try {
+    const data = await axiosInstance.patch(`/bidChannel/make-lead/${id}`, {
+      userId,
+    });
     return data;
   } catch (error) {
     throw error;

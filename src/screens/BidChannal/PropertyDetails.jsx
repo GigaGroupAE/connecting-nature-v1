@@ -1,6 +1,5 @@
 import {
   FlatList,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -16,7 +15,8 @@ import { BASE_URL } from '../../../CONSTANTS';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { ResizeMode } from 'expo-av';
 import ProjectDetails from '../../components/ProjectDetails';
-import { titleStyle } from '../Decorations/ModalStyle';
+import { descriptionTextStyle, titleStyle } from '../Decorations/ModalStyle';
+import { Image } from 'expo-image';
 
 const BiddingPropertyDetails = () => {
   const { navigate } = useNavigation();
@@ -43,6 +43,7 @@ const BiddingPropertyDetails = () => {
             <Image
               source={{ uri: `${BASE_URL}/images/${firstImage.filename}` }}
               style={styles.image}
+              contentFit="cover"
             />
           </TouchableOpacity>
         ) : (
@@ -99,6 +100,7 @@ const BiddingPropertyDetails = () => {
                       resizeMode: 'cover',
                       borderRadius: 4,
                     }}
+                    contentFit="cover"
                   />
                 ) : (
                   <View
@@ -167,7 +169,7 @@ const BiddingPropertyDetails = () => {
             containerStyle={styles.detailsContainer}
           />
           <View style={styles.contentContainer}>
-            <Text style={styles.descriptionTitle}>
+            <Text style={descriptionTextStyle}>
               {propertyData?.description}
             </Text>
           </View>

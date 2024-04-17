@@ -34,6 +34,7 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import { useQuery } from 'react-query';
 import {
   fetchChannels,
+  handleMakeLead,
   handleRemoveSubscriber,
 } from '../../utils/BiddingChannel';
 import { Modal, Portal } from 'react-native-paper';
@@ -97,6 +98,7 @@ const ChannalSetting = () => {
   const [removememberDetails, setremovememberDetails] = useState(null);
   const [currentMember, setcurrentMember] = useState([]);
   const [isWinningModal, setisWinningModal] = useState(false);
+  const [isLeadModal, setisLeadModal] = useState(false);
 
   const {
     data: groupData = [],
@@ -182,12 +184,17 @@ const ChannalSetting = () => {
 
   const handleRemoveMember = async () => {
     try {
-      await handleRemoveSubscriber(
-        groupData[0]?._id,
-        removememberDetails?._id,
-        removememberDetails?.member?._id,
-      );
-      showSnackbar('Subscriber removed successfully');
+      const groupId = groupData[0]?._id;
+      const subscriberId = removememberDetails?._id;
+      const memberId = removememberDetails?.member?._id;
+
+      if (!isLeadModal) {
+        await handleRemoveSubscriber(groupId, subscriberId, memberId);
+        showSnackbar('Subscriber removed successfully');
+      } else {
+        await handleMakeLead(groupId, memberId);
+      }
+
       refetch();
       setremoveModal(false);
     } catch {}
@@ -201,6 +208,12 @@ const ChannalSetting = () => {
       setcurrentMember(user);
     }
   }, []);
+
+  const handleLeadModal = (item) => {
+    setremoveModal(true);
+    setremovememberDetails(item);
+    setisLeadModal(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -259,7 +272,9 @@ const ChannalSetting = () => {
           >
             <TouchableOpacity
               style={styles.menuContainer}
-              onPress={() => navigate('ArchivedBidding')}
+              onPress={() =>
+                navigate('ArchivedBidding', { user: currentMember })
+              }
             >
               <View
                 style={{
@@ -439,7 +454,12 @@ const ChannalSetting = () => {
                       />
                       <View style={{ gap: 4 }}>
                         <View style={styles.rowContainer}>
-                          <Text style={styles.username}>
+                          <Text
+                            style={{
+                              ...styles.username,
+                              fontSize: screenHeight * 0.017,
+                            }}
+                          >
                             {item?.member?.phoneNumber ===
                             userState?.phoneNumber
                               ? 'You'
@@ -459,16 +479,39 @@ const ChannalSetting = () => {
                       </View>
                     </View>
 
-                    <TouchableOpacity onPress={() => handleRemoveModal(item)}>
+                    <View>
                       {item?.privilege !== 'Owner' &&
                         currentMember[0]?.privilege !== 'member' && (
-                          <Text
-                            style={{ ...styles.username, color: Color.Black }}
-                          >
-                            Remove
-                          </Text>
+                          <View style={{ gap: 7 }}>
+                            <TouchableOpacity
+                              onPress={() => handleRemoveModal(item)}
+                            >
+                              <Text
+                                style={{
+                                  ...styles.username,
+                                  color: Color.Black,
+                                }}
+                              >
+                                Remove
+                              </Text>
+                            </TouchableOpacity>
+                            {item?.privilege !== 'Lead' && (
+                              <TouchableOpacity
+                                onPress={() => handleLeadModal(item)}
+                              >
+                                <Text
+                                  style={{
+                                    ...styles.username,
+                                    color: Color.Black,
+                                  }}
+                                >
+                                  Make lead
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
                         )}
-                    </TouchableOpacity>
+                    </View>
                   </View>
                 );
               }}
@@ -491,13 +534,22 @@ const ChannalSetting = () => {
       )}
 
       <Portal>
-        <Modal visible={removeModal} onDismiss={() => setremoveModal(false)}>
+        <Modal
+          visible={removeModal}
+          onDismiss={() => {
+            setremoveModal(false);
+            setisLeadModal(false);
+          }}
+        >
           <View style={{ ...container }}>
-            <Text style={modalTitle}>Remove Member</Text>
+            <Text style={modalTitle}>
+              {isLeadModal ? 'Make Lead' : 'Remove Member'}
+            </Text>
             <View style={{ width: '92%' }}>
               <Text style={descriptionTextStyle}>
-                Are you sure you want to remove this member? Removed members
-                cannot re-enter the group without resubscribing to the channel.
+                {isLeadModal
+                  ? 'Are you sure you want to make this user the lead? The lead can add members, approve property requests, approve subscription requests, start the bidding, close the bidding, and archive the bidding'
+                  : 'Are you sure you want to remove this member? Removed members cannot re-enter the group without resubscribing to the channel.'}
               </Text>
 
               <View style={styles.detailsContainer}>
@@ -505,7 +557,9 @@ const ChannalSetting = () => {
                   style={{ ...buttonContainer, width: '48%', marginTop: 0 }}
                   onPress={handleRemoveMember}
                 >
-                  <Text style={buttonTitle}>Remove</Text>
+                  <Text style={buttonTitle}>
+                    {isLeadModal ? 'Make Lead ' : 'Remove'}
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -516,7 +570,10 @@ const ChannalSetting = () => {
                     backgroundColor: Color.White,
                     borderWidth: 1,
                   }}
-                  onPress={() => setremoveModal(false)}
+                  onPress={() => {
+                    setremoveModal(false);
+                    setisLeadModal(false);
+                  }}
                 >
                   <Text style={{ ...buttonTitle, color: Color.Black }}>
                     Discard
@@ -607,7 +664,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
     color: Color.Grey,
     fontWeight: '900',
-    fontSize: screenHeight * 0.017,
+    fontSize: screenHeight * 0.0155,
   },
   detailsContainer: {
     flexDirection: 'row',
