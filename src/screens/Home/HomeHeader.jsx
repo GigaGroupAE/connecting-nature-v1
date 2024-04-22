@@ -14,6 +14,7 @@ import Color from '../../../assets/colors/Color';
 import { authorized } from '../../utils/authorized';
 import cnlogo from '../../../assets/CNlogo.png';
 import { Fontisto } from 'react-native-vector-icons';
+import { adminRoles, crmSideRole } from '../../utils/AdminRoles';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -30,14 +31,16 @@ const HomeHeader = () => {
   const handleHeaderImageClick = () => {
     navigation.navigate('UserProfile', { type: 'current' });
   };
-  const canGoToAdminScreen = authorized(
-    userstate.type,
-    'Admin',
-    'Manager',
-    'Assistant Manager',
-    'Super Admin',
-    'Operations',
-  );
+  // const canGoToAdminScreen = authorized(
+  //   userstate.type,
+  //   'Admin',
+  //   'Manager',
+  //   'Assistant Manager',
+  //   'Super Admin',
+  //   'Operations',
+  // );
+
+  const canGoToAdminScreen = crmSideRole.includes(userstate?.type);
   return (
     <View style={styles.headContainer}>
       <View>

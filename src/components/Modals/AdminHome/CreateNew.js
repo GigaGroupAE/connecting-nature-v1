@@ -5,6 +5,7 @@ import { Entypo } from 'react-native-vector-icons';
 import Color from '../../../../assets/colors/Color';
 import { useNavigation } from '@react-navigation/native';
 import { useUserState } from '../../../slices/userSlice';
+import { adminRole } from '../../../utils/AdminRoles';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -22,6 +23,8 @@ const CreateNew = (props) => {
     navigation.navigate('CreateDoDay');
     props.hideModal();
   };
+
+  const isAdminRole = adminRole.includes(userState?.type);
 
   return (
     <Provider>
@@ -46,7 +49,7 @@ const CreateNew = (props) => {
             </View>
             <Entypo name="chevron-right" style={styles.icon} />
           </Pressable>
-          {userState.type === 'Admin' && (
+          {isAdminRole && (
             <Pressable
               android_ripple={{ color: Color.LightGrey }}
               style={[styles.buttonWrapper]}

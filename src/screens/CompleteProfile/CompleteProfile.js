@@ -9,6 +9,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Modal,
+  // Pressable,
+  // FlatList,
 } from 'react-native';
 import Header from '../../components/Header.js';
 import InputText from '../../components/InputText.js';
@@ -32,8 +34,24 @@ import TermsCondition from './TermsCondition.jsx';
 import AcceptPolicy from './AcceptPolicy.jsx';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar.js';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
+// import { scale } from 'react-native-size-matters';
+// import { inputstyle } from '../Decorations/ModalStyle.js';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions.js';
+// import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const Height = Dimensions.get('screen').height;
+
+const data = [
+  {
+    id: 1,
+    title: 'Admin',
+  },
+  {
+    id: 2,
+    title: 'Channel Subscriber',
+  },
+];
 
 export default function CompleteProfile() {
   const { setLoading, showSnackbar } = useStateContext();
@@ -45,6 +63,8 @@ export default function CompleteProfile() {
   const [accept, setAccept] = useState(false);
   const [modalTerms, setmodalTerms] = useState(false);
   const [modalPolicy, setmodalPolicy] = useState(false);
+  const [isPremium, setiPremium] = useState(false);
+
   const onChangePhone = (props) => {
     setPhoneNumber(props);
   };
@@ -107,10 +127,10 @@ export default function CompleteProfile() {
   const navigation = useNavigation();
 
   const handleClick = async () => {
-    if (phoneNumber.length !== 11) {
-      Alert.alert('Error', 'Phone number must be of 11 digits');
-      return;
-    }
+    // if (phoneNumber.length !== 11) {
+    //   Alert.alert('Error', 'Phone number must be of 11 digits');
+    //   return;
+    // }
 
     if (name.length <= 0) {
       Alert.alert('Error', 'Name not provided');
@@ -152,6 +172,7 @@ export default function CompleteProfile() {
     formData.append('phoneNumber', phoneNumber);
     formData.append('type', 'user');
     formData.append('location', JSON.stringify(tempLocation));
+    formData.append('gender', gender);
 
     const config = {
       headers: {
@@ -183,6 +204,7 @@ export default function CompleteProfile() {
                 token: headers.auth_token,
                 user: data,
                 phoneNumber: phoneNumber,
+                isPremium: isPremium,
               });
             }
           })
@@ -277,16 +299,64 @@ export default function CompleteProfile() {
             option2="Female"
             onselect={optionSelected}
           />
+
           <View style={styles.CheckboxContainer}>
             <View style={styles.checkBox}>
-              <Checkbox
-                status={agree ? 'checked' : 'unchecked'}
+              {/* <Checkbox
+                status={accept ? 'checked' : 'unchecked'}
+                onPress={() => {
+                  setAccept(!accept);
+                }}
+                color="#007BFF"
+                uncheckedColor={Color.Black}
+              /> */}
+              <TouchableOpacity
+                style={styles.checkBox}
+                onPress={() => {
+                  setiPremium(!isPremium);
+                }}
+              >
+                {isPremium ? (
+                  <MaterialCommunityIcons
+                    name="checkbox-marked"
+                    style={styles.checkBoxIcon}
+                    color={Color.Blue}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="checkbox-blank-outline"
+                    style={styles.checkBoxIcon}
+                  />
+                )}
+              </TouchableOpacity>
+              <Text
+                style={styles.terms}
+                accessibilityLabel="Premium (optional)"
+              >
+                Premium (optional)
+              </Text>
+            </View>
+
+            <View style={styles.checkBox}>
+              <TouchableOpacity
+                style={styles.checkBox}
                 onPress={() => {
                   setAgree(!agree);
                 }}
-                uncheckedColor={Color.Black}
-                color="#007BFF"
-              />
+              >
+                {agree ? (
+                  <MaterialCommunityIcons
+                    name="checkbox-marked"
+                    style={styles.checkBoxIcon}
+                    color={Color.Blue}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="checkbox-blank-outline"
+                    style={styles.checkBoxIcon}
+                  />
+                )}
+              </TouchableOpacity>
               <Text style={styles.terms}>
                 I agree to the Terms and Conditions
               </Text>
@@ -295,14 +365,25 @@ export default function CompleteProfile() {
               </TouchableOpacity>
             </View>
             <View style={styles.checkBox}>
-              <Checkbox
-                status={accept ? 'checked' : 'unchecked'}
+              <TouchableOpacity
+                style={styles.checkBox}
                 onPress={() => {
                   setAccept(!accept);
                 }}
-                color="#007BFF"
-                uncheckedColor={Color.Black}
-              />
+              >
+                {accept ? (
+                  <MaterialCommunityIcons
+                    name="checkbox-marked"
+                    style={styles.checkBoxIcon}
+                    color={Color.Blue}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="checkbox-blank-outline"
+                    style={styles.checkBoxIcon}
+                  />
+                )}
+              </TouchableOpacity>
               <Text style={styles.terms}>I accept the Privacy Policy</Text>
               <TouchableOpacity onPress={() => setmodalPolicy(true)}>
                 <Text style={styles.learn}> Learn More</Text>
@@ -369,18 +450,41 @@ const styles = StyleSheet.create({
   terms: {
     fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
-    fontSize: Height * 0.017,
+    fontSize: Height * 0.016,
   },
   learn: {
     fontFamily: 'Roboto_600SemiBold',
-    fontSize: Height * 0.017,
+    fontSize: Height * 0.016,
   },
   CheckboxContainer: {
     width: '90%',
-    marginTop: Height * 0.05,
+    marginTop: Height * 0.03,
   },
   checkBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 3,
+  },
+  groupContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  designModalContainer: {
+    backgroundColor: Color.White,
+    width: screenWidth * 0.84,
+    maxHeight: screenHeight * 0.4,
+    marginTop: '3%',
+    borderColor: Color.LightGrey,
+    borderWidth: 1,
+    borderRadius: screenHeight * 0.01,
+    paddingHorizontal: '3%',
+    paddingVertical: '2%',
+  },
+  checkBoxIcon: {
+    // backgroundColor: 'red',
+    paddingLeft: screenWidth * 0.03,
+    fontSize: screenHeight * 0.025,
+    paddingVertical: screenHeight * 0.0035,
   },
 });

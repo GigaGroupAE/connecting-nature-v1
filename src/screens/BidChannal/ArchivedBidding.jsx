@@ -146,7 +146,7 @@ const ArchivedBidding = () => {
             onEndReachedThreshold={0.5}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
-            contentContainerStyle={{ gap: 5 }}
+            contentContainerStyle={{ gap: 5, flex: 1 }}
           />
         )}
       </View>

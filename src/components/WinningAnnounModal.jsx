@@ -21,7 +21,7 @@ import { screenHeight } from '../utils/ScreenDimensions';
 import ProjectDetails from './ProjectDetails';
 import { MaterialIcons } from 'react-native-vector-icons';
 import { scale } from 'react-native-size-matters';
-import { useStateContext } from '../contexts/ContextProvider';
+
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Color from '../../assets/colors/Color';
 import { BASE_URL } from '../../CONSTANTS';
@@ -34,7 +34,6 @@ const WinningAnnounModal = ({
   item,
   refetch,
 }) => {
-  const { biddingChannel } = useStateContext();
   const [isUserModalOpen, setisUserModalOpen] = useState(false);
   const [selectedUser, setselectedUser] = useState(null);
   const [winningTitle, setwinningTitle] = useState(
@@ -110,7 +109,6 @@ const WinningAnnounModal = ({
                       (a, b) => parseInt(b.bidPrice) - parseInt(a.bidPrice),
                     )}
                     renderItem={({ item, index }) => {
-                      console.log(item);
                       return (
                         <Pressable
                           style={{

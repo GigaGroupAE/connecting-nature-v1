@@ -8,13 +8,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../../../CONSTANTS.js';
-import {
-  Entypo,
-  MaterialCommunityIcons,
-  AntDesign,
-  EvilIcons,
-  FontAwesome,
-} from 'react-native-vector-icons';
+import { Entypo, FontAwesome, Octicons } from 'react-native-vector-icons';
 import { IconButton, Avatar } from 'react-native-paper';
 import { useUserState, useUserStateActions } from './../../slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -27,7 +21,9 @@ import {
   useContactState,
   useContactsStateActions,
 } from '../../slices/contactslice.js';
+
 import { screenWidth } from '../../utils/ScreenDimensions.js';
+import { adminRole } from '../../utils/AdminRoles.js';
 function ProfileSettings(props) {
   const userState = useUserState();
   const navigation = useNavigation();
@@ -37,7 +33,6 @@ function ProfileSettings(props) {
   const userstate = useUserState();
   const [contacts, setcontacts] = useState([]);
   const contactstate = useContactState();
-  console.log(contactstate?.resolvedContacts?.length, 'contact');
 
   const Logout = () => {
     //delete the expo token from database
@@ -118,7 +113,7 @@ function ProfileSettings(props) {
       fetchContacts();
     }
   }, []);
-
+  const isAdminRole = adminRole.includes(userState?.type);
   return (
     <View style={styles.body}>
       <HeaderNormal title="Profile Settings" />
@@ -220,29 +215,54 @@ function ProfileSettings(props) {
             style={styles.chevronIcon}
           />
         </Pressable>
-        <View
-          style={{
-            paddingHorizontal: screenWidth * 0.01,
-          }}
-        >
+        {isAdminRole && (
+          <View
+            style={{
+              paddingHorizontal: screenWidth * 0.01,
+            }}
+          >
+            <Pressable
+              android_ripple={{ color: Color.LightGrey }}
+              onPress={handleInviteUser}
+              style={styles.row}
+            >
+              <FontAwesome
+                name="user-circle-o"
+                color={Color.Black}
+                size={20}
+                style={{
+                  ...styles.leftIcons,
+                  // backgroundColor: 'red',
+                  padding: 6,
+                  borderRadius: 60,
+                }}
+              />
+              <View style={{ paddingLeft: 4 }}>
+                <Text style={styles.listText}>Invite Users</Text>
+              </View>
+              <Entypo
+                name="chevron-small-right"
+                size={25}
+                color={Color.Black}
+                style={styles.chevronIcon}
+              />
+            </Pressable>
+          </View>
+        )}
+        {isAdminRole && (
           <Pressable
             android_ripple={{ color: Color.LightGrey }}
-            onPress={handleInviteUser}
+            onPress={() => navigation.navigate('Decoration')}
             style={styles.row}
           >
-            <FontAwesome
-              name="user-circle-o"
+            <IconButton
+              icon="home-heart"
               color={Color.Black}
               size={20}
-              style={{
-                ...styles.leftIcons,
-                // backgroundColor: 'red',
-                padding: 6,
-                borderRadius: 60,
-              }}
+              style={styles.leftIcons}
             />
-            <View style={{ paddingLeft: 4 }}>
-              <Text style={styles.listText}>Invite Users</Text>
+            <View>
+              <Text style={styles.listText}>Decoration</Text>
             </View>
             <Entypo
               name="chevron-small-right"
@@ -251,7 +271,31 @@ function ProfileSettings(props) {
               style={styles.chevronIcon}
             />
           </Pressable>
-        </View>
+        )}
+        {isAdminRole && (
+          <Pressable
+            android_ripple={{ color: Color.LightGrey }}
+            onPress={() => navigation.navigate('UpgradeRequestsScreen')}
+            style={styles.row}
+          >
+            <IconButton
+              icon="account-arrow-up"
+              color={Color.Black}
+              size={20}
+              style={styles.leftIcons}
+            />
+            <View>
+              <Text style={styles.listText}>Verification Request</Text>
+            </View>
+            <Entypo
+              name="chevron-small-right"
+              size={25}
+              color={Color.Black}
+              style={styles.chevronIcon}
+            />
+          </Pressable>
+        )}
+
         <Pressable
           android_ripple={{ color: Color.LightGrey }}
           onPress={Logout}

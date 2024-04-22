@@ -194,6 +194,8 @@ export default function Post(props, postId) {
                 postedBy={post?.postedby}
                 description={post?.description}
                 createdAT={post?.createdAT}
+                media={post?.media}
+                id={post?._id}
               />
             )}
             {!props?.post?.sharedBy && (

@@ -23,6 +23,7 @@ import { BASE_URL } from '../../../CONSTANTS';
 import Color from '../../../assets/colors/Color';
 import { useStateContext } from '../../contexts/ContextProvider.js';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import { adminRole } from '../../utils/AdminRoles';
 export default function CreateGroup() {
   const [loading, setLoading] = useState(false);
 
@@ -162,6 +163,8 @@ export default function CreateGroup() {
   const selectedcontact = (props) => {
     setgroupLeader(props);
   };
+
+  const isAdminRole = adminRole.includes(userState?.type);
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
@@ -210,7 +213,7 @@ export default function CreateGroup() {
               onchange={setTitle}
               maxLength={30}
             />
-            {userState.type === 'Admin' ? (
+            {isAdminRole ? (
               <SelectList
                 onSelect={() => selected}
                 placeholder="Group Type"

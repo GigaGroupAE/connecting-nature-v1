@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -21,16 +21,19 @@ import { screenWidth } from '../../utils/ScreenDimensions';
 import CelebrityForm from '../../components/CelebrityForm';
 import SpecialVolunteerForm from '../../components/SpecialVolunteerForm';
 import VendorForm from '../../components/VendorForm';
+import ChannelSubscriptionModal from '../../components/ChannelSubscriptionModal';
 
 const width = Dimensions.get('screen').width;
 
 const UpgradeAccountScreen = () => {
   const [selected, setSelected] = useState(null);
+  const [isChannelSubscription, setisChannelSubscription] = useState(false);
 
   const groupType = [
     { key: '1', value: 'Celebrity' },
     { key: '2', value: 'Special Volunteer' },
     { key: '3', value: 'Vendor' },
+    { key: '4', value: 'Channel Subscription' },
   ];
 
   // const submitRequest = async () => {
@@ -69,7 +72,11 @@ const UpgradeAccountScreen = () => {
   //     setLoading(false);
   //   }
   // };
-
+  useEffect(() => {
+    if (selected === '4') {
+      setisChannelSubscription(true);
+    }
+  }, [selected]);
   return (
     <SafeAreaView style={styles.container}>
       <HeaderNormal title="Account Upgradation" />
@@ -102,6 +109,7 @@ const UpgradeAccountScreen = () => {
             style={{
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
+              paddingBottom: 10,
               // marginTop: -20,
               backgroundColor: Color.White,
             }}
@@ -211,6 +219,13 @@ const UpgradeAccountScreen = () => {
             )}
           </View>
         </View>
+
+        {isChannelSubscription && (
+          <ChannelSubscriptionModal
+            isVisible={isChannelSubscription}
+            setisVisible={setisChannelSubscription}
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

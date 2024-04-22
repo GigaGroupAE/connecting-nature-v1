@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -52,6 +52,7 @@ export default function AdminHome(props) {
   const [isChatListOpen, setisChatListOpen] = useState({});
   const [groupDetails, setgroupDetails] = useState('');
   const [isBiddingOpen, setisBiddingOpen] = useState(false);
+  const firstTimeRef = useRef(true);
 
   const showModal = useCallback(() => {
     setVisible(true);
@@ -76,7 +77,10 @@ export default function AdminHome(props) {
     refetch,
   } = useQuery('groups', fetchGroups);
 
-  const { data: channal = [] } = useQuery('channal', fetchChannels);
+  const { data: channal = [], refetch: channelRefecth } = useQuery(
+    'channal',
+    fetchChannels,
+  );
 
   //fetch user contacts in this useEffect
   useEffect(() => {
@@ -135,11 +139,15 @@ export default function AdminHome(props) {
   ];
   const navigation = useNavigation();
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+      channelRefecth();
       refetch();
-    }, []),
+    }, [refetch]),
   );
-
   const userState = useUserState();
 
   const handleAdminChat = () => {
@@ -645,15 +653,18 @@ export default function AdminHome(props) {
               )}
             />
           </View>
-          <AdminHomeManegeTab loading={loading} />
+          {/* <AdminHomeManegeTab loading={loading} /> */}
         </View>
       </ScrollView>
       <AdminBottomTab onPressAdmin={handleAdminChat} />
-      <CreateNew
-        visible={visible}
-        containerStyle={containerStyle}
-        hideModal={hideModal}
-      />
+
+      {visible && (
+        <CreateNew
+          visible={visible}
+          containerStyle={containerStyle}
+          hideModal={hideModal}
+        />
+      )}
     </SafeAreaProvider>
   );
 }

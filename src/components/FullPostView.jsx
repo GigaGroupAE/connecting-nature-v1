@@ -499,8 +499,8 @@ export default function FullPostView(props) {
         <PostShareModal
           modalVisible={modalVisible}
           setModalVisible={setmodalVisible}
-          name={post?.media.name}
-          url={url}
+          media={post?.media}
+          id={post?._id}
         />
       </View>
     </View>

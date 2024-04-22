@@ -24,6 +24,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { subscriptionRequest } from '../utils/BiddingChannel';
 import { useUserState } from '../slices/userSlice';
 import { useStateContext } from '../contexts/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
 const initialState = {
   fullName: '',
@@ -35,8 +36,14 @@ const inputErrors = {
   phoneNumber: '',
 };
 
-const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
+const ChannelSubscriptionModal = ({ isVisible, setisVisible, screen }) => {
   const userState = useUserState();
+  const navigation = useNavigation();
+
+  const initialState = {
+    fullName: userState?.fullName || '',
+    phoneNumber: userState?.phoneNumber || '',
+  };
   const [inputs, setinputs] = useState(initialState);
   const [error, seterror] = useState(inputErrors);
   const [image, setImage] = useState(null);
@@ -106,12 +113,30 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
           'Failed to submit subscription request. Please try again later.',
         );
       }
-    } catch {
+      if (screen === 'otp') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      }
+    } catch (error) {
       showSnackbar(
         'An error occurred while submitting your request. Please try again later.',
       );
+      if (screen === 'otp') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      }
     } finally {
       setloading(false);
+      if (screen === 'otp') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      }
     }
   };
 
@@ -122,11 +147,13 @@ const ChannelSubscriptionModal = ({ isVisible, setisVisible }) => {
           <Text style={{ ...titleStyle, fontSize: screenHeight * 0.02 }}>
             Channel Subscription
           </Text>
-          <Text style={descriptionTextStyle}>
-            The Channel is locked. To unlock the channel you have to pay
-            subscription fee which is one time in the following Bank Account. If
-            you already paid upload the receipt and Submit request.
-          </Text>
+          <View style={{ width: '91%' }}>
+            <Text style={descriptionTextStyle}>
+              The Channel is locked. To unlock the channel you have to pay
+              subscription fee which is one time in the following Bank Account.
+              If you already paid upload the receipt and Submit request.
+            </Text>
+          </View>
 
           <View style={styles.priceContainer}>
             <Text style={titleStyle}>Subscription Fees</Text>
