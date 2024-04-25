@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View, Image } from "react-native";
-import { CheckBox } from "react-native-elements";
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 
 export default function RadioButton(props) {
   const [male, setMale] = useState(false);
@@ -9,12 +9,12 @@ export default function RadioButton(props) {
   const genderMale = () => {
     setMale(true);
     setFemale(false);
-    props.onselect("male");
+    props.onselect('male');
   };
   const genderFemale = () => {
     setMale(false);
     setFemale(true);
-    props.onselect("female");
+    props.onselect('female');
   };
   return (
     <View style={styles.main}>
@@ -50,21 +50,22 @@ export default function RadioButton(props) {
 
 const styles = StyleSheet.create({
   main: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 16,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     paddingLeft: 30,
     paddingRight: 30,
+    width: '100%',
   },
   option1: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    width: 153,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '48%',
     height: 50,
     marginRight: 6,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
-    shadowColor: "#707070",
+    shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -74,14 +75,14 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   option2: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    width: 153,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '48%',
     height: 50,
     marginLeft: 6,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
-    shadowColor: "#707070",
+    shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -91,9 +92,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   optionTitle: {
-    color: "#636464",
+    color: '#636464',
     fontSize: 14,
-    fontWeight: "400",
+    fontWeight: '400',
     padding: 15,
   },
   checkBox: {

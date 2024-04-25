@@ -294,11 +294,13 @@ export default function CompleteProfile() {
             value={phoneNumber}
           />
           <InputText title="Full Name" onchange={onChangeName} value={name} />
-          <RadioButton
-            option1="Male"
-            option2="Female"
-            onselect={optionSelected}
-          />
+          <View style={{ width: screenWidth * 0.92 }}>
+            <RadioButton
+              option1="Male"
+              option2="Female"
+              onselect={optionSelected}
+            />
+          </View>
 
           <View style={styles.CheckboxContainer}>
             <View style={styles.checkBox}>

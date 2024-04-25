@@ -197,6 +197,7 @@ import axios from 'axios';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
 import { useStateContext } from '../../contexts/ContextProvider';
+import SearchHeader from '../../components/SearchHeader';
 
 const roleData = [
   {
@@ -231,6 +232,7 @@ const Invite = () => {
   const [userName, setuserName] = useState('');
   const [gender, setGender] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { showSnackbar } = useStateContext();
   const optionSelected = (props) => {
     setGender(props);
@@ -291,28 +293,49 @@ const Invite = () => {
       setLoading(false);
     }
   };
+  const filteredContacts = contactstate.resolvedContacts.filter((item) => {
+    const nameMatch = item.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const phoneNumberMatch = item.phoneNumber
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return nameMatch || phoneNumberMatch;
+  });
 
   return (
     <View style={styles.container}>
-      <HeaderNormal title="Add Participants" />
+      {/* <HeaderNormal title="Add Participants" /> */}
+      <SearchHeader title="Add Participants" setSearchQuery={setSearchQuery} />
 
       <View style={{ flex: 1 }}>
         <FlashList
-          data={contactstate?.resolvedContacts}
+          data={searchQuery ? filteredContacts : contactstate.resolvedContacts}
           renderItem={({ item }) => {
             return (
               <View>
                 <TouchableOpacity onPress={() => handleInvite(item)}>
                   <View style={styles.row}>
-                    <Text style={styles.text}>
+                    {/* <Text style={styles.text}>
                       {item.phoneNumber || 'No Phone Number'} ~ {item.name}
-                    </Text>
+                    </Text> */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 5,
+                      }}
+                    >
+                      <Text style={styles.text}>{item?.name} ~ </Text>
+                      <Text> {item.phoneNumber || 'No Phone Number'} </Text>
+                    </View>
                     <BouncyCheckbox
                       disabled
-                      size={25}
-                      fillColor="#4582C3"
+                      size={18}
+                      fillColor={Color.LightGrey}
                       style={styles.bouncyCheckbox}
-                      contentStyle={{ paddingHorizontal: 3, height: 35 }}
+                      contentStyle={{ height: 35 }}
                       labelStyle={{ color: '#4582C3', fontSize: 12 }}
                       mode="contained"
                     />
@@ -419,9 +442,9 @@ const Invite = () => {
                   />
                   <View
                     style={{
-                      alignItems: 'flex-end',
+                      width: screenWidth * 0.97,
                       position: 'relative',
-                      left: screenWidth * 0.074,
+                      right: screenWidth * 0.075,
                     }}
                   >
                     <RadioButton
@@ -436,7 +459,7 @@ const Invite = () => {
                     onPress={handleOnCreate}
                   >
                     {loading ? (
-                      <ActivityIndicator />
+                      <ActivityIndicator color={Color.White} />
                     ) : (
                       <Text style={buttonTitle}>Invite</Text>
                     )}
@@ -496,5 +519,9 @@ const styles = StyleSheet.create({
   },
   desingContainer: {
     paddingVertical: '1%',
+  },
+  text: {
+    fontFamily: 'Roboto_500Medium',
+    fontSize: screenHeight * 0.018,
   },
 });

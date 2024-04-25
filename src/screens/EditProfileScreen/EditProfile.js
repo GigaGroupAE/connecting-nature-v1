@@ -68,35 +68,48 @@ const EditProfile = () => {
     }
   };
 
-  const handlesubmit = () => {
-    const name = changes;
-    const formData = new FormData();
-    formData.append(changes);
-    if (image !== null) {
-      formData.append('profile', {
-        name: `${userState.phoneNumber}.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
-        uri: image.uri,
-        type: 'image/jpg',
-      });
-    }
-    setLoading(true);
+  const handlesubmit = async () => {
+    try {
+      setLoading(true);
 
-    axios
-      .patch(`${BASE_URL}/user/updateUser/${userState.id}`, formData, {
+      const formData = new FormData();
+
+      // Append changes (assuming 'changes' is an object or value you want to send)
+      formData.append('fullName', changes);
+
+      if (image) {
+        // Append image data
+        formData.append('profile', {
+          name: `${userState.phoneNumber}.jpg`,
+          uri: image.uri,
+          type: 'image/jpg',
+        });
+      }
+
+      const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
           Accept: 'application/json',
         },
-      })
-      .then((res) => {
-        userStateActions.setUser(res.data);
-        userStateActions.settoken(userToken);
-        setLoading(false);
-        navigation.goBack();
-      })
-      .catch((e) => {
-        setLoading(false);
-      });
+      };
+
+      const response = await axios.patch(
+        `${BASE_URL}/user/updateUser/${userState.id}`,
+        formData,
+        config,
+      );
+
+      // Assuming userToken is available and set elsewhere
+      userStateActions.setUser(response.data);
+      userStateActions.settoken(userToken);
+
+      setLoading(false);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating user:', error);
+      setLoading(false);
+      // You can also show a user-friendly error message here
+    }
   };
 
   return (

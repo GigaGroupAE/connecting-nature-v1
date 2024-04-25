@@ -9,6 +9,8 @@ import AddButton from './AddButton';
 import { CreatePost } from '../screens';
 import { useUserState } from '../slices/userSlice';
 import { authorized } from '../utils/authorized';
+import { Image } from 'expo-image';
+import { BASE_URL } from '../../CONSTANTS';
 
 export default function BottomTab(props) {
   const navigation = useNavigation();
@@ -58,6 +60,7 @@ export default function BottomTab(props) {
             size={30}
             color={props?.activeMenu === 'Home' ? Color.Blue : Color.Black}
           />
+          {/* {props?.activeMenu==="Home"?<HomeSvg} */}
         </Pressable>
       </View>
       <View>
@@ -108,11 +111,12 @@ export default function BottomTab(props) {
         style={styles.tabStyle}
         android_ripple={{ color: Color.LightGrey, borderless: true }}
         onPress={() => {
-          navigation.navigate('ChatList');
+          navigation.navigate('UserProfile', { type: 'current' });
+
           props?.scrollToTop();
         }}
       >
-        <Ionicons
+        {/* <Ionicons
           name={
             props?.activeMenu === 'Chat'
               ? 'chatbox-ellipses'
@@ -120,6 +124,11 @@ export default function BottomTab(props) {
           }
           size={30}
           color={props?.activeMenu === 'Chat' ? Color.Blue : Color.Black}
+        /> */}
+        <Image
+          style={styles.headerAvatar}
+          source={{ uri: `${BASE_URL}/images/${userstate.profile}` }}
+          contentFit="cover"
         />
       </Pressable>
     </View>
@@ -130,20 +139,20 @@ const styles = StyleSheet.create({
   mainContainer: {
     position: 'absolute',
     bottom: 0,
-    paddingHorizontal: 30,
+    paddingHorizontal: 35,
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
     backgroundColor: Color.White,
     width: '100%',
-    height: '8%',
+    height: '7%',
     borderTopWidth: 1.5,
     borderColor: Color.VeryLightGrey,
   },
   tabStyle: {
-    alignContent: 'center',
-    alignItems: 'center',
+    // alignContent: 'center',
+    // alignItems: 'center',
   },
   tabCart: {
     alignContent: 'center',
@@ -162,5 +171,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: 13,
     color: Color.Blue,
+  },
+  headerAvatar: {
+    // marginRight: 155,
+    borderRadius: 100,
+    width: 35,
+    height: 35,
+    backgroundColor: '#eee',
   },
 });

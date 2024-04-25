@@ -272,8 +272,6 @@ export default function ChatList() {
           )}
         </View>
       )}
-
-      <BottomTab activeMenu="Chat" scrollToTop={scrollToTop} />
     </View>
   );
 }

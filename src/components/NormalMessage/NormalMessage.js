@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,15 @@ import {
   StyleSheet,
   Dimensions,
   Pressable,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { calculateTimeDifference } from "../../utils/timeDifference";
+} from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { calculateTimeDifference } from '../../utils/timeDifference';
 
-const Width = Dimensions.get("screen").width;
-const Hight = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Hight = Dimensions.get('screen').height;
 
 const NormalMessage = (props) => {
   const [longPress, setLongPress] = useState(false);
@@ -63,7 +63,7 @@ const NormalMessage = (props) => {
             )} */}
             {userState.id !== item?.from?._id ? (
               <View>
-                {props?.groupTitle !== "test" ? (
+                {props?.groupTitle !== 'test' ? (
                   <View>
                     <Text style={styles.senderName}>{item.from.fullName}</Text>
                   </View>
@@ -76,16 +76,16 @@ const NormalMessage = (props) => {
               <Ionicons
                 name="checkmark"
                 size={14}
-                style={{ marginHorizontal: 2, color: "grey" }}
+                style={{ marginHorizontal: 2, color: 'grey' }}
               />
             </View>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() =>
-              navigation.navigate("MessageForwardCRM", {
+              navigation.navigate('MessageForwardCRM', {
                 forwardFrom: userState.id,
-                forwardChat: "chatId",
-                forwardType: "text",
+                forwardChat: 'chatId',
+                forwardType: 'text',
                 forwardContent: item.content,
                 socket: socket,
               })
@@ -100,10 +100,10 @@ const NormalMessage = (props) => {
               <MaterialCommunityIcons
                 name="share"
                 size={22}
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </Pressable>
@@ -113,22 +113,22 @@ const NormalMessage = (props) => {
 const styles = StyleSheet.create({
   senderTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   receiverTextMessageMainContainer: {
     flex: 1,
-    flexDirection: "row-reverse",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row-reverse',
+    alignContent: 'center',
+    alignItems: 'center',
     // justifyContent: "flex-start",
   },
   senderTextMessageContainer: {
     backgroundColor: Color.White,
-    maxWidth: "80%",
+    maxWidth: '80%',
     borderLeftWidth: 4,
-    borderColor: "#4582C3",
+    borderColor: '#4582C3',
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     marginVertical: 4,
@@ -136,9 +136,9 @@ const styles = StyleSheet.create({
   },
   receiverTextMessageContainer: {
     backgroundColor: Color.White,
-    maxWidth: "80%",
+    maxWidth: '80%',
     borderRightWidth: 4,
-    borderColor: "#4582C3",
+    borderColor: '#4582C3',
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     paddingHorizontal: 5,
@@ -146,52 +146,52 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingHorizontal: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     paddingVertical: 2,
-    color: "#4582C3",
+    color: '#4582C3',
   },
   message: {
     fontSize: 15.5,
     paddingHorizontal: 5,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     paddingVertical: 4,
     lineHeight: 20,
   },
   timeContainer: {
-    flexDirection: "row",
-    alignSelf: "flex-end",
-    marginTop: "-2%",
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginTop: '-2%',
     marginVertical: 5,
   },
   time: {
     fontSize: 12,
     color: Color.Grey,
-    fontFamily: "Roboto",
-    marginLeft: "10%",
+    fontFamily: 'Roboto',
+    marginLeft: '10%',
   },
   shareMessage: {
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
   },
   imageMessage: {
-    maxWidth: "100%",
-    height: Dimensions.get("screen").height * 0.4,
-    width: Dimensions.get("screen").width * 0.6,
+    maxWidth: '100%',
+    height: Dimensions.get('screen').height * 0.4,
+    width: Dimensions.get('screen').width * 0.6,
     marginVertical: 0,
   },
   shareMessage: {
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
     marginHorizontal: Width * 0.018,
   },
   receiverShareMessage: {
-    backgroundColor: "#CFCFCF",
+    backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
     padding: 3,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Width * 0.018,
   },
   senderName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.DarkBlue,
     fontSize: Hight * 0.017,
     marginTop: Hight * 0.004,

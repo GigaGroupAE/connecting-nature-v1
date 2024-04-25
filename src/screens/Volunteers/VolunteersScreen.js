@@ -9,45 +9,45 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
-} from "react-native";
-import { useState } from "react";
-import user from "../../../assets/user.jpg";
+} from 'react-native';
+import { useState } from 'react';
+import user from '../../../assets/user.jpg';
 
 //theme
-import Color from "../../../assets/colors/Color";
+import Color from '../../../assets/colors/Color';
 
 //icons import
-import { Feather, Entypo } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import { Feather, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 //images import
-import special from "../../../assets/special.png";
-import notSpecial from "../../../assets/notSpecial.png";
+import special from '../../../assets/special.png';
+import notSpecial from '../../../assets/notSpecial.png';
 
 //base url
-import { BASE_URL } from "../../../CONSTANTS";
-import axios from "axios";
+import { BASE_URL } from '../../../CONSTANTS';
+import axios from 'axios';
 
 //components import
-import Stats from "../../components/Stats";
+import Stats from '../../components/Stats';
 
 //Responsive Width and Height
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 //userState
-import { useUserState } from "../../slices/userSlice";
-import { useNavigation } from "@react-navigation/native";
+import { useUserState } from '../../slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
 
 // const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
 
 //this screen requires volunteers array as props
 //route.params.volunteers
 
-import { useStateContext } from "../../contexts/ContextProvider.js";
-import { axiosInstance } from "../../../axiosInstance";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import { axiosInstance } from '../../../axiosInstance';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
 const VolunteersScreen = ({ route }) => {
   const campaignId = route.params.campaignId;
@@ -59,7 +59,7 @@ const VolunteersScreen = ({ route }) => {
     try {
       const { data } = await axiosInstance.patch(
         `/campaigns/invite-volunteer/${campaignId}`,
-        { phoneNumbers: [phoneNumber], usersToUpdate: [userId] }
+        { phoneNumbers: [phoneNumber], usersToUpdate: [userId] },
       );
       setVolunteers(data.updatedCampaign);
     } catch (error) {
@@ -72,7 +72,7 @@ const VolunteersScreen = ({ route }) => {
     let phoneNumbers = [];
     //filtering those users that are not invited only
     volunteers.forEach((vol) => {
-      if (vol.status === "invite") {
+      if (vol.status === 'invite') {
         usersToUpdate.push(vol.user._id);
         phoneNumbers.push(vol.user.phoneNumber);
       }
@@ -80,7 +80,7 @@ const VolunteersScreen = ({ route }) => {
     try {
       const { data } = await axiosInstance.patch(
         `/campaigns/invite-volunteer/${campaignId}`,
-        { phoneNumbers, usersToUpdate }
+        { phoneNumbers, usersToUpdate },
       );
       setVolunteers(data.updatedCampaign);
     } catch (error) {
@@ -95,12 +95,12 @@ const VolunteersScreen = ({ route }) => {
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.header}>
-          <View style={{ flexDirection: "row", margin: "4%" }}>
+          <View style={{ flexDirection: 'row', margin: '4%' }}>
             <Text
               style={{
-                fontFamily: "Roboto_600SemiBold",
+                fontFamily: 'Roboto_600SemiBold',
                 fontSize: 18,
-                color: "#707070",
+                color: '#707070',
                 flex: 1,
               }}
             >
@@ -108,15 +108,15 @@ const VolunteersScreen = ({ route }) => {
             </Text>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
                 flex: 0.5,
-                justifyContent: "space-around",
+                justifyContent: 'space-around',
               }}
             >
               <TouchableOpacity onPress={inviteAll}>
                 <Text style={styles.invite}>Invite All</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+              <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                 <Text style={{ marginLeft: Width * 0.012, ...styles.invite }}>
                   Done
                 </Text>
@@ -130,19 +130,19 @@ const VolunteersScreen = ({ route }) => {
           <Stats
             data={[
               {
-                title: "Volunteer available",
+                title: 'Volunteer available',
                 count: volunteers.length,
               },
               {
-                title: "Invitation sent",
-                count: volunteers.filter((v) => v.status === "sent").length,
+                title: 'Invitation sent',
+                count: volunteers.filter((v) => v.status === 'sent').length,
               },
               {
-                title: "Invitation accepted",
-                count: volunteers.filter((v) => v.status === "accepted").length,
+                title: 'Invitation accepted',
+                count: volunteers.filter((v) => v.status === 'accepted').length,
               },
               {
-                title: "Special Volunteer Selected",
+                title: 'Special Volunteer Selected',
                 count: 0,
               },
             ]}
@@ -155,7 +155,7 @@ const VolunteersScreen = ({ route }) => {
           {volunteers.map((v, idx) => {
             let displayedUsername = v.user.fullName;
             if (v.user.fullName.length > 10) {
-              displayedUsername = v.user.fullName.slice(0, 10) + "...";
+              displayedUsername = v.user.fullName.slice(0, 10) + '...';
             }
 
             return (
@@ -167,12 +167,12 @@ const VolunteersScreen = ({ route }) => {
                   />
                   <View style={styles.nameContainer}>
                     <Text style={styles.userName}>{displayedUsername}</Text>
-                    {(v.user?.type === "Operations" ||
-                      v.user?.type === "Admin" ||
-                      v.user?.type === "Manager" ||
-                      v.user?.type === "Assistant Manager" ||
-                      v.user?.type === "Super Admin" ||
-                      v.user?.type === "celebrity") && (
+                    {(v.user?.type === 'Operations' ||
+                      v.user?.type === 'Admin' ||
+                      v.user?.type === 'Manager' ||
+                      v.user?.type === 'Assistant Manager' ||
+                      v.user?.type === 'Super Admin' ||
+                      v.user?.type === 'celebrity') && (
                       <MaterialCommunityIcons
                         name="check-decagram"
                         style={styles.adminIcon}
@@ -187,7 +187,7 @@ const VolunteersScreen = ({ route }) => {
 
                 <View style={styles.btnContainer}>
                   <Pressable
-                    disabled={v.status !== "invite"}
+                    disabled={v.status !== 'invite'}
                     style={({ pressed }) =>
                       pressed
                         ? [
@@ -195,7 +195,7 @@ const VolunteersScreen = ({ route }) => {
                             styles.pressed,
                           ]
                         : [
-                            v.status === "sent"
+                            v.status === 'sent'
                               ? styles.disabled
                               : {
                                   backgroundColor: Color.Blue,
@@ -209,10 +209,10 @@ const VolunteersScreen = ({ route }) => {
                     }}
                   >
                     <Text style={styles.btn}>
-                      {v.status === "invite" && " Invite "}
-                      {v.status === "sent" && "   sent   "}
+                      {v.status === 'invite' && ' Invite '}
+                      {v.status === 'sent' && '   sent   '}
 
-                      {v.status === "accpeted" && "accepted"}
+                      {v.status === 'accpeted' && 'accepted'}
                     </Text>
                   </Pressable>
                 </View>
@@ -242,102 +242,102 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
 
-    borderColor: "rgba(154, 154, 154, 0.5)",
+    borderColor: 'rgba(154, 154, 154, 0.5)',
     flex: 0,
   },
   list: {
     flex: 1,
-    paddingHorizontal: "4%",
+    paddingHorizontal: '4%',
     backgroundColor: Color.White,
   },
   icons: {
-    color: "#707070",
+    color: '#707070',
   },
   pressed: {
     opacity: 0.75,
   },
   disabled: {
-    backgroundColor: " #EEEEEE",
+    backgroundColor: ' #EEEEEE',
     borderRadius: 8,
     color: Color.DarkGrey,
   },
   userContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: Height * 0.003,
 
     backgroundColor: Color.White,
     borderRadius: 8,
 
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     borderBottomWidth: 0.7,
     borderColor: Color.LightGrey,
   },
   imgContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: Height * 0.008,
-    alignContent: "center",
+    alignContent: 'center',
     marginLeft: Width * 0.03,
   },
   userImg: {
     width: 45,
     height: 45,
     borderRadius: 22,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   nameContainer: {
     marginTop: Height * 0.008,
     flex: 0,
     // alignSelf: "center",
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   userName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     marginLeft: Width * 0.02,
   },
   userRole: {
     marginLeft: Width * 0.02,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Blue,
-    marginTop: "-1.5%",
+    marginTop: '-1.5%',
   },
   pointContainer: {
-    position: "absolute",
+    position: 'absolute',
     left: Width * 0.5,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   pts: {
     color: Color.Black,
-    fontFamily: "Roboto",
-    fontWeight: "500",
+    fontFamily: 'Roboto',
+    fontWeight: '500',
   },
   points: {
     color: Color.Black,
-    fontFamily: "Roboto",
-    fontWeight: "900",
+    fontFamily: 'Roboto',
+    fontWeight: '900',
     fontSize: 16,
   },
   btnContainer: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginRight: Width * 0.03,
   },
   btn: {
-    textAlign: "center",
+    textAlign: 'center',
     color: Color.White,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.0055,
     backgroundColor: Color.Blue,
     borderRadius: 8,
   },
   invite: {
-    alignSelf: "center",
-    fontFamily: "Roboto_500Medium",
+    alignSelf: 'center',
+    fontFamily: 'Roboto_500Medium',
     color: Color.Blue,
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 12,
   },
   adminIcon: {
     color: Color.Blue,
-    marginTop: "4%",
+    marginTop: '4%',
   },
 });

@@ -1,17 +1,17 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Color from "../../assets/colors/Color";
+import React, { useCallback, useMemo, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import Color from '../../assets/colors/Color';
 
 const DescriptionText = ({ description }) => {
   // Memoize the removeHashtags function
   const removeHashtags = useMemo(() => {
     return (text) => {
-      const words = text.split(/\s+/);
-      const hasRegularWords = words.some((word) => !/^#\S+/.test(word));
+      const words = text?.split(/\s+/);
+      const hasRegularWords = words?.some((word) => !/^#\S+/.test(word));
       if (!hasRegularWords) {
         return text;
       }
-      const updatedText = text.replace(/#[^\s]+/g, "");
+      const updatedText = text.replace(/#[^\s]+/g, '');
       return updatedText;
     };
   }, []);
@@ -33,14 +33,14 @@ const DescriptionText = ({ description }) => {
   // Process the description text
   const descriptionWithOutHashtags = useMemo(
     () => removeHashtags(description),
-    [description]
+    [description],
   );
 
   // Extract unique hashtags
   const hashtagRegex = /#[^\s]+/g;
   const matches = description.match(hashtagRegex) || [];
   const uniqueMatches = matches.filter(
-    (match) => !descriptionWithOutHashtags.includes(match)
+    (match) => !descriptionWithOutHashtags.includes(match),
   );
 
   return (
@@ -72,7 +72,7 @@ const DescriptionText = ({ description }) => {
           onPress={toggleNumberOfLines}
           style={{ marginTop: 5, color: Color.Blue }}
         >
-          {textShown ? "Read less..." : "Read more..."}
+          {textShown ? 'Read less...' : 'Read more...'}
         </Text>
       ) : null}
     </View>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.White,
     // flexWrap: "wrap-reverse",
   },

@@ -110,7 +110,9 @@ const SignIn = () => {
           keyboardType="number-pad"
         />
         <ButtonMain
-          title={loading ? <ActivityIndicator /> : 'Sign In'}
+          title={
+            loading ? <ActivityIndicator color={Color.White} /> : 'Sign In'
+          }
           callback={onHandleClick}
           disabled={loading}
         />

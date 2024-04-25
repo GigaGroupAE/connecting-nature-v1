@@ -14,6 +14,7 @@ const AdminIcon = ({ userType }) => {
     'Assistant Manager',
     'Super Admin',
     'celebrity',
+    'Special Volunteer',
   ];
   return (
     <View>

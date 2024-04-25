@@ -11,10 +11,11 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
 import Color from '../../../assets/colors/Color';
-import { authorized } from '../../utils/authorized';
+
 import cnlogo from '../../../assets/CNlogo.png';
 import { Fontisto } from 'react-native-vector-icons';
-import { adminRoles, crmSideRole } from '../../utils/AdminRoles';
+import { crmSideRole } from '../../utils/AdminRoles';
+import MessageSvg from '../../components/SVG/MessageSvg';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -29,7 +30,8 @@ const HomeHeader = () => {
     navigation.navigate('AdminHome');
   };
   const handleHeaderImageClick = () => {
-    navigation.navigate('UserProfile', { type: 'current' });
+    navigation.navigate('ChatList');
+    // navigation.navigate('UserProfile', { type: 'current' });
   };
   // const canGoToAdminScreen = authorized(
   //   userstate.type,
@@ -89,17 +91,18 @@ const HomeHeader = () => {
           onPress={handleNotificationNavigation}
           style={{ paddingHorizontal: Width * 0.07 }}
         >
-          <Fontisto name="bell" size={24} color={Color.Black} />
+          <Fontisto name="bell" size={20} color={Color.Black} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleHeaderImageClick}
           style={{ marginRight: Width * 0.05 }}
         >
-          <Image
+          {/* <Image
             style={styles.headerAvatar}
             source={{ uri: `${BASE_URL}/images/${userstate.profile}` }}
             resizeMode="contain"
-          />
+          /> */}
+          <MessageSvg />
         </TouchableOpacity>
       </View>
     </View>

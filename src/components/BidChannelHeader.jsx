@@ -15,6 +15,9 @@ import { useNavigation } from '@react-navigation/native';
 
 const BidChannelHeader = ({ item }) => {
   const { goBack, navigate } = useNavigation();
+
+  const admin = item?.members?.filter((item) => item?.privilege === 'Owner');
+
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
@@ -35,7 +38,7 @@ const BidChannelHeader = ({ item }) => {
           onPress={() => navigate('channelSetting', { groupData: item })}
         >
           <Text style={styles.title}>{item?.title}</Text>
-          <Text style={styles.subTitle}>Shaheena Bilal</Text>
+          <Text style={styles.subTitle}>{admin[0]?.member?.fullName}</Text>
         </Pressable>
       </View>
       <View style={styles.rightContainer}>

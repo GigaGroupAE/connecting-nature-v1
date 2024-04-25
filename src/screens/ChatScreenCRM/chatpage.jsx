@@ -686,7 +686,7 @@ const ChatPage = (props) => {
                 style={{
                   marginHorizontal: 10,
                 }}
-                inverted={true}
+                inverted
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item._id}
                 extraData={chatMessages}
@@ -702,7 +702,7 @@ const ChatPage = (props) => {
                       })
                 }
                 renderItem={({ item, index }) => {
-                  let timePassed = calculateTimeDifference(item.date);
+                  const timePassed = calculateTimeDifference(item.date);
 
                   return (
                     <View>

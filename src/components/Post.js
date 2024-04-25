@@ -49,27 +49,27 @@ export default function Post(props, postId) {
     // Memoize the reactions and comments props
     const { post } = props;
 
-    setreactions((prevReactions) => {
-      // Check if reactions have changed before updating state
-      if (prevReactions !== post?.reactions) {
-        setliked(
-          post?.reactions.some((user) => {
-            return user._id === userState.id;
-          }),
-        );
-        return post?.reactions;
-      }
-      return prevReactions;
-    });
+    // setreactions((prevReactions) => {
+    //   // Check if reactions have changed before updating state
+    //   if (prevReactions !== post?.reactions) {
+    setliked(
+      post?.reactions.some((user) => {
+        return user._id === userState.id;
+      }),
+    );
+    //     return post?.reactions;
+    //   }
+    //   return prevReactions;
+    // });
 
-    setcomment((prevComments) => {
-      // Check if comments have changed before updating state
-      if (prevComments !== post?.comments) {
-        return post?.comments;
-      }
-      return prevComments;
-    });
-  }, [post?.reactions, post?.comments]);
+    // setcomment((prevComments) => {
+    //   // Check if comments have changed before updating state
+    //   if (prevComments !== post?.comments) {
+    //     return post?.comments;
+    //   }
+    //   return prevComments;
+    // });
+  }, [post?.reactions, post?.comments, post]);
 
   const modalComponent = useMemo(
     () => (

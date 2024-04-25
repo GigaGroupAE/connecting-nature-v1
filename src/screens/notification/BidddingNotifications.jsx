@@ -21,6 +21,7 @@ import {
   descriptionTextStyle,
   titleStyle,
 } from '../Decorations/ModalStyle';
+import { calculateTimeDifference } from '../../utils/timeDifference';
 
 const fetchNotifications = async () => {
   try {
@@ -51,6 +52,8 @@ const BidddingNotifications = () => {
         <FlatList
           data={data}
           renderItem={({ item }) => {
+            const timePassed = calculateTimeDifference(item?.createdAT);
+
             return (
               <View style={styles.contentContainer}>
                 {item?.data?.title === 'req-denied' && (
@@ -60,6 +63,7 @@ const BidddingNotifications = () => {
                       setdeniedNotify(item);
                       settitle('Subscription Request Denied');
                     }}
+                    style={styles.titleContainer}
                   >
                     <Text style={styles.title}>
                       Your channel subscription has been denied by the Admin
@@ -73,6 +77,7 @@ const BidddingNotifications = () => {
                       setdeniedNotify(item);
                       settitle('Add Property Request Denied');
                     }}
+                    style={styles.titleContainer}
                   >
                     <Text style={styles.title}>
                       Your property has been rejected. Please review the reason
@@ -82,7 +87,7 @@ const BidddingNotifications = () => {
                 )}
 
                 {item?.data?.title === 'req-approve' && (
-                  <View>
+                  <View style={styles.titleContainer}>
                     <Text style={styles.title}>
                       {item?.body?.content?.description}
                     </Text>
@@ -90,7 +95,7 @@ const BidddingNotifications = () => {
                 )}
 
                 {item?.data?.title === 'property-Approved' && (
-                  <View>
+                  <View style={styles.titleContainer}>
                     <Text style={styles.title}>
                       {item?.body?.content?.description}
                     </Text>
@@ -98,7 +103,14 @@ const BidddingNotifications = () => {
                 )}
 
                 {item?.data?.title === 'New Bid Placed' && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+
+                      width: '80%',
+                    }}
+                  >
                     <Text style={styles.name}>{item?.body?.userCode}</Text>
                     <Text style={{ ...styles.title, paddingHorizontal: 6 }}>
                       has placed bid on
@@ -106,6 +118,8 @@ const BidddingNotifications = () => {
                     <Text style={styles.name}>{item?.body?.projectTitle}</Text>
                   </View>
                 )}
+
+                <Text style={styles.timePass}>{timePassed}</Text>
               </View>
             );
           }}
@@ -151,6 +165,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: screenWidth * 0.02,
     paddingVertical: screenHeight * 0.01,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontFamily: 'Roboto_500Medium',
@@ -159,5 +176,13 @@ const styles = StyleSheet.create({
   name: {
     fontFamily: 'Roboto_700Bold',
     fontSize: screenHeight * 0.015,
+  },
+  titleContainer: {
+    width: '80%',
+  },
+  timePass: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: screenHeight * 0.012,
+    color: Color.Grey,
   },
 });

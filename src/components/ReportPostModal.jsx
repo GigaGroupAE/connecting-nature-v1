@@ -38,6 +38,7 @@ const ReportPostModal = ({
   setModalVisible,
   id,
   showSnackbar,
+  setmainModal,
 }) => {
   const userState = useUserState();
   const [isOthers, setisOthers] = useState(false);
@@ -69,9 +70,8 @@ const ReportPostModal = ({
       setModalVisible(false);
       setotherReason('');
       setisOthers(false);
-    } catch (error) {
-      console.log(error);
-    }
+      setmainModal(false);
+    } catch {}
   };
 
   const handleOthersSubmmit = () => {
@@ -106,7 +106,7 @@ const ReportPostModal = ({
               data={reportOptions}
               renderItem={renderItem}
               keyExtractor={(item) => item.key}
-              contentContainerStyle={{ gap: 8 }}
+              contentContainerStyle={{ gap: 18 }}
             />
 
             {isOthers && (
@@ -138,7 +138,7 @@ export default ReportPostModal;
 
 const styles = StyleSheet.create({
   optionText: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: screenHeight * 0.018,
+    fontFamily: 'Roboto_400Regular',
+    fontSize: screenHeight * 0.0166,
   },
 });

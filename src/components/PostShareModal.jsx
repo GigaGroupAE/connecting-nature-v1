@@ -98,6 +98,7 @@ const PostShareModal = ({ modalVisible, setModalVisible, media, id }) => {
               setModalVisible={setisReportPost}
               id={id}
               showSnackbar={showSnackbar}
+              setmainModal={setModalVisible}
             />
           )}
         </View>

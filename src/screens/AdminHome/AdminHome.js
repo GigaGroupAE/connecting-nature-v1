@@ -316,11 +316,12 @@ export default function AdminHome(props) {
                       key={index}
                       titleStyle={styles.titleStyle}
                       expanded
-                      style={{
-                        icon: {
-                          display: 'none',
-                        },
-                      }}
+                      // style={{
+                      //   icon: {
+                      //     display: 'none',
+                      //   },
+                      // }}
+                      style={{ backgroundColor: Color.LightBg }}
                       right={(props) => (
                         <List.Icon
                           {...props}
