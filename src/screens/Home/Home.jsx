@@ -34,6 +34,7 @@ import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { screenHeight } from '../../utils/ScreenDimensions';
 import { itemTitle } from '../Decorations/ModalStyle';
+import { axiosInstance } from '../../../axiosInstance';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -179,6 +180,22 @@ const Home = () => {
   );
 
   const scrollToTop = () => {};
+
+  useEffect(() => {
+    const getUserType = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `/user/get-userType/${userstate?.id}`,
+        );
+
+        if (userstate?.type !== data) {
+          userActions.settype(data);
+        }
+      } catch {}
+    };
+
+    getUserType();
+  }, []);
 
   return (
     <SafeAreaProvider style={styles.container}>

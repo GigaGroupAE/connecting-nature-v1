@@ -32,20 +32,20 @@ export const SETTINGS_DATA = [
     screenToNavigate: null,
   },
 
-  {
-    title: 'Decoration',
-    icon: <Octicons name="blocked" size={24} color={Color.Black} />,
-    screenToNavigate: 'Decoration',
-  },
-  {
-    title: 'Invite Users',
-    icon: (
-      <MaterialCommunityIcons
-        name="account-arrow-up-outline"
-        size={24}
-        color={Color.Black}
-      />
-    ),
-    screenToNavigate: 'InviteUsers',
-  },
+  // {
+  //   title: 'Decoration',
+  //   icon: <Octicons name="blocked" size={24} color={Color.Black} />,
+  //   screenToNavigate: 'Decoration',
+  // },
+  // {
+  //   title: 'Invite Users',
+  //   icon: (
+  //     <MaterialCommunityIcons
+  //       name="account-arrow-up-outline"
+  //       size={24}
+  //       color={Color.Black}
+  //     />
+  //   ),
+  //   screenToNavigate: 'InviteUsers',
+  // },
 ];

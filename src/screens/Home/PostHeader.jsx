@@ -5,7 +5,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Entypo } from 'react-native-vector-icons';
 
 import Color from '../../../assets/colors/Color';
@@ -16,6 +16,8 @@ import AdminIcon from '../../components/AdminIcon';
 import { scale } from 'react-native-size-matters';
 import PostDescription from '../../components/PostDesciption';
 import { Image } from 'expo-image';
+import PostShareModal from '../../components/PostShareModal';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -28,6 +30,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
   const userName = data?.postedby?.fullName;
   const userType = data.postedby.type;
   const userPhoneNumber = data?.postedby?.phoneNumber;
+  const [isShareModal, setisShareModal] = useState(false);
 
   const handleUserProfile = () => {
     navigation.navigate('UserProfile', {
@@ -47,7 +50,14 @@ const PostHeader = ({ data, setmodalVisible }) => {
             cache: 'force-cache',
           }}
         />
-        <View>
+        <View
+          style={{
+            gap: 3,
+
+            position: 'relative',
+            bottom: screenHeight * 0.003,
+          }}
+        >
           <TouchableOpacity
             style={{ flexDirection: 'row' }}
             onPress={handleUserProfile}
@@ -78,7 +88,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
           </View>
         </View>
         <View style={styles.threeDots} onPress={() => setmodalVisible(true)}>
-          <TouchableOpacity onPress={() => setmodalVisible(false)}>
+          <TouchableOpacity onPress={() => setisShareModal(true)}>
             <Entypo name="dots-three-horizontal" style={styles.sideIcon} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setmodalVisible(true)}>
@@ -90,6 +100,15 @@ const PostHeader = ({ data, setmodalVisible }) => {
         </View>
       </View>
       <PostDescription description={data.description} />
+
+      {isShareModal && (
+        <PostShareModal
+          modalVisible={isShareModal}
+          setModalVisible={setisShareModal}
+          id={data?._id}
+          media={data?.media}
+        />
+      )}
     </View>
   );
 };
@@ -114,7 +133,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: Color.Black,
-    fontSize: 14,
+    fontSize: screenHeight * 0.0166,
     fontFamily: 'Roboto_600SemiBold',
     alignSelf: 'center',
   },

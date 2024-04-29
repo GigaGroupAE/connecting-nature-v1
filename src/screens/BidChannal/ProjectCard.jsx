@@ -90,37 +90,61 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   useEffect(() => {
     const newSocket = io(BASE_URL, { auth: { token: userState.token } });
     newSocket.on('receive_bid', (data, serverId) => {
-      const isUserBit = data?.bidBy?.some(
-        (item) => item?.phoneNumber === userState?.phoneNumber,
-      );
-      if (serverId === item?._id) {
-        setisUserBid(isUserBit);
-      }
       setbids((prevBids) => {
-        const updatedBids = [...prevBids, data];
+        const priorityQueue = [...prevBids];
 
-        return updatedBids.sort((a, b) => {
+        // Insert the new bid into the correct position in the priority queue
+        priorityQueue.push(data);
+
+        const isUserBidInUpdatedData = priorityQueue.some((item) =>
+          item?.bidBy?.some(
+            (bidder) => bidder?.phoneNumber === userState?.phoneNumber,
+          ),
+        );
+
+        setisUserBid(isUserBidInUpdatedData);
+
+        priorityQueue.sort((a, b) => {
           const timeA = a.bidTime || a.announcementItem.createdAt;
           const timeB = b.bidTime || b.announcementItem.createdAt;
           return new Date(timeB) - new Date(timeA);
         });
+
+        const updatedBids = priorityQueue.slice(0, 200);
+
+        return updatedBids;
       });
     });
 
     newSocket.on('updated_bid', (data, serverId) => {
-      const isUserBit = data?.bidBy?.some(
-        (item) => item?.phoneNumber === userState?.phoneNumber,
-      );
-      if (serverId === item?._id) {
-        setisUserBid(isUserBit);
-      }
-
       setbids((prevBids) => {
-        const updatedBid = prevBids?.filter((item) => item?._id !== data?._id);
-        if (serverId === item?._id) {
-          return [...updatedBid, data];
-        }
-        return prevBids;
+        const priorityQueue = [...prevBids];
+
+        // Remove the old bid from the priority queue
+        const updatedBidsWithoutOld = priorityQueue.filter(
+          (item) => item._id !== data._id,
+        );
+
+        // Add the updated bid to the correct position in the priority queue
+        updatedBidsWithoutOld.push(data);
+
+        const isUserBidInUpdatedData = updatedBidsWithoutOld.some((item) =>
+          item?.bidBy?.some(
+            (bidder) => bidder?.phoneNumber === userState?.phoneNumber,
+          ),
+        );
+
+        setisUserBid(isUserBidInUpdatedData);
+
+        // Sort the priority queue based on the bid time
+        updatedBidsWithoutOld.sort((a, b) => {
+          const timeA = a.bidTime || a.announcementItem.createdAt;
+          const timeB = b.bidTime || b.announcementItem.createdAt;
+          return new Date(timeB) - new Date(timeA);
+        });
+
+        const updatedBids = updatedBidsWithoutOld.slice(0, 200);
+        return updatedBids;
       });
     });
 
@@ -129,9 +153,15 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       if (startedRegex.test(data?.announcementItem?.content)) {
         refetch();
       }
+
       setbids((prevBids) => {
         if (serverId === item?._id) {
-          return [...prevBids, data];
+          const updatedBids = [...prevBids, data];
+          return updatedBids.sort((a, b) => {
+            const timeA = a.bidTime || a.announcementItem.createdAt;
+            const timeB = b.bidTime || b.announcementItem.createdAt;
+            return new Date(timeB) - new Date(timeA);
+          });
         }
         return prevBids;
       });
@@ -194,8 +224,6 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
 
   const startedAt = formatSingleDate(date);
   const handleUpdateStatus = async (id, status) => {
-    const content = `Bidding has been started ${startedAt}`;
-    handleAnnouncement(id, content, 'started');
     try {
       const { data } = await updateProjectStatus(id, status);
       showSnackbar(data?.message);
@@ -203,14 +231,21 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
     } catch {}
   };
 
+  const handleStart = (item) => {
+    const content = `Bidding has been started ${startedAt}`;
+    handleAnnouncement(item?._id, content, 'started');
+    handleUpdateStatus(item?._id, 'Started');
+  };
+
   const handleClose = (item) => {
     const content = `Bidding has been closed. Winner will be announced soon.`;
-    handleAnnouncement(item?._id, content);
     setisWinningModal(true);
     setselectedItem(item);
     if (item?.status !== 'Closed') {
       handleUpdateStatus(item?._id, 'Closed');
+      handleAnnouncement(item?._id, content);
     }
+    refetch();
   };
   const formattedPrice = Number(item?.price).toLocaleString();
 
@@ -311,10 +346,22 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
         </Pressable>
 
         <View style={styles.priceContainer}>
-          <Text style={{ ...titleStyle, fontSize: screenHeight * 0.015 }}>
+          <Text
+            style={{
+              ...titleStyle,
+              fontSize: screenHeight * 0.015,
+              fontFamily: 'Poppins_700Bold',
+            }}
+          >
             Starting Bidding Price
           </Text>
-          <Text style={{ ...titleStyle, fontSize: screenHeight * 0.017 }}>
+          <Text
+            style={{
+              ...titleStyle,
+              fontSize: screenHeight * 0.017,
+              fontFamily: 'Poppins_700Bold',
+            }}
+          >
             {formattedPrice}PKR
           </Text>
         </View>
@@ -374,7 +421,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                       borderWidth: 0,
                     }
               }
-              onPress={() => handleUpdateStatus(item?._id, 'Started')}
+              onPress={() => handleStart(item)}
               disabled={item?.status === 'Started' || item?.status === 'Closed'}
             >
               <Text
@@ -401,7 +448,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
               ...buttonContainer,
               width: screenWidth * 0.9,
               marginTop: screenHeight * 0.02,
-              backgroundColor: isUserBid ? Color.Disable : Color.Blue,
+              backgroundColor: isUserBid ? Color.LightGrey : Color.Blue,
             }}
             onPress={() => {
               setisBidOpen(true);
@@ -477,7 +524,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                             style={styles.activeEditTitle}
                             onPress={() => handleEdit(item)}
                           >
-                            Eidt
+                            Edit
                           </Text>
                         </View>
                       ) : (
@@ -688,7 +735,8 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     // flex: 1,
-    gap: 12,
+    gap: 6,
+    // backgroundColor: 'red',
     // flexDirection: 'row',
   },
   details: {
@@ -705,6 +753,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'relative',
+    top: screenHeight * 0.007,
   },
   actionContainer: {
     flexDirection: 'row',
@@ -755,7 +805,7 @@ const styles = StyleSheet.create({
   biddIngContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: screenWidth * 0.7,
+    width: screenWidth * 0.75,
     marginVertical: '1%',
     alignItems: 'center',
   },
@@ -767,7 +817,7 @@ const styles = StyleSheet.create({
   },
   announcementItem: {
     backgroundColor: Color.Disable,
-    width: screenWidth * 0.8,
+    maxWidth: screenWidth * 0.8,
     alignSelf: 'center',
     paddingHorizontal: 10,
     paddingVertical: screenHeight * 0.006,

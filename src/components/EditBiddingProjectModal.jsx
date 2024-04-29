@@ -22,21 +22,16 @@ import {
   buttonContainer,
   modalTitle,
 } from '../screens/Decorations/ModalStyle';
-import CameraSvg from './SVG/CameraSvg';
+
 import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
 import { MaterialIcons } from 'react-native-vector-icons';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { scale } from 'react-native-size-matters';
 import Color from '../../assets/colors/Color';
 import * as ImagePicker from 'expo-image-picker';
-import {
-  createBiddingProject,
-  updateBiddingProject,
-} from '../utils/BiddingChannel';
-import { useUserState } from '../slices/userSlice';
-import { useStateContext } from '../contexts/ContextProvider';
+import { updateBiddingProject } from '../utils/BiddingChannel';
+
 import { BASE_URL } from '../../CONSTANTS';
-import VideoPlayer from 'expo-video-player';
 
 const propertyType = [
   {
@@ -79,7 +74,6 @@ const EditBiddingProjectModal = ({
   const [error, seterror] = useState(inputErrors);
   const [isType, setisType] = useState(false);
   const [editProductImages, seteditProductImages] = useState([]);
-  const { showSnackbar } = useStateContext();
 
   const initialState = {
     ProjectName: project?.ProjectName,
@@ -155,9 +149,8 @@ const EditBiddingProjectModal = ({
       setinputs(initialState);
       setpropertyImage([]);
       refetch();
-    } catch (error) {
+    } catch {
       setisLoading(false);
-      console.log(error);
     }
   };
 
@@ -345,7 +338,7 @@ const EditBiddingProjectModal = ({
                       onPress={handleSubmit}
                     >
                       {isLoading ? (
-                        <ActivityIndicator />
+                        <ActivityIndicator color={Color.White} />
                       ) : (
                         <Text style={buttonTitle}>Save</Text>
                       )}

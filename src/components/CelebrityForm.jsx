@@ -84,7 +84,7 @@ const CelebrityForm = () => {
       return;
     }
     setisLoading(true);
-    const role = 'Celebrity';
+    const role = 'celebrity';
     try {
       const { data } = await addRequest(
         inputs,

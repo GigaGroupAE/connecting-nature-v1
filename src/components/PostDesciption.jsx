@@ -87,7 +87,7 @@ const styles = {
     paddingVertical: scale(7),
   },
   descriptionText: {
-    fontSize: screenHeight * 0.0156,
+    fontSize: screenHeight * 0.0164,
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
   },

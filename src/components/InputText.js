@@ -4,13 +4,13 @@ import {
   View,
   TextInput,
   KeyboardAvoidingView,
-} from "react-native";
-import Color from "../../assets/colors/Color";
+} from 'react-native';
+import Color from '../../assets/colors/Color';
 
 export default function InputText({
   title,
   onchange,
-  keyboardType = "default",
+  keyboardType = 'default',
   value = null,
   defaultValue = null,
   editable = editable,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 3,
     zIndex: 100,
-    position: "relative",
+    position: 'relative',
   },
   textInput: {
     padding: 15,
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
     width: 318,
     height: 50,
     fontSize: 14,
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
   },
 });

@@ -5,7 +5,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Entypo } from 'react-native-vector-icons';
 import { Image } from 'expo-image';
 
@@ -16,6 +16,8 @@ import Color from '../../assets/colors/Color';
 import AdminIcon from './AdminIcon';
 import PostDescription from './PostDesciption';
 import { BASE_URL } from '../../CONSTANTS';
+import PostShareModal from './PostShareModal';
+import { screenHeight } from '../utils/ScreenDimensions';
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 
@@ -25,16 +27,26 @@ const PostSharedHeader = ({
   setmodalVisible,
   description,
   createdAT,
+  media,
+  id,
 }) => {
   const navigation = useNavigation();
-  const userImage = postedBy?.profile;
-  const userName = postedBy?.fullName;
-  const userType = postedBy?.type;
-  const userPhoneNumber = postedBy?.postedby?.phoneNumber;
-  const ownerImage = sharedBy?.postedby?.profile;
-  const ownerName = sharedBy?.postedby?.fullName;
-  const ownerPhoneNumber = sharedBy?.postedby?.phoneNumber;
-  const ownerType = sharedBy?.postedby?.type;
+  const {
+    profile: userImage,
+    fullName: userName,
+    type: userType,
+    postedby: { phoneNumber: userPhoneNumber } = {},
+  } = postedBy || {};
+
+  const {
+    postedby: {
+      profile: ownerImage,
+      fullName: ownerName,
+      phoneNumber: ownerPhoneNumber,
+      type: ownerType,
+    } = {},
+  } = sharedBy || {};
+  const [isShareModal, setisShareModal] = useState(false);
 
   const handleUserProfile = () => {
     navigation.navigate('UserProfile', {
@@ -61,7 +73,14 @@ const PostSharedHeader = ({
                 cache: 'force-cache',
               }}
             />
-            <View>
+            <View
+              style={{
+                gap: 3,
+
+                position: 'relative',
+                bottom: screenHeight * 0.003,
+              }}
+            >
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
                 onPress={handleUserProfile}
@@ -95,7 +114,7 @@ const PostSharedHeader = ({
               style={styles.threeDots}
               onPress={() => setmodalVisible(true)}
             >
-              <TouchableOpacity onPress={() => setmodalVisible(false)}>
+              <TouchableOpacity onPress={() => setisShareModal(true)}>
                 <Entypo name="dots-three-horizontal" style={styles.sideIcon} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setmodalVisible(true)}>
@@ -117,7 +136,7 @@ const PostSharedHeader = ({
                 cache: 'force-cache',
               }}
             />
-            <View>
+            <View style={{ gap: 3 }}>
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
                 onPress={handleOwnerProfileNavigation}
@@ -153,6 +172,15 @@ const PostSharedHeader = ({
           </View>
           <PostDescription description={sharedBy?.description} />
         </View>
+
+        {isShareModal && (
+          <PostShareModal
+            modalVisible={isShareModal}
+            setModalVisible={setisShareModal}
+            media={media}
+            id={id}
+          />
+        )}
       </View>
     </View>
   );
@@ -178,7 +206,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: Color.Black,
-    fontSize: 14,
+    fontSize: screenHeight * 0.0166,
     fontFamily: 'Roboto_600SemiBold',
     alignSelf: 'center',
   },

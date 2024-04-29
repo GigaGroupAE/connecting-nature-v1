@@ -23,25 +23,25 @@ const Stats = ({ data, volunteers, campaignId }) => {
       headers: { 'auth-token': userState.token },
     };
     volunteers.forEach((element) => {
-      console.log('for each of invitesms----', element);
+      console.log(element.phoneNumber);
       // comment this code on 10-27-23 due to sms api restriction will be uncomment when clear
-      // if (element.status === "invite") {
-      //   axios
-      //     .post(
-      //       `${BASE_URL}/sms/inviteSMS`,
-      //       {
-      //         phoneNumber: element.number,
-      //         message: `You have been invited to an event happening near you!!!`,
-      //       },
-      //       headers
-      //     )
-      //     .then((res) => {
-      //       console.log("response is ", res.data);
-      //     })
-      //     .catch((e) => {
-      //       console.log(e);
-      //     });
-      // }
+      if (element.status === 'invite') {
+        axios
+          .post(
+            `${BASE_URL}/sms/inviteSMS`,
+            {
+              phoneNumber: element.number,
+              message: `You have been invited to an event happening near you!!!`,
+            },
+            headers,
+          )
+          .then((res) => {
+            console.log('response is ', res.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     });
     // making data for notifications like this [{user,body,data}]
     let filterData = volunteers.filter((v) => v.status === 'invite');

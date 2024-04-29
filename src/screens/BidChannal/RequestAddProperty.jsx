@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     resizeMode: 'cover',
-    backgroundColor: 'red',
+    backgroundColor: Color.VeryLightGrey,
   },
   contentContainer: {
     flexDirection: 'row',

@@ -16,6 +16,7 @@ import { useUserState } from '../../slices/userSlice';
 import DeleteCommentModal from '../../components/DeleteCommentModal';
 import { axiosInstance } from '../../../axiosInstance';
 import { useStateContext } from '../../contexts/ContextProvider';
+import AdminIcon from '../../components/AdminIcon';
 
 const CommentListStroy = ({ item, setcomments }) => {
   const timePassed = calculateTimeDifference(item.date);
@@ -34,14 +35,14 @@ const CommentListStroy = ({ item, setcomments }) => {
     );
   }, []);
 
-  const userType = [
-    'Operations',
-    'Admin',
-    'Manager',
-    'Assistant Manager',
-    'Super Admin',
-    'celebrity',
-  ];
+  // const userType = [
+  //   'Operations',
+  //   'Admin',
+  //   'Manager',
+  //   'Assistant Manager',
+  //   'Super Admin',
+  //   'celebrity',
+  // ];
 
   const handleDelete = async (commenendId) => {
     try {
@@ -114,12 +115,15 @@ const CommentListStroy = ({ item, setcomments }) => {
         <View style={styles.commentTextContainer}>
           <View style={styles.nameFollow}>
             <Text style={styles.userName}>{item.commented_by.fullName}</Text>
-            {userType?.includes(item.commented_by.type) && (
+            {/* {userType?.includes(item.commented_by.type) && (
               <MaterialCommunityIcons
                 name="check-decagram"
                 style={styles.adminIcon}
               />
-            )}
+            )} */}
+            <View>
+              <AdminIcon userType={item?.commented_by?.type} />
+            </View>
           </View>
           <View>
             <Text style={styles.commentText}>{item.description}</Text>

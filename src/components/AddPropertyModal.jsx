@@ -81,6 +81,7 @@ const AddPropertyModal = ({
   const [isLoading, setisLoading] = useState(false);
   const hideModal = () => {
     setisVisible(false);
+    setinputs(initialState);
   };
 
   const handleOnchange = (text, input) => {
@@ -270,6 +271,7 @@ const AddPropertyModal = ({
               value={inputs.price}
               onChangeText={(e) => handleOnchange(e, 'price')}
               placeholder="Set Property Price"
+              keyboardType="number-pad"
             />
             {error?.price !== '' && (
               <Text style={styles.inputError}>{error?.price}</Text>
@@ -335,7 +337,7 @@ const AddPropertyModal = ({
                 onPress={handleSubmit}
               >
                 {isLoading ? (
-                  <ActivityIndicator />
+                  <ActivityIndicator color={Color.White} />
                 ) : (
                   <Text style={buttonTitle}>Save</Text>
                 )}

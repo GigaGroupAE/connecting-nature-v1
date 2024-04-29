@@ -9,6 +9,14 @@ import AddButton from './AddButton';
 import { CreatePost } from '../screens';
 import { useUserState } from '../slices/userSlice';
 import { authorized } from '../utils/authorized';
+import { Image } from 'expo-image';
+import { BASE_URL } from '../../CONSTANTS';
+import HomeSvg from './SVG/HomeSvg';
+import { SearchSvg } from './SVG/SearchSvg';
+import Campaign from './SVG/CampaignSvg';
+import ActiveHomeSvg from './SVG/ActiveSvg';
+import ActiveCampaigns from './SVG/ActiveCampaigns';
+import { screenWidth } from '../utils/ScreenDimensions';
 
 export default function BottomTab(props) {
   const navigation = useNavigation();
@@ -53,11 +61,12 @@ export default function BottomTab(props) {
           onPress={() => handleHome()}
           android_ripple={{ color: Color.LightGrey, borderless: true }}
         >
-          <FontAwesome
+          {/* <FontAwesome
             name="home"
             size={30}
             color={props?.activeMenu === 'Home' ? Color.Blue : Color.Black}
-          />
+          /> */}
+          {props?.activeMenu === 'Home' ? <ActiveHomeSvg /> : <HomeSvg />}
         </Pressable>
       </View>
       <View>
@@ -68,11 +77,12 @@ export default function BottomTab(props) {
             navigation.navigate('SearchScreen');
           }}
         >
-          <Ionicons
+          {/* <Ionicons
             name="search"
             size={30}
             color={props?.activeMenu === 'Search' ? Color.Blue : Color.Black}
-          />
+          /> */}
+          <SearchSvg />
         </Pressable>
       </View>
       <View>
@@ -98,21 +108,25 @@ export default function BottomTab(props) {
           props?.scrollToTop();
         }}
       >
-        <MaterialIcons
+        {/* <MaterialIcons
           name="campaign"
           size={35}
           color={props?.activeMenu === 'Campaign' ? Color.Blue : Color.Black}
-        />
+        /> */}
+
+        {props?.activeMenu === 'Campaign' ? <ActiveCampaigns /> : Campaign}
+        {/* <Campaign /> */}
       </Pressable>
       <Pressable
         style={styles.tabStyle}
         android_ripple={{ color: Color.LightGrey, borderless: true }}
         onPress={() => {
-          navigation.navigate('ChatList');
+          navigation.navigate('UserProfile', { type: 'current' });
+
           props?.scrollToTop();
         }}
       >
-        <Ionicons
+        {/* <Ionicons
           name={
             props?.activeMenu === 'Chat'
               ? 'chatbox-ellipses'
@@ -120,6 +134,11 @@ export default function BottomTab(props) {
           }
           size={30}
           color={props?.activeMenu === 'Chat' ? Color.Blue : Color.Black}
+        /> */}
+        <Image
+          style={styles.headerAvatar}
+          source={{ uri: `${BASE_URL}/images/${userstate.profile}` }}
+          contentFit="cover"
         />
       </Pressable>
     </View>
@@ -130,20 +149,20 @@ const styles = StyleSheet.create({
   mainContainer: {
     position: 'absolute',
     bottom: 0,
-    paddingHorizontal: 30,
+    paddingHorizontal: screenWidth * 0.09,
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
     backgroundColor: Color.White,
     width: '100%',
-    height: '8%',
+    height: '7%',
     borderTopWidth: 1.5,
     borderColor: Color.VeryLightGrey,
   },
   tabStyle: {
-    alignContent: 'center',
-    alignItems: 'center',
+    // alignContent: 'center',
+    // alignItems: 'center',
   },
   tabCart: {
     alignContent: 'center',
@@ -162,5 +181,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: 13,
     color: Color.Blue,
+  },
+  headerAvatar: {
+    // marginRight: 155,
+    borderRadius: 16,
+    width: 30,
+    height: 30,
+    backgroundColor: '#eee',
   },
 });

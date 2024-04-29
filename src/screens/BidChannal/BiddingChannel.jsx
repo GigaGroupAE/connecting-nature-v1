@@ -5,12 +5,12 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Color from '../../../assets/colors/Color';
 import { useInfiniteQuery } from 'react-query';
 import { fetchBiddingProjects } from '../../utils/BiddingChannel';
 import { useUserState } from '../../slices/userSlice';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import BidChannelHeader from '../../components/BidChannelHeader';
 import ProjectCard from './ProjectCard';
 import { screenWidth } from '../../utils/ScreenDimensions';
@@ -21,6 +21,7 @@ const BiddingChannel = () => {
   const userState = useUserState();
   const { params } = useRoute();
   const groupData = params?.item;
+  const firstTimeRef = useRef(true);
 
   const [currentuser, setcurrentuser] = useState(null);
 
@@ -44,6 +45,17 @@ const BiddingChannel = () => {
         return null;
       },
     },
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+
+      refetch();
+    }, [refetch]),
   );
 
   const handleEndReached = () => {
@@ -100,10 +112,10 @@ const BiddingChannel = () => {
                 />
               );
             }}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.7}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
-            snapToInterval={screenWidth} // Snap to the width of the screen
+            snapToInterval={screenWidth}
             horizontal
             decelerationRate="fast"
             // contentContainerStyle={{

@@ -129,10 +129,17 @@ const Decoration = () => {
       ) : (
         <View style={{ flex: 1, marginVertical: '3%' }}>
           {data?.length === 0 ? (
-            <NoDataIndicater
-              title="Elevate Your Spaces with Nature's Touch"
-              subTitle="Exciting Additions Coming Soon to Both Your Lawn and Rooftop! Stay Tuned for Updates"
-            />
+            <View
+              style={{
+                width: screenWidth * 0.8,
+                alignSelf: 'center',
+              }}
+            >
+              <NoDataIndicater
+                title="Elevate Your Spaces with Nature's Touch"
+                subTitle="Exciting Additions Coming Soon to Both Your Lawn and Rooftop! Stay Tuned for Updates"
+              />
+            </View>
           ) : (
             <FlatList
               data={

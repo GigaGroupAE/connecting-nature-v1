@@ -95,11 +95,12 @@ export const tagContainer = {
   borderRadius: screenHeight * 0.1,
   // paddingHorizontal: screenWidth * 0.02,
   padding: 3,
+  paddingHorizontal: screenWidth * 0.03,
 };
 export const tagText = {
   color: Color.White,
   fontFamily: 'Roboto_400Regular',
-  fontSize: screenHeight * 0.013,
+  fontSize: screenHeight * 0.016,
 };
 
 export const iconsContainer = {

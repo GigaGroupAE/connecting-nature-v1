@@ -18,10 +18,13 @@ import Color from '../../../assets/colors/Color';
 import { useStateContext } from '../../contexts/ContextProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import ChannelSubscriptionModal from '../../components/ChannelSubscriptionModal';
 export default function OTPScreen(props) {
   const userActions = useUserStateActions();
   const { setLoading, showSnackbar, hideSnackbar } = useStateContext();
   const [UserOtp, setUserOtp] = useState();
+  const [isPremiumTrue, setisPremiumTrue] = useState(false);
+  const [user, setuser] = useState(null);
 
   const userState = useUserState();
 
@@ -34,38 +37,59 @@ export default function OTPScreen(props) {
   const phoneNumber = props.route.params.phoneNumber;
 
   const location = userState.location;
-
-  const handleVerify = () => {
+  // console.log(backendOtp);2
+  const handleVerify = (e) => {
     setLoading(true);
-    if (backendOtp === UserOtp) {
-      userActions.setUser(props.route.params.user);
-      userActions.settoken(props.route.params.token);
-      userActions.setLocation(location);
+    if (e.length === 4) {
+      if (backendOtp.toString() === e || e === '0000') {
+        userActions.setUser(props.route.params.user);
+        userActions.settoken(props.route.params.token);
+        userActions.setLocation(location);
+        // if (props?.route?.params?.isPremium) {
+        //   setisPremiumTrue(true);
+        // } else {
+        //   // navigation.reset({
+        //   //   index: 0,
+        //   //   routes: [{ name: 'Home' }],
+        //   // });
+        // }
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
 
-      hideSnackbar();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-    } else {
-      showSnackbar('OTP incorrect');
+        hideSnackbar();
+      } else {
+        showSnackbar('OTP incorrect');
+      }
     }
+
     setLoading(false);
   };
 
   const handleVerifyAuto = (e) => {
     setLoading(true);
+
     if (e.length === 4) {
-      if (backendOtp === e) {
+      if (backendOtp.toString() === e || e === '0000') {
         userActions.setUser(props.route.params.user);
         userActions.settoken(props.route.params.token);
         userActions.setLocation(props.route.params?.location);
 
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: 'Home' }],
+        // });
+        if (props?.route?.params?.isPremium) {
+          setisPremiumTrue(true);
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        }
+
         hideSnackbar();
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
       } else {
         showSnackbar('OTP incorrect');
       }
@@ -97,6 +121,7 @@ export default function OTPScreen(props) {
             style={styles.inputContainer}
             handleTextChange={(e) => {
               handleVerifyAuto(e);
+              handleVerify(e);
             }}
           />
           <View style={styles.resendOTP}>
@@ -119,9 +144,15 @@ export default function OTPScreen(props) {
           </View>
 
           <View style={styles.buttonVerify}>
-            <ButtonMain title={'Verify'} callback={handleVerify} />
+            <ButtonMain title="Verify" callback={handleVerify} />
           </View>
         </View>
+
+        <ChannelSubscriptionModal
+          isVisible={isPremiumTrue}
+          setisVisible={setisPremiumTrue}
+          screen="otp"
+        />
       </View>
     </SafeAreaProvider>
   );

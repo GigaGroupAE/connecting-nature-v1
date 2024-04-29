@@ -12,6 +12,7 @@ import Color from '../../assets/colors/Color';
 import { titleStyle } from '../screens/Decorations/ModalStyle';
 import ShowScriptionDetailsModal from './ShowScriptionDetailsModal';
 import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../../CONSTANTS';
 
 const ApprovedSubscriptions = ({ item, refetch }) => {
   const { navigate } = useNavigation();
@@ -35,7 +36,9 @@ const ApprovedSubscriptions = ({ item, refetch }) => {
                   style={styles.leftContainer}
                 >
                   <Image
-                    source={{ uri: item?.requestedBy?.profile }}
+                    source={{
+                      uri: `${BASE_URL}/images/${item?.requestedBy?.profile}`,
+                    }}
                     style={styles.image}
                   />
 
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     resizeMode: 'cover',
-    backgroundColor: 'red',
+    backgroundColor: Color.VeryLightGrey,
   },
   contentContainer: {
     flexDirection: 'row',

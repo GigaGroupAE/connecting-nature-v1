@@ -1,15 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
-import {
-  Ionicons,
-  MaterialIcons,
-  EvilIcons,
-  Feather,
-} from 'react-native-vector-icons';
+import { Ionicons, MaterialIcons, Feather } from 'react-native-vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
 import { useUserState } from '../slices/userSlice';
+import { Image } from 'expo-image';
+import { BASE_URL } from '../../CONSTANTS';
 
 const Height = Dimensions.get('screen').height;
 
@@ -74,10 +71,15 @@ export default function AdminBottomTab(props) {
         style={styles.tabProfile}
         onPress={() => navigation.navigate('SettingsCRM')}
       >
-        <EvilIcons
+        {/* <EvilIcons
           name="user"
           size={Dimensions.get('screen').width * 0.11}
           color="black"
+        /> */}
+        <Image
+          style={styles.headerAvatar}
+          source={{ uri: `${BASE_URL}/images/${userState.profile}` }}
+          contentFit="cover"
         />
       </TouchableOpacity>
     </View>
@@ -125,5 +127,12 @@ const styles = StyleSheet.create({
   tabProfile: {
     marginBottom: Height * 0.01,
     marginTop: Height * 0.009,
+  },
+  headerAvatar: {
+    // marginRight: 155,
+    borderRadius: 100,
+    width: 35,
+    height: 35,
+    backgroundColor: '#eee',
   },
 });

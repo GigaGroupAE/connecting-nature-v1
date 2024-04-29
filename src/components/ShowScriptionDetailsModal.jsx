@@ -32,6 +32,11 @@ const ShowScriptionDetailsModal = ({ isVisible, setisVisible, item }) => {
                   });
                   setisVisible(false);
                 }}
+                style={{
+                  // backgroundColor: 'red',
+                  position: 'relative',
+                  top: screenHeight * 0.004,
+                }}
               >
                 <Image
                   source={{ uri: `${BASE_URL}/images/${item?.image}` }}
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: screenWidth * 0.83,
-    height: screenHeight * 0.17,
+    height: screenHeight * 0.19,
     resizeMode: 'cover',
     borderRadius: screenHeight * 0.01,
     marginVertical: screenHeight * 0.012,

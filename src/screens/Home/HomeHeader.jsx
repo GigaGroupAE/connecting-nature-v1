@@ -11,9 +11,14 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
 import Color from '../../../assets/colors/Color';
-import { authorized } from '../../utils/authorized';
+
 import cnlogo from '../../../assets/CNlogo.png';
 import { Fontisto } from 'react-native-vector-icons';
+import { crmSideRole } from '../../utils/AdminRoles';
+import MessageSvg from '../../components/SVG/MessageSvg';
+import AdminSvg from '../../components/SVG/AdminSvg';
+import NotificationsSvg from '../../components/SVG/NotificationSvg';
+import CrmSideSvg from '../../components/SVG/CrmSideSvg';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -28,16 +33,19 @@ const HomeHeader = () => {
     navigation.navigate('AdminHome');
   };
   const handleHeaderImageClick = () => {
-    navigation.navigate('UserProfile', { type: 'current' });
+    navigation.navigate('ChatList');
+    // navigation.navigate('UserProfile', { type: 'current' });
   };
-  const canGoToAdminScreen = authorized(
-    userstate.type,
-    'Admin',
-    'Manager',
-    'Assistant Manager',
-    'Super Admin',
-    'Operations',
-  );
+  // const canGoToAdminScreen = authorized(
+  //   userstate.type,
+  //   'Admin',
+  //   'Manager',
+  //   'Assistant Manager',
+  //   'Super Admin',
+  //   'Operations',
+  // );
+
+  const canGoToAdminScreen = crmSideRole.includes(userstate?.type);
   return (
     <View style={styles.headContainer}>
       <View>
@@ -59,18 +67,18 @@ const HomeHeader = () => {
       >
         {canGoToAdminScreen && (
           <TouchableOpacity
-            style={{
-              marginLeft: '15%',
-              backgroundColor: Color.Blue,
-              paddingHorizontal: Width * 0.06,
-              paddingVertical: Height * 0.004,
-              borderRadius: Height * 0.01,
-              position: 'absolute',
-              right: Width * 0.322,
-            }}
+            // style={{
+            //   marginLeft: '15%',
+            //   backgroundColor: Color.Blue,
+            //   paddingHorizontal: Width * 0.06,
+            //   paddingVertical: Height * 0.004,
+            //   borderRadius: Height * 0.01,
+            //   position: 'absolute',
+            //   right: Width * 0.322,
+            // }}
             onPress={handlecrm}
           >
-            <Text
+            {/* <Text
               style={{
                 fontFamily: 'Roboto_500Medium',
                 textTransform: 'capitalize',
@@ -79,24 +87,29 @@ const HomeHeader = () => {
               }}
             >
               admin
-            </Text>
+            </Text> */}
+
+            <CrmSideSvg />
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          onPress={handleNotificationNavigation}
           style={{ paddingHorizontal: Width * 0.07 }}
+          onPress={handleHeaderImageClick}
         >
-          <Fontisto name="bell" size={24} color={Color.Black} />
+          {/* <Fontisto name="bell" size={20} color={Color.Black} /> */}
+          <MessageSvg />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleHeaderImageClick}
           style={{ marginRight: Width * 0.05 }}
+          onPress={handleNotificationNavigation}
         >
-          <Image
+          {/* <Image
             style={styles.headerAvatar}
             source={{ uri: `${BASE_URL}/images/${userstate.profile}` }}
             resizeMode="contain"
-          />
+          /> */}
+          {/* <MessageSvg /> */}
+          <NotificationsSvg />
         </TouchableOpacity>
       </View>
     </View>

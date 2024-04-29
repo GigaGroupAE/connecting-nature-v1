@@ -27,14 +27,13 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import axios from 'axios';
 import VideoPlayer from 'expo-video-player';
 import StoryDeleteModal from './StoryDeleteModal';
+import AdminIcon from '../../components/AdminIcon';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 
 const SingleStory = ({ post, refetch }) => {
   const { setSelectedStory, showSnackbar } = useStateContext();
-  const route = useRoute();
-  const isFocused = useIsFocused();
 
   const navigation = useNavigation();
   var date = moment().utcOffset('+05:00');
@@ -46,7 +45,7 @@ const SingleStory = ({ post, refetch }) => {
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
   const userstate = useUserState();
   const [reactions, setreactions] = useState([...selectedStory.reactions]);
-  const [comments, setcomments] = useState([...selectedStory.comments]);
+  // const [comments, setcomments] = useState([...selectedStory.comments]);
   const [modalVisible, setmodalVisible] = useState(false);
 
   const [shares, setshares] = useState([...selectedStory.shares]);
@@ -56,7 +55,7 @@ const SingleStory = ({ post, refetch }) => {
     }),
   );
   // calculate time
-  let timePassed = calculateTimeDifference(post?.createdAT);
+  const timePassed = calculateTimeDifference(post?.createdAT);
 
   const updatereactions = async (likes, notify = false) => {
     axios
@@ -76,7 +75,7 @@ const SingleStory = ({ post, refetch }) => {
   };
   const handleLike = () => {
     if (!liked) {
-      let templike = [...reactions];
+      const templike = [...reactions];
       const newLikes = {
         phoneNumber: userstate.phoneNumber,
         fullName: userstate.fullName,
@@ -101,7 +100,7 @@ const SingleStory = ({ post, refetch }) => {
 
   const handleonshare = async () => {
     try {
-      let tempshares = [...shares];
+      const tempshares = [...shares];
       tempshares.push(userstate.id);
 
       const formData = new FormData();
@@ -149,7 +148,6 @@ const SingleStory = ({ post, refetch }) => {
       );
       setshares([...res.data.shares]);
     } catch (error) {
-      console.log(error);
       showSnackbar(
         "Sorry, we couldn't share the story at the moment. Please try again later.",
       );
@@ -169,9 +167,7 @@ const SingleStory = ({ post, refetch }) => {
       );
       setSelectedStory(res.data);
       navigation.navigate('StoryComment');
-    } catch (error) {
-      console.log('error in fetching story', error);
-    }
+    } catch (error) {}
   };
   const toggleNumberOfLines = () => {
     //To toggle the show text or hide it
@@ -212,7 +208,7 @@ const SingleStory = ({ post, refetch }) => {
             style={{ flexDirection: 'row' }}
           >
             <Text style={styles.username}>{post?.postedby?.fullName}</Text>
-            {(post.postedby.type === 'Operations' ||
+            {/* {(post.postedby.type === 'Operations' ||
               post.postedby.type === 'Admin' ||
               post.postedby.type === 'Manager' ||
               post.postedby.type === 'Assistant Manager' ||
@@ -222,7 +218,16 @@ const SingleStory = ({ post, refetch }) => {
                 name="check-decagram"
                 style={styles.adminIcon}
               />
-            )}
+            )} */}
+            <View
+              style={{
+                // backgroundColor: 'red',
+                position: 'relative',
+                right: Width * 0.02,
+              }}
+            >
+              <AdminIcon userType={post.postedby.type} />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ position: 'absolute', right: 16, alignSelf: 'center' }}

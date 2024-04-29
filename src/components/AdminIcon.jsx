@@ -3,6 +3,7 @@ import React from 'react';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import Color from '../../assets/colors/Color';
 import { screenWidth } from '../utils/ScreenDimensions';
+import { Platform } from 'react-native';
 
 const Height = Dimensions.get('screen').height;
 
@@ -14,6 +15,7 @@ const AdminIcon = ({ userType }) => {
     'Assistant Manager',
     'Super Admin',
     'celebrity',
+    'Special Volunteer',
   ];
   return (
     <View>
@@ -35,6 +37,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: Height * 0.015,
     color: Color.Blue,
-    marginTop: Height * 0.002,
+    marginTop: Platform.OS === 'ios' ? Height * 0.002 : Height * 0.005,
   },
 });

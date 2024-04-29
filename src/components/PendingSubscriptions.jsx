@@ -22,6 +22,7 @@ import { Modal, Portal } from 'react-native-paper';
 import InputTextLarge from './InputTextLarge';
 import { useStateContext } from '../contexts/ContextProvider';
 import NoDataIndicater from '../screens/NoDataIndicater';
+import { BASE_URL } from '../../CONSTANTS';
 
 const PendingSubscriptions = ({ item, refetch }) => {
   const { navigate } = useNavigation();
@@ -151,7 +152,9 @@ const PendingSubscriptions = ({ item, refetch }) => {
                     style={styles.leftContainer}
                   >
                     <Image
-                      source={{ uri: item?.requestedBy?.profile }}
+                      source={{
+                        uri: `${BASE_URL}/images/${item?.requestedBy?.profile}`,
+                      }}
                       style={styles.image}
                     />
 
@@ -303,5 +306,7 @@ const styles = StyleSheet.create({
     gap: 15,
     alignItems: 'center',
     marginVertical: screenHeight * 0.009,
+    position: 'relative',
+    top: screenHeight * 0.005,
   },
 });
