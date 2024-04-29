@@ -16,6 +16,7 @@ import Color from '../../assets/colors/Color';
 import axios from 'axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import { axiosInstance } from '../../axiosInstance';
+import AdminIcon from './AdminIcon';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -165,7 +166,7 @@ const UserProfileState = ({ user, postCount, refetch }) => {
             >
               <Text style={styles.userName}>{user.fullName}</Text>
 
-              {(user.type === 'Operations' ||
+              {/* {(user.type === 'Operations' ||
                 user.type === 'Admin' ||
                 user.type === 'Manager' ||
                 user.type === 'Assistant Manager' ||
@@ -175,7 +176,8 @@ const UserProfileState = ({ user, postCount, refetch }) => {
                   name="check-decagram"
                   style={styles.adminIcon}
                 />
-              )}
+              )} */}
+              <AdminIcon userType={user.type} />
             </View>
 
             <View style={styles.userProfileStats}>

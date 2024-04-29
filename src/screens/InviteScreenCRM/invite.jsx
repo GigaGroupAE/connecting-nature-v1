@@ -175,7 +175,6 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import Color from '../../../assets/colors/Color';
-import HeaderNormal from '../../components/HeaderNormal';
 
 import { useContactState } from './../../slices/contactslice';
 import { FlashList } from '@shopify/flash-list';
@@ -198,6 +197,7 @@ import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
 import { useStateContext } from '../../contexts/ContextProvider';
 import SearchHeader from '../../components/SearchHeader';
+import InviteRadio from '../../components/InviteRadio';
 
 const roleData = [
   {
@@ -262,24 +262,24 @@ const Invite = () => {
       });
       setLoading(false);
 
-      // if (response.status === 200) {
-      //   hideModal();
-      //   alert('User has been Invited');
+      if (response.status === 200) {
+        alert('User has been Invited');
 
-      //   // Uncomment if you want to send SMS
-      //   // const sms = {
-      //   //   phoneNumber: item.phoneNumber,
-      //   //   message: `You have been invited to join connecting nature with the designation of ${designation}`,
-      //   // };
+        // Uncomment if you want to send SMS
 
-      //   // await axios.post(`${BASE_URL}/sms/inviteSMS`, sms, {
-      //   //   headers: {
-      //   //     "auth-token": userState.token,
-      //   //   },
-      //   // });
-      // } else {
-      //   throw new Error('Failed to invite user');
-      // }
+        const sms = {
+          phoneNumber: userNumber?.phoneNumber,
+          message: `You have been invited to join connecting nature with the designation of ${selectedRole.title}`,
+        };
+
+        await axios.post(`${BASE_URL}/sms/inviteSMS`, sms, {
+          headers: {
+            'auth-token': userState.token,
+          },
+        });
+      } else {
+        throw new Error('Failed to invite user');
+      }
     } catch (error) {
       // console.error('Error inviting user:', error);
       Alert.alert(error?.response?.data?.message);
@@ -293,10 +293,10 @@ const Invite = () => {
       setLoading(false);
     }
   };
-  const filteredContacts = contactstate.resolvedContacts.filter((item) => {
+  const filteredContacts = contactstate.resolvedContacts?.filter((item) => {
     const nameMatch = item.name
       .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+      .includes(searchQuery?.toLowerCase());
     const phoneNumberMatch = item.phoneNumber
       ?.toLowerCase()
       .includes(searchQuery.toLowerCase());
@@ -447,7 +447,12 @@ const Invite = () => {
                       right: screenWidth * 0.075,
                     }}
                   >
-                    <RadioButton
+                    {/* <RadioButton
+                      option1="Male"
+                      option2="Female"
+                      onselect={optionSelected}
+                    /> */}
+                    <InviteRadio
                       option1="Male"
                       option2="Female"
                       onselect={optionSelected}

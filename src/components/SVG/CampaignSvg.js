@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Svg, { Path } from 'react-native-svg';
-const HomeSvg = (props) => (
+const Campaign = (props) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={22}
+    height={21}
     fill="none"
     {...props}
   >
@@ -12,8 +12,8 @@ const HomeSvg = (props) => (
       stroke="#262626"
       strokeLinejoin="round"
       strokeWidth={2}
-      d="M9.005 16.545a2.997 2.997 0 1 1 5.995 0V22h7V11.543L12 2 2 11.543V22h7.005v-5.455Z"
+      d="M21 1.833 8.218 8.916M21 1.833 10.698 19.167 8.218 8.916M21 1.833 1 1.834l7.218 7.082"
     />
   </Svg>
 );
-export default HomeSvg;
+export default Campaign;

@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     borderRadius: screenHeight * 0.1,
-    padding: '8%',
+    // padding: '8%',
     justifyContent: 'center',
     alignSelf: 'auto',
     marginTop: '4%',

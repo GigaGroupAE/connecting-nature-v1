@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import DeleteCommentModal from './DeleteCommentModal';
 import { useUserState } from '../slices/userSlice';
 import { axiosInstance } from '../../axiosInstance';
+import AdminIcon from './AdminIcon';
 export default function Comment({
   comment,
   handleDelete,
@@ -104,8 +105,10 @@ export default function Comment({
                     userPhoneNumber: commented_by?.phoneNumber,
                   });
                 }}
+                style={{ flexDirection: 'row' }}
               >
                 <Text style={styles.userName}>{commented_by?.fullName}</Text>
+                <AdminIcon userType={commented_by?.type} />
               </Pressable>
             </View>
 

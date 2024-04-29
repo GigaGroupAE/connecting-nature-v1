@@ -17,6 +17,7 @@ import { scale } from 'react-native-size-matters';
 import PostDescription from '../../components/PostDesciption';
 import { Image } from 'expo-image';
 import PostShareModal from '../../components/PostShareModal';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -49,7 +50,14 @@ const PostHeader = ({ data, setmodalVisible }) => {
             cache: 'force-cache',
           }}
         />
-        <View>
+        <View
+          style={{
+            gap: 3,
+
+            position: 'relative',
+            bottom: screenHeight * 0.003,
+          }}
+        >
           <TouchableOpacity
             style={{ flexDirection: 'row' }}
             onPress={handleUserProfile}
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: Color.Black,
-    fontSize: 14,
+    fontSize: screenHeight * 0.0166,
     fontFamily: 'Roboto_600SemiBold',
     alignSelf: 'center',
   },

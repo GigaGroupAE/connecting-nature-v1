@@ -6,9 +6,9 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BASE_URL } from '../../../CONSTANTS.js';
-import { Entypo, FontAwesome, Octicons } from 'react-native-vector-icons';
+import { Entypo, FontAwesome } from 'react-native-vector-icons';
 import { IconButton, Avatar } from 'react-native-paper';
 import { useUserState, useUserStateActions } from './../../slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -31,7 +31,7 @@ function ProfileSettings(props) {
   const contactstateactions = useContactsStateActions();
   const userActions = useUserStateActions();
   const userstate = useUserState();
-  const [contacts, setcontacts] = useState([]);
+  // const [contacts, setcontacts] = useState([]);
   const contactstate = useContactState();
 
   const Logout = () => {
@@ -55,63 +55,51 @@ function ProfileSettings(props) {
           routes: [{ name: 'SignIn' }],
         });
       })
-      .catch((err) => {});
+      .catch({});
   };
   const handleNotification = () => {
-    navigation.navigate('NotificationsScreen');
+    navigation.navigate('BidddingNotifications');
   };
-  const handleSupport = () => {
-    props.navigation.navigate('Support');
-  };
+  // const handleSupport = () => {
+  //   props.navigation.navigate('Support');
+  // };
 
   const handleInviteUser = () => {
     props.navigation.navigate('InviteUsers');
   };
-
   useEffect(() => {
-    // Check if contactstate?.result?.length is zero
-    if (!contactstate?.resolvedContacts?.length) {
-      const fetchContacts = async () => {
-        try {
-          const { status } = await Contacts.requestPermissionsAsync({});
-
-          if (status !== 'granted') {
-            console.log('Permission not granted');
-            return;
-          }
-
+    const fetchcontacts = async () => {
+      try {
+        const { status } = await Contacts.requestPermissionsAsync({});
+        if (status === 'granted') {
           const { data } = await Contacts.getContactsAsync();
 
-          if (data.length === 0) {
-            console.log('No contacts found');
-            return;
+          if (data.length > 0) {
+            let resolvedContacts = [];
+
+            data.map((contact) => {
+              try {
+                resolvedContacts.push({
+                  name: contact.name,
+                  phoneNumber: contact?.phoneNumbers[0]?.number,
+                });
+              } catch (error) {
+                console.log('error is in this contact ', contact);
+              }
+            });
+            resolvedContacts.sort((a, b) => {
+              if (a.name > b.name) return 1;
+              if (a.name < b.name) return -1;
+              return 0;
+            });
+            contactstateactions.setContacts({ resolvedContacts });
           }
-
-          const resolvedContacts = [];
-
-          // Iterate over the array and extract name and phoneNumber
-          for (let i = 0; i < data.length; i++) {
-            const contact = data[i];
-            if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-              resolvedContacts.push({
-                name: contact.name,
-                phoneNumber: contact.phoneNumbers[0].number,
-              });
-            }
-          }
-
-          // Sort the result array alphabetically by name
-          resolvedContacts.sort((a, b) => a.name.localeCompare(b.name));
-
-          // Set the sorted result into state
-          contactstateactions.setContacts(resolvedContacts);
-        } catch (err) {
-          console.log('Error fetching contacts:', err);
         }
-      };
-
-      fetchContacts();
-    }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchcontacts();
   }, []);
   const isAdminRole = adminRole.includes(userState?.type);
   return (
@@ -128,10 +116,10 @@ function ProfileSettings(props) {
                   : null //require("../../assets/avatar-placeholder.png")
               }
             />
-            <View style={{ marginLeft: 12 }}>
+            <View style={{ marginLeft: 12, gap: 3 }}>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.userName}>{userState.fullName}</Text>
-                <Pressable
+                {/* <Pressable
                   android_ripple={{ color: Color.LightGrey, borderless: true }}
                   onPress={() => {}}
                 >
@@ -142,7 +130,7 @@ function ProfileSettings(props) {
                     //  onPress={showModal3}
                     style={styles.editIcon}
                   />
-                </Pressable>
+                </Pressable> */}
               </View>
               {userState.designation && (
                 <Text style={styles.userType}>{userState.designation}</Text>
@@ -157,7 +145,7 @@ function ProfileSettings(props) {
                   {'+92' + userState.phoneNumber}
                 </Text>
                 <Pressable>
-                  <Text
+                  {/* <Text
                     style={{
                       fontFamily: 'Roboto_600SemiBold',
                       fontSize: 14,
@@ -167,7 +155,7 @@ function ProfileSettings(props) {
                     }}
                   >
                     Change
-                  </Text>
+                  </Text> */}
                 </Pressable>
               </View>
             </View>
@@ -194,7 +182,7 @@ function ProfileSettings(props) {
             style={styles.chevronIcon}
           />
         </Pressable>
-        <Pressable
+        {/* <Pressable
           android_ripple={{ color: Color.LightGrey }}
           onPress={handleSupport}
           style={styles.row}
@@ -214,7 +202,7 @@ function ProfileSettings(props) {
             color={Color.Black}
             style={styles.chevronIcon}
           />
-        </Pressable>
+        </Pressable> */}
         {isAdminRole && (
           <View
             style={{
@@ -355,8 +343,8 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
     paddingVertical: 20,
     paddingHorizontal: 15,
     width: '100%',
@@ -366,12 +354,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     paddingVertical: 5,
     paddingHorizontal: 15,
     marginTop: 15,
     width: '100%',
-    justifyContent: 'flex-start',
+    // backgroundColor: 'red',
   },
   btnNormal: {
     backgroundColor: '#4582C3',

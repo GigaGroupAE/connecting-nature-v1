@@ -16,9 +16,18 @@ import { useUserState } from '../../../../slices/userSlice';
 import { useStateContext } from '../../../../contexts/ContextProvider';
 import axios from 'axios';
 import Color from '../../../../../assets/colors/Color';
+import { axiosInstance } from '../../../../../axiosInstance';
+import { useQuery } from 'react-query';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
+
+const fetchMessages = async () => {
+  try {
+    const { data } = await axiosInstance.get('/groups/getcrmmessages');
+    return data;
+  } catch (error) {}
+};
 
 const MessageForwardCRM = (props) => {
   const route = useRoute();
@@ -28,7 +37,7 @@ const MessageForwardCRM = (props) => {
   const navigation = useNavigation();
   const userState = useUserState();
   const [user, setuser] = useState([]);
-  const [Messages, setMessages] = useState([]);
+  // const [Messages, setMessages] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,36 +63,42 @@ const MessageForwardCRM = (props) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`${BASE_URL}/groups/getgroups`, {
-          headers: {
-            'auth-token': userState.token,
-          },
-        });
+  const {
+    data: Messages = [],
 
-        let groups = res.data.filter((group) => {
-          const currentuser = group.members.filter((m) => {
-            return m.member?.phoneNumber === userState.phoneNumber;
-          });
-          return currentuser.length !== 0;
-        });
+    refetch,
+  } = useQuery('crmmessages', fetchMessages);
 
-        const individualGroups = groups.filter((group) => {
-          return group.type === 'individual';
-        });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const res = await axios.get(`${BASE_URL}/groups/getgroups`, {
+  //         headers: {
+  //           'auth-token': userState.token,
+  //         },
+  //       });
 
-        setMessages([...individualGroups]);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
+  //       let groups = res.data.filter((group) => {
+  //         const currentuser = group.members.filter((m) => {
+  //           return m.member?.phoneNumber === userState.phoneNumber;
+  //         });
+  //         return currentuser.length !== 0;
+  //       });
 
-    fetchData();
-  }, []);
+  //       const individualGroups = groups.filter((group) => {
+  //         return group.type === 'individual';
+  //       });
+
+  //       setMessages([...individualGroups]);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const handleForward = (item) => {
     socket.emit('send_message', {

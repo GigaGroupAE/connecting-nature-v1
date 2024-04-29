@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
+  Platform,
 } from 'react-native';
 import { AntDesign, Ionicons, Entypo } from 'react-native-vector-icons';
 
@@ -13,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import Color from '../../assets/colors/Color';
 
 import { useState } from 'react';
+import { Image } from 'expo-image';
 
 const width = Dimensions.get('screen').width;
 
@@ -23,10 +25,24 @@ export default function SearchHeader({ title, searchQuery, setSearchQuery }) {
 
   return (
     <View style={isSearch ? styles.searchHeader : styles.header}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={28} color={Color.Black} />
-      </TouchableOpacity>
-      {!isSearch && <Text style={styles.title}>{title}</Text>}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        {title !== 'admin' && (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="arrowleft" size={28} color={Color.Black} />
+          </TouchableOpacity>
+        )}
+
+        {!isSearch && title !== 'admin' && (
+          <Text style={styles.title}>{title}</Text>
+        )}
+
+        {title === 'admin' && !isSearch && (
+          <Image
+            source={require('../../assets/crmlogo.png')}
+            style={styles.logo}
+          />
+        )}
+      </View>
 
       {isSearch && (
         <TextInput
@@ -34,7 +50,7 @@ export default function SearchHeader({ title, searchQuery, setSearchQuery }) {
             width: '80%',
             // height: 15,
             backgroundColor: '#F1F1F1',
-            paddingVertical: 5,
+            paddingVertical: Platform.OS === 'ios' ? 10 : 5,
             paddingHorizontal: 20,
             borderRadius: Dimensions.get('screen').height * 0.1,
           }}
@@ -114,21 +130,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 14,
-    alignContent: 'center',
+    // alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1.5,
     borderColor: Color.VeryLightGrey,
+    backgroundColor: Color.White,
   },
   searchHeader: {
     flexDirection: 'row',
     paddingVertical: 5.5,
     paddingHorizontal: 14,
-    alignContent: 'center',
+    // alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1.5,
     borderColor: Color.VeryLightGrey,
+    backgroundColor: Color.White,
   },
   title: {
     width: '82%',
@@ -138,5 +156,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginLeft: 10,
     fontFamily: 'Roboto_600SemiBold',
+  },
+  logo: {
+    width: 90,
+    height: 58,
+    resizeMode: 'contain',
   },
 });

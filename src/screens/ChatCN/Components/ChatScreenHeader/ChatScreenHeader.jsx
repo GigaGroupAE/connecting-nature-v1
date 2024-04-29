@@ -18,7 +18,7 @@ const ChatScreenHeader = (props) => {
   const { setgroup } = useStateContext();
 
   useEffect(() => {
-    const member = props.groupState.members.filter((member) => {
+    const member = props?.groupState?.members?.filter((member) => {
       return member.phoneNumber !== userState.phoneNumber;
     });
     // console.log(member[0]);
@@ -97,10 +97,11 @@ const ChatScreenHeader = (props) => {
         style={{
           ...Platform.select({
             ios: {
-              marginTop: 0,
+              gap: 4,
             },
             android: {
               marginTop: 4,
+              gap: 4,
             },
           }),
         }}

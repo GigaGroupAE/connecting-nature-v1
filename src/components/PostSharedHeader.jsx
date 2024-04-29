@@ -17,6 +17,7 @@ import AdminIcon from './AdminIcon';
 import PostDescription from './PostDesciption';
 import { BASE_URL } from '../../CONSTANTS';
 import PostShareModal from './PostShareModal';
+import { screenHeight } from '../utils/ScreenDimensions';
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 
@@ -72,7 +73,14 @@ const PostSharedHeader = ({
                 cache: 'force-cache',
               }}
             />
-            <View>
+            <View
+              style={{
+                gap: 3,
+
+                position: 'relative',
+                bottom: screenHeight * 0.003,
+              }}
+            >
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
                 onPress={handleUserProfile}
@@ -128,7 +136,7 @@ const PostSharedHeader = ({
                 cache: 'force-cache',
               }}
             />
-            <View>
+            <View style={{ gap: 3 }}>
               <TouchableOpacity
                 style={{ flexDirection: 'row' }}
                 onPress={handleOwnerProfileNavigation}
@@ -198,7 +206,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: Color.Black,
-    fontSize: 14,
+    fontSize: screenHeight * 0.0166,
     fontFamily: 'Roboto_600SemiBold',
     alignSelf: 'center',
   },

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-export default function RadioButton(props) {
+export default function InviteRadio(props) {
   const [male, setMale] = useState(false);
   const [female, setFemale] = useState(false);
 
@@ -55,11 +55,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 30,
     paddingRight: 30,
+    width: '100%',
   },
   option1: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    width: 153,
+    width: '48%',
     height: 50,
     marginRight: 6,
     backgroundColor: '#fff',
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   option2: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    width: 153,
+    width: '48%',
     height: 50,
     marginLeft: 6,
     backgroundColor: '#fff',
