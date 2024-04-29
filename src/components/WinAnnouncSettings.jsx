@@ -111,9 +111,7 @@ const WinAnnouncSettings = ({ modalVisible, setModalVisible }) => {
                   {selectedProject ? (
                     <Text>{selectedProject?.ProjectName}</Text>
                   ) : (
-                    <Text style={styles.groupTitle}>
-                      Property/Project Namer
-                    </Text>
+                    <Text style={styles.groupTitle}>Property/Project Name</Text>
                   )}
                   <MaterialIcons
                     name={

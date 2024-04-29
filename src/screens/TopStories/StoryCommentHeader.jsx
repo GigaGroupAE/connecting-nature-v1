@@ -5,31 +5,25 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import { BASE_URL } from "../../../CONSTANTS";
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons, Entypo } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import React from 'react';
+import { BASE_URL } from '../../../CONSTANTS';
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons, Entypo } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
+import AdminSvg from '../../components/SVG/AdminSvg';
+import AdminIcon from '../../components/AdminIcon';
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+const height = Dimensions.get('screen').height;
+const width = Dimensions.get('screen').width;
 const StoryCommentHeader = ({ setmodalVisible }) => {
   const { selectedStory } = useStateContext();
 
   const timePassed = calculateTimeDifference(selectedStory.createdAT);
 
   const navigation = useNavigation();
-  const userRole = [
-    "Operations",
-    "Admin",
-    "Manager",
-    "Assistant Manager",
-    "Super Admin",
-    "celebrity",
-  ];
 
   return (
     <View>
@@ -38,15 +32,15 @@ const StoryCommentHeader = ({ setmodalVisible }) => {
         style={[
           styles.userContainer,
           {
-            width: "93%",
-            alignSelf: "center",
+            width: '93%',
+            alignSelf: 'center',
             marginTop: height * 0.01,
           },
         ]}
       >
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("UserProfile", {
+            navigation.navigate('UserProfile', {
               userPhoneNumber: selectedStory.postedby.phoneNumber,
             });
           }}
@@ -69,7 +63,7 @@ const StoryCommentHeader = ({ setmodalVisible }) => {
           <View style={styles.userContainer}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("UserProfile", {
+                navigation.navigate('UserProfile', {
                   userPhoneNumber: selectedStory.postedby.phoneNumber,
                 });
               }}
@@ -79,15 +73,24 @@ const StoryCommentHeader = ({ setmodalVisible }) => {
                 {selectedStory?.postedby?.fullName}
               </Text>
 
-              {userRole?.includes(selectedStory?.postedby?.type) && (
+              {/* {userRole?.includes(selectedStory?.postedby?.type) && (
                 <MaterialCommunityIcons
                   name="check-decagram"
                   style={styles.adminIcon}
                 />
-              )}
+              )} */}
+
+              <View
+                style={{
+                  position: 'relative',
+                  right: width * 0.002,
+                }}
+              >
+                <AdminIcon userType={selectedStory?.postedby?.type} />
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ position: "absolute", right: 16, alignSelf: "center" }}
+              style={{ position: 'absolute', right: 16, alignSelf: 'center' }}
               onPress={() => setmodalVisible(true)}
             >
               <Entypo
@@ -108,37 +111,37 @@ export default StoryCommentHeader;
 
 const styles = StyleSheet.create({
   userContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     paddingVertical: 2,
   },
   userImg: {
     width: 40,
     height: 40,
-    resizeMode: "contain",
+    resizeMode: 'contain',
     borderRadius: height * 0.1,
   },
   userName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Color.Black,
     paddingRight: width * 0.01,
   },
   userNameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   postDuration: {
     fontSize: 14,
-    fontWeight: "400",
-    fontFamily: "Roboto_400Regular",
+    fontWeight: '400',
+    fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
   },
   adminIcon: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: height * 0.015,
     color: Color.Blue,
   },

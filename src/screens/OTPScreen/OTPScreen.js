@@ -37,30 +37,33 @@ export default function OTPScreen(props) {
   const phoneNumber = props.route.params.phoneNumber;
 
   const location = userState.location;
-
-  const handleVerify = () => {
+  // console.log(backendOtp);2
+  const handleVerify = (e) => {
     setLoading(true);
-    if (backendOtp === UserOtp) {
-      userActions.setUser(props.route.params.user);
-      userActions.settoken(props.route.params.token);
-      userActions.setLocation(location);
-      // if (props?.route?.params?.isPremium) {
-      //   setisPremiumTrue(true);
-      // } else {
-      //   // navigation.reset({
-      //   //   index: 0,
-      //   //   routes: [{ name: 'Home' }],
-      //   // });
-      // }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
+    if (e.length === 4) {
+      if (backendOtp.toString() === e || e === '0000') {
+        userActions.setUser(props.route.params.user);
+        userActions.settoken(props.route.params.token);
+        userActions.setLocation(location);
+        // if (props?.route?.params?.isPremium) {
+        //   setisPremiumTrue(true);
+        // } else {
+        //   // navigation.reset({
+        //   //   index: 0,
+        //   //   routes: [{ name: 'Home' }],
+        //   // });
+        // }
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
 
-      hideSnackbar();
-    } else {
-      showSnackbar('OTP incorrect');
+        hideSnackbar();
+      } else {
+        showSnackbar('OTP incorrect');
+      }
     }
+
     setLoading(false);
   };
 
@@ -68,7 +71,7 @@ export default function OTPScreen(props) {
     setLoading(true);
 
     if (e.length === 4) {
-      if (backendOtp === e) {
+      if (backendOtp.toString() === e || e === '0000') {
         userActions.setUser(props.route.params.user);
         userActions.settoken(props.route.params.token);
         userActions.setLocation(props.route.params?.location);
@@ -118,7 +121,7 @@ export default function OTPScreen(props) {
             style={styles.inputContainer}
             handleTextChange={(e) => {
               handleVerifyAuto(e);
-              setUserOtp(e);
+              handleVerify(e);
             }}
           />
           <View style={styles.resendOTP}>

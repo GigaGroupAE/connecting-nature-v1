@@ -10,6 +10,7 @@ import {
   Dimensions,
   Pressable,
   StatusBar,
+  Platform,
 } from 'react-native';
 
 import Upcomingcall from '../../../assets/UpcomingCall.png';
@@ -27,6 +28,8 @@ import { axiosInstance } from '../../../axiosInstance';
 import { useQuery } from 'react-query';
 import MessagePreview from '../../components/MessagePreview';
 import NotificationsSkeleton from '../../components/NotificationsSkeleton';
+import { screenHeight } from '../../utils/ScreenDimensions';
+import NoItemIndicater from '../../components/NoItemIndicater';
 const HEIGHT = Dimensions.get('screen').height - StatusBar.currentHeight;
 const WIDTH = Dimensions.get('screen').width;
 
@@ -141,9 +144,7 @@ export default function DirectChat(props, { route }) {
       );
       setgroup(data?.group);
       navigation.navigate('ChatCRM', { group: data?.group });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   const onChangeSearch = (query) => setSearchQuery(query);
@@ -177,6 +178,16 @@ export default function DirectChat(props, { route }) {
     });
   }, [Messages]);
 
+  const filteredData = sortedMessages?.filter((message) => {
+    return message?.members?.some((memberItem) => {
+      const fullName = memberItem?.member?.fullName;
+
+      return fullName
+        ? fullName.toLowerCase().includes(searchQuery.toLowerCase())
+        : false;
+    });
+  });
+
   return (
     <View
       style={{
@@ -195,21 +206,42 @@ export default function DirectChat(props, { route }) {
           </TouchableOpacity>
           {!isSearch && <Text style={styles.title}>Intranet Chat</Text>}
           {isSearch && (
-            <TextInput
-              style={styles.input}
-              placeholder="Search"
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-              autoFocus
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: Color.LightBlue,
+                borderRadius: Dimensions.get('screen').height * 0.1,
+              }}
+            >
+              <TextInput
+                style={styles.input}
+                placeholder="Search"
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+                autoFocus
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSearch(false);
+                  setSearchQuery('');
+                }}
+              >
+                <Entypo name="cross" size={17} />
+              </TouchableOpacity>
+            </View>
           )}
           {!isSearch && (
-            <TouchableOpacity style={styles.threeDots} onPress={() => {}}>
-              <Entypo
+            <TouchableOpacity
+              style={styles.threeDots}
+              onPress={() => setIsSearch(true)}
+            >
+              {/* <Entypo
                 name="dots-three-vertical"
                 size={20}
                 color={Color.White}
-              />
+              /> */}
+              <AntDesign name="search1" size={20} color={Color.White} />
             </TouchableOpacity>
           )}
         </View>
@@ -257,11 +289,23 @@ export default function DirectChat(props, { route }) {
               <View>
                 {Messages?.length === 0 ? (
                   <View style={{ height: '100%' }}>
-                    <NoMessage onpress={handleNewChat} />
+                    <NoItemIndicater
+                      title="No Message found!"
+                      description="It seems, there is no message in your chat list."
+                      image={require('../../../assets/noChatIcon.png')}
+                      buttonTitle=" Start a Conversation"
+                      buttonColor={Color.Blue}
+                      buttonAction={() =>
+                        navigation.navigate('SelectContact', {
+                          selectedContact: selectcontact,
+                          IntranetChat: 'IntranetChat',
+                        })
+                      }
+                    />
                   </View>
                 ) : (
                   <FlatList
-                    data={sortedMessages}
+                    data={searchQuery ? filteredData : sortedMessages}
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => {
                       const { messages } = item;
@@ -372,11 +416,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   input: {
-    width: '80%',
+    width: '90%',
     backgroundColor: Color.LightBlue,
-    paddingVertical: 2,
+    paddingVertical:
+      Platform.OS === 'ios' ? screenHeight * 0.011 : screenHeight * 0.006,
     paddingHorizontal: 20,
     borderRadius: Dimensions.get('screen').height * 0.1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   mainBody: {
     marginTop: 5,
@@ -455,7 +503,7 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontSize: 20,
     fontFamily: 'Roboto_600SemiBold',
-    marginLeft: 10,
+    // marginLeft: 10,
     marginTop: 2,
     lineHeight: 30,
     textAlignVertical: 'center',
@@ -471,11 +519,11 @@ const styles = StyleSheet.create({
     //alignItems: "center",
     justifyContent: 'space-around',
   },
-  btn: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  // btn: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   btnText: {
     fontFamily: 'Roboto_600SemiBold',
     color: '#D9D9D9',

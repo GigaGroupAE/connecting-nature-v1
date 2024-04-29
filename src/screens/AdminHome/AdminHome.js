@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,16 +15,16 @@ import AdminBottomTab from '../../components/AdminBottomTab';
 import { Ionicons, MaterialIcons } from 'react-native-vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axios from 'axios';
-import * as Contacts from 'expo-contacts';
+
 import { useUserState } from './../../slices/userSlice';
-import { useContactsStateActions } from '../../slices/contactslice.js';
+
 import { BASE_URL } from '../../../CONSTANTS';
 import Color from '../../../assets/colors/Color';
 import CreateNew from '../../components/Modals/AdminHome/CreateNew';
 
 import { useStateContext } from '../../contexts/ContextProvider';
 import { ScrollView } from 'react-native-gesture-handler';
-import AdminHomeManegeTab from './AdminHomeManegeTab';
+
 import { scale } from 'react-native-size-matters';
 import GroupMembersList from '../../components/GroupMembersList';
 import { axiosInstance } from '../../../axiosInstance';
@@ -34,6 +34,7 @@ import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import BiddingGroup from '../../components/BiddingGroup';
 import { fetchChannels } from '../../utils/BiddingChannel';
 import NotificationIcon from '../../components/SVG/NotificationsIcon';
+import SearchHeader from '../../components/SearchHeader';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -52,6 +53,7 @@ export default function AdminHome(props) {
   const [isChatListOpen, setisChatListOpen] = useState({});
   const [groupDetails, setgroupDetails] = useState('');
   const [isBiddingOpen, setisBiddingOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const firstTimeRef = useRef(true);
 
   const showModal = useCallback(() => {
@@ -70,10 +72,9 @@ export default function AdminHome(props) {
   };
   const { setgroup } = useStateContext();
 
-  const contactstateactions = useContactsStateActions();
   const {
     data: groups = [],
-    isLoading: loading,
+
     refetch,
   } = useQuery('groups', fetchGroups);
 
@@ -83,38 +84,38 @@ export default function AdminHome(props) {
   );
 
   //fetch user contacts in this useEffect
-  useEffect(() => {
-    const fetchcontacts = async () => {
-      try {
-        const { status } = await Contacts.requestPermissionsAsync({});
-        if (status === 'granted') {
-          const { data } = await Contacts.getContactsAsync();
+  // useEffect(() => {
+  //   const fetchcontacts = async () => {
+  //     try {
+  //       const { status } = await Contacts.requestPermissionsAsync({});
+  //       if (status === 'granted') {
+  //         const { data } = await Contacts.getContactsAsync();
 
-          if (data.length > 0) {
-            let resolvedContacts = [];
+  //         if (data.length > 0) {
+  //           const resolvedContacts = [];
 
-            data.map((contact) => {
-              try {
-                resolvedContacts.push({
-                  name: contact.name,
-                  phoneNumber: contact?.phoneNumbers[0]?.number,
-                });
-              } catch (error) {}
-            });
-            resolvedContacts.sort((a, b) => {
-              if (a.name > b.name) return 1;
-              if (a.name < b.name) return -1;
-              return 0;
-            });
-            contactstateactions.setContacts({ resolvedContacts });
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchcontacts();
-  }, []);
+  //           data.map((contact) => {
+  //             try {
+  //               resolvedContacts.push({
+  //                 name: contact.name,
+  //                 phoneNumber: contact?.phoneNumbers[0]?.number,
+  //               });
+  //             } catch {}
+  //           });
+  //           resolvedContacts.sort((a, b) => {
+  //             if (a.name > b.name) return 1;
+  //             if (a.name < b.name) return -1;
+  //             return 0;
+  //           });
+  //           contactstateactions.setContacts({ resolvedContacts });
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchcontacts();
+  // }, []);
   const sections = [
     {
       id: '1',
@@ -218,9 +219,17 @@ export default function AdminHome(props) {
     setisBiddingOpen(false);
   };
 
+  // const filteredData = groups?.filter((item) => {
+  //   const nameMatch = item.title
+  //     .toLowerCase()
+  //     .includes(searchQuery.toLowerCase());
+  //   return nameMatch;
+  // });
+
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
+      {/* <SearchHeader title="admin" setSearchQuery={setSearchQuery} /> */}
       <View
         style={{
           backgroundColor: Color.White,
@@ -229,7 +238,6 @@ export default function AdminHome(props) {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-
           paddingHorizontal: screenWidth * 0.06,
         }}
       >
@@ -237,16 +245,19 @@ export default function AdminHome(props) {
           source={require('../../../assets/crmlogo.png')}
           style={styles.logo}
         />
-        <TouchableOpacity
-          onPress={() => navigation.navigate('BidddingNotifications')}
-        >
-          <NotificationIcon />
-        </TouchableOpacity>
+        <View>
+          {/* <TouchableOpacity>
+            <Ionicons name="search" />
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('BidddingNotifications')}
+          >
+            <NotificationIcon />
+          </TouchableOpacity>
+        </View>
       </View>
-      <ScrollView
-        style={{ height: '93%' }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={styles.main}>
           <View style={styles.bodyContainer}>
             <Pressable style={styles.CreateGroup} onPress={showModal}>
@@ -321,7 +332,7 @@ export default function AdminHome(props) {
                       //     display: 'none',
                       //   },
                       // }}
-                      style={{ backgroundColor: Color.LightBg }}
+                      style={{ backgroundColor: Color.White }}
                       right={(props) => (
                         <List.Icon
                           {...props}
@@ -671,10 +682,15 @@ export default function AdminHome(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Color.White,
+  },
   main: {
-    backgroundColor: Color.LightBg,
-    height: '100%',
-    width: '100%',
+    backgroundColor: Color.White,
+    // height: '100%',
+    // width: '100%',
+    flex: 1,
   },
   bodyContainer: {
     borderRadius: 10,

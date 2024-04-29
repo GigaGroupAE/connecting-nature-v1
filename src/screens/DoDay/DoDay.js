@@ -159,7 +159,7 @@ export default function DoDay() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View style={{ backgroundColor: 'white' }}>
         <Header
           title="Create Do-Day"
           icon={
@@ -264,7 +264,7 @@ export default function DoDay() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   formContainer: {
-    // flex: 1,
+    flex: 1,
     paddingHorizontal: Width * 0.045,
     backgroundColor: Color.White,
     width: '100%',

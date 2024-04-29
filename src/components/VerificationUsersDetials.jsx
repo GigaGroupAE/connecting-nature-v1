@@ -34,10 +34,14 @@ const VerificationUsersDetials = ({ item, refetch }) => {
   };
 
   const handleApprove = async (item) => {
+    const data = {
+      newUserType: item?.requestedRole,
+      token: item?.user?.expoPushToken,
+    };
     try {
       await axiosInstance.patch(
         `/upgradeRequests/approveRequest/${item?._id}`,
-        { newUserType: item?.requestedRole },
+        { data },
       );
       refetch();
       showSnackbar('Account Upgrade Request Approved Successfully');

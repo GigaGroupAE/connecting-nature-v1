@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
-import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+} from 'react-native';
 import SingleStory from './SingleStory';
 import HeaderNormal from '../../components/HeaderNormal';
-import { useIsFocused, useRoute } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { useStateContext } from '../../contexts/ContextProvider';
 import MiniVideoPlayer from '../../components/MiniVideoPlayer';
-import { FlatList } from 'react-native';
+
 import { useInfiniteQuery } from 'react-query';
 import { fetchStories } from '../../Api/GetPost';
 import PostSkeleton from '../../components/PostSkeleton';

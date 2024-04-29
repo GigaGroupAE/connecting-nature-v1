@@ -3,6 +3,7 @@ import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
 import { FontAwesome, Ionicons } from 'react-native-vector-icons';
 import Color from '../../assets/colors/Color';
 import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
+import NewPostSvg from './SVG/NewPostSvg';
 
 export default function AddButton(props) {
   return (
@@ -15,7 +16,8 @@ export default function AddButton(props) {
             props.clicktrigger();
           }}
         >
-          <Ionicons name="add-circle" size={33} color={Color.Black} />
+          {/* <Ionicons name="add-circle" size={33} color={Color.Black} /> */}
+          <NewPostSvg />
         </Pressable>
       ) : (
         <View style={styles.mainContainer}>

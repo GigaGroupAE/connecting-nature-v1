@@ -1,6 +1,5 @@
 import {
   Dimensions,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -11,50 +10,48 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
-import user from '../../../assets/user.jpg';
+// import user from '../../../assets/user.jpg';
 
 //theme
 import Color from '../../../assets/colors/Color';
 
 //icons import
-import { Feather, Entypo } from '@expo/vector-icons';
+// import { Feather, Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 //images import
-import special from '../../../assets/special.png';
-import notSpecial from '../../../assets/notSpecial.png';
+// import special from '../../../assets/special.png';
+// import notSpecial from '../../../assets/notSpecial.png';
 
 //base url
 import { BASE_URL } from '../../../CONSTANTS';
-import axios from 'axios';
+// import axios from 'axios';
 
 //components import
 import Stats from '../../components/Stats';
-
-//Responsive Width and Height
-const Width = Dimensions.get('screen').width;
-const Height = Dimensions.get('screen').height;
-
 //userState
 import { useUserState } from '../../slices/userSlice';
 import { useNavigation } from '@react-navigation/native';
+
+import { useStateContext } from '../../contexts/ContextProvider.js';
+import { axiosInstance } from '../../../axiosInstance';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
+//Responsive Width and Height
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 // const HEIGHT = Dimensions.get("screen").height - StatusBar.currentHeight;
 
 //this screen requires volunteers array as props
 //route.params.volunteers
 
-import { useStateContext } from '../../contexts/ContextProvider.js';
-import { axiosInstance } from '../../../axiosInstance';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import CustomStatsBar from '../../components/CustomStatsBar';
-
 const VolunteersScreen = ({ route }) => {
   const campaignId = route.params.campaignId;
-  const userState = useUserState();
+  // const userState = useUserState();
   const [volunteers, setVolunteers] = useState(route.params.volunteers);
   const navigation = useNavigation();
-  const { loading, setLoading, showSnackbar } = useStateContext();
+  // const { loading, setLoading, showSnackbar } = useStateContext();
   const inviteVolunteer = async (phoneNumber, userId) => {
     try {
       const { data } = await axiosInstance.patch(
