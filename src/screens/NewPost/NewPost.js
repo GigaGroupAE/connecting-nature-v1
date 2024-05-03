@@ -11,6 +11,8 @@ import {
   TouchableHighlight,
   Dimensions,
   Pressable,
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 //icons import
 import { MaterialIcons, AntDesign } from 'react-native-vector-icons';
@@ -29,7 +31,6 @@ import { useStateContext } from '../../contexts/ContextProvider.js';
 import CustomStatsBar from '../../components/CustomStatsBar';
 import { axiosInstance } from '../../../axiosInstance';
 import { screenHeight } from '../../utils/ScreenDimensions';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function NewPost(props) {
   //images
@@ -42,10 +43,11 @@ export default function NewPost(props) {
   const [modalCampaign, setmodalCampaign] = useState(false);
   const [campaignsName, setcampaignsName] = useState('');
   const [campaign, setcampaign] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const [postType, setpostType] = useState(false);
 
-  const { loading, showSnackbar, setStories } = useStateContext();
+  const { showSnackbar, setStories } = useStateContext();
   const handleonPost = async () => {
     setpostType(false);
     setmodalCampaign(false);
@@ -76,13 +78,14 @@ export default function NewPost(props) {
         'auth-token': userState.token,
       },
     };
-
+    setloading(true);
     try {
       if (props.route.params.origin === 'post') {
         navigation.goBack();
 
         await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
         showSnackbar('Post created successfully');
+        setloading(false);
       } else {
         if (image !== null) {
           const { data } = await axios.post(
@@ -94,12 +97,14 @@ export default function NewPost(props) {
           showSnackbar('Story created successfully');
           setStories([data]);
           navigation.goBack();
+          setloading(false);
         } else {
           alert('Cannot create a story without an image');
+          setloading(false);
         }
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      setloading(false);
     }
   };
 
@@ -122,11 +127,12 @@ export default function NewPost(props) {
       handleonPost();
     } else if (props.route.params.origin === 'post') {
       setpostType(true);
+      console.log('inside');
     } else {
       handleonPost();
     }
   };
-
+  console.log(props.route.params.origin);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -135,7 +141,7 @@ export default function NewPost(props) {
         );
 
         setcampaignsName(response?.data?.campaigns);
-      } catch (error) {}
+      } catch {}
     };
     fetchData();
   }, []);
@@ -180,7 +186,7 @@ export default function NewPost(props) {
 
       showSnackbar('Post created successfully');
       props?.route?.params?.reload();
-    } catch (error) {}
+    } catch {}
   };
 
   useEffect(() => {
@@ -193,7 +199,7 @@ export default function NewPost(props) {
         if (response?.data?.campaigns) {
           setcampaign(response?.data?.campaigns);
         }
-      } catch (error) {}
+      } catch {}
     };
 
     fetchData();
@@ -231,7 +237,14 @@ export default function NewPost(props) {
                   : styles.disabledPostButtonText
               }
             >
-              Post
+              {loading ? (
+                <ActivityIndicator
+                  color={Color.White}
+                  style={Platform.OS === 'ios' ? styles.loader : null}
+                />
+              ) : (
+                'Post'
+              )}
             </Text>
           </Pressable>
         </View>
@@ -387,5 +400,13 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').height * 0.14,
     borderRadius: 8,
     marginLeft: 10,
+  },
+  loader: {
+    position: 'absolute',
+    // top: 10,
+    // bottom: 20,
+
+    // paddingHorizontal: 10,
+    paddingLeft: screenHeight * 0.01,
   },
 });

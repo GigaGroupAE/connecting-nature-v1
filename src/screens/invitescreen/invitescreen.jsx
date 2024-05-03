@@ -220,7 +220,7 @@ export default function Invitescreen({ route }) {
             });
           }}
           query={{
-            key: 'AIzaSyDpubq9wXVCU5nKMDsDG2ZzikdKIjW6cJU',
+            key: 'AIzaSyA_Z2qOzhi_6VaN1QClYYMXvE3MUnk02IY',
             language: 'en',
             components: 'country:pk',
             types: 'establishment',

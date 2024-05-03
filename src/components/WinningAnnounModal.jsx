@@ -33,6 +33,7 @@ const WinningAnnounModal = ({
   setModalVisible,
   item,
   refetch,
+  handleGroupNotification,
 }) => {
   const [isUserModalOpen, setisUserModalOpen] = useState(false);
   const [selectedUser, setselectedUser] = useState(null);

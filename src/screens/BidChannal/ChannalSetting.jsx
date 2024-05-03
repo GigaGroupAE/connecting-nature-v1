@@ -40,6 +40,7 @@ import {
 import { Modal, Portal } from 'react-native-paper';
 import WinAnnouncSettings from '../../components/WinAnnouncSettings';
 import SubscriptionSvg from '../../components/SVG/SubscriptionSvg';
+import CrossSvg from '../../components/SVG/CrossIcon';
 
 // const settingData = [
 //   {
@@ -166,6 +167,7 @@ const ChannalSetting = () => {
         code: m.code,
       };
     });
+
     const tempmembers = [...getIdFromExistingMembers, ...getIdFromMembers];
 
     try {
@@ -185,11 +187,10 @@ const ChannalSetting = () => {
   const handleRemoveMember = async () => {
     try {
       const groupId = groupData[0]?._id;
-      const subscriberId = removememberDetails?._id;
       const memberId = removememberDetails?.member?._id;
 
       if (!isLeadModal) {
-        await handleRemoveSubscriber(groupId, subscriberId, memberId);
+        await handleRemoveSubscriber(groupId, memberId);
         showSnackbar('Subscriber removed successfully');
       } else {
         await handleMakeLead(groupId, memberId);
@@ -213,6 +214,16 @@ const ChannalSetting = () => {
     setremoveModal(true);
     setremovememberDetails(item);
     setisLeadModal(true);
+  };
+
+  const handleUnsubscribe = async () => {
+    try {
+      const groupId = groupData[0]?._id;
+      const memberId = userState.id;
+
+      await handleRemoveSubscriber(groupId, memberId);
+      navigate('Home');
+    } catch {}
   };
 
   return (
@@ -412,6 +423,24 @@ const ChannalSetting = () => {
                 </TouchableOpacity>
               </View>
             )}
+            <TouchableOpacity
+              style={styles.menuContainer}
+              onPress={handleUnsubscribe}
+            >
+              <View
+                style={{
+                  ...styles.rowContainer,
+                  gap: 13,
+                  marginVertical: screenHeight * 0.015,
+                }}
+              >
+                <CrossSvg />
+                <Text style={styles.itemname}>Unsubscribe Channel</Text>
+              </View>
+              <View>
+                <ArrowLeft />
+              </View>
+            </TouchableOpacity>
           </View>
           {/* );
               } else {

@@ -41,10 +41,10 @@ const BidChannelHeader = ({ item }) => {
           <Text style={styles.subTitle}>{admin[0]?.member?.fullName}</Text>
         </Pressable>
       </View>
-      <View style={styles.rightContainer}>
+      {/* <View style={styles.rightContainer}>
         <MaterialIcons name="search" color="#fff" size={screenHeight * 0.03} />
         <Entypo name="dots-three-vertical" style={styles.icon} />
-      </View>
+      </View> */}
     </View>
   );
 };

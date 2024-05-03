@@ -194,9 +194,9 @@ export default function HeaderNormal(props) {
                 <SavedSvg />
               )}
             </TouchableOpacity>
-            <Pressable onPress={props?.openSavedProducts}>
+            {/* <Pressable onPress={props?.openSavedProducts}>
               <ThreeDotsVerticalSvg />
-            </Pressable>
+            </Pressable> */}
           </View>
         )}
         {/* {title === 'ShowCase' ? (

@@ -374,7 +374,7 @@ export default function CreateGroup() {
 
             <ButtonLarge
               title={
-                !loading ? (
+                loading ? (
                   <ActivityIndicator color={Color.White} />
                 ) : (
                   'Create Group'

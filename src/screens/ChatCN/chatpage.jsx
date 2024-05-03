@@ -361,15 +361,21 @@ const ChatPageCN = (props) => {
       type: 'text',
       content: text,
     });
+
     if (props?.route?.params?.group?.members[0]._id === userState.id) {
       handleLocalNotification(
         props?.route?.params?.group?.members[1].expoPushToken,
+      );
+    } else {
+      handleLocalNotification(
+        props?.route?.params?.group?.members[0].expoPushToken,
       );
     }
     setLoading(false);
   };
 
   const handleLocalNotification = async (token) => {
+    console.log(token);
     try {
       const config = {
         headers: {
@@ -384,7 +390,10 @@ const ChatPageCN = (props) => {
         },
         config,
       );
-    } catch (error) {}
+      // console.log(notification);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCamera = () => {

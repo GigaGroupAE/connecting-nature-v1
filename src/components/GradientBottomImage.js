@@ -18,12 +18,16 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
     navigation.navigate('StoryComment');
     setSelectedStory(story);
   };
+
+  const supportedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
   return (
     <View style={[style, { borderRadius }]}>
-      {story.media.type === 'image/jpeg' ? (
+      {supportedImageFormats.includes(story.media.type) ? (
         <Image
           source={source}
           style={[StyleSheet.absoluteFill, { borderRadius }]}
+          contentFit="cover"
         />
       ) : (
         <TouchableOpacity

@@ -17,6 +17,7 @@ import Campaign from './SVG/CampaignSvg';
 import ActiveHomeSvg from './SVG/ActiveSvg';
 import ActiveCampaigns from './SVG/ActiveCampaigns';
 import { screenWidth } from '../utils/ScreenDimensions';
+import HomeIcon from './SVG/HomeIcon';
 
 export default function BottomTab(props) {
   const navigation = useNavigation();
@@ -66,7 +67,7 @@ export default function BottomTab(props) {
             size={30}
             color={props?.activeMenu === 'Home' ? Color.Blue : Color.Black}
           /> */}
-          {props?.activeMenu === 'Home' ? <ActiveHomeSvg /> : <HomeSvg />}
+          {props?.activeMenu === 'Home' ? <ActiveHomeSvg /> : <HomeIcon />}
         </Pressable>
       </View>
       <View>
