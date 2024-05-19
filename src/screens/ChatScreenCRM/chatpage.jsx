@@ -150,8 +150,8 @@ const ChatPage = (props) => {
 
   const supportedImageFormats = ['image/jpeg', 'image/png', 'image/jpg'];
   const pick = async () => {
-    setImgloading(true);
-    let result = await DocumentPicker.getDocumentAsync({
+    // setImgloading(true);
+    const result = await DocumentPicker.getDocumentAsync({
       quality: 0.5,
       allowsMultipleSelection: false,
     });
@@ -187,7 +187,6 @@ const ChatPage = (props) => {
   };
 
   const pickDoc = async () => {
-    setImgloading(true);
     let result = await DocumentPicker.getDocumentAsync({
       quality: 0.5,
       allowsMultipleSelection: false,
@@ -783,7 +782,7 @@ const ChatPage = (props) => {
                               onPress={() =>
                                 props.navigation.navigate('ViewImage', {
                                   url: `${BASE_URL}/messageMedia/${item.content}`,
-                                  message: item.content,
+                                  // message: item.content,
                                 })
                               }
                             />

@@ -31,6 +31,7 @@ import { useStateContext } from '../../contexts/ContextProvider.js';
 import CustomStatsBar from '../../components/CustomStatsBar';
 import { axiosInstance } from '../../../axiosInstance';
 import { screenHeight } from '../../utils/ScreenDimensions';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function NewPost(props) {
   //images
@@ -65,12 +66,15 @@ export default function NewPost(props) {
     if (!image) {
       formData.append('media', null);
     } else {
+      const fileExtension = data.type === 'image' ? 'jpeg' : 'mp4';
+      const fileType = data.type === 'image' ? 'image/jpeg' : 'video/mp4';
       formData.append('media', {
-        name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
+        name: `${userState.fullName}_media.${fileExtension}`,
         uri: data.uri,
-        type: data.mimeType,
+        type: fileType,
       });
     }
+
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -103,21 +107,26 @@ export default function NewPost(props) {
           setloading(false);
         }
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
       setloading(false);
     }
   };
 
   const pick = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({});
+      // const result = await DocumentPicker.getDocumentAsync({});
+      const result = await ImagePicker.launchImageLibraryAsync({
+        quality: 0.8,
+        mediaTypes: 'All',
+      });
 
-      if (!result.cancelled) {
+      if (!result.canceled) {
         setCompressImg(result.assets[0].uri);
         setData(result.assets[0]);
         setImage([result.assets[0].uri]);
       }
-    } catch (error) {
+    } catch {
     } finally {
     }
   };
@@ -127,12 +136,11 @@ export default function NewPost(props) {
       handleonPost();
     } else if (props.route.params.origin === 'post') {
       setpostType(true);
-      console.log('inside');
     } else {
       handleonPost();
     }
   };
-  console.log(props.route.params.origin);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -166,10 +174,12 @@ export default function NewPost(props) {
     if (!image) {
       formData.append('media', null);
     } else {
+      const fileExtension = data.type === 'image' ? 'jpeg' : 'mp4';
+      const fileType = data.type === 'image' ? 'image/jpeg' : 'video/mp4';
       formData.append('media', {
-        name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
+        name: `${userState.fullName}_media.${fileExtension}`,
         uri: data.uri,
-        type: data.mimeType,
+        type: fileType,
       });
     }
     const config = {

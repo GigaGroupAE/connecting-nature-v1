@@ -23,9 +23,7 @@ const ImageMessage = (props) => {
   const navigation = useNavigation();
 
   const { socket, item } = props;
-  let timePassed = calculateTimeDifference(item.date);
-
-  const [modalVisible, setmodalVisible] = useState(false);
+  const timePassed = calculateTimeDifference(item.date);
 
   return (
     <Pressable
