@@ -2,7 +2,7 @@
   "expo": {
     "name": "Connecting Nature",
     "slug": "connecting-nature",
-    "version": "1.0.5",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/cn-icon.png",
     "userInterfaceStyle": "automatic",

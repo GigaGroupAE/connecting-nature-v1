@@ -20,7 +20,6 @@ const StoryHeader = () => {
 
   const {
     data: storiesData,
-
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
