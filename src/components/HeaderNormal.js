@@ -199,6 +199,27 @@ export default function HeaderNormal(props) {
             </Pressable> */}
           </View>
         )}
+
+        {title === 'Current Activity Stats' && (
+          <View
+            style={{
+              flexDirection: 'row',
+              // flex: 0.5,
+              justifyContent: 'space-around',
+              // backgroundColor: 'red',
+              gap: 14,
+            }}
+          >
+            <TouchableOpacity onPress={props?.inviteAll}>
+              <Text style={styles.invite}>Invite All</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Text style={{ marginLeft: width * 0.012, ...styles.invite }}>
+                Done
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {/* {title === 'ShowCase' ? (
           <Pressable
             onPress={() => {
@@ -273,5 +294,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: '3%',
+  },
+  invite: {
+    alignSelf: 'center',
+    fontFamily: 'Roboto_500Medium',
+    color: Color.Blue,
+    fontWeight: '600',
+    fontSize: 12,
   },
 });

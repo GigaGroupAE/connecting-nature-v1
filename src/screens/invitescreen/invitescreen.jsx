@@ -50,6 +50,7 @@ export default function Invitescreen({ route }) {
   const doday = JSON.parse(dodayJson);
 
   const [radius, setRadius] = useState(doday?.radius);
+  const [loading, setLoading] = useState(false);
 
   //REF FOR MAPS
   const mapRef = React.useRef();
@@ -68,7 +69,7 @@ export default function Invitescreen({ route }) {
     longitudeDelta: 0.0421,
   });
 
-  const { loading, setLoading, showSnackbar } = useStateContext();
+  const { showSnackbar } = useStateContext();
 
   const [users, setusers] = useState([]);
   const navigation = useNavigation();

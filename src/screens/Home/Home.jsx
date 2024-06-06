@@ -74,7 +74,6 @@ const Home = () => {
         return null;
       },
       refetchOnWindowFocus: false,
-      cacheTime: 1000 * 60 * 5,
     },
   );
 

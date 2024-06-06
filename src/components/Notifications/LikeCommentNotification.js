@@ -11,6 +11,7 @@ import { theme } from '../../../theme';
 import { calculateTimeDifference } from '../../utils/timeDifference';
 import { useNavigation } from '@react-navigation/native';
 import AdminIcon from '../AdminIcon';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   time: {
     color: '#707070',
     fontFamily: theme.fonts.family.regular,
-    fontSize: Height * 0.017,
+    fontSize: screenHeight * 0.0156,
   },
   type: {
     color: '#4582C3',
@@ -91,5 +92,6 @@ const styles = StyleSheet.create({
   description: {
     fontFamily: theme.fonts.family.regular,
     color: 'rgba(112, 112, 112, 0.7)',
+    fontSize: screenHeight * 0.0156,
   },
 });

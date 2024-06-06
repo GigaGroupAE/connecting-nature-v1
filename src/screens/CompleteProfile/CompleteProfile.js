@@ -311,25 +311,27 @@ export default function CompleteProfile() {
                 color="#007BFF"
                 uncheckedColor={Color.Black}
               /> */}
-              <TouchableOpacity
-                style={styles.checkBox}
-                onPress={() => {
-                  setiPremium(!isPremium);
-                }}
-              >
-                {isPremium ? (
-                  <MaterialCommunityIcons
-                    name="checkbox-marked"
-                    style={styles.checkBoxIcon}
-                    color={Color.Blue}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="checkbox-blank-outline"
-                    style={styles.checkBoxIcon}
-                  />
-                )}
-              </TouchableOpacity>
+              <View style={styles.touchableWrapper}>
+                <TouchableOpacity
+                  style={styles.checkBox}
+                  onPress={() => {
+                    setiPremium(!isPremium);
+                  }}
+                >
+                  {isPremium ? (
+                    <MaterialCommunityIcons
+                      name="checkbox-marked"
+                      style={styles.checkBoxIcon}
+                      color={Color.Blue}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="checkbox-blank-outline"
+                      style={styles.checkBoxIcon}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
               <Text
                 style={styles.terms}
                 accessibilityLabel="Premium (optional)"
@@ -339,25 +341,27 @@ export default function CompleteProfile() {
             </View>
 
             <View style={styles.checkBox}>
-              <TouchableOpacity
-                style={styles.checkBox}
-                onPress={() => {
-                  setAgree(!agree);
-                }}
-              >
-                {agree ? (
-                  <MaterialCommunityIcons
-                    name="checkbox-marked"
-                    style={styles.checkBoxIcon}
-                    color={Color.Blue}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="checkbox-blank-outline"
-                    style={styles.checkBoxIcon}
-                  />
-                )}
-              </TouchableOpacity>
+              <View style={styles.touchableWrapper}>
+                <TouchableOpacity
+                  style={styles.checkBox}
+                  onPress={() => {
+                    setAgree(!agree);
+                  }}
+                >
+                  {agree ? (
+                    <MaterialCommunityIcons
+                      name="checkbox-marked"
+                      style={styles.checkBoxIcon}
+                      color={Color.Blue}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="checkbox-blank-outline"
+                      style={styles.checkBoxIcon}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
               <Text style={styles.terms}>
                 I agree to the Terms and Conditions
               </Text>
@@ -366,25 +370,27 @@ export default function CompleteProfile() {
               </TouchableOpacity>
             </View>
             <View style={styles.checkBox}>
-              <TouchableOpacity
-                style={styles.checkBox}
-                onPress={() => {
-                  setAccept(!accept);
-                }}
-              >
-                {accept ? (
-                  <MaterialCommunityIcons
-                    name="checkbox-marked"
-                    style={styles.checkBoxIcon}
-                    color={Color.Blue}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="checkbox-blank-outline"
-                    style={styles.checkBoxIcon}
-                  />
-                )}
-              </TouchableOpacity>
+              <View style={styles.touchableWrapper}>
+                <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={() => {
+                    setAccept(!accept);
+                  }}
+                >
+                  {accept ? (
+                    <MaterialCommunityIcons
+                      name="checkbox-marked"
+                      style={styles.checkBoxIcon}
+                      color={Color.Blue}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="checkbox-blank-outline"
+                      style={styles.checkBoxIcon}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
               <Text style={styles.terms}>I accept the Privacy Policy</Text>
               <TouchableOpacity onPress={() => setmodalPolicy(true)}>
                 <Text style={styles.learn}> Learn More</Text>
@@ -458,7 +464,7 @@ const styles = StyleSheet.create({
     fontSize: Height * 0.016,
   },
   CheckboxContainer: {
-    width: '90%',
+    width: '95%',
     marginTop: Height * 0.03,
   },
   checkBox: {
@@ -487,5 +493,12 @@ const styles = StyleSheet.create({
     paddingLeft: screenWidth * 0.03,
     fontSize: screenHeight * 0.025,
     paddingVertical: screenHeight * 0.0035,
+  },
+  touchableWrapper: {
+    minHeight: 36,
+    minWidth: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'red',
   },
 });

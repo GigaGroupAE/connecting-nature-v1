@@ -119,7 +119,10 @@ const SignIn = () => {
       </View>
       <View style={styles.createNewContainer}>
         <Text style={styles.createNewText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SignUp')}
+          style={styles.createNewButton}
+        >
           <Text style={styles.createNew}>Sign Up!</Text>
         </TouchableOpacity>
       </View>
@@ -170,9 +173,15 @@ const styles = StyleSheet.create({
   },
   createNew: {
     fontFamily: 'Roboto_600SemiBold',
-    fontSize: 14,
+    fontSize: 15,
     color: Color.Blue,
     marginLeft: 8,
     textDecorationLine: 'underline',
+  },
+  touchableWrapper: {
+    minHeight: 48,
+    minWidth: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

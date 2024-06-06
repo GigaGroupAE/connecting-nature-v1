@@ -40,6 +40,7 @@ const RequestAddProperty = () => {
   const { showSnackbar } = useStateContext();
   const [isDenyModal, setisDenyModal] = useState(false);
   const [description, setDescription] = useState('');
+  // const [isSubmitLoading, setisSubmitLoading] = useState(fa)
 
   // const [firstImage, setfirstImage] = useState(propertyDetails?.image[0]);
 

@@ -1,4 +1,12 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import React, { useEffect, useState } from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -10,6 +18,8 @@ import HeaderNormal from '../../components/HeaderNormal';
 import Color from '../../../assets/colors/Color';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import SearchHeader from '../../components/SearchHeader';
+import { FlashList } from '@shopify/flash-list';
 BASE_URL;
 export default function MultipleContactSelect(props) {
   const [users, setuser] = useState([]);
@@ -71,12 +81,30 @@ export default function MultipleContactSelect(props) {
     props.route.params.selectedContacts(checked);
     navigation.goBack();
   };
+
+  const filteredContacts = users.filter((item) => {
+    const nameMatch = item.fullName
+      .toLowerCase()
+      .includes(searchQuery?.toLowerCase());
+    const phoneNumberMatch = item.phoneNumber
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return nameMatch || phoneNumberMatch;
+  });
   return (
     <SafeAreaProvider style={styles.container}>
       <CustomStatsBar backgroundColor={Color.White} />
       <View>
-        <HeaderNormal title="Add Participants" />
-        <Pressable
+        {/* <HeaderNormal title="Add Participants" /> */}
+        <SearchHeader
+          title="Add Participants"
+          setSearchQuery={setSearchQuery}
+          handleInvite={handleOnPress}
+          screen="groupInvite"
+        />
+
+        {/* <Pressable
           style={{
             position: 'absolute',
             right: 20,
@@ -93,10 +121,10 @@ export default function MultipleContactSelect(props) {
           >
             Invite
           </Text>
-        </Pressable>
+        </Pressable> */}
       </View>
       <View style={[styles.body]}>
-        <ScrollView>
+        {/* <ScrollView showsVerticalScrollIndicator={false}>
           <Searchbar
             placeholder="Search"
             onChangeText={onChangeSearch}
@@ -177,7 +205,80 @@ export default function MultipleContactSelect(props) {
                   return null;
                 }
               })}
-        </ScrollView>
+        </ScrollView> */}
+        <View style={{ flex: 1, marginBottom: 30 }}>
+          <FlatList
+            data={searchQuery ? filteredContacts : users}
+            renderItem={({ item }) => {
+              return (
+                <View
+                  // key={'contact-' + index}
+                  style={[
+                    styles.row,
+                    {
+                      paddingHorizontal: 10,
+                      backgroundColor: 'white',
+                      width: '93%',
+                      alignSelf: 'center',
+                      borderRadius: 7,
+                      paddingVertical: 6,
+                      marginVertical: 5,
+                    },
+                  ]}
+                >
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{
+                      fontFamily: 'Roboto_500Medium',
+                      color: '#606060',
+                      flex: 1,
+                    }}
+                  >
+                    {item?.phoneNumber || 'No Phone Number'}
+                    <Text
+                      style={{
+                        color: '#909090',
+                        fontSize: 12,
+                      }}
+                    >
+                      {' '}
+                      {'     ~'}
+                      {item.fullName}
+                    </Text>
+                  </Text>
+
+                  <BouncyCheckbox
+                    size={25}
+                    fillColor="#4582C3"
+                    onPress={(isChecked) => {
+                      if (isChecked === true) {
+                        handleOnCheck(item, 'select');
+                      } else {
+                        handleOnCheck(item, 'unselect');
+                      }
+                    }}
+                    style={{
+                      marginLeft: 'auto',
+                      borderRadius: 25,
+                      backgroundColor: 'white',
+                      elevation: 0,
+                    }}
+                    contentStyle={{ paddingHorizontal: 3, height: 35 }}
+                    labelStyle={{
+                      color: '#4582C3',
+                      fontFamily: 'Roboto_600SemiBold',
+                      fontSize: 12,
+                    }}
+                    mode="contained"
+                  />
+                </View>
+              );
+            }}
+            estimatedItemSize={200}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </View>
     </SafeAreaProvider>
   );

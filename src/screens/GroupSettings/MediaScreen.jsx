@@ -15,12 +15,33 @@ import FileMedia from './FIleMedia';
 import DocType from './DocType';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { axiosInstance } from '../../../axiosInstance';
+import { useQuery } from 'react-query';
+
+const fetchGroupMedia = async (id) => {
+  try {
+    const { data } = await axiosInstance.get(`groups/group-media/${id}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const MediaScreen = () => {
   const route = useRoute();
 
   const [isActiveMedia, setIsActiveMedia] = useState(true);
   const [isActiveDoc, setIsActiveDoc] = useState(false);
+  const { group } = useStateContext();
+
+  const {
+    data: groupMedia,
+    isLoading,
+    error,
+  } = useQuery(['groupMedia', group?._id], () => fetchGroupMedia(group?._id), {
+    enabled: !!group?._id,
+  });
 
   const handleActiveMedia = () => {
     setIsActiveMedia(true);
@@ -32,10 +53,8 @@ const MediaScreen = () => {
     setIsActiveDoc(true);
   };
 
-  const docData = route?.params?.data.filter(
-    (item) => item?.type === 'document',
-  );
-  const imageData = route?.params?.data.filter(
+  const docData = groupMedia?.filter((item) => item?.type === 'document');
+  const imageData = groupMedia?.filter(
     (item) => item?.type !== 'audio' && item?.type !== 'document',
   );
 

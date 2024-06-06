@@ -7,7 +7,6 @@ import {
   ScrollView,
   Image,
   Pressable,
-  TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
 // import user from '../../../assets/user.jpg';
@@ -30,13 +29,10 @@ import { BASE_URL } from '../../../CONSTANTS';
 //components import
 import Stats from '../../components/Stats';
 //userState
-import { useUserState } from '../../slices/userSlice';
-import { useNavigation } from '@react-navigation/native';
 
-import { useStateContext } from '../../contexts/ContextProvider.js';
 import { axiosInstance } from '../../../axiosInstance';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import CustomStatsBar from '../../components/CustomStatsBar';
+import HeaderNormal from '../../components/HeaderNormal';
+import AdminIcon from '../../components/AdminIcon';
 //Responsive Width and Height
 const Width = Dimensions.get('screen').width;
 const Height = Dimensions.get('screen').height;
@@ -50,7 +46,7 @@ const VolunteersScreen = ({ route }) => {
   const campaignId = route.params.campaignId;
   // const userState = useUserState();
   const [volunteers, setVolunteers] = useState(route.params.volunteers);
-  const navigation = useNavigation();
+
   // const { loading, setLoading, showSnackbar } = useStateContext();
   const inviteVolunteer = async (phoneNumber, userId) => {
     try {
@@ -59,9 +55,7 @@ const VolunteersScreen = ({ route }) => {
         { phoneNumbers: [phoneNumber], usersToUpdate: [userId] },
       );
       setVolunteers(data.updatedCampaign);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   const inviteAll = async () => {
@@ -80,18 +74,17 @@ const VolunteersScreen = ({ route }) => {
         { phoneNumbers, usersToUpdate },
       );
       setVolunteers(data.updatedCampaign);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   return (
-    <SafeAreaProvider>
-      <CustomStatsBar backgroundColor={Color.White} />
+    <>
+      {/* <CustomStatsBar backgroundColor={Color.White} /> */}
 
       <View style={styles.container}>
         {/* HEADER */}
-        <View style={styles.header}>
+        <HeaderNormal title="Current Activity Stats" inviteAll={inviteAll} />
+        {/* <View style={styles.header}>
           <View style={{ flexDirection: 'row', margin: '4%' }}>
             <Text
               style={{
@@ -101,6 +94,7 @@ const VolunteersScreen = ({ route }) => {
                 flex: 1,
               }}
             >
+              {' '}
               Current Activity Stats
             </Text>
             <View
@@ -120,7 +114,7 @@ const VolunteersScreen = ({ route }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </View> */}
 
         {/* STATS */}
         <View style={styles.stats}>
@@ -164,7 +158,7 @@ const VolunteersScreen = ({ route }) => {
                   />
                   <View style={styles.nameContainer}>
                     <Text style={styles.userName}>{displayedUsername}</Text>
-                    {(v.user?.type === 'Operations' ||
+                    {/* {(v.user?.type === 'Operations' ||
                       v.user?.type === 'Admin' ||
                       v.user?.type === 'Manager' ||
                       v.user?.type === 'Assistant Manager' ||
@@ -174,7 +168,9 @@ const VolunteersScreen = ({ route }) => {
                         name="check-decagram"
                         style={styles.adminIcon}
                       />
-                    )}
+                    )} */}
+
+                    <AdminIcon userType={v.user?.type} />
                   </View>
                 </View>
                 <View style={styles.pointContainer}>
@@ -218,7 +214,7 @@ const VolunteersScreen = ({ route }) => {
           })}
         </ScrollView>
       </View>
-    </SafeAreaProvider>
+    </>
   );
 };
 
