@@ -1,29 +1,30 @@
 //react/native imports
-import { View, Text, Image, StyleSheet } from "react-native";
-import logo from "../../../assets/cn-icon.png";
-import { theme } from "../../../theme";
+import { View, Text, Image, StyleSheet } from 'react-native';
+import logo from '../../../assets/cn-icon.png';
+import { theme } from '../../../theme';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const AcceptedRejectedNotification = ({ data, type }) => {
   return (
     <View style={[styles.notificationCardWrapper]}>
       <View style={styles.cardContentContainer}>
-        {<Image source={logo} style={styles.avatar} />}
+        <Image source={logo} style={styles.avatar} />
 
-        <View style={{ flex: 1, paddingLeft: "5%" }}>
+        <View style={{ flex: 1, paddingLeft: '5%' }}>
           <Text
             style={[
               styles.title,
-              type === "accepted" ? { color: "green" } : { color: "red" },
+              type === 'accepted' ? { color: 'green' } : { color: 'red' },
             ]}
           >
             Giga Management
           </Text>
-          {type === "accepted" && (
+          {type === 'accepted' && (
             <Text
               style={styles.acceptedText}
             >{`You accepted the invite to participate  in  ${data.data.content.campaignName}`}</Text>
           )}
-          {type === "rejected" && (
+          {type === 'rejected' && (
             <Text
               style={styles.rejectedText}
             >{`You denied the invite to participate  in  ${data.data.content.campaignName}`}</Text>
@@ -41,24 +42,25 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(154, 154, 154, 0.5)",
+    borderColor: 'rgba(154, 154, 154, 0.5)',
   },
   cardContentContainer: {
     flex: 1,
-    marginTop: "5%",
-    flexDirection: "row",
+    marginTop: '5%',
+    flexDirection: 'row',
   },
   title: {
     fontFamily: theme.fonts.family.medium,
   },
   acceptedText: {
     fontFamily: theme.fonts.family.regular,
-    color: "rgba(112, 112, 112, 0.7)",
+    color: 'rgba(112, 112, 112, 0.7)',
+    fontSize: screenHeight * 0.0156,
   },
   rejectedText: {
     fontFamily: theme.fonts.family.regular,
-    color: "rgba(112, 112, 112, 0.7)",
-    textDecorationLine: "line-through",
+    color: 'rgba(112, 112, 112, 0.7)',
+    textDecorationLine: 'line-through',
   },
   avatar: {
     height: 60,

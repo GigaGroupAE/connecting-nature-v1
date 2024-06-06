@@ -2,7 +2,7 @@
   "expo": {
     "name": "Connecting Nature",
     "slug": "connecting-nature",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/cn-icon.png",
     "userInterfaceStyle": "automatic",
@@ -32,7 +32,7 @@
       "bundleIdentifier": "com.notify.connectingnatureapp"
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/cn-icon.png",
         "backgroundColor": "#FFFFFF"

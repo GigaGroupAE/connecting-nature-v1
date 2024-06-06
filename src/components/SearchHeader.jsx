@@ -15,17 +15,30 @@ import Color from '../../assets/colors/Color';
 
 import { useState } from 'react';
 import { Image } from 'expo-image';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const width = Dimensions.get('screen').width;
 
-export default function SearchHeader({ title, searchQuery, setSearchQuery }) {
+export default function SearchHeader({
+  title,
+  searchQuery,
+  setSearchQuery,
+  screen,
+  handleInvite,
+}) {
   const [isSearch, setisSearch] = useState(false);
   const onChangeSearch = (query) => setSearchQuery(query);
   const navigation = useNavigation();
 
   return (
     <View style={isSearch ? styles.searchHeader : styles.header}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 10,
+        }}
+      >
         {title !== 'admin' && (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={28} color={Color.Black} />
@@ -44,10 +57,46 @@ export default function SearchHeader({ title, searchQuery, setSearchQuery }) {
         )}
       </View>
 
+      {!isSearch && (
+        <View style={{ flexDirection: 'row', gap: 30 }}>
+          {screen === 'groupInvite' && (
+            <TouchableOpacity onPress={handleInvite}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto_500Medium',
+                  fontSize: screenHeight * 0.018,
+                  color: Color.Blue,
+                }}
+              >
+                Invite
+              </Text>
+            </TouchableOpacity>
+          )}
+          <Pressable
+            android_ripple={{ color: Color.LightGrey, borderless: true }}
+            onPress={() => setisSearch(!isSearch)}
+            style={{
+              // width: 500,
+              // marginRight: 30,
+              // paddingRight: 20,
+              // flex: 1,
+              alignSelf: 'center',
+            }}
+          >
+            <Ionicons
+              name="search"
+              size={22}
+              color={Color.Black}
+              // style={{ paddingRight: 40 }}
+            />
+          </Pressable>
+        </View>
+      )}
+
       {isSearch && (
         <TextInput
           style={{
-            width: '80%',
+            width: screen === 'groupInvite' ? '70%' : '80%',
             // height: 15,
             backgroundColor: '#F1F1F1',
             paddingVertical: Platform.OS === 'ios' ? 10 : 5,
@@ -62,22 +111,28 @@ export default function SearchHeader({ title, searchQuery, setSearchQuery }) {
         />
       )}
 
-      {!isSearch && (
-        <Pressable
-          android_ripple={{ color: Color.LightGrey, borderless: true }}
-          onPress={() => setisSearch(!isSearch)}
-        >
-          <Ionicons name="search" size={22} color={Color.Black} />
-        </Pressable>
-      )}
-
       {isSearch && (
-        <Pressable
-          android_ripple={{ color: Color.LightGrey, borderless: true }}
-          onPress={() => setisSearch(false)}
-        >
-          <Entypo name="cross" size={25} color={Color.Black} />
-        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          {screen === 'groupInvite' && (
+            <TouchableOpacity onPress={handleInvite}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto_500Medium',
+                  fontSize: screenHeight * 0.018,
+                  color: Color.Blue,
+                }}
+              >
+                Invite
+              </Text>
+            </TouchableOpacity>
+          )}
+          <Pressable
+            android_ripple={{ color: Color.LightGrey, borderless: true }}
+            onPress={() => setisSearch(false)}
+          >
+            <Entypo name="cross" size={25} color={Color.Black} />
+          </Pressable>
+        </View>
       )}
     </View>
   );
@@ -149,7 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White,
   },
   title: {
-    width: '82%',
+    // width: '77%',
     // color: Color.Grey,
     fontSize: 17,
     lineHeight: 30,

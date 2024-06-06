@@ -191,7 +191,7 @@ import {
 import { MaterialIcons } from 'react-native-vector-icons';
 import { scale } from 'react-native-size-matters';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import RadioButton from '../../components/RadioButton';
+// import RadioButton from '../../components/RadioButton';
 import axios from 'axios';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
@@ -277,6 +277,7 @@ const Invite = () => {
             'auth-token': userState.token,
           },
         });
+        setisAddUserModal(false);
       } else {
         throw new Error('Failed to invite user');
       }
