@@ -1,14 +1,32 @@
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import Color from '../../assets/colors/Color';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 export default function ButtonMain(props) {
+  console.log(props);
   return (
     <TouchableOpacity
       disabled={props.disabled}
       style={styles.container}
       onPress={() => props.callback(true)}
     >
-      <Text style={styles.title}>{props.title}</Text>
+      {props?.disabled ? (
+        <ActivityIndicator
+          color={Color.White}
+          style={{
+            alignSelf: 'center',
+            justifyContent: 'center',
+            marginTop: screenHeight * 0.015,
+          }}
+        />
+      ) : (
+        <Text style={styles.title}>{props.title}</Text>
+      )}
     </TouchableOpacity>
   );
 }

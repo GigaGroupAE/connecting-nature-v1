@@ -113,7 +113,7 @@ const StoryComment = (props) => {
           socket.emit('send_comments_story', data);
           setLoading(false);
         }
-      } catch (error) {
+      } catch {
         setLoading(false);
       }
     } else {
@@ -177,7 +177,7 @@ const StoryComment = (props) => {
         },
       );
       setshares([...res.data.shares]);
-    } catch (error) {
+    } catch {
       showSnackbar(
         "Sorry, we couldn't share the story at the moment. Please try again later.",
       );
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     height: height * 0.25,
     marginTop: 5,
     width: '100%',
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
   },
   miniVideo: {
     position: 'absolute',

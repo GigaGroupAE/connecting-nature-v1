@@ -4,7 +4,6 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
@@ -13,11 +12,7 @@ import HeaderNormal from '../../components/HeaderNormal';
 import { useInfiniteQuery } from 'react-query';
 import { fetchArchiveProjects } from '../../utils/BiddingChannel';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
-import {
-  buttonContainer,
-  buttonTitle,
-  titleStyle,
-} from '../Decorations/ModalStyle';
+import { titleStyle } from '../Decorations/ModalStyle';
 import ProjectDetails from '../../components/ProjectDetails';
 import WinerSvg from '../../components/SVG/Winner';
 import ArchivedBiddingSkeletn from '../../components/Skeletns/ArchivedBiddingSkeletn';
@@ -123,22 +118,11 @@ const ArchivedBidding = () => {
                   </View>
 
                   <View style={styles.detailsContainer}>
-                    <DownloadBidding item={item} currentUser={params?.user} />
-
-                    <TouchableOpacity
-                      style={{
-                        ...buttonContainer,
-                        width: '48%',
-                        marginTop: 0,
-                        backgroundColor: Color.White,
-                        borderWidth: 1,
-                        paddingVertical: screenHeight * 0.011,
-                      }}
-                    >
-                      <Text style={{ ...buttonTitle, color: Color.Black }}>
-                        Share
-                      </Text>
-                    </TouchableOpacity>
+                    <DownloadBidding
+                      item={item}
+                      currentUser={params?.user}
+                      title="Download CSV"
+                    />
                   </View>
                 </View>
               );

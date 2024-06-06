@@ -162,6 +162,7 @@ const SavedDecoration = () => {
               image={require('../../../assets/campaignICon.png')}
               buttonTitle="Start Decoration"
               buttonColor={Color.Purple}
+              buttonAction={() => navigation.goBack()}
             />
           ) : (
             <FlatList

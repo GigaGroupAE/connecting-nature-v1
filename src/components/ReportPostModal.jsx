@@ -120,12 +120,14 @@ const ReportPostModal = ({
               </View>
             )}
             {otherReason !== '' && (
-              <TouchableOpacity
-                style={buttonContainer}
-                onPress={handleOthersSubmmit}
-              >
-                <Text style={buttonTitle}>Submit</Text>
-              </TouchableOpacity>
+              <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity
+                  style={buttonContainer}
+                  onPress={handleOthersSubmmit}
+                >
+                  <Text style={buttonTitle}>Submit</Text>
+                </TouchableOpacity>
+              </View>
             )}
           </View>
         </View>

@@ -11,6 +11,8 @@ import {
   TouchableHighlight,
   Dimensions,
   Pressable,
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 //icons import
 import { MaterialIcons, AntDesign } from 'react-native-vector-icons';
@@ -42,10 +44,11 @@ export default function NewPost(props) {
   const [modalCampaign, setmodalCampaign] = useState(false);
   const [campaignsName, setcampaignsName] = useState('');
   const [campaign, setcampaign] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const [postType, setpostType] = useState(false);
 
-  const { loading, showSnackbar, setStories } = useStateContext();
+  const { showSnackbar, setStories } = useStateContext();
   const handleonPost = async () => {
     setpostType(false);
     setmodalCampaign(false);
@@ -63,12 +66,15 @@ export default function NewPost(props) {
     if (!image) {
       formData.append('media', null);
     } else {
+      const fileExtension = data.type === 'image' ? 'jpeg' : 'mp4';
+      const fileType = data.type === 'image' ? 'image/jpeg' : 'video/mp4';
       formData.append('media', {
-        name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
+        name: `${userState.fullName}_media.${fileExtension}`,
         uri: data.uri,
-        type: data.mimeType,
+        type: fileType,
       });
     }
+
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -76,13 +82,14 @@ export default function NewPost(props) {
         'auth-token': userState.token,
       },
     };
-
+    setloading(true);
     try {
       if (props.route.params.origin === 'post') {
         navigation.goBack();
 
         await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
         showSnackbar('Post created successfully');
+        setloading(false);
       } else {
         if (image !== null) {
           const { data } = await axios.post(
@@ -94,25 +101,32 @@ export default function NewPost(props) {
           showSnackbar('Story created successfully');
           setStories([data]);
           navigation.goBack();
+          setloading(false);
         } else {
           alert('Cannot create a story without an image');
+          setloading(false);
         }
       }
     } catch (error) {
       console.log(error);
+      setloading(false);
     }
   };
 
   const pick = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({});
+      // const result = await DocumentPicker.getDocumentAsync({});
+      const result = await ImagePicker.launchImageLibraryAsync({
+        quality: 0.8,
+        mediaTypes: 'All',
+      });
 
-      if (!result.cancelled) {
+      if (!result.canceled) {
         setCompressImg(result.assets[0].uri);
         setData(result.assets[0]);
         setImage([result.assets[0].uri]);
       }
-    } catch (error) {
+    } catch {
     } finally {
     }
   };
@@ -135,7 +149,7 @@ export default function NewPost(props) {
         );
 
         setcampaignsName(response?.data?.campaigns);
-      } catch (error) {}
+      } catch {}
     };
     fetchData();
   }, []);
@@ -160,10 +174,12 @@ export default function NewPost(props) {
     if (!image) {
       formData.append('media', null);
     } else {
+      const fileExtension = data.type === 'image' ? 'jpeg' : 'mp4';
+      const fileType = data.type === 'image' ? 'image/jpeg' : 'video/mp4';
       formData.append('media', {
-        name: data.name, // phone number is added to make sure data doesn't duplicate at any cost
+        name: `${userState.fullName}_media.${fileExtension}`,
         uri: data.uri,
-        type: data.mimeType,
+        type: fileType,
       });
     }
     const config = {
@@ -180,7 +196,7 @@ export default function NewPost(props) {
 
       showSnackbar('Post created successfully');
       props?.route?.params?.reload();
-    } catch (error) {}
+    } catch {}
   };
 
   useEffect(() => {
@@ -193,7 +209,7 @@ export default function NewPost(props) {
         if (response?.data?.campaigns) {
           setcampaign(response?.data?.campaigns);
         }
-      } catch (error) {}
+      } catch {}
     };
 
     fetchData();
@@ -231,7 +247,14 @@ export default function NewPost(props) {
                   : styles.disabledPostButtonText
               }
             >
-              Post
+              {loading ? (
+                <ActivityIndicator
+                  color={Color.White}
+                  style={Platform.OS === 'ios' ? styles.loader : null}
+                />
+              ) : (
+                'Post'
+              )}
             </Text>
           </Pressable>
         </View>
@@ -387,5 +410,13 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').height * 0.14,
     borderRadius: 8,
     marginLeft: 10,
+  },
+  loader: {
+    position: 'absolute',
+    // top: 10,
+    // bottom: 20,
+
+    // paddingHorizontal: 10,
+    paddingLeft: screenHeight * 0.01,
   },
 });

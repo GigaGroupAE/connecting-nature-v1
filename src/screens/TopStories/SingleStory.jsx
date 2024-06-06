@@ -1,33 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {
-  Entypo,
-  AntDesign,
-  MaterialCommunityIcons,
-  Octicons,
-} from 'react-native-vector-icons';
+import { Entypo, AntDesign, Octicons } from 'react-native-vector-icons';
 import Color from '../../../assets/colors/Color';
-import {
-  useIsFocused,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../../../CONSTANTS';
 import { calculateTimeDifference } from '../../utils/timeDifference';
 import { useUserState } from '../../slices/userSlice';
-import moment from 'moment';
+
 import { useStateContext } from '../../contexts/ContextProvider';
 import axios from 'axios';
 import VideoPlayer from 'expo-video-player';
 import StoryDeleteModal from './StoryDeleteModal';
 import AdminIcon from '../../components/AdminIcon';
+import { Image } from 'expo-image';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -36,7 +27,7 @@ const SingleStory = ({ post, refetch }) => {
   const { setSelectedStory, showSnackbar } = useStateContext();
 
   const navigation = useNavigation();
-  var date = moment().utcOffset('+05:00');
+
   // const [post, setpost] = useState([route.params.Stories]);
 
   const selectedStory = post;
@@ -129,12 +120,9 @@ const SingleStory = ({ post, refetch }) => {
       };
 
       // Create the new story
-      const postResponse = await axios.post(
-        `${BASE_URL}/story/addstory/`,
-        formData,
-        config,
-      );
+      await axios.post(`${BASE_URL}/story/addstory/`, formData, config);
       showSnackbar('The story has been shared');
+      refetch();
 
       // Update the shares count for the selected story
       const res = await axios.patch(
@@ -147,7 +135,7 @@ const SingleStory = ({ post, refetch }) => {
         },
       );
       setshares([...res.data.shares]);
-    } catch (error) {
+    } catch {
       showSnackbar(
         "Sorry, we couldn't share the story at the moment. Please try again later.",
       );
@@ -167,7 +155,7 @@ const SingleStory = ({ post, refetch }) => {
       );
       setSelectedStory(res.data);
       navigation.navigate('StoryComment');
-    } catch (error) {}
+    } catch {}
   };
   const toggleNumberOfLines = () => {
     //To toggle the show text or hide it
@@ -197,6 +185,7 @@ const SingleStory = ({ post, refetch }) => {
           style={styles.profilePicture}
           source={{ uri: `${BASE_URL}/images/${post?.postedby?.profile}` }}
           // source={user}
+          contentFit="cover"
         />
         <View style={styles.contentContainer}>
           <TouchableOpacity
@@ -277,6 +266,7 @@ const SingleStory = ({ post, refetch }) => {
               <Image
                 style={styles.postImage}
                 source={{ uri: `${BASE_URL}/images/${post?.media?.name}` }}
+                contentFit="cover"
               />
             </TouchableOpacity>
           ) : null}
@@ -304,9 +294,8 @@ const SingleStory = ({ post, refetch }) => {
                       screen: 'home',
                     });
                   },
-                  exitFullscreen: (e) => console.log(e),
                 }}
-                defaultControlsVisible={true}
+                defaultControlsVisible
                 videoProps={{
                   isLooping: false,
                   ref: video,
@@ -367,7 +356,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 25,
     paddingHorizontal: Width * 0.04,
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
   },
   contentContainer: {
     flex: 1,
@@ -391,7 +380,7 @@ const styles = StyleSheet.create({
   },
   postImage: {
     width: '100%',
-    resizeMode: 'cover',
+
     borderRadius: Height * 0.02,
     height: Height * 0.27,
   },
@@ -402,10 +391,13 @@ const styles = StyleSheet.create({
     width: Width * 0.5,
   },
   timestamp: {
-    color: '#999',
-    fontSize: Height * 0.017,
+    // color: '#999',
+    // fontSize: Height * 0.017,
     paddingHorizontal: Width * 0.018,
     paddingVertical: Height * 0.002,
+    fontFamily: 'Roboto_400Regular',
+    color: Color.Black,
+    fontSize: 11,
   },
   postLikes: {
     fontSize: 21,

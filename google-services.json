@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "526002840122",
-    "project_id": "connecting-nature-notify",
-    "storage_bucket": "connecting-nature-notify.appspot.com"
+    "project_number": "168132890900",
+    "project_id": "connecting-nature-e2790",
+    "storage_bucket": "connecting-nature-e2790.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:526002840122:android:e0527bbc2395fcd34b8b03",
+        "mobilesdk_app_id": "1:168132890900:android:674e1d6f42bc8a33bff201",
         "android_client_info": {
           "package_name": "com.notify.connectingnatureapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA23LMKGMPEUgHwImTB6BNEedeUDmfmtyk"
+          "current_key": "AIzaSyDGMcWjQYGBFe1HORn-2MLlVcuU0M2jgdQ"
         }
       ],
       "services": {

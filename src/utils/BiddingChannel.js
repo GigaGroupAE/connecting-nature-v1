@@ -205,12 +205,11 @@ export const fetchChannels = async () => {
   }
 };
 
-export const handleRemoveSubscriber = async (id, memberId, userId) => {
+export const handleRemoveSubscriber = async (id, userId) => {
   try {
     const data = await axiosInstance.patch(
       `/bidChannel/remove-member-chanel/${id}`,
       {
-        memberId,
         userId,
       },
     );

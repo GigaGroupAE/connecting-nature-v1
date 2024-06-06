@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 export default function RadioButton(props) {
@@ -33,16 +40,18 @@ export default function RadioButton(props) {
       </View>
       <View style={styles.option2}>
         <Text style={styles.optionTitle}>{props.option2}</Text>
-        <CheckBox
-          style={styles.checkBox}
-          right
-          size={20}
-          checked={female}
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-          onPress={genderFemale}
-          checkedColor="#4582C3"
-        />
+        <TouchableOpacity>
+          <CheckBox
+            style={styles.checkBox}
+            right
+            size={20}
+            checked={female}
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            onPress={genderFemale}
+            checkedColor="#4582C3"
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

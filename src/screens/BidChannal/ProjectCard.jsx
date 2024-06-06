@@ -208,7 +208,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       selectedItem?._id,
     );
 
-    handleGroupNotification();
+    handleGroupNotification('New Bid Placed');
     setbidPrice('');
     // refetch();
     setisBidOpen(false);
@@ -255,6 +255,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
         user: memberToNotify,
         senderName: currentuser?.code,
         groupTitle: selectedItem?.ProjectName,
+        title,
       };
       await axiosInstance.post(`/bidChannel/notify-new-bid`, notificationData);
     } catch {}
@@ -672,6 +673,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
           setModalVisible={setisWinningModal}
           item={selectedItem}
           refetch={refetch}
+          handleGroupNotification={handleGroupNotification}
         />
       )}
 

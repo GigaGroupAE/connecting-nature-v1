@@ -276,7 +276,11 @@ export default function AdminHome(props) {
               marginTop: Dimensions.get('screen').height * 0.0015,
             }}
           />
-          <View>
+          <View
+            style={{
+              marginBottom: screenHeight * 0.08,
+            }}
+          >
             <Text style={styles.groupHeading}>GROUPS</Text>
             <View style={{ paddingHorizontal: Width * 0.045 }}>
               <Text
@@ -317,6 +321,7 @@ export default function AdminHome(props) {
                 }}
               />
             </View>
+
             <FlatList
               data={sections}
               renderItem={({ item, index }) => (
@@ -601,7 +606,7 @@ export default function AdminHome(props) {
                         ? groups.map((group, id) => {
                             if (group.type === 'campaign')
                               return (
-                                <>
+                                <View>
                                   <View style={styles.List} key={id}>
                                     <TouchableOpacity
                                       onPress={() =>
@@ -655,7 +660,7 @@ export default function AdminHome(props) {
                                       </View>
                                     </View>
                                   )}
-                                </>
+                                </View>
                               );
                           })
                         : null}

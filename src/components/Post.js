@@ -57,6 +57,10 @@ export default function Post(props, postId) {
         return user._id === userState.id;
       }),
     );
+    setreactions(post?.reactions);
+
+    setcomment(post?.comments);
+
     //     return post?.reactions;
     //   }
     //   return prevReactions;
@@ -69,7 +73,7 @@ export default function Post(props, postId) {
     //   }
     //   return prevComments;
     // });
-  }, [post?.reactions, post?.comments, post]);
+  }, [post?.reactions, post?.comments]);
 
   const modalComponent = useMemo(
     () => (
