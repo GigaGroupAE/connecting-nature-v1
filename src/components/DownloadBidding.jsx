@@ -22,6 +22,7 @@ const DownloadBidding = ({ item, currentUser, title }) => {
       handleUserDownload(item);
     }
   };
+
   return (
     <View
       style={{

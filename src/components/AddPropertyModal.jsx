@@ -60,7 +60,6 @@ const initialState = {
 const inputErrors = {
   ProjectName: '',
   price: '',
-  bedrooms: '',
   description: '',
 };
 

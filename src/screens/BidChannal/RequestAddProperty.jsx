@@ -14,6 +14,7 @@ import HeaderNormal from '../../components/HeaderNormal';
 import {
   fetchUnderReviewProjects,
   updateProjectStatus,
+  updatePropertyStatus,
 } from '../../utils/BiddingChannel';
 import { useInfiniteQuery } from 'react-query';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
@@ -78,7 +79,7 @@ const RequestAddProperty = () => {
 
   const handleApprove = async (item) => {
     try {
-      await updateProjectStatus(item?._id, 'Starting Soon');
+      await updatePropertyStatus(item?._id, 'Starting Soon');
       refetch();
       showSnackbar(
         'The property has been successfully approved and is now live on the channel',
@@ -110,9 +111,10 @@ const RequestAddProperty = () => {
     try {
       await updateProjectStatus(propertyDetails?._id, 'rejected', description);
       refetch();
-      showSnackbar(
-        'The property has been successfully approved and is now live on the channel',
-      );
+      // showSnackbar(
+      //   'The property has been successfully approved and is now live on the channel',
+      // );
+      setisDenyModal(false);
       const notificationData = {
         user: propertyDetails?.from?._id,
         body: {
@@ -143,7 +145,7 @@ const RequestAddProperty = () => {
         {!isLoading && data?.pages.flatMap((page) => page.data.length) < 1 && (
           <View
             style={{
-              width: '100%',
+              width: '98%',
               alignSelf: 'center',
               alignItems: 'center',
             }}

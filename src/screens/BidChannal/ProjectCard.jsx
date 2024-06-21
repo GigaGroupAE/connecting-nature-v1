@@ -37,6 +37,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import EditBiddingProjectModal from '../../components/EditBiddingProjectModal';
 import { shortenText } from '../../utils/isFollowing';
+import { scale } from 'react-native-size-matters';
 
 const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const userState = useUserState();
@@ -56,6 +57,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   const [announcement, setannouncement] = useState('');
   const [isEditProject, setisEditProject] = useState(null);
   const [isEditProjectModal, setisEditProjectModal] = useState(false);
+  const [highestBid, sethighestBid] = useState([]);
 
   const hideModal = () => {
     setisBidOpen(false);
@@ -85,67 +87,82 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
       );
       setisUserBid(isUserBit);
     }
-  }, [item?.status]);
+
+    const HightestBid = item?.bids.sort(
+      (a, b) => parseInt(b.bidPrice) - parseInt(a.bidPrice),
+    );
+
+    sethighestBid(HightestBid[0]?.bidPrice);
+  }, [item]);
 
   useEffect(() => {
     const newSocket = io(BASE_URL, { auth: { token: userState.token } });
     newSocket.on('receive_bid', (data, serverId) => {
-      setbids((prevBids) => {
-        const priorityQueue = [...prevBids];
+      if (serverId === item?._id) {
+        setbids((prevBids) => {
+          const priorityQueue = [...prevBids];
 
-        // Insert the new bid into the correct position in the priority queue
-        priorityQueue.push(data);
+          // Insert the new bid into the correct position in the priority queue
+          priorityQueue.push(data);
 
-        const isUserBidInUpdatedData = priorityQueue.some((item) =>
-          item?.bidBy?.some(
-            (bidder) => bidder?.phoneNumber === userState?.phoneNumber,
-          ),
-        );
+          const isUserBidInUpdatedData = priorityQueue.some((item) =>
+            item?.bidBy?.some(
+              (bidder) => bidder?.phoneNumber === userState?.phoneNumber,
+            ),
+          );
+          setisUserBid(isUserBidInUpdatedData);
+          priorityQueue.sort((a, b) => {
+            const timeA = a.bidTime || a.announcementItem.createdAt;
+            const timeB = b.bidTime || b.announcementItem.createdAt;
+            return new Date(timeB) - new Date(timeA);
+          });
 
-        setisUserBid(isUserBidInUpdatedData);
+          const HightestBid = priorityQueue?.sort(
+            (a, b) => parseInt(b.bidPrice) - parseInt(a.bidPrice),
+          );
 
-        priorityQueue.sort((a, b) => {
-          const timeA = a.bidTime || a.announcementItem.createdAt;
-          const timeB = b.bidTime || b.announcementItem.createdAt;
-          return new Date(timeB) - new Date(timeA);
+          if (highestBid) {
+            sethighestBid(HightestBid[0]?.bidPrice);
+          }
+
+          const updatedBids = priorityQueue.slice(0, 200);
+          return updatedBids;
         });
-
-        const updatedBids = priorityQueue.slice(0, 200);
-
-        return updatedBids;
-      });
+      }
     });
 
     newSocket.on('updated_bid', (data, serverId) => {
-      setbids((prevBids) => {
-        const priorityQueue = [...prevBids];
+      if (serverId === item?._id) {
+        setbids((prevBids) => {
+          const priorityQueue = [...prevBids];
 
-        // Remove the old bid from the priority queue
-        const updatedBidsWithoutOld = priorityQueue.filter(
-          (item) => item._id !== data._id,
-        );
+          // Remove the old bid from the priority queue
+          const updatedBidsWithoutOld = priorityQueue?.filter(
+            (item) => item._id !== data._id,
+          );
 
-        // Add the updated bid to the correct position in the priority queue
-        updatedBidsWithoutOld.push(data);
+          // Add the updated bid to the correct position in the priority queue
+          updatedBidsWithoutOld?.push(data);
 
-        const isUserBidInUpdatedData = updatedBidsWithoutOld.some((item) =>
-          item?.bidBy?.some(
-            (bidder) => bidder?.phoneNumber === userState?.phoneNumber,
-          ),
-        );
+          // Log the state after adding new data
 
-        setisUserBid(isUserBidInUpdatedData);
+          const HighestBid = updatedBidsWithoutOld?.sort(
+            (a, b) => parseInt(b.bidPrice) - parseInt(a.bidPrice),
+          );
+          // console.log(HighestBid, 'Highest bid', updatedBidsWithoutOld);
+          sethighestBid(HighestBid[0]?.bidPrice);
 
-        // Sort the priority queue based on the bid time
-        updatedBidsWithoutOld.sort((a, b) => {
-          const timeA = a.bidTime || a.announcementItem.createdAt;
-          const timeB = b.bidTime || b.announcementItem.createdAt;
-          return new Date(timeB) - new Date(timeA);
+          // Sort the priority queue based on the bid time
+          updatedBidsWithoutOld?.sort((a, b) => {
+            const timeA = a.bidTime || a.announcementItem.createdAt;
+            const timeB = b.bidTime || b.announcementItem.createdAt;
+            return new Date(timeB) - new Date(timeA);
+          });
+
+          const updatedBids = updatedBidsWithoutOld?.slice(0, 200);
+          return updatedBids;
         });
-
-        const updatedBids = updatedBidsWithoutOld.slice(0, 200);
-        return updatedBids;
-      });
+      }
     });
 
     newSocket.on('receive_announcement', (data, serverId) => {
@@ -223,26 +240,41 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
   };
 
   const startedAt = formatSingleDate(date);
-  const handleUpdateStatus = async (id, status) => {
-    try {
-      const { data } = await updateProjectStatus(id, status);
-      showSnackbar(data?.message);
-      refetch();
-    } catch {}
-  };
+  // const handleUpdateStatus = async (id, status) => {
+  //   try {
+  //     const { data } = await updateProjectStatus(id, status);
+  //     showSnackbar(data?.message);
+  //     refetch();
+  //   } catch {}
+  // };
 
-  const handleStart = (item) => {
+  const handleStart = async (item) => {
     const content = `Bidding has been started ${startedAt}`;
-    handleAnnouncement(item?._id, content, 'started');
-    handleUpdateStatus(item?._id, 'Started');
+    // handleAnnouncement(item?._id, content, 'started');
+    // handleUpdateStatus(item?._id, 'Started');
+
+    const data = await axiosInstance.post('/bidChannel/create-section', {
+      status: 'Started',
+    });
+    if (data.data) {
+      handleAnnouncement(item?._id, content, 'started');
+      handleGroupNotification('Bidding has started. Place your bids now!');
+    }
+    refetch();
   };
 
-  const handleClose = (item) => {
+  const handleClose = async (item) => {
     const content = `Bidding has been closed. Winner will be announced soon.`;
-    setisWinningModal(true);
-    setselectedItem(item);
-    if (item?.status !== 'Closed') {
-      handleUpdateStatus(item?._id, 'Closed');
+    // setisWinningModal(true);
+    // setselectedItem(item);
+    // if (item?.status !== 'Closed') {
+    //   handleUpdateStatus(item?._id, 'Closed');
+    //   handleAnnouncement(item?._id, content);
+    // }
+    const data = await axiosInstance.post('/bidChannel/create-section', {
+      status: 'Closed',
+    });
+    if (data?.data) {
       handleAnnouncement(item?._id, content);
     }
     refetch();
@@ -464,6 +496,13 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
           </TouchableOpacity>
         )}
       </View>
+      {bids?.length !== 0 && (
+        <View style={styles.hightestBidContainer}>
+          <View style={styles.hightestBid}>
+            <Text style={styles.price}>{highestBid} Highest bid so far</Text>
+          </View>
+        </View>
+      )}
 
       <View
         style={{
@@ -486,6 +525,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
         ) : (
           <FlatList
             data={bids.slice().reverse()}
+            keyExtractor={(item) => item._id}
             renderItem={({ item }) => {
               let isUserBid;
               if (item?.bidBy) {
@@ -824,5 +864,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: screenHeight * 0.006,
     borderRadius: 5,
+  },
+  hightestBid: {
+    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    width: '65%',
+    alignSelf: 'center',
+    height: scale(40),
+    justifyContent: 'center',
+    borderRadius: screenHeight * 0.01,
+    // borderWidth: 0.8,
+    // borderColor: 'rgba(0, 123, 255, 1)',
+  },
+  hightestBidContainer: {
+    position: 'absolute',
+    zIndex: 9000,
+    width: '100%',
+  },
+
+  price: {
+    fontFamily: 'Poppins_700Bold',
+    color: '#85BB65',
+    fontSize: screenHeight * 0.018,
   },
 });
