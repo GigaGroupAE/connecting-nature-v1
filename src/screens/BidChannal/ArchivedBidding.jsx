@@ -13,8 +13,7 @@ import { useInfiniteQuery } from 'react-query';
 import { fetchArchiveProjects } from '../../utils/BiddingChannel';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { titleStyle } from '../Decorations/ModalStyle';
-import ProjectDetails from '../../components/ProjectDetails';
-import WinerSvg from '../../components/SVG/Winner';
+
 import ArchivedBiddingSkeletn from '../../components/Skeletns/ArchivedBiddingSkeletn';
 import NoDataIndicater from '../NoDataIndicater';
 import DownloadBidding from '../../components/DownloadBidding';
@@ -22,6 +21,7 @@ import { useRoute } from '@react-navigation/native';
 
 const ArchivedBidding = () => {
   const { params } = useRoute();
+
   const {
     data,
     isLoading,
@@ -58,22 +58,23 @@ const ArchivedBidding = () => {
     <View style={styles.container}>
       <HeaderNormal title="Archived Biddings" />
       <View style={styles.contentContainer}>
-        {!isLoading && data?.pages.flatMap((page) => page.data.length) < 1 && (
-          <View style={{ width: '90%', alignSelf: 'center' }}>
-            <NoDataIndicater
-              title="No Archived Properties"
-              subTitle="There are no archived properties available at the moment. Please check back later for archived property listings."
-            />
-          </View>
-        )}
+        {!isLoading &&
+          data?.pages?.flatMap((page) => page?.data?.length) < 1 && (
+            <View style={{ width: '90%', alignSelf: 'center' }}>
+              <NoDataIndicater
+                title="No Archived Properties"
+                subTitle="There are no archived properties available at the moment. Please check back later for archived property listings."
+              />
+            </View>
+          )}
         {isLoading ? (
           <View>
             <ArchivedBiddingSkeletn />
           </View>
         ) : (
           <FlatList
-            data={data?.pages.flatMap((page) => page.data) || []}
-            keyExtractor={(item) => item._id}
+            data={(data?.pages?.flatMap((page) => page.data) || []).reverse()}
+            keyExtractor={(item) => item?._id}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -83,29 +84,30 @@ const ArchivedBidding = () => {
               />
             }
             renderItem={({ item }) => {
-              const formattedPrice = Number(
-                item?.winner?.bidPrice,
-              ).toLocaleString();
+              // const formattedPrice = Number(
+              //   item?.winner?.bidPrice,
+              // ).toLocaleString();
+
               return (
                 <View style={styles.itemCard}>
                   <View style={styles.rowContainer}>
-                    <Text style={titleStyle}>{item?.ProjectName}</Text>
-                    <View style={styles.memberContainer}>
+                    <Text style={titleStyle}>{item?.projectName}</Text>
+                    {/* <View style={styles.memberContainer}>
                       <Text style={styles.regularText}>Archived</Text>
-                    </View>
+                    </View> */}
                   </View>
 
-                  <ProjectDetails
+                  {/* <ProjectDetails
                     item={item}
                     containerStyle={styles.detailsContainer}
-                  />
+                  /> */}
 
                   <View style={styles.rowContainer}>
-                    <View style={styles.detailsContainer}>
+                    {/* <View style={styles.detailsContainer}>
                       <WinerSvg />
                       <Text style={styles.winningTitle}>Bidding Winner</Text>
-                    </View>
-                    <View>
+                    </View> */}
+                    {/* <View>
                       <Text
                         style={{
                           ...styles.winningTitle,
@@ -114,7 +116,7 @@ const ArchivedBidding = () => {
                       >
                         {formattedPrice}PKR
                       </Text>
-                    </View>
+                    </View> */}
                   </View>
 
                   <View style={styles.detailsContainer}>
@@ -127,10 +129,13 @@ const ArchivedBidding = () => {
                 </View>
               );
             }}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.8}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
-            contentContainerStyle={{ gap: 5 }}
+            contentContainerStyle={{
+              gap: 5,
+              flex: 1,
+            }}
           />
         )}
       </View>
@@ -194,6 +199,7 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: 'center',
     marginVertical: screenHeight * 0.0062,
+    marginTop: screenHeight * 0.015,
   },
   winningTitle: {
     fontFamily: 'Poppins_700Bold',
