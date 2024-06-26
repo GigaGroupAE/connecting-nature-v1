@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Pressable,
+  Linking,
+} from 'react-native';
 import HeaderNormal from '../../components/HeaderNormal';
 import { Entypo } from 'react-native-vector-icons';
 import { useUserStateActions, useUserState } from '../../slices/userSlice';
@@ -49,6 +56,9 @@ export default function Settings() {
     }
     if (setting.title === 'Logout') {
       Logout();
+    }
+    if (setting.title === 'Account Deletion') {
+      Linking.openURL('https://gigaearth.com/');
     }
   };
   return (

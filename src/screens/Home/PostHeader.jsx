@@ -53,7 +53,6 @@ const PostHeader = ({ data, setmodalVisible }) => {
         <View
           style={{
             gap: 3,
-
             position: 'relative',
             bottom: screenHeight * 0.003,
           }}
@@ -80,7 +79,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
               name="globe"
               color={Color.Black}
               style={{
-                fontSize: 12,
+                fontSize: screenHeight * 0.0135,
                 paddingHorizontal: Width * 0.02,
                 color: Color.Grey,
               }}
@@ -94,7 +93,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
           <TouchableOpacity onPress={() => setmodalVisible(true)}>
             <Entypo
               name="cross"
-              style={{ ...styles.sideIcon, fontSize: scale(23) }}
+              style={{ ...styles.sideIcon, fontSize: screenHeight * 0.029 }}
             />
           </TouchableOpacity>
         </View>
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
   postTime: {
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
-    fontSize: 11,
+    fontSize: screenHeight * 0.0135,
   },
   cross: {
     position: 'absolute',
@@ -173,7 +172,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: Height * 0.015,
     color: Color.Black,
-    fontSize: Height * 0.026,
+    fontSize: screenHeight * 0.029,
     paddingHorizontal: scale(6),
   },
 });

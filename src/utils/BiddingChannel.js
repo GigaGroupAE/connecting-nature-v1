@@ -107,7 +107,7 @@ export const fetchBiddingProjects = async ({ pageParam = 1 }) => {
 
 export const fetchArchiveProjects = async ({ pageParam = 1 }) => {
   const response = await axiosInstance.get(
-    `/bidChannel/get-archiveProjects?page=${pageParam}&limit=${LIMIT}`,
+    `/bidChannel/get-auctions?page=${pageParam}&limit=${LIMIT}`,
   );
   return response.data;
 };
@@ -135,6 +135,22 @@ export const updateProjectStatus = async (id, status, denyReason) => {
       data,
     );
     return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updatePropertyStatus = async (id, status) => {
+  const Propertydata = {
+    id,
+    status,
+  };
+  try {
+    const data = await axiosInstance.post(
+      `/bidChannel/approve-property`,
+      Propertydata,
+    );
+    return data;
   } catch (error) {
     throw error;
   }

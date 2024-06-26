@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: scale(17),
+    fontSize: screenHeight * 0.02,
     paddingHorizontal: scale(12),
   },
   icon: {
-    fontSize: scale(18),
+    fontSize: screenHeight * 0.02,
   },
   crossIcon: {
     alignItems: 'center',

@@ -122,12 +122,6 @@ const BiddingChannel = () => {
             //   paddingHorizontal: (screenWidth - screenWidth) / 2,
             // }}
             // initialScrollIndex={currentIndex}
-            // onScroll={({ nativeEvent }) => {
-            //   const index = Math.ceil(
-            //     nativeEvent.contentOffset.x / screenWidth,
-            //   );
-            //   setCurrentIndex(index);
-            // }}
             showsHorizontalScrollIndicator={false}
           />
         )}

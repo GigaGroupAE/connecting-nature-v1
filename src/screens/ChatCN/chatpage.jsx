@@ -375,7 +375,6 @@ const ChatPageCN = (props) => {
   };
 
   const handleLocalNotification = async (token) => {
-    console.log(token);
     try {
       const config = {
         headers: {

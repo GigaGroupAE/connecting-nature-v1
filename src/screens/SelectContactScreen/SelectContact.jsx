@@ -16,6 +16,7 @@ import { BASE_URL } from '../../../CONSTANTS';
 import { AntDesign, Ionicons, Entypo } from 'react-native-vector-icons';
 import Color from '../../../assets/colors/Color';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 
 export default function SelectContact(props) {
   const [isSearch, setIsSearch] = useState(false);
@@ -114,7 +115,7 @@ export default function SelectContact(props) {
         )}
       </View>
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* <Searchbar
           placeholder="Search"
           onChangeText={onChangeSearch}
@@ -150,10 +151,15 @@ export default function SelectContact(props) {
                       style={{
                         backgroundColor: Color.LightBlue,
                         // paddingHorizontal: 15,
-                        paddingVertical: 7,
-                        width: Dimensions.get('screen').height * 0.04,
-                        height: Dimensions.get('screen').height * 0.04,
-                        borderRadius: 100,
+                        // paddingVertical: 7,
+                        // width: Dimensions.get('screen').height * 0.04,
+                        // height: Dimensions.get('screen').height * 0.04,
+                        // borderRadius: 100,
+                        width: screenHeight * 0.03,
+                        height: screenHeight * 0.03,
+                        borderRadius: screenHeight * 0.1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <Text
@@ -161,6 +167,7 @@ export default function SelectContact(props) {
                           alignSelf: 'center',
                           fontWeight: 'bold',
                           color: Color.Blue,
+                          fontSize: screenHeight * 0.013,
                         }}
                       >
                         {user.fullName[0]}
@@ -171,13 +178,15 @@ export default function SelectContact(props) {
                       style={[
                         styles.row,
                         {
-                          paddingHorizontal: 15,
+                          // paddingHorizontal: 8,
+                          paddingHorizontal: screenWidth * 0.008,
                           backgroundColor: 'white',
                           width: '100%',
                           // alignSelf: "center",
                           borderRadius: 7,
-                          paddingVertical: 10,
-                          marginVertical: 5,
+                          // paddingVertical: 10,
+                          paddingVertical: screenHeight * 0.008,
+                          // marginVertical: 5,
                         },
                       ]}
                     >
@@ -198,7 +207,8 @@ export default function SelectContact(props) {
                         <Text
                           style={{
                             color: Color.Black,
-                            fontSize: 12,
+                            fontSize: screenHeight * 0.013,
+                            // fontSize: 12,
                           }}
                         >
                           {' '}

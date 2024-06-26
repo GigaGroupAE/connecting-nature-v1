@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import { Entypo } from 'react-native-vector-icons';
 import Color from '../../../assets/colors/Color';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -16,6 +17,7 @@ const Width = Dimensions.get('screen').width;
 const TermsCondition = ({ setmodalTerms }) => {
   return (
     <View style={{}}>
+      <CustomStatsBar backgroundColor={Color.White} />
       <View style={styles.headerContainer}>
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerTitle}>Terms and Conditions</Text>
@@ -66,7 +68,7 @@ const TermsCondition = ({ setmodalTerms }) => {
           Failure to do so constitutes a breach of the Terms, which may result
           in immediate termination of your account on our Services.
         </Text>
-
+        {/* 
         <Text style={styles.subHeading}>
           You are responsible for safeguarding the password that you use to
           access the Services and for any activities or actions under your
@@ -78,7 +80,7 @@ const TermsCondition = ({ setmodalTerms }) => {
           You agree not to disclose your password to any third party. You must
           notify us immediately upon becoming aware of any breach of security or
           unauthorized use of your account
-        </Text>
+        </Text> */}
 
         <Text style={styles.title}>2. Content</Text>
         <Text style={styles.subHeading}>
@@ -98,6 +100,20 @@ const TermsCondition = ({ setmodalTerms }) => {
           It is our policy to terminate in appropriate circumstances Account
           holders who repeatedly infringe or are believed to be repeatedly
           infringing the rights of copyright holders.
+        </Text>
+        <Text style={styles.subHeading}>
+          Users who violate these Terms may have their content removed and their
+          account suspended or terminated at our discretion. Repeat offenders
+          will face more severe consequences, potentially including permanent
+          bans from our platform.
+        </Text>
+
+        <Text style={styles.subHeading}>
+          Our moderation team actively monitors and reviews user-generated
+          content to ensure compliance with these Terms. We rely on both
+          automated tools and human moderators to enforce our policies. Users
+          can report objectionable content, and we commit to responding to
+          reports promptly, typically within 24 hours.
         </Text>
 
         <Text style={styles.title}>3. Acceptable Use</Text>
@@ -162,7 +178,7 @@ const TermsCondition = ({ setmodalTerms }) => {
           </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={styles.title}>Email:</Text>
-            <Text style={styles.email}>support@connectingnature.com</Text>
+            <Text style={styles.email}>gigaearth.dev@gmail.com</Text>
           </View>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonTitle}>Chat Admin</Text>
@@ -182,6 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.01,
+    marginTop: Height * 0.05,
   },
 
   headerTitle: {
@@ -199,7 +216,7 @@ const styles = StyleSheet.create({
   subHeading: {
     fontFamily: 'Roboto_400Regular',
     fontSize: Height * 0.015,
-    paddingVertical: Height * 0.016,
+    paddingVertical: Height * 0.014,
   },
   title: {
     fontFamily: 'Roboto_700Bold',

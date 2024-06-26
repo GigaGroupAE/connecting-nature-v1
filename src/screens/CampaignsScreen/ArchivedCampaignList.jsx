@@ -20,6 +20,7 @@ import { useQuery } from 'react-query';
 import ArchivedCampaignSkelentan from '../../components/Skeletns/ArchivedCampaignSkelentan';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CustomStatsBar from '../../components/CustomStatsBar';
+import { screenHeight } from '../../utils/ScreenDimensions';
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 const EmptyArchivedCampaigns = () => (
@@ -145,22 +146,23 @@ const styles = StyleSheet.create({
   },
   campaginTitle: {
     fontFamily: 'Roboto_700Bold',
-    fontSize: scale(16),
+    fontSize: screenHeight * 0.0177,
   },
   hashicon: {
-    fontSize: scale(21),
+    fontSize: screenHeight * 0.02,
   },
   posts: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: scale(12),
+    fontSize: screenHeight * 0.0152,
+
     paddingLeft: scale(12),
   },
   icon: {
-    fontSize: scale(22),
+    fontSize: screenHeight * 0.03,
   },
   days: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: scale(12),
+    fontSize: screenHeight * 0.0152,
   },
   heading: {
     fontFamily: 'Roboto_700Bold',
@@ -196,7 +198,8 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: scale(12),
+    fontSize: screenHeight * 0.0152,
+
     paddingLeft: scale(4),
   },
   emptyContainer: {

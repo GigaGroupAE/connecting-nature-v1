@@ -15,6 +15,7 @@ import Color from '../../../assets/colors/Color';
 import { useNavigation } from '@react-navigation/native';
 import MessageType from './MessageType';
 import { calculateTimeDifference } from '../../utils/timeDifference';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -77,7 +78,7 @@ const DocumentMessageCn = (props) => {
                     <Text
                       style={{
                         fontFamily: 'Roboto_500Medium',
-                        fontSize: Height * 0.019,
+                        fontSize: screenHeight * 0.015,
                         alignSelf: 'center',
                       }}
                     >

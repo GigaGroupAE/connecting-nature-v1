@@ -96,7 +96,6 @@ export default function CampaignsScreen() {
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <CustomStatsBar backgroundColor={Color.White} />
       <HeaderBack title="Campaigns" />
       <View style={styles.main}>
         <Text style={styles.screenTitle}>Live & Upcoming Events</Text>

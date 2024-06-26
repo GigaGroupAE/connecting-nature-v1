@@ -12,7 +12,6 @@ import {
   Pressable,
 } from 'react-native';
 import HeaderNormal from '../../components/HeaderNormal';
-import BottomTab from '../../components/BottomTab';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Color from '../../../assets/colors/Color';
 import { BASE_URL } from '../../../CONSTANTS';
@@ -25,6 +24,7 @@ import { axiosInstance } from '../../../axiosInstance';
 import { useQuery } from 'react-query';
 import NotificationsSkeleton from '../../components/NotificationsSkeleton';
 import { Entypo } from 'react-native-vector-icons';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -72,8 +72,6 @@ export default function ChatList() {
   const handleCancel = useCallback(() => {
     setmodalVisible(false);
   }, []);
-
-  const scrollToTop = useCallback(() => {}, []);
 
   const handleShowInput = useCallback(() => {
     setIsShowInput(true);
@@ -307,8 +305,8 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   userAvatar: {
-    width: Height * 0.07,
-    height: Height * 0.07,
+    width: Height * 0.06,
+    height: Height * 0.06,
     borderRadius: Height * 0.1,
   },
 
@@ -319,17 +317,19 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontFamily: 'Roboto_500Medium',
-    fontSize: 14,
+    // fontSize: 14,
     color: Color.Black,
     marginLeft: 11,
+    fontSize: screenHeight * 0.0155,
   },
 
   timeText: {
     position: 'absolute',
     fontFamily: 'Roboto_400Regular',
-    fontSize: 12,
+    // fontSize: 12,
     color: Color.Black,
     right: '10%',
+    fontSize: screenHeight * 0.013,
   },
   mainContent: {
     width: '100%',

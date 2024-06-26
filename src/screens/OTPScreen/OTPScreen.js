@@ -45,18 +45,14 @@ export default function OTPScreen(props) {
         userActions.setUser(props.route.params.user);
         userActions.settoken(props.route.params.token);
         userActions.setLocation(location);
-        // if (props?.route?.params?.isPremium) {
-        //   setisPremiumTrue(true);
-        // } else {
-        //   // navigation.reset({
-        //   //   index: 0,
-        //   //   routes: [{ name: 'Home' }],
-        //   // });
-        // }
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
+        if (props?.route?.params?.isPremium) {
+          setisPremiumTrue(true);
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        }
 
         hideSnackbar();
       } else {

@@ -8,6 +8,7 @@ import { useUserState } from '../../../../slices/userSlice';
 import { BASE_URL } from '../../../../../CONSTANTS';
 import Color from '../../../../../assets/colors/Color';
 import { useStateContext } from '../../../../contexts/ContextProvider';
+import { screenHeight } from '../../../../utils/ScreenDimensions';
 
 const ChatScreenHeader = (props) => {
   const userState = useUserState();
@@ -71,7 +72,9 @@ const ChatScreenHeader = (props) => {
                   uri: 'https://firebasestorage.googleapis.com/v0/b/giga-intranet.appspot.com/o/default%2Fgroup.png?alt=media&token=e26513b2-3ac3-4f77-8ab6-be92e2d45c79',
                 }
           }
-          style={{ marginRight: -12 }}
+          style={{
+            marginRight: -12,
+          }}
         />
       </TouchableOpacity>
       <Appbar.Content

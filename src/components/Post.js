@@ -424,18 +424,19 @@ const styles = StyleSheet.create({
     height: 23,
   },
   actionText: {
-    fontSize: 13,
+    fontSize: screenHeight * 0.0148,
     alignSelf: 'center',
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     marginLeft: 8,
   },
   actionedText: {
-    fontSize: 13,
+    // fontSize: 13,
     alignSelf: 'center',
     fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
     marginLeft: 8,
+    fontSize: screenHeight * 0.0148,
   },
   pressedIcon: {
     color: Color.Blue,
@@ -446,6 +447,7 @@ const styles = StyleSheet.create({
   shareIcon: {
     paddingVertical: 12,
     color: Color.Grey,
-    fontSize: 21,
+    // fontSize: 21,
+    fontSize: screenHeight * 0.025,
   },
 });

@@ -7,6 +7,7 @@ import Color from '../../assets/colors/Color';
 import { useUserState } from '../slices/userSlice';
 import { Image } from 'expo-image';
 import { BASE_URL } from '../../CONSTANTS';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 
@@ -19,11 +20,7 @@ export default function AdminBottomTab(props) {
         style={styles.tabStyle}
         onPress={() => navigation.navigate('Home')}
       >
-        <Feather
-          name="grid"
-          size={Dimensions.get('screen').width * 0.069}
-          color="#000"
-        />
+        <Feather name="grid" size={screenHeight * 0.03} color="#000" />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.tabStyle}
@@ -39,7 +36,8 @@ export default function AdminBottomTab(props) {
         <View style={styles.tabStyle}>
           <MaterialIcons
             name="support-agent"
-            size={Dimensions.get('screen').width * 0.08}
+            // size={Dimensions.get('screen').width * 0.08}
+            size={screenHeight * 0.032}
             color="#000"
           />
         </View>
@@ -62,7 +60,8 @@ export default function AdminBottomTab(props) {
       >
         <Ionicons
           name="chatbubble-ellipses-outline"
-          size={Dimensions.get('screen').width * 0.08}
+          // size={Dimensions.get('screen').width * 0.08}
+          size={screenHeight * 0.03}
           color="#000"
         />
       </TouchableOpacity>

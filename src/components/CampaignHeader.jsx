@@ -4,6 +4,7 @@ import { AntDesign, Entypo } from 'react-native-vector-icons';
 import Color from '../../assets/colors/Color';
 import { scale } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const CampaignHeader = ({ title, screen, id }) => {
   const campaignName = title?.length > 32 ? title.slice(0, 31) + '...' : title;
@@ -18,9 +19,13 @@ const CampaignHeader = ({ title, screen, id }) => {
         <TouchableOpacity onPress={handleGoback}>
           <AntDesign
             name="arrowleft"
-            size={24}
+            // size={24}
             color={Color.Black}
-            style={{ alignSelf: 'center', alignItems: 'center' }}
+            style={{
+              alignSelf: 'center',
+              alignItems: 'center',
+              fontSize: screenHeight * 0.026,
+            }}
           />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
@@ -64,11 +69,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Roboto_500Medium',
-    fontSize: scale(17),
+    fontSize: screenHeight * 0.019,
   },
   subTitle: {
     fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
+    fontSize: screenHeight * 0.015,
   },
   icon: {
     fontSize: scale(18),

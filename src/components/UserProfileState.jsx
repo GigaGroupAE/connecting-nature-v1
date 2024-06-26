@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userName: {
-    fontSize: 15,
+    fontSize: Height * 0.0166,
     fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
     alignSelf: 'center',
@@ -388,6 +388,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: Color.White,
     fontFamily: 'Roboto_600SemiBold',
-    fontSize: 14,
+    // fontSize: 14,
+    fontSize: Height * 0.015,
   },
 });
