@@ -7,6 +7,7 @@ import {
 } from 'react-native-vector-icons';
 import { calculateTimeDifference } from '../utils/timeDifference';
 import Color from '../../assets/colors/Color';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const MessagePreview = ({ item }) => {
   const { messages } = item;
@@ -85,7 +86,7 @@ const MessagePreview = ({ item }) => {
 const styles = StyleSheet.create({
   msgText: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: 12,
+    fontSize: screenHeight * 0.0135,
     lineHeight: 22,
     color: Color.Black,
     marginLeft: 11,

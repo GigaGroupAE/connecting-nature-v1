@@ -1,7 +1,8 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { BASE_URL } from "../../CONSTANTS";
-import { scale } from "react-native-size-matters";
+import { Image, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { BASE_URL } from '../../CONSTANTS';
+import { scale } from 'react-native-size-matters';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
   return (
@@ -97,7 +98,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
 
           <View style={styles.memberCount}>
             <Text style={styles.memberLength}>
-              {" "}
+              {' '}
               {campaign?.teamB?.members?.length} more
             </Text>
           </View>
@@ -112,37 +113,38 @@ export default LivePointsTeamMember;
 const styles = StyleSheet.create({
   member: {
     paddingHorizontal: scale(16),
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   memberCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
     paddingVertical: scale(8),
   },
   userContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     // marginLeft: scale(4),
   },
   userAvatar: {
     width: scale(26),
     height: scale(26),
     borderRadius: scale(13),
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   memberimages: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   memberCount: {
     paddingHorizontal: scale(4),
   },
   memberLength: {
-    fontSize: scale(12),
-    fontFamily: "Roboto_500Medium",
+    // fontSize: scale(12),
+    fontFamily: 'Roboto_500Medium',
+    fontSize: screenHeight * 0.0164,
   },
 });

@@ -20,6 +20,7 @@ import { BASE_URL } from '../../CONSTANTS';
 import { scale } from 'react-native-size-matters';
 import axios from 'axios';
 import LikedSvg from './SVG/LikedSvg';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const LivePointsAction = ({
   campaign,
@@ -210,10 +211,11 @@ const styles = StyleSheet.create({
 
   statsLikes: {
     marginLeft: 5,
-    fontSize: scale(11),
+    // fontSize: scale(11),
     fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
     marginTop: '4%',
+    fontSize: screenHeight * 0.015,
   },
   rightStats: {
     flexDirection: 'row',
@@ -264,18 +266,20 @@ const styles = StyleSheet.create({
     height: 23,
   },
   actionText: {
-    fontSize: scale(11),
+    fontSize: screenHeight * 0.015,
     alignSelf: 'center',
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
     marginLeft: 8,
+    // fontSize: screenHeight * 0.016,
   },
   actionedText: {
-    fontSize: scale(11),
+    // fontSize: scale(11),
     alignSelf: 'center',
     fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
     marginLeft: 8,
+    fontSize: screenHeight * 0.015,
   },
   pressedIcon: {
     color: Color.Blue,

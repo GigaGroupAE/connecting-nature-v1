@@ -12,6 +12,7 @@ import {
   MaterialCommunityIcons,
 } from 'react-native-vector-icons';
 import { axiosInstance } from '../../../axiosInstance';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
   const userState = useUserState();
@@ -20,7 +21,7 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
   const deletePostNotifications = async () => {
     try {
       await axiosInstance.delete(`/notify/delete-notification/${post._id}`);
-    } catch (error) {}
+    } catch {}
   };
 
   const archivePost = useCallback(
@@ -115,7 +116,15 @@ const PostDeleteModal = ({ post, reload, setmodalVisible }) => {
           style={styles.undoContainer}
           onPress={() => setmodalVisible(false)}
         >
-          <Text style={styles.undo}>Undo</Text>
+          <Text
+            style={{
+              fontFamily: 'Roboto_500Medium',
+              // fontSize: scale(13),
+              fontSize: screenHeight * 0.015,
+            }}
+          >
+            Undo
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.deleteMain}>
@@ -160,12 +169,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   eyeOff: {
-    fontSize: scale(16),
+    fontSize: screenHeight * 0.025,
     color: Color.Blue,
   },
   hiddenTitle: {
     paddingHorizontal: scale(10),
-    fontSize: scale(11),
+    fontSize: screenHeight * 0.015,
     fontFamily: 'Roboto_400Regular',
     color: Color.DarkGrey,
   },
@@ -180,7 +189,8 @@ const styles = StyleSheet.create({
   title: {
     width: scale(240),
     fontFamily: 'Roboto_500Medium',
-    fontSize: scale(13),
+    // fontSize: scale(13),
+    fontSize: screenHeight * 0.015,
   },
   undoContainer: {
     backgroundColor: '#CBCED5',
@@ -199,11 +209,14 @@ const styles = StyleSheet.create({
     marginTop: scale(9),
   },
   deleteIcon: {
-    fontSize: scale(18),
+    fontSize: screenHeight * 0.028,
   },
   deleteTitle: {
     fontFamily: 'Roboto_600SemiBold',
     paddingHorizontal: scale(7),
-    fontSize: scale(13),
+    // fontSize: scale(13),
+
+    // fontSize: scale(13),
+    fontSize: screenHeight * 0.017,
   },
 });

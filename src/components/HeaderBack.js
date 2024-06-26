@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Color from "../../assets/colors/Color";
-import { Ionicons } from "react-native-vector-icons";
-import { scale } from "react-native-size-matters";
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Color from '../../assets/colors/Color';
+import { Ionicons } from 'react-native-vector-icons';
+import { scale } from 'react-native-size-matters';
+import { useNavigation } from '@react-navigation/native';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 export default function Header(props) {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={25} color={Color.Black} />
         </TouchableOpacity>
@@ -18,7 +18,7 @@ export default function Header(props) {
       </View>
       <TouchableOpacity
         style={styles.archiveContainer}
-        onPress={() => navigation.navigate("ArchivedScreen")}
+        onPress={() => navigation.navigate('ArchivedScreen')}
       >
         <Ionicons name="archive-outline" style={styles.icon} />
       </TouchableOpacity>
@@ -29,28 +29,28 @@ export default function Header(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    alignContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 19,
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderColor: Color.VeryLightGrey,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   title: {
     color: Color.Black,
-    fontSize: 18,
+    fontSize: screenHeight * 0.019,
     lineHeight: 30,
     marginTop: 2,
     marginLeft: 10,
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
   },
   archiveContainer: {
     paddingHorizontal: scale(10),
   },
   icon: {
-    fontSize: scale(18),
+    fontSize: screenHeight * 0.028,
     color: Color.Black,
   },
 });

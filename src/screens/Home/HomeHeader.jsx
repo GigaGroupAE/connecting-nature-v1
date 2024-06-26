@@ -2,23 +2,20 @@ import {
   Dimensions,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from '../../slices/userSlice';
 import Color from '../../../assets/colors/Color';
 
 import cnlogo from '../../../assets/CNlogo.png';
-import { Fontisto } from 'react-native-vector-icons';
 import { crmSideRole } from '../../utils/AdminRoles';
 import MessageSvg from '../../components/SVG/MessageSvg';
-import AdminSvg from '../../components/SVG/AdminSvg';
 import NotificationsSvg from '../../components/SVG/NotificationSvg';
 import CrmSideSvg from '../../components/SVG/CrmSideSvg';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -132,9 +129,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    height: 50,
+    // height: 50,
+
     borderBottomWidth: 0.6,
     borderColor: Color.LightGrey,
+    height: screenHeight * 0.058,
   },
   headerAvatar: {
     // marginRight: 155,

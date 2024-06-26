@@ -4,6 +4,7 @@ import {
   MaterialIcons,
   Octicons,
   MaterialCommunityIcons,
+  AntDesign,
 } from 'react-native-vector-icons';
 export const SETTINGS_DATA = [
   {
@@ -25,6 +26,11 @@ export const SETTINGS_DATA = [
     title: 'Blocked Users',
     icon: <Octicons name="blocked" size={24} color={Color.Black} />,
     screenToNavigate: 'BlockedUsers',
+  },
+  {
+    title: 'Account Deletion',
+    icon: <AntDesign name="delete" size={24} color={Color.Black} />,
+    screenToNavigate: null,
   },
   {
     title: 'Logout',

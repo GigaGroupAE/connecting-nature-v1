@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign, Feather } from 'react-native-vector-icons';
 import Color from '../../assets/colors/Color';
 import { useNavigation } from '@react-navigation/native';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const HeaderUserProfile = (props) => {
   const navigation = useNavigation();
@@ -33,19 +34,26 @@ const HeaderUserProfile = (props) => {
               }}
               style={{ marginRight: '60%' }}
             >
-              <AntDesign name="arrowleft" size={28} color={Color.Black} />
+              <AntDesign
+                name="arrowleft"
+                color={Color.Black}
+                style={{
+                  fontSize: screenHeight * 0.026,
+                }}
+              />
             </TouchableOpacity>
             <Text
               style={{
                 position: 'absolute',
-                left: '15%',
+                left: '10%',
                 color: Color.Black,
-                fontSize: 18,
+                // fontSize: 18,
                 fontFamily: 'Roboto_600SemiBold',
                 marginLeft: 10,
                 marginTop: 2,
                 lineHeight: 30,
                 textAlignVertical: 'center',
+                fontSize: screenHeight * 0.019,
               }}
             >
               {props.type === 'current' ? 'Profile' : props.type}

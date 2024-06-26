@@ -13,6 +13,7 @@ import { useInfiniteQuery } from 'react-query';
 import Color from '../../../assets/colors/Color';
 import StoryCard from '../../components/StoryCard';
 import { fetchStories } from '../../Api/GetPost';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const StoryHeader = () => {
   const navigation = useNavigation();
@@ -87,10 +88,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: Color.Black,
-    fontSize: 16,
+    // fontSize: 16,
     fontFamily: 'Roboto_600SemiBold',
     marginHorizontal: Dimensions.get('screen').width * 0.05,
     paddingVertical: Dimensions.get('screen').height * 0.009,
+    fontSize: screenHeight * 0.02,
   },
   seeAllButton: {
     position: 'absolute',
@@ -99,8 +101,9 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     color: Color.Blue,
-    fontSize: 12,
+    // fontSize: 12,
     fontFamily: 'Roboto_400Regular',
+    fontSize: screenHeight * 0.016,
   },
 });
 

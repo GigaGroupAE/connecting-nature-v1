@@ -19,6 +19,7 @@ import VideoPlayer from 'expo-video-player';
 import StoryDeleteModal from './StoryDeleteModal';
 import AdminIcon from '../../components/AdminIcon';
 import { Image } from 'expo-image';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -319,21 +320,35 @@ const SingleStory = ({ post, refetch }) => {
               ) : (
                 <AntDesign name="hearto" style={styles.icons} />
               )}
-              <Text style={styles.comment}>{reactions.length}</Text>
+              <Text style={styles.actionText}>{reactions.length}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigation(post)}>
               <View style={{ flexDirection: 'row' }}>
-                <Octicons name="comment" size={20} color="#000" />
+                <Octicons
+                  name="comment"
+                  // size={20}
+                  color="#000"
+                  style={{ fontSize: screenHeight * 0.023 }}
+                />
                 <View style={{ marginLeft: 7, alignSelf: 'center' }}>
-                  <Text>{post.comments.length}</Text>
+                  <Text style={styles.actionText}>
+                    {post?.comments?.length}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleonshare}>
               <View style={{ flexDirection: 'row' }}>
-                <AntDesign name="sharealt" size={20} color="#000" />
+                <AntDesign
+                  name="sharealt"
+                  size={20}
+                  color="#000"
+                  style={{
+                    fontSize: screenHeight * 0.023,
+                  }}
+                />
                 <View style={{ marginLeft: 7, alignSelf: 'center' }}>
-                  <Text>{post.shares.length}</Text>
+                  <Text style={styles.actionText}>{post?.shares?.length}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -352,10 +367,10 @@ const styles = StyleSheet.create({
     borderBottomColor: Color.DarkGrey,
   },
   profilePicture: {
-    width: 45,
-    height: 45,
+    width: 50,
+    height: 50,
     borderRadius: 25,
-    paddingHorizontal: Width * 0.04,
+    // paddingHorizontal: Width * 0.04,
     // resizeMode: 'cover',
   },
   contentContainer: {
@@ -363,13 +378,13 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: screenHeight * 0.0166,
     fontFamily: 'Roboto_500Medium',
     paddingHorizontal: Width * 0.02,
   },
   content: {
+    fontSize: screenHeight * 0.016,
     fontFamily: 'Roboto_400Regular',
-    color: Color.DarkGrey,
     paddingHorizontal: Width * 0.006,
     paddingVertical: Height * 0.012,
   },
@@ -397,7 +412,7 @@ const styles = StyleSheet.create({
     paddingVertical: Height * 0.002,
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
-    fontSize: 11,
+    fontSize: screenHeight * 0.0135,
   },
   postLikes: {
     fontSize: 21,
@@ -411,7 +426,7 @@ const styles = StyleSheet.create({
     color: Color.Grey,
   },
   icons: {
-    fontSize: 22,
+    fontSize: screenHeight * 0.023,
     color: Color.Black,
     paddingHorizontal: Width * 0.02,
   },
@@ -420,6 +435,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: Height * 0.018,
     color: Color.Blue,
+  },
+  actionText: {
+    fontSize: screenHeight * 0.0148,
+    alignSelf: 'center',
+    fontFamily: 'Roboto_400Regular',
+    color: Color.Black,
+    marginLeft: 3,
   },
 });
 

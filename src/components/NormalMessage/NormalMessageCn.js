@@ -4,6 +4,7 @@ import Color from '../../../assets/colors/Color';
 import { useUserState } from '../../slices/userSlice';
 
 import { calculateTimeDifference } from '../../utils/timeDifference';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const NormalMessageCn = (props) => {
   const userState = useUserState();
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     color: '#4582C3',
   },
   message: {
-    fontSize: 16,
+    fontSize: screenHeight * 0.015,
     paddingHorizontal: 5,
     fontFamily: 'Roboto_400Regular',
     paddingVertical: 4,
@@ -150,11 +151,12 @@ const styles = StyleSheet.create({
     color: Color.White,
   },
   receiverTextMessage: {
-    fontSize: 15.5,
+    // fontSize: 15.5,
     paddingHorizontal: 5,
     fontFamily: 'Roboto_400Regular',
     paddingVertical: 4,
     lineHeight: 20,
+    fontSize: screenHeight * 0.015,
   },
   timeContainer: {
     // marginLeft: "15%",

@@ -141,7 +141,9 @@ const PostSharedHeader = ({
                 style={{ flexDirection: 'row' }}
                 onPress={handleOwnerProfileNavigation}
               >
-                <Text style={{ ...styles.userName, fontSize: 12 }}>
+                <Text
+                  style={{ ...styles.userName, fontSize: screenHeight * 0.015 }}
+                >
                   {ownerName}
                 </Text>
 
@@ -162,7 +164,7 @@ const PostSharedHeader = ({
                   name="globe"
                   color={Color.Black}
                   style={{
-                    fontSize: 12,
+                    fontSize: screenHeight * 0.0135,
                     paddingHorizontal: Width * 0.02,
                     color: Color.Grey,
                   }}
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
   postTime: {
     fontFamily: 'Roboto_400Regular',
     color: Color.Black,
-    fontSize: 11,
+    fontSize: screenHeight * 0.0135,
   },
   cross: {
     position: 'absolute',

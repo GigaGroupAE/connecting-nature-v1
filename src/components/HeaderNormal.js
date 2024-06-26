@@ -133,9 +133,13 @@ export default function HeaderNormal(props) {
           >
             <AntDesign
               name="arrowleft"
-              size={24}
+              // size={24}
               color={Color.Black}
-              style={{ alignSelf: 'center', alignItems: 'center' }}
+              style={{
+                alignSelf: 'center',
+                alignItems: 'center',
+                fontSize: screenHeight * 0.026,
+              }}
             />
           </Pressable>
 
@@ -267,12 +271,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: Color.Black,
-    fontSize: 17,
+    // fontSize: 17,
     fontFamily: 'Roboto_600SemiBold',
     marginLeft: 10,
     marginTop: 2,
     lineHeight: 30,
     textAlignVertical: 'center',
+    fontSize: screenHeight * 0.019,
   },
   affordabContainer: {
     backgroundColor: Color.Blue,

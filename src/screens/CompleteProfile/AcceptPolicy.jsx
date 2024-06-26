@@ -237,8 +237,8 @@ const AcceptPolicy = ({ setmodalPolicy }) => {
           <Text style={styles.subHeading}>
             If you have any questions about this Privacy Policy, please contact
             us by email at{' '}
-            <Text style={styles.email}>support@connectingnature.com </Text> By
-            using Connecting Nature, you consent to our Privacy Policy.
+            <Text style={styles.email}>gigaearth.dev@gmail.com</Text> By using
+            Connecting Nature, you consent to our Privacy Policy.
           </Text>
 
           <TouchableOpacity style={styles.button}>
@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: Width * 0.05,
     paddingVertical: Height * 0.01,
+    marginTop: Height * 0.05,
   },
 
   headerTitle: {
