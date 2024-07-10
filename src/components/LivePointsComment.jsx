@@ -24,6 +24,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { scale } from 'react-native-size-matters';
 import AdminIcon from './AdminIcon';
 import DeleteCommentModal from './DeleteCommentModal';
+import { screenHeight } from '../utils/ScreenDimensions';
 
 const socket = io.connect(`${BASE_URL}/CN`);
 
@@ -281,6 +282,7 @@ const styles = StyleSheet.create({
   userName: {
     color: Color.Black,
     fontFamily: 'Roboto_600SemiBold',
+    fontSize: screenHeight * 0.016,
   },
   follow: {
     color: Color.Blue,
