@@ -17,6 +17,7 @@ import DeleteCommentModal from './DeleteCommentModal';
 import { useUserState } from '../slices/userSlice';
 import { axiosInstance } from '../../axiosInstance';
 import AdminIcon from './AdminIcon';
+import { screenHeight } from '../utils/ScreenDimensions';
 export default function Comment({
   comment,
   handleDelete,
@@ -181,6 +182,7 @@ const styles = StyleSheet.create({
   userName: {
     fontWeight: 'bold',
     color: Color.Black,
+    fontSize: screenHeight * 0.016,
   },
   follow: {
     color: Color.Blue,
