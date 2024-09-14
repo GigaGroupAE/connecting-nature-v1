@@ -10,11 +10,14 @@ import { Avatar, Portal, Button, Modal } from 'react-native-paper';
 import { BASE_URL } from '../../../CONSTANTS';
 import { useUserState } from './../../slices/userSlice';
 import axios from 'axios';
+import { axiosInstance } from '../../../axiosInstance';
+import { useStateContext } from '../../contexts/ContextProvider';
 export default function MemberRow(props) {
   const member = props.member;
   const groupState = props.groupState;
-  const userState = useUserState();
+  const { showSnackbar } = useStateContext();
   const [privmodal, setprivmodal] = useState(false);
+  const [memberToChangePrivilege, setmemberToChangePrivilege] = useState('');
   const styles = StyleSheet.create({
     row: {
       flexDirection: 'row',
@@ -30,31 +33,35 @@ export default function MemberRow(props) {
     marginLeft: '5%',
   };
   const [memberModal, setMemberModal] = useState(false);
-  const handlechangeprivilige = (props) => {
-    const tempmembers = groupState.members.filter((user) => {
-      return user.phoneNumber !== member.phoneNumber;
-    });
-    member.privilege = props;
-    tempmembers.push(member);
-    axios
-      .patch(
-        `${BASE_URL}/groups/updategroup/${groupState.groupId}`,
-        { members: tempmembers },
-        {
-          headers: {
-            'auth-token': userState.token,
-          },
-        },
-      )
-      .then((res) => {
-        setMemberModal(false);
-        alert('Operation SuccessFull');
-      })
-      .catch((e) => {});
+  const handlechangeprivilige = async (props) => {
+    const apiData = {
+      role: props,
+      groupId: groupState?.groupId,
+      userId: memberToChangePrivilege?._id,
+    };
+    try {
+      const { data } = await axiosInstance.patch(
+        '/groups/update-userPrivilege',
+        apiData,
+      );
+      console.log(data);
+      showSnackbar(data?.message);
+      setprivmodal(false);
+      setMemberModal(false);
+    } catch (error) {
+      showSnackbar(error?.response?.data?.message);
+    }
   };
+
   return (
     <View>
-      <TouchableWithoutFeedback onPress={() => setMemberModal(true)}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setMemberModal(true);
+          setmemberToChangePrivilege(props?.member);
+          console.log(props?.member);
+        }}
+      >
         <View style={[styles.row]}>
           <Avatar.Image
             size={50}
@@ -75,7 +82,7 @@ export default function MemberRow(props) {
           >
             <Text
               style={{
-                //  fontFamily: "Roboto_600SemiBold",
+                // fontFamily: 'Roboto_600SemiBold',
                 fontSize: 14,
                 color: '#4582C3',
               }}
@@ -93,16 +100,12 @@ export default function MemberRow(props) {
             </Text>
             <Text
               style={{
-                //  fontFamily: "Roboto_400Regular",
+                fontFamily: 'Roboto_400Regular',
                 fontSize: 13,
                 color: '#4582C3',
               }}
             >
-              {props.groupState.members.map((user) => {
-                if (user.member.phoneNumber === member.member.phoneNumber) {
-                  return user.privilege;
-                }
-              })}
+              {props?.member?.privilege}
             </Text>
           </View>
         </View>

@@ -196,7 +196,11 @@ const CampaignChatHeader = ({
           />
         </View>
         <TouchableOpacity
-          style={{ flex: 1, marginLeft: Width * 0.02 }}
+          style={{
+            flex: 1,
+            marginLeft: Width * 0.02,
+            gap: 4,
+          }}
           onPress={handleGroupSetting}
         >
           <Text style={styles.title}>{group?.title}</Text>
@@ -397,8 +401,8 @@ const styles = StyleSheet.create({
     fontSize: Height * 0.015,
   },
   userImg: {
-    width: Width * 0.12,
-    height: Height * 0.059,
+    width: 55,
+    height: 55,
     borderRadius: Height * 0.1,
     resizeMode: 'contain',
   },

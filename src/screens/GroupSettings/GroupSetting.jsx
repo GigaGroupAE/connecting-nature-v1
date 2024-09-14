@@ -10,6 +10,8 @@ import {
   Dimensions,
   Pressable,
   Image,
+  ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import React, { useState } from 'react';
 import {
@@ -31,6 +33,8 @@ import { useStateContext } from '../../contexts/ContextProvider.js';
 import Color from '../../../assets/colors/Color';
 import { scale } from 'react-native-size-matters';
 import * as ImagePicker from 'expo-image-picker';
+import { axiosInstance } from '../../../axiosInstance';
+import { screenWidth } from '../../utils/ScreenDimensions';
 
 // const ALLOWED_ROLES = ['Owner'];
 
@@ -118,15 +122,9 @@ function GroupSettings(props) {
       })
       .catch((e) => {});
   };
-  const [visible2, setVisible2] = useState(false);
-
+  const [IsImageUploading, setIsImageUploading] = useState(false);
   const [visible3, setVisible3] = useState(false);
-
   const hideDialog = () => setVisible3(false);
-
-  const [visible4, setVisible4] = useState(false);
-
-  const onToggleComingSoon = () => setVisible4(!visible2);
 
   // disband group modal
 
@@ -176,26 +174,31 @@ function GroupSettings(props) {
   const handlePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      quality: 1,
+      quality: 0.5,
     });
 
-    setgroupImage(result?.uri);
+    setgroupImage(result.assets[0].uri);
     setmodalProfile(false);
   };
 
   const handleUpdateGroupImage = async () => {
+    setIsImageUploading(true);
     const formData = new FormData();
 
-    if (groupImage !== null) {
-      formData.append('groupPic', {
-        name: `${userState.phoneNumber}.jpg`,
-        uri: groupImage,
-        type: 'image/jpg',
-      });
+    if (groupImage === null) {
+      setIsImageUploading(false);
+      return;
     }
+
+    formData.append('groupPic', {
+      name: `${userState.phoneNumber}.jpg`,
+      uri: groupImage,
+      type: 'image/jpg',
+    });
+
     try {
-      const res = await axios.patch(
-        `${BASE_URL}/groups/updateGroupPicture/${group?._id}`,
+      const res = await axiosInstance.patch(
+        `/groups/updateGroupPicture/${group?._id}`,
         formData,
         {
           headers: {
@@ -205,10 +208,93 @@ function GroupSettings(props) {
         },
       );
 
+      setIsImageUploading(false);
+
       showSnackbar('Your group image has been updated.');
       setgroup(res.data);
       setgroupImage(null);
-    } catch (error) {}
+    } catch (error) {
+      setIsImageUploading(false);
+    }
+  };
+
+  const handleRemoveMember = (member) => {
+    const currentMember = groupState.members.find(
+      (m) => m.member.phoneNumber === userState.phoneNumber,
+    );
+
+    if (currentMember && currentMember.privilege === 'Owner') {
+      if (member.phoneNumber === userState.phoneNumber) {
+        alert('You cannot remove yourself from the group');
+      } else if (groupState.members.length <= 2) {
+        Alert.alert(
+          'Cannot Remove Member',
+          'A group must have at least two members.',
+        );
+      } else {
+        RemoveMember(member);
+      }
+    }
+  };
+
+  const renderMember = ({ item }) => (
+    <View key={item.phoneNumber} style={styles.memberListContainer}>
+      <View style={styles.memberRow}>
+        <MemberRow member={item} groupState={groupState} />
+        {currentUser[0]?.privilege === 'Owner' && (
+          <Button
+            mode="text"
+            uppercase={false}
+            style={styles.removeButton}
+            labelStyle={styles.removeButtonLabel}
+            onPress={() => handleRemoveMember(item)}
+          >
+            remove
+          </Button>
+        )}
+      </View>
+    </View>
+  );
+
+  const renderGroup = ({ item }) => {
+    console.log(item);
+    const isCurrentUserInGroup = item.members.some(
+      (member) => member.phoneNumber === userState.phoneNumber,
+    );
+
+    if (
+      item.type !== 'individual' &&
+      item.type !== 'Admin' &&
+      isCurrentUserInGroup
+    ) {
+      return (
+        <View
+          key={item.id} // Assuming id is unique
+          style={styles.groupContainer}
+        >
+          <View style={styles.groupRow}>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Chat')}
+              style={styles.groupTouchable}
+            >
+              <Avatar.Image
+                size={50}
+                source={
+                  item.photo
+                    ? { uri: item.photo }
+                    : require('../../../assets/no-profile-picture-placeholder.png')
+                }
+              />
+              <View style={styles.groupDetails}>
+                <Text style={styles.groupTitle}>{item.title}</Text>
+                <Text style={styles.groupType}>{item.type}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+      );
+    }
+    return null;
   };
 
   return (
@@ -226,6 +312,7 @@ function GroupSettings(props) {
         <Appbar.BackAction
           color={Color.Black}
           onPress={() => navigation.goBack()}
+          size={20}
         />
         <Appbar.Content
           title={
@@ -250,6 +337,8 @@ function GroupSettings(props) {
                 marginLeft: 0,
               },
             }),
+
+            alignItems: 'flex-start',
           }}
         />
         {groupImage === null && (
@@ -273,7 +362,14 @@ function GroupSettings(props) {
             style={styles.updateContiner}
             onPress={handleUpdateGroupImage}
           >
-            <Text style={styles.updateTitle}>Update</Text>
+            {IsImageUploading ? (
+              <ActivityIndicator
+                style={{ paddingHorizontal: 15 }}
+                color="white"
+              />
+            ) : (
+              <Text style={styles.updateTitle}>Update</Text>
+            )}
           </TouchableOpacity>
         )}
       </Appbar.Header>
@@ -544,7 +640,7 @@ function GroupSettings(props) {
           ) : (
             <Pressable
               android_ripple={{ color: Color.LightGrey }}
-              onPress={() => onToggleComingSoon()}
+              // onPress={() => onToggleComingSoon()}
               style={[
                 {
                   width: '100%',
@@ -628,172 +724,21 @@ function GroupSettings(props) {
               : 'Groups In Common'}
           </Text>
         </View>
-        {groupState.type !== 'individual' && groupState.type !== 'Admin'
-          ? groupState?.members.map((member, index) => {
-              return (
-                <View
-                  key={(member, index)}
-                  style={[
-                    {
-                      width: '100%',
-                      alignItems: 'center',
-                    },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.row,
-                      {
-                        marginTop: 5,
-                        marginBottom: 5,
-                        padding: 10,
-                        paddingTop: 5,
-                        paddingBottom: 5,
-                        borderRadius: 5,
-                        width: '90%',
-                        justifyContent: 'flex-start',
-                        backgroundColor: 'white',
-                      },
-                    ]}
-                  >
-                    <MemberRow member={member} groupState={groupState} />
-                    <Button
-                      mode="text"
-                      uppercase={false}
-                      style={{
-                        color: '#4582C3',
-                        marginLeft: 'auto',
-                        marginRight: -15,
-                      }}
-                      labelStyle={{
-                        fontSize: 13,
-                        letterSpacing: 0.1,
-                      }}
-                      onPress={() => {
-                        const currentMember = groupState.members.find(
-                          (member) => {
-                            return (
-                              member.member.phoneNumber ===
-                              userState.phoneNumber
-                            );
-                          },
-                        );
-
-                        if (
-                          currentMember &&
-                          currentMember.privilege === 'Owner'
-                        ) {
-                          if (member.phoneNumber === userState.phoneNumber) {
-                            alert('You cannot remove yourself from the group');
-                          } else if (groupState.members.length <= 2) {
-                            Alert.alert(
-                              'Cannot Remove Member',
-                              'A group must have at least two members.',
-                            );
-                          } else {
-                            RemoveMember(member);
-                          }
-                        }
-                      }}
-                    >
-                      {/* {groupState.members.some(
-                        (user) => user.privilege !== "Owner"
-                      )
-                        ? "remove"
-                        : null} */}
-                      {currentUser[0]?.privilege === 'Owner' ? 'remove' : null}
-                    </Button>
-                  </View>
-                </View>
-              );
-            })
-          : groups !== undefined
-            ? groups?.map((group, index) => {
-                if (group.type !== 'individual' && group.type !== 'Admin') {
-                  for (let j = 0; j < group?.members.length; j++) {
-                    if (
-                      group?.members[j].phoneNumber === userState.phoneNumber
-                    ) {
-                      if (
-                        group?.members[j].phoneNumber === userState.phoneNumber
-                      ) {
-                        return (
-                          <View
-                            key={group + index}
-                            style={[
-                              {
-                                width: '100%',
-                                alignItems: 'center',
-                              },
-                            ]}
-                          >
-                            <View
-                              style={[
-                                styles.row,
-                                {
-                                  marginTop: 5,
-                                  marginBottom: 5,
-                                  padding: 10,
-                                  paddingTop: 5,
-                                  paddingBottom: 5,
-                                  borderRadius: 5,
-                                  width: '90%',
-                                  justifyContent: 'flex-start',
-                                  backgroundColor: 'white',
-                                },
-                              ]}
-                            >
-                              <TouchableWithoutFeedback
-                                onPress={() => navigation.navigate('Chat')}
-                                style={[styles.row]}
-                              >
-                                <Avatar.Image
-                                  size={50}
-                                  source={
-                                    group.photo
-                                      ? {
-                                          uri: group.photo,
-                                        }
-                                      : {
-                                          uri: require('../../../assets/no-profile-picture-placeholder.png'),
-                                        }
-                                  }
-                                />
-                                <View
-                                  style={{
-                                    marginLeft: 12,
-                                    flexDirection: 'column',
-                                  }}
-                                >
-                                  <Text
-                                    style={{
-                                      // fontFamily: "Roboto_600SemiBold",
-                                      fontSize: 14,
-                                      color: '#707070',
-                                    }}
-                                  >
-                                    {group.title}
-                                  </Text>
-                                  <Text
-                                    style={{
-                                      //  fontFamily: "Roboto_400Regular",
-                                      fontSize: 12,
-                                      color: '#707070',
-                                    }}
-                                  >
-                                    {group.type}
-                                  </Text>
-                                </View>
-                              </TouchableWithoutFeedback>
-                            </View>
-                          </View>
-                        );
-                      }
-                    }
-                  }
-                }
-              })
-            : null}
+        {groupState.type !== 'individual' && groupState.type !== 'Admin' ? (
+          <FlatList
+            data={groupState.members}
+            renderItem={renderMember}
+            keyExtractor={(item) => item?.phoneNumber}
+          />
+        ) : (
+          groups !== undefined && (
+            <FlatList
+              data={groups}
+              renderItem={renderGroup}
+              keyExtractor={(item) => item.id}
+            />
+          )
+        )}
         <TouchableOpacity
           onPressOut={() => {
             if (
@@ -964,7 +909,7 @@ function GroupSettings(props) {
                 <Button
                   onPress={hideDialog}
                   uppercase={false}
-                  color={'#4582C3'}
+                  color="#4582C3"
                   labelStyle={{
                     // fontFamily: "Poppins_400Regular",
                     color: '#4582C3',
@@ -997,11 +942,11 @@ function GroupSettings(props) {
             <View style={styles.profileContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  setmodalProfile(false),
-                    navigation.navigate('ViewImage', {
-                      url: `${BASE_URL}/${groupState?.groupPic}`,
-                      message: '',
-                    });
+                  setmodalProfile(false);
+                  navigation.navigate('ViewImage', {
+                    url: `${BASE_URL}/${groupState?.groupPic}`,
+                    message: '',
+                  });
                 }}
               >
                 <Text style={styles.profileTitle}>See group picture</Text>
@@ -1068,5 +1013,18 @@ const styles = StyleSheet.create({
     color: Color.White,
     fontFamily: 'Roboto_500Medium',
     fontSize: scale(13),
+  },
+  memberListContainer: {
+    width: screenWidth * 0.9,
+    alignItems: 'flex-start',
+    gap: 6,
+    marginVertical: '1%',
+    paddingVertical: '1%',
+  },
+  memberRow: {
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

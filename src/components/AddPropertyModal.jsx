@@ -90,7 +90,7 @@ const AddPropertyModal = ({
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      quality: 1,
+      quality: 0.5,
       allowsMultipleSelection: true,
       selectionLimit: 5,
       mediaTypes: 'All',

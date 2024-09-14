@@ -343,6 +343,7 @@ const ChatPage = (props) => {
     } catch (e) {}
   };
   async function startRecording() {
+    console.log('run,"voice');
     setRecording((recording) => !recording);
     try {
       await Audio.requestPermissionsAsync();

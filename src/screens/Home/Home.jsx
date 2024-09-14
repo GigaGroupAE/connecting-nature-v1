@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     right: '6%',
     width: '26%',
     alignItems: 'center',
-    paddingVertical: '9%',
+    paddingVertical: '3%',
     borderRadius: screenHeight * 0.01,
   },
 });

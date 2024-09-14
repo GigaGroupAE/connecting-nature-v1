@@ -91,9 +91,9 @@ const AddProduct = (props) => {
   }, []);
 
   const pick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.cancelled) {

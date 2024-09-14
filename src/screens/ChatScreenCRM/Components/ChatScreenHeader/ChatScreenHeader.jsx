@@ -1,27 +1,14 @@
-import React from 'react';
-import {
-  Dimensions,
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Dimensions, Platform, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useUserState } from '../../../../slices/userSlice';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+
 import { BASE_URL } from '../../../../../CONSTANTS';
 import Color from '../../../../../assets/colors/Color';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStateContext } from '../../../../contexts/ContextProvider.js';
-import { Entypo } from 'react-native-vector-icons';
 
 const Height = Dimensions.get('screen').height;
-const Width = Dimensions.get('screen').width;
 
 const ChatScreenHeader = (props) => {
   const { group, setgroup } = useStateContext();
@@ -31,28 +18,20 @@ const ChatScreenHeader = (props) => {
   const [subtitle, setsubtitle] = useState();
   const [photo, setPhoto] = useState();
   const [title, settitle] = useState();
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const UserList = () => {
-    navigation.navigate('UserList');
-    setModalVisible(false);
-  };
 
   useEffect(() => {
     if (group?.type === 'individual' || group?.type === 'Admin') {
       if (group?.members !== undefined) {
-        let member = group?.members?.filter((member) => {
+        const member = group?.members?.filter((member) => {
           return member?.member?.phoneNumber !== userState.phoneNumber;
         });
 
-        let memb = member[0];
+        const memb = member[0];
         setPhoto(`${BASE_URL}/images/${memb.member.profile}`);
         settitle(memb.member.fullName);
         setsubtitle(memb.member.type);
       }
     } else {
-      console.log('ELSE CASE ---');
-      console.log('gropusatee------', groupState.groupPic);
       setPhoto(`${BASE_URL}/images/${groupState.groupPic}`);
       settitle(group.title);
       let tempsubtitle = '';
@@ -63,6 +42,7 @@ const ChatScreenHeader = (props) => {
           tempsubtitle = tempsubtitle + m.member?.fullName + ' ';
         }
       });
+
       setsubtitle(tempsubtitle);
     }
   }, []);
@@ -81,7 +61,7 @@ const ChatScreenHeader = (props) => {
       }}
     >
       <Appbar.BackAction
-        color={'white'}
+        color="white"
         onPress={() => {
           setgroup(null);
           navigation.goBack();
@@ -101,7 +81,7 @@ const ChatScreenHeader = (props) => {
         }
       >
         <Avatar.Image
-          size={40}
+          size={45}
           source={
             photo
               ? { uri: photo }
@@ -128,7 +108,7 @@ const ChatScreenHeader = (props) => {
         titleStyle={{ fontFamily: 'Roboto_500Medium', fontSize: 18 }}
         subtitle={subtitle ? subtitle : 'Loading...'}
         subtitleStyle={{ fontSize: 12, marginTop: -5, color: 'white' }}
-        color={'white'}
+        color="white"
         style={{
           ...Platform.select({
             ios: {
@@ -138,11 +118,12 @@ const ChatScreenHeader = (props) => {
               marginTop: 0,
             },
           }),
+          gap: 6,
         }}
       />
       <Appbar.Action
         style={{ marginRight: 5 }}
-        color={'white'}
+        color="white"
         size={25}
         icon="magnify"
         onPress={() => handleClick()}
@@ -153,16 +134,16 @@ const ChatScreenHeader = (props) => {
 
 export default ChatScreenHeader;
 
-const styles = StyleSheet.create({
-  main: {
-    backgroundColor: 'white',
-    height: '100%',
-    width: '100%',
-  },
-  ModelTitile: {
-    fontSize: Height * 0.018,
-    fontFamily: 'Roboto_500Medium',
-    fontWeight: '500',
-    marginVertical: Height * 0.007,
-  },
-});
+// const styles = StyleSheet.create({
+//   main: {
+//     backgroundColor: 'white',
+//     height: '100%',
+//     width: '100%',
+//   },
+//   ModelTitile: {
+//     fontSize: Height * 0.018,
+//     fontFamily: 'Roboto_500Medium',
+//     fontWeight: '500',
+//     marginVertical: Height * 0.007,
+//   },
+// });

@@ -116,7 +116,7 @@ export default function CompleteProfile() {
   const pick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.cancelled) {
