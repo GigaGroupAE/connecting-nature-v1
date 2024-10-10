@@ -15,6 +15,10 @@ import Color from '../../../assets/colors/Color';
 import MessageType from './MessageType';
 import { useNavigation } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+
+import { WebView } from 'react-native-webview';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -30,6 +34,13 @@ const DocumentMessage = (props) => {
     document?.name?.length > 25
       ? document?.name.slice(0, 25) + '...'
       : document?.name;
+
+  const downloadAndShareFile = async (uri) => {
+    const fileUri = FileSystem.documentDirectory + item?.content?.name;
+
+    const { uri: downloadedUri } = await FileSystem.downloadAsync(uri, fileUri);
+    await Sharing.shareAsync(downloadedUri);
+  };
 
   return (
     <View>
@@ -74,7 +85,7 @@ const DocumentMessage = (props) => {
                   paddingHorizontal: 4,
                 }}
                 onPress={() => {
-                  Linking.openURL(
+                  downloadAndShareFile(
                     `${BASE_URL}/messageMedia/${item.content?.path}`,
                   );
                 }}
