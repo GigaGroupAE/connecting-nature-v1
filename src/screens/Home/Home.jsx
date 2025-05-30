@@ -26,7 +26,7 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import MiniVideoPlayer from '../../components/MiniVideoPlayer';
 import StoryHeader from './StoryHeader';
 import HeaderForCampaign from './HeaderForCampaign';
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
 import { useUserState, useUserStateActions } from '../../slices/userSlice';
 import { BASE_URL } from '../../../CONSTANTS';
 import axios from 'axios';
@@ -36,13 +36,13 @@ import { screenHeight } from '../../utils/ScreenDimensions';
 import { itemTitle } from '../Decorations/ModalStyle';
 import { axiosInstance } from '../../../axiosInstance';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
 
 const Home = () => {
   const isFocused = useIsFocused();
@@ -122,47 +122,47 @@ const Home = () => {
     };
   }, [postsData, postsLoading]);
 
-  useEffect(() => {
-    if (isFocused) {
-      if (!userstate.expoPushToken)
-        registerForPushNotificationsAsync().then((token) => {
-          // setExpoPushToken(token);
-          //make api call to save the token
-          const config = {
-            headers: {
-              'auth-token': userstate.token,
-            },
-          };
-          if (!userstate.expoPushToken) {
-            axios
-              .put(
-                `${BASE_URL}/user/updateUserExpoToken`,
-                { expoPushToken: `${token}` },
-                config,
-              )
-              .then((res) => {
-                userActions.setExpoPushToken(res.data.expoPushToken);
-              })
-              .catch(() => {});
-          }
-        });
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     if (!userstate.expoPushToken)
+  //       registerForPushNotificationsAsync().then((token) => {
+  //         // setExpoPushToken(token);
+  //         //make api call to save the token
+  //         const config = {
+  //           headers: {
+  //             'auth-token': userstate.token,
+  //           },
+  //         };
+  //         if (!userstate.expoPushToken) {
+  //           axios
+  //             .put(
+  //               `${BASE_URL}/user/updateUserExpoToken`,
+  //               { expoPushToken: `${token}` },
+  //               config,
+  //             )
+  //             .then((res) => {
+  //               userActions.setExpoPushToken(res.data.expoPushToken);
+  //             })
+  //             .catch(() => {});
+  //         }
+  //       });
 
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          // setNotification(notification);
-        });
+  //     notificationListener.current =
+  //       Notifications.addNotificationReceivedListener((notification) => {
+  //         // setNotification(notification);
+  //       });
 
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {});
+  //     responseListener.current =
+  //       Notifications.addNotificationResponseReceivedListener((response) => {});
 
-      return () => {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current,
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
-    }
-  }, [isFocused]);
+  //     return () => {
+  //       Notifications.removeNotificationSubscription(
+  //         notificationListener.current,
+  //       );
+  //       Notifications.removeNotificationSubscription(responseListener.current);
+  //     };
+  //   }
+  // }, [isFocused]);
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
   // const VideoMiniPlayer = useMemo(

@@ -14,7 +14,9 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-font",
+      "expo-asset"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -30,8 +32,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.notify.connectingnatureapp",
-      "buildNumber":"3",
-         "infoPlist": {
+      "buildNumber": "3",
+      "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We use your location to show content and campaigns happening near you.",
         "NSLocationAlwaysUsageDescription": "We use your location to show content and campaigns happening near you, even when the app is not in use."
       }
