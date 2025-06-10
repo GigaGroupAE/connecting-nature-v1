@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { calculateTimeDifference } from '../../utils/timeDifference';
 import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { BASE_URL } from '../../../CONSTANTS';
-import { MaterialCommunityIcons, AntDesign } from 'react-native-vector-icons';
+import { AntDesign } from 'react-native-vector-icons';
 import Color from '../../../assets/colors/Color';
 import { useUserState } from '../../slices/userSlice';
 import DeleteCommentModal from '../../components/DeleteCommentModal';
@@ -181,12 +181,15 @@ const styles = StyleSheet.create({
 
   nameFollow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
+    justifyContent: 'center',
   },
   userName: {
     fontWeight: 'bold',
     color: Color.Black,
-    paddingRight: screenWidth * 0.01,
+    // paddingRight: screenWidth * 0.03,
+    fontSize: screenHeight * 0.016,
+    marginBottom: screenHeight * 0.002,
   },
   follow: {
     color: Color.Blue,

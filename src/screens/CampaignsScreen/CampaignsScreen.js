@@ -19,7 +19,6 @@ import { fetchCampaigns } from '../../utils/CampaignsHelper';
 import { useQuery } from 'react-query';
 import CampaignsSkeletn from '../../components/Skeletns/CampaignsSkeletn';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import CustomStatsBar from '../../components/CustomStatsBar';
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
 

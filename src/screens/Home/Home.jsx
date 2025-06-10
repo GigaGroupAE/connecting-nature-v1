@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   RefreshControl,
@@ -26,23 +26,27 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import MiniVideoPlayer from '../../components/MiniVideoPlayer';
 import StoryHeader from './StoryHeader';
 import HeaderForCampaign from './HeaderForCampaign';
-// import * as Notifications from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
 import { useUserState, useUserStateActions } from '../../slices/userSlice';
 import { BASE_URL } from '../../../CONSTANTS';
 import axios from 'axios';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { screenHeight } from '../../utils/ScreenDimensions';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { itemTitle } from '../Decorations/ModalStyle';
 import { axiosInstance } from '../../../axiosInstance';
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: false,
-//     shouldSetBadge: false,
-//   }),
-// });
+import * as SplashScreen from 'expo-splash-screen';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+// Keep the splash screen visible while we fetch resources
+// SplashScreen.preventAutoHideAsync();
 
 const Home = () => {
   const isFocused = useIsFocused();
@@ -51,6 +55,7 @@ const Home = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
   const navigation = useNavigation();
+  const [appIsReady, setAppIsReady] = useState(false);
 
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
     useStateContext();
@@ -122,47 +127,47 @@ const Home = () => {
     };
   }, [postsData, postsLoading]);
 
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     if (!userstate.expoPushToken)
-  //       registerForPushNotificationsAsync().then((token) => {
-  //         // setExpoPushToken(token);
-  //         //make api call to save the token
-  //         const config = {
-  //           headers: {
-  //             'auth-token': userstate.token,
-  //           },
-  //         };
-  //         if (!userstate.expoPushToken) {
-  //           axios
-  //             .put(
-  //               `${BASE_URL}/user/updateUserExpoToken`,
-  //               { expoPushToken: `${token}` },
-  //               config,
-  //             )
-  //             .then((res) => {
-  //               userActions.setExpoPushToken(res.data.expoPushToken);
-  //             })
-  //             .catch(() => {});
-  //         }
-  //       });
+  useEffect(() => {
+    if (isFocused) {
+      if (!userstate.expoPushToken)
+        registerForPushNotificationsAsync().then((token) => {
+          // setExpoPushToken(token);
+          //make api call to save the token
+          const config = {
+            headers: {
+              'auth-token': userstate.token,
+            },
+          };
+          if (!userstate.expoPushToken) {
+            axios
+              .put(
+                `${BASE_URL}/user/updateUserExpoToken`,
+                { expoPushToken: `${token}` },
+                config,
+              )
+              .then((res) => {
+                userActions.setExpoPushToken(res.data.expoPushToken);
+              })
+              .catch(() => {});
+          }
+        });
 
-  //     notificationListener.current =
-  //       Notifications.addNotificationReceivedListener((notification) => {
-  //         // setNotification(notification);
-  //       });
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          // setNotification(notification);
+        });
 
-  //     responseListener.current =
-  //       Notifications.addNotificationResponseReceivedListener((response) => {});
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {});
 
-  //     return () => {
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current,
-  //       );
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //     };
-  //   }
-  // }, [isFocused]);
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current,
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
+  }, [isFocused]);
 
   const HeaderComponent = useMemo(() => <HomeHeader />, []);
   // const VideoMiniPlayer = useMemo(
@@ -217,7 +222,7 @@ const Home = () => {
               />
             }
             renderItem={renderItem}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.8}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
             estimatedItemSize={200}
@@ -266,10 +271,13 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Purple,
     position: 'absolute',
     bottom: screenHeight * 0.1,
-    right: '6%',
-    width: '26%',
+    // right: '6%',
+    // width: '26%',
     alignItems: 'center',
-    paddingVertical: '9%',
+    // paddingVertical: '9%',
     borderRadius: screenHeight * 0.01,
+    right: screenWidth * 0.09,
+    paddingHorizontal: screenWidth * 0.07,
+    paddingVertical: screenHeight * 0.015,
   },
 });

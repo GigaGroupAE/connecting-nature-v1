@@ -8,15 +8,16 @@
     "userInterfaceStyle": "automatic",
     "plugins": [
       [
-        "expo-build-properties",
+        "expo-splash-screen",
         {
-          "android": {
-            "usesCleartextTraffic": true
-          }
+          "backgroundColor": "#232323",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
         }
       ],
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      "expo-video"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -57,7 +58,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "5afefd15-9fd3-47f6-8f85-a1d17293c6e1"
+        "projectId": "960e2d66-956d-476c-a181-d6807eca91ea"
       }
     }
   }

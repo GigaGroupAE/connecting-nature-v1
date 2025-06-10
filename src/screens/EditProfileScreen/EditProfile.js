@@ -19,9 +19,7 @@ import { useUserStateActions, useUserState } from '../../slices/userSlice';
 import { useStateContext } from '../../contexts/ContextProvider';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 
-import { SaveFormat, manipulateAsync } from 'expo-image-manipulator';
 import CustomStatsBar from '../../components/CustomStatsBar';
 const EditProfile = () => {
   const userState = useUserState();
@@ -48,23 +46,18 @@ const EditProfile = () => {
   // ];
 
   const pick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-    });
-
-    let compressImage;
-    let manipResult;
-    if (!result.cancelled) {
-      if ((result.type = 'image')) {
-        manipResult = await manipulateAsync(result.uri, [], {
-          compress: 0.3,
-          format: SaveFormat.JPEG,
-        });
-        compressImage = await FileSystem.getInfoAsync(manipResult.uri);
+    try {
+      // const result = await DocumentPicker.getDocumentAsync({});
+      const result = await ImagePicker.launchImageLibraryAsync({
+        quality: 0.8,
+        mediaTypes: 'All',
+      });
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+        setimage(result.assets[0]);
       }
-      setImageUri(compressImage.uri);
-      setimage(compressImage);
+    } catch {
+    } finally {
     }
   };
 

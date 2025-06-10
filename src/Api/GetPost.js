@@ -4,7 +4,7 @@ import { axiosInstance } from '../../axiosInstance';
 // import * as Notifications from 'expo-notifications';
 // import { Platform } from 'react-native';
 
-const LIMIT = '30';
+const LIMIT = '50';
 
 export const fetchPosts = async ({ pageParam = 1 }) => {
   const response = await axiosInstance.get(
