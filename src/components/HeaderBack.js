@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(10),
   },
   icon: {
-    fontSize: screenHeight * 0.028,
+    fontSize: screenHeight * 0.024,
     color: Color.Black,
   },
 });

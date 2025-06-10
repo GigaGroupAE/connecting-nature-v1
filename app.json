@@ -2,19 +2,22 @@
   "expo": {
     "name": "Connecting Nature",
     "slug": "connecting-nature",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/cn-icon.png",
     "userInterfaceStyle": "automatic",
     "plugins": [
       [
-        "expo-build-properties",
+        "expo-splash-screen",
         {
-          "android": {
-            "usesCleartextTraffic": true
-          }
+          "backgroundColor": "#232323",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
         }
-      ]
+      ],
+      "expo-font",
+      "expo-asset",
+      "expo-video"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -30,14 +33,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.notify.connectingnatureapp",
-      "buildNumber":"3",
-         "infoPlist": {
+      "buildNumber": "3",
+      "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We use your location to show content and campaigns happening near you.",
         "NSLocationAlwaysUsageDescription": "We use your location to show content and campaigns happening near you, even when the app is not in use."
       }
     },
     "android": {
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/cn-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -46,7 +49,7 @@
       "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyA_Z2qOzhi_6VaN1QClYYMXvE3MUnk02IY"
+          "apiKey": "ArIzaSyA_Z2qOzhi_6VaN1QClYYMXvE3MUnk02IY"
         }
       }
     },
@@ -55,7 +58,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "5afefd15-9fd3-47f6-8f85-a1d17293c6e1"
+        "projectId": "960e2d66-956d-476c-a181-d6807eca91ea"
       }
     }
   }

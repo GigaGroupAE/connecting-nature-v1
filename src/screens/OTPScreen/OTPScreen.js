@@ -22,9 +22,9 @@ import ChannelSubscriptionModal from '../../components/ChannelSubscriptionModal'
 export default function OTPScreen(props) {
   const userActions = useUserStateActions();
   const { setLoading, showSnackbar, hideSnackbar } = useStateContext();
-  const [UserOtp, setUserOtp] = useState();
+  // const [UserOtp, setUserOtp] = useState();
   const [isPremiumTrue, setisPremiumTrue] = useState(false);
-  const [user, setuser] = useState(null);
+  // const [user, setuser] = useState(null);
 
   const userState = useUserState();
 
@@ -37,7 +37,6 @@ export default function OTPScreen(props) {
   const phoneNumber = props.route.params.phoneNumber;
 
   const location = userState.location;
-  // console.log(backendOtp);2
   const handleVerify = (e) => {
     setLoading(true);
     if (e.length === 4) {
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: Dimensions.get('screen').height * 0.06,
     alignSelf: 'center',
-    backgroundColor: Color.White,
+    backgroundColor: Color.VeryLightGrey,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: {
@@ -196,7 +195,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
   logo: {

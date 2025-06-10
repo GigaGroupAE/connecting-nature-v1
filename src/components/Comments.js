@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   },
   nameFollow: {
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 14,

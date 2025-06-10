@@ -24,7 +24,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { scale } from 'react-native-size-matters';
 import AdminIcon from './AdminIcon';
 import DeleteCommentModal from './DeleteCommentModal';
-import { screenHeight } from '../utils/ScreenDimensions';
+import { screenHeight, screenWidth } from '../utils/ScreenDimensions';
 
 const socket = io.connect(`${BASE_URL}/CN`);
 
@@ -165,7 +165,8 @@ const LivePointsComment = () => {
                             }}
                             style={{
                               flexDirection: 'row',
-                              alignItems: 'center',
+                              // alignItems: 'center',
+                              justifyContent: 'center',
                             }}
                           >
                             <Text style={styles.userName}>
@@ -278,11 +279,13 @@ const styles = StyleSheet.create({
   },
   nameFollow: {
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   userName: {
+    fontWeight: 'bold',
     color: Color.Black,
-    fontFamily: 'Roboto_600SemiBold',
     fontSize: screenHeight * 0.016,
+    marginBottom: screenHeight * 0.002,
   },
   follow: {
     color: Color.Blue,

@@ -85,11 +85,10 @@ export default function NewPost(props) {
     setloading(true);
     try {
       if (props.route.params.origin === 'post') {
-        navigation.goBack();
-
         await axios.post(`${BASE_URL}/posts/addpost/`, formData, config);
         showSnackbar('Post created successfully');
         setloading(false);
+        navigation.goBack();
       } else {
         if (image !== null) {
           const { data } = await axios.post(
@@ -120,7 +119,6 @@ export default function NewPost(props) {
         quality: 0.8,
         mediaTypes: 'All',
       });
-
       if (!result.canceled) {
         setCompressImg(result.assets[0].uri);
         setData(result.assets[0]);

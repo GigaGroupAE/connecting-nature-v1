@@ -5,14 +5,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import Color from "../../../../../assets/colors/Color";
-import { useStateContext } from "../../../../contexts/ContextProvider";
-import { useUserState } from "../../../../slices/userSlice";
+} from 'react-native';
+import React, { useState } from 'react';
+import Color from '../../../../../assets/colors/Color';
+import { useStateContext } from '../../../../contexts/ContextProvider';
+import { useUserState } from '../../../../slices/userSlice';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const DeleteMessage = ({ modalVisible, setmodalVisible, item }) => {
   const userState = useUserState();
@@ -20,16 +20,15 @@ const DeleteMessage = ({ modalVisible, setmodalVisible, item }) => {
 
   const { group, globalSocket } = useStateContext();
   const deleteMessage = (props) => {
-    console.log(props);
     setRefresh(true);
     if (props.from === userState.id) {
-      globalSocket.emit("Delete_message", {
+      globalSocket.emit('Delete_message', {
         chat: group._id,
         id: props._id,
       });
       setmodalVisible(false);
     } else {
-      alert("You can only delete your own message");
+      alert('You can only delete your own message');
       setmodalVisible(false);
     }
   };
@@ -50,8 +49,8 @@ const DeleteMessage = ({ modalVisible, setmodalVisible, item }) => {
           <View>
             <Text
               style={{
-                fontFamily: "Roboto_400Regular",
-                fontWeight: "400",
+                fontFamily: 'Roboto_400Regular',
+                fontWeight: '400',
               }}
             >
               Do you really want to delete the Chat?
@@ -88,16 +87,16 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Blue,
     paddingHorizontal: Width * 0.07,
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "600",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '600',
     borderRadius: Height * 0.01,
   },
   ConfrmModel: {
-    alignSelf: "center",
+    alignSelf: 'center',
 
     flex: 0.3,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: Height * 0.4,
 
     backgroundColor: Color.White,
@@ -109,14 +108,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 8,
-    alignSelf: "center",
+    alignSelf: 'center',
     paddingVertical: Height * 0.019,
     // marginTop: 10,
     borderRadius: 6,
   },
   model: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: Height * 0.03,
     width: Width * 0.9,
   },

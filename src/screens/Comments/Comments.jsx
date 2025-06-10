@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
   },
   nameFollow: {
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 14,

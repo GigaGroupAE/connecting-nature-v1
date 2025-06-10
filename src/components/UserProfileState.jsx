@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statCount: {
-    fontSize: Height * 0.025,
+    fontSize: Height * 0.02,
     fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
     fontWeight: '700',

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   RefreshControl,
@@ -32,10 +32,11 @@ import { BASE_URL } from '../../../CONSTANTS';
 import axios from 'axios';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { screenHeight } from '../../utils/ScreenDimensions';
+import { screenHeight, screenWidth } from '../../utils/ScreenDimensions';
 import { itemTitle } from '../Decorations/ModalStyle';
 import { axiosInstance } from '../../../axiosInstance';
 
+import * as SplashScreen from 'expo-splash-screen';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -44,6 +45,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// Keep the splash screen visible while we fetch resources
+// SplashScreen.preventAutoHideAsync();
+
 const Home = () => {
   const isFocused = useIsFocused();
   const userstate = useUserState();
@@ -51,6 +55,7 @@ const Home = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
   const navigation = useNavigation();
+  const [appIsReady, setAppIsReady] = useState(false);
 
   const { showMiniWindow, videoURI, videoAutherName, Stories } =
     useStateContext();
@@ -217,7 +222,7 @@ const Home = () => {
               />
             }
             renderItem={renderItem}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.8}
             onEndReached={handleEndReached}
             ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
             estimatedItemSize={200}
@@ -266,10 +271,13 @@ const styles = StyleSheet.create({
     backgroundColor: Color.Purple,
     position: 'absolute',
     bottom: screenHeight * 0.1,
-    right: '6%',
-    width: '26%',
+    // right: '6%',
+    // width: '26%',
     alignItems: 'center',
-    paddingVertical: '9%',
+    // paddingVertical: '9%',
     borderRadius: screenHeight * 0.01,
+    right: screenWidth * 0.09,
+    paddingHorizontal: screenWidth * 0.07,
+    paddingVertical: screenHeight * 0.015,
   },
 });

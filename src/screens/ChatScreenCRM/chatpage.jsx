@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
@@ -436,6 +436,29 @@ const ChatPage = (props) => {
     setLoading(false);
   };
 
+  const handleMessageDeleted = useCallback((data) => {
+    try {
+      if (!data?.updatedMessages) {
+        throw new Error('Invalid message data received');
+      }
+      setChatMessages((prev) => {
+        const newMessages = prev.filter((msg) => msg._id !== data.messageId);
+
+        if (newMessages.length !== data.updatedMessages.length) {
+          return data.updatedMessages.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          );
+        }
+        return newMessages;
+      });
+
+      showSnackbar('Message deleted');
+    } catch (error) {
+      showSnackbar('Failed to update messages');
+    }
+  }, []);
+
   const sendNotificationMessage = (content) => {
     socket.emit('send_message', {
       from: userState.id,
@@ -490,9 +513,7 @@ const ChatPage = (props) => {
           tempMessages.sort((a, b) => (a.date < b.date ? 1 : -1))),
       ]);
     });
-    newSocket.on('Delete_message', (data, message) => {
-      setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
-    });
+    newSocket.on('Message_deleted', handleMessageDeleted);
 
     //this is for the do-day portal screen
     newSocket.on('receive_points', (data) => {
@@ -583,6 +604,7 @@ const ChatPage = (props) => {
       socket.emit('Delete_message', {
         groupId: props.route.params.group._id,
         id: deleteId,
+        userId: userState?.id,
       });
 
       setIsLongPressed(false);
