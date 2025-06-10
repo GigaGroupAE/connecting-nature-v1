@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,20 +6,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "react-native-vector-icons";
-import Color from "../../../assets/colors/Color";
+} from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from 'react-native-vector-icons';
+import Color from '../../../assets/colors/Color';
 
 //utils
 
-import { BASE_URL } from "../../../CONSTANTS";
+import { BASE_URL } from '../../../CONSTANTS';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 export default function CampaignCard(props) {
-  const [teamAuser, setteamAuser] = useState("");
-  const [teamBuser, setteamBuser] = useState("");
+  const [teamAuser, setteamAuser] = useState('');
+  const [teamBuser, setteamBuser] = useState('');
   //here i want to calculate the countdown
 
   useEffect(() => {
@@ -146,7 +146,7 @@ export default function CampaignCard(props) {
         </View>
       </View>
       <View style={styles.footer}>
-        <Ionicons name="md-location-outline" size={20} color={Color.White} />
+        <Ionicons name="location-outline" size={20} color={Color.White} />
         <Text style={styles.footerText}>{`${props.location}`}</Text>
         {/* <Text style={styles.date}>{props.date}</Text> */}
 
@@ -169,22 +169,22 @@ const styles = StyleSheet.create({
   //   backgroundColor: "#841CA9",
   // },
   pollHeader: {
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   icons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    position: "absolute",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
     right: 0,
   },
   headText: {
     marginLeft: Width * 0.018,
     fontSize: Height * 0.02,
-    fontWeight: "700",
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontWeight: '700',
+    fontFamily: 'Roboto',
+    color: '#fff',
   },
   // threeDots: {
   //   width: 16,
@@ -193,10 +193,10 @@ const styles = StyleSheet.create({
   // },
   titleText: {
     paddingTop: Height * 0.014,
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontFamily: 'Roboto',
+    color: '#fff',
     fontSize: Height * 0.027,
-    fontWeight: "700",
+    fontWeight: '700',
     lineHeight: 25,
   },
   teamContainer: {
@@ -205,30 +205,30 @@ const styles = StyleSheet.create({
     marginTop: Height * 0.015,
   },
   teamA: {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingBottom: Height * 0.02,
   },
   teamB: {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingBottom: Height * 0.022,
   },
   teamTitle: {
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontFamily: 'Roboto',
+    color: '#fff',
     fontSize: Height * 0.02,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   teamText: {
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontFamily: 'Roboto',
+    color: '#fff',
     fontSize: Height * 0.019,
-    fontWeight: "400",
+    fontWeight: '400',
     marginLeft: Width * 0.039,
   },
   userContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginLeft: Width * 0.045,
   },
   userAvatar: {
@@ -238,25 +238,25 @@ const styles = StyleSheet.create({
     marginHorizontal: -Width * 0.012,
   },
   footer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingTop: Height * 0.006,
   },
   footerText: {
     marginLeft: Width * 0.016,
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontFamily: 'Roboto',
+    color: '#fff',
     fontSize: Height * 0.017,
-    fontWeight: "600",
-    alignSelf: "center",
+    fontWeight: '600',
+    alignSelf: 'center',
   },
   date: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
-    fontFamily: "Roboto",
-    color: "#fff",
+    fontFamily: 'Roboto',
+    color: '#fff',
     fontSize: Height * 0.018,
-    fontWeight: "700",
-    alignSelf: "center",
+    fontWeight: '700',
+    alignSelf: 'center',
   },
 });

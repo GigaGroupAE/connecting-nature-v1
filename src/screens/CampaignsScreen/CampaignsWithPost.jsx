@@ -298,7 +298,10 @@ const CampaignsWithPost = () => {
               onScroll={(event) => handleScroll(event)}
               scrollEventThrottle={16}
               keyExtractor={(item) => `${item?._id}`}
-              onEndReachedThreshold={0.5}
+              onEndReachedThreshold={0.8}
+              initialNumToRender={5}
+              maxToRenderPerBatch={10}
+              windowSize={5}
               onEndReached={handleEndReached}
               ListFooterComponent={isFetchingNextPage && <ActivityIndicator />}
             />
