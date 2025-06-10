@@ -16,7 +16,7 @@ import { axiosInstance } from '../../../axiosInstance';
 import { screenHeight } from '../../utils/ScreenDimensions';
 
 const mutation = async (params) => {
-  let url = `/campaigns/invite-response/${params.campaignId}`;
+  let url = `/campaigns/invite-response/${params?.campaignId}`;
   const { data } = await axiosInstance.patch(url, {
     status: params.newStatus,
     notificationId: params.notificationId,
@@ -51,6 +51,8 @@ const CampaignNotification = ({ data, startAnimation }) => {
     },
   });
 
+  console.log(data, 'data');
+
   return (
     <View style={[styles.notificationCardWrapper]}>
       <View style={styles.cardContentContainer}>
@@ -60,7 +62,7 @@ const CampaignNotification = ({ data, startAnimation }) => {
           <Text style={styles.title}>Giga Management</Text>
           <Text
             style={styles.bodyText}
-          >{`Invited you to participate  in  ${data.data.content.campaignName}`}</Text>
+          >{`Invited you to participate  in  ${data?.data?.content?.campaignName}`}</Text>
           {/* //BUTTONS HERE  */}
           <View style={{ flexDirection: 'row' }}>
             <Btn

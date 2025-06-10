@@ -56,8 +56,8 @@ const ChatPageCN = (props) => {
         return filteredMessages.sort((a, b) => (a.date < b.date ? 1 : -1));
       });
     });
-    newSocket.on('Deleted_messageCN', (data, message) => {
-      setChatMessages(message.sort((a, b) => (a.date < b.date ? 1 : -1)));
+    newSocket.on('Deleted_messageCN', (messageId, messages) => {
+      setChatMessages(messages?.sort((a, b) => (a.date < b.date ? 1 : -1)));
     });
     setSocket(newSocket);
     return () => {

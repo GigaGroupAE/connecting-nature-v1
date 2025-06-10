@@ -10,59 +10,59 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   ScrollView,
-} from "react-native";
-import React, { useRef } from "react";
+} from 'react-native';
+import React, { useRef } from 'react';
 // import { Multiply } from "react-native-image-filter-kit";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import HeaderNormal from "../../components/HeaderNormal";
-import CommentInput from "../../components/CommentInput";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import moment from "moment";
-import { useUserState } from "./../../slices/userSlice";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import * as Sharing from "expo-sharing";
-import ViewShot from "react-native-view-shot";
-import { FontAwesome, Foundation } from "react-native-vector-icons";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import HeaderNormal from '../../components/HeaderNormal';
+import CommentInput from '../../components/CommentInput';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import moment from 'moment';
+import { useUserState } from './../../slices/userSlice';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Sharing from 'expo-sharing';
+import ViewShot from 'react-native-view-shot';
+import { FontAwesome, Foundation } from 'react-native-vector-icons';
 
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 const socket = io.connect(`${BASE_URL}/CN`);
 //util function for time
-import { calculateTimeDifference } from "../../utils/timeDifference";
-import { returnCountDown } from "../../utils/countdown";
+import { calculateTimeDifference } from '../../utils/timeDifference';
+import { returnCountDown } from '../../utils/countdown';
 
 //BASE_URL
-import { BASE_URL } from "../../../CONSTANTS";
-import Color from "../../../assets/colors/Color";
-import { useStateContext } from "../../contexts/ContextProvider";
-import { axiosInstance } from "../../../axiosInstance";
-import LivePointsAction from "../../components/LivePointsAction";
-import CampaignTimeLeft from "../../components/CampaignTimeLeft";
-import LivePointsTeamMember from "../../components/LivePointsTeamMember";
-import { Modal, Portal } from "react-native-paper";
-import { scale } from "react-native-size-matters";
-import LivePollTimeCal from "../../components/LivePollTimeCal";
+import { BASE_URL } from '../../../CONSTANTS';
+import Color from '../../../assets/colors/Color';
+import { useStateContext } from '../../contexts/ContextProvider';
+import { axiosInstance } from '../../../axiosInstance';
+import LivePointsAction from '../../components/LivePointsAction';
+import CampaignTimeLeft from '../../components/CampaignTimeLeft';
+import LivePointsTeamMember from '../../components/LivePointsTeamMember';
+import { Modal, Portal } from 'react-native-paper';
+import { scale } from 'react-native-size-matters';
+import LivePollTimeCal from '../../components/LivePollTimeCal';
 
 export default function LivePoll(props) {
   const routerr = useRoute();
   const campaign = routerr?.params?.campaign;
   const timeLeft = routerr?.params?.countDown;
-  let date = moment().utcOffset("+05:00");
+  let date = moment().utcOffset('+05:00');
   const [Messages, setMessages] = useState(
     props.route.params.campaign.messages,
   );
-  const [tempComment, setTempComment] = useState("");
-  const [leadingTeam, setleadingTeam] = useState("");
-  const [equalpoints, setequalpoints] = useState("");
-  const [lossingTeam, setlossingTeam] = useState("");
+  const [tempComment, setTempComment] = useState('');
+  const [leadingTeam, setleadingTeam] = useState('');
+  const [equalpoints, setequalpoints] = useState('');
+  const [lossingTeam, setlossingTeam] = useState('');
   const [timeCal, settimeCal] = useState(false);
-  const [teamAuser, setteamAuser] = useState("");
+  const [teamAuser, setteamAuser] = useState('');
   const [completionExecuted, setCompletionExecuted] = useState(false);
-  const [teamBuser, setteamBuser] = useState("");
+  const [teamBuser, setteamBuser] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const doday = props.route.params.campaign;
@@ -82,7 +82,7 @@ export default function LivePoll(props) {
     //      };
     // }
     Keyboard.dismiss();
-    if (tempComment !== "") {
+    if (tempComment !== '') {
       let newcomments = Messages;
       newcomments.push({
         description: tempComment,
@@ -98,11 +98,11 @@ export default function LivePoll(props) {
           messages: newcomments,
         })
         .then((res) => {
-          socket.emit("send_message", res.data.messages);
+          socket.emit('send_message', res.data.messages);
         })
         .catch((e) => console.log(e));
     } else {
-      alert("Cannot post an empty Comment");
+      alert('Cannot post an empty Comment');
     }
   };
 
@@ -110,7 +110,7 @@ export default function LivePoll(props) {
     navigation.goBack();
   };
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    socket.on('receive_message', (data) => {
       setMessages(data);
     });
   }, [socket]);
@@ -126,7 +126,7 @@ export default function LivePoll(props) {
     let compareDate = new Date(doday.endTime);
     const interval = setInterval(() => {
       const newCountDown = returnCountDown(compareDate);
-      if (newCountDown === "-1") {
+      if (newCountDown === '-1') {
         clearInterval(interval);
         settimeCal(true);
       } else {
@@ -150,13 +150,13 @@ export default function LivePoll(props) {
   }, []);
   useEffect(() => {
     if (campaign?.teamA?.points > campaign?.teamB?.points) {
-      setleadingTeam("Team A");
-      setlossingTeam("Team B");
+      setleadingTeam('Team A');
+      setlossingTeam('Team B');
     } else if (campaign?.teamA?.points < campaign?.teamB?.points) {
-      setleadingTeam("Team B");
-      setlossingTeam("Team A");
+      setleadingTeam('Team B');
+      setlossingTeam('Team A');
     } else {
-      setequalpoints("both");
+      setequalpoints('both');
     }
     setCompletionExecuted(true);
   }, [countDown]);
@@ -176,12 +176,12 @@ export default function LivePoll(props) {
 
   useEffect(() => {
     let newSocket = io(BASE_URL, { auth: { token: userState.token } });
-    newSocket.on("connect", () => {
-      newSocket.emit("join", { id: doday?.group?._id });
+    newSocket.on('connect', () => {
+      newSocket.emit('join', { id: doday?.group?._id });
     });
 
-    newSocket.on("receive_points", (data) => {
-      console.log("👑", "received pointes");
+    newSocket.on('receive_points', (data) => {
+      console.log('👑', 'received pointes');
       if (data.error) {
         showSnackbar(data.message);
         return;
@@ -198,8 +198,8 @@ export default function LivePoll(props) {
     //setGlobalSocket(newSocket);
 
     return () => {
-      console.log("leaving ❌❌");
-      newSocket.emit("leave", { id: doday?.group?._id });
+      console.log('leaving ❌❌');
+      newSocket.emit('leave', { id: doday?.group?._id });
       newSocket.disconnect();
       //setGlobalSocket(null);
     };
@@ -220,9 +220,9 @@ export default function LivePoll(props) {
 
     // Share the captured image
     await Sharing.shareAsync(imageUri, {
-      mimeType: "image/jpeg",
-      dialogTitle: "Share this image",
-      UTI: "public.jpeg",
+      mimeType: 'image/jpeg',
+      dialogTitle: 'Share this image',
+      UTI: 'public.jpeg',
     });
     setModalVisible(false);
   };
@@ -233,7 +233,7 @@ export default function LivePoll(props) {
 
   const handlePointsShareFeed = async () => {
     const imageUri = await viewShotRef.current.capture();
-    navigation.navigate("PointsSharePost", imageUri);
+    navigation.navigate('PointsSharePost', imageUri);
     setModalVisible(false);
   };
 
@@ -248,7 +248,7 @@ export default function LivePoll(props) {
       if (res.data) {
       }
     } catch (error) {
-      console.log(error, "error while campaign archive");
+      console.log(error, 'error while campaign archive');
     }
   };
 
@@ -259,9 +259,9 @@ export default function LivePoll(props) {
 
     let description;
 
-    if (equalpoints === "both") {
+    if (equalpoints === 'both') {
       description =
-        "In a thrilling showdown, Team A and Team B have battled to a spectacular tie! 🏆 Both teams showcased incredible talent and resilience, and the result reflects the true spirit of competition. 🌟🙌 #TieGame #Sportsmanship #Unstoppable 🥇🥈";
+        'In a thrilling showdown, Team A and Team B have battled to a spectacular tie! 🏆 Both teams showcased incredible talent and resilience, and the result reflects the true spirit of competition. 🌟🙌 #TieGame #Sportsmanship #Unstoppable 🥇🥈';
     } else {
       description = `And the winner is... ${leadingTeam}! 🏆 Their determination and teamwork shone brightly. 🌟 Kudos to ${lossingTeam} for an outstanding effort! 🙌 #Champions #Teamwork`;
     }
@@ -269,19 +269,19 @@ export default function LivePoll(props) {
     try {
       const imageUri = await viewShotRef.current.capture();
       const formData = new FormData();
-      formData.append("description", description);
-      formData.append("postedby", JSON.stringify("654fece4d4690e92e1609c6e"));
-      formData.append("media", {
-        name: "image/jpeg",
+      formData.append('description', description);
+      formData.append('postedby', JSON.stringify('654fece4d4690e92e1609c6e'));
+      formData.append('media', {
+        name: 'image/jpeg',
         uri: imageUri,
-        type: "image/jpeg",
+        type: 'image/jpeg',
       });
 
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-          "auth-token": userState.token,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          'auth-token': userState.token,
         },
       };
       const { data } = await axios.post(
@@ -290,19 +290,19 @@ export default function LivePoll(props) {
         config,
       );
       showSnackbar(
-        "The campaign time is over. Thank you for your participation",
+        'The campaign time is over. Thank you for your participation',
       );
       handleEndCampaign();
-      navigation.navigate("Home");
+      navigation.navigate('Home');
     } catch (error) {
-      console.log(error, "Error is");
+      console.log(error, 'Error is');
     }
   };
 
   useEffect(() => {
     if (
       timeCal &&
-      campaign?.status !== "archived" &&
+      campaign?.status !== 'archived' &&
       countDown?.days === 0 &&
       countDown?.hours === 0 &&
       countDown?.minutes === 0
@@ -321,7 +321,7 @@ export default function LivePoll(props) {
           { messages: newcomments },
           {
             headers: {
-              "auth-token": userState.token,
+              'auth-token': userState.token,
             },
           },
         )
@@ -340,7 +340,7 @@ export default function LivePoll(props) {
           { messages: newcomments },
           {
             headers: {
-              "auth-token": userState.token,
+              'auth-token': userState.token,
             },
           },
         )
@@ -360,7 +360,7 @@ export default function LivePoll(props) {
         { messsages: newcomments },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         },
       )
@@ -377,7 +377,7 @@ export default function LivePoll(props) {
         { messages: newcomments },
         {
           headers: {
-            "auth-token": userState.token,
+            'auth-token': userState.token,
           },
         },
       )
@@ -387,9 +387,9 @@ export default function LivePoll(props) {
       .catch((e) => console.log(e));
   };
   return (
-    <SafeAreaView style={{ backgroundColor: "white", height: "100%" }}>
+    <SafeAreaView style={{ backgroundColor: 'white', height: '100%' }}>
       <ScrollView>
-        <HeaderNormal title={"Do-Day Live Poll"} back={handlebackpress} />
+        <HeaderNormal title={'Do-Day Live Poll'} back={handlebackpress} />
         <View style={styles.mainContainer}>
           <KeyboardAvoidingView behavior="padding">
             <View style={styles.sectionContainer}>
@@ -409,13 +409,13 @@ export default function LivePoll(props) {
               <ViewShot
                 ref={viewShotRef}
                 options={{
-                  format: "jpg",
+                  format: 'jpg',
                   quality: 0.9,
                 }}
               >
                 <View style={styles.teamsContainer}>
                   <ImageBackground
-                    source={require("../../../assets/vs-bg.png")}
+                    source={require('../../../assets/vs-bg.png')}
                     resizeMode="cover"
                   >
                     <View style={styles.blendMode}>
@@ -427,12 +427,12 @@ export default function LivePoll(props) {
                               ? {
                                   uri: `${BASE_URL}/images/${doday?.teamA?.leader?.profile}`,
                                 }
-                              : require("../../../assets/avatar-placeholder.png")
+                              : require('../../../assets/avatar-placeholder.png')
                           }
                         />
 
                         <Text style={styles.leaderUserName}>
-                          {doday.teamA?.leader?.fullName || "No Leader"}
+                          {doday.teamA?.leader?.fullName || 'No Leader'}
                         </Text>
                         <Text style={styles.teamText}>Team A</Text>
 
@@ -448,12 +448,12 @@ export default function LivePoll(props) {
                               ? {
                                   uri: `${BASE_URL}/images/${doday?.teamB?.leader?.profile}`,
                                 }
-                              : require("../../../assets/avatar-placeholder.png")
+                              : require('../../../assets/avatar-placeholder.png')
                           }
                         />
 
                         <Text style={styles.leaderUserName}>
-                          {doday?.teamB?.leader?.fullName || "No Leader"}
+                          {doday?.teamB?.leader?.fullName || 'No Leader'}
                         </Text>
                         <Text style={styles.teamText}>Team B</Text>
 
@@ -488,7 +488,7 @@ export default function LivePoll(props) {
                 <View style={styles.noComment}>
                   <Image
                     style={styles.noCommentImage}
-                    source={require("../../../assets/no-comments.png")}
+                    source={require('../../../assets/no-comments.png')}
                     resizeMode="contain"
                   />
                   <View style={styles.noCommentContainer}>
@@ -516,7 +516,7 @@ export default function LivePoll(props) {
                             uri: `${BASE_URL}/images/${
                               item.profile
                                 ? item.profile
-                                : "no-profile-picture-placeholder.png"
+                                : 'no-profile-picture-placeholder.png'
                             }`,
                           }}
                         />
@@ -525,8 +525,8 @@ export default function LivePoll(props) {
                           <View style={styles.nameFollow}>
                             <TouchableOpacity
                               onPress={() => {
-                                console.log("we have this information", item);
-                                navigation.navigate("UserProfile", {
+                                console.log('we have this information', item);
+                                navigation.navigate('UserProfile', {
                                   userPhoneNumber: item.postedby,
                                 });
                               }}
@@ -547,7 +547,7 @@ export default function LivePoll(props) {
                       <Text
                         style={{
                           ...styles.timeText,
-                          alignSelf: "flex-start",
+                          alignSelf: 'flex-start',
                           left: Width * 0.16,
                         }}
                       >
@@ -562,7 +562,7 @@ export default function LivePoll(props) {
         </View>
       </ScrollView>
 
-      {campaign?.status === "archived" ? (
+      {campaign?.status === 'archived' ? (
         <View style={styles.lockCampaign}>
           <Foundation name="lock" style={styles.lockIcon} />
           <Text style={styles.campaginCloseTitle}>
@@ -572,7 +572,7 @@ export default function LivePoll(props) {
         </View>
       ) : (
         <CommentInput
-          placeholder={"Write your message..."}
+          placeholder={'Write your message...'}
           onPress={handlecomment}
           onchange={setTempComment}
           onFocus={handleTextInputFocus}
@@ -595,7 +595,7 @@ export default function LivePoll(props) {
               onPress={handlePointsShareFeed}
             >
               <Image
-                source={require("../../../assets/postLogo.png")}
+                source={require('../../../assets/postLogo.png')}
                 style={styles.image}
               />
               <Text style={styles.title}>Share on Feeds</Text>
@@ -616,71 +616,71 @@ export default function LivePoll(props) {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   sectionContainer: {
-    backgroundColor: "#F9F9F9",
+    backgroundColor: '#F9F9F9',
     paddingHorizontal: Width * 0.04,
     paddingVertical: Height * 0.015,
   },
   cardContainer: {
-    backgroundColor: "#F9F9F9",
-    width: "100%",
+    backgroundColor: '#F9F9F9',
+    width: '100%',
   },
 
   pollHeading: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   headingText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.Black,
     fontSize: Height * 0.032,
-    width: "100%",
+    width: '100%',
   },
   pollDesc: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Grey,
     fontSize: Height * 0.02,
   },
   teamsContainer: {
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.DarkBlue,
   },
   blendMode: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    alignContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignContent: 'center',
 
     paddingHorizontal: Width * 0.08,
     paddingVertical: Height * 0.015,
   },
   teams: {
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: Height * 0.012,
   },
   teamText: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.017,
-    width: "100%",
-    textAlign: "center",
+    width: '100%',
+    textAlign: 'center',
   },
   points: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.045,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: Height * 0.012,
   },
   membersContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   teamMembers: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     // paddingHorizontal: 45,
     paddingVertical: Height * 0.022,
 
@@ -697,69 +697,69 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   memberText: {
-    fontFamily: "Roboto",
-    color: "#707070",
+    fontFamily: 'Roboto',
+    color: '#707070',
     fontSize: Height * 0.017,
-    fontWeight: "400",
+    fontWeight: '400',
     marginLeft: Width * 0.022,
   },
   userContainer: {
     marginLeft: 8,
   },
   leaderUserName: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: Height * 0.023,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: Height * 0.012,
   },
   footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     // paddingBottom: 15,
     // paddingHorizontal: 30,
   },
   memberTextBold: {
-    fontFamily: "Roboto",
-    color: "#707070",
+    fontFamily: 'Roboto',
+    color: '#707070',
     fontSize: 12,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 
   // FlatList StyleSheet Code Start ----------------------------------------------------
 
   mainBody: {
     // alignItems: "center",
-    width: "100%",
+    width: '100%',
     paddingHorizontal: 25,
     marginVertical: 5,
   },
 
   timeText: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: Height * 0.017,
-    fontWeight: "400",
-    color: "#707070",
+    fontWeight: '400',
+    color: '#707070',
     opacity: 0.7,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
     // marginLeft: 5,
   },
 
   commentMainContainer: {
     marginTop: 7,
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   commentTextContainer: {
     marginLeft: 15,
-    alignItems: "baseline",
-    alignSelf: "flex-start",
-    backgroundColor: "#F5F6FA",
+    alignItems: 'baseline',
+    alignSelf: 'flex-start',
+    backgroundColor: '#F5F6FA',
     padding: 7,
     borderRadius: 8,
     marginRight: 48,
@@ -770,69 +770,70 @@ const styles = StyleSheet.create({
     height: 40,
   },
   nameFollow: {
-    flexDirection: "row",
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#515151",
+    fontWeight: '600',
+    color: '#515151',
   },
   category: {
     fontSize: 14,
-    fontWeight: "400",
-    color: "#4582C3",
+    fontWeight: '400',
+    color: '#4582C3',
     marginLeft: 6,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
   commentText: {
     fontSize: 13,
-    fontWeight: "500",
-    color: "#606060",
+    fontWeight: '500',
+    color: '#606060',
     lineHeight: 18,
     marginTop: 3,
   },
   action: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginLeft: 57,
   },
   time: {
     fontSize: 12,
-    fontWeight: "500",
-    color: "#585858",
+    fontWeight: '500',
+    color: '#585858',
     lineHeight: 21,
   },
   like: {
     marginLeft: 17,
     fontSize: 12,
-    color: "#585858",
-    fontWeight: "500",
+    color: '#585858',
+    fontWeight: '500',
     lineHeight: 21,
   },
 
   modal: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   module: {
-    alignItems: "flex-end",
-    height: "30%",
+    alignItems: 'flex-end',
+    height: '30%',
   },
   modalContainer: {
     height: scale(150),
     width: scale(300),
     backgroundColor: Color.White,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderRadius: scale(8),
   },
   contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: scale(20),
     paddingVertical: scale(12),
   },
   title: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(17),
     paddingHorizontal: scale(12),
   },
@@ -840,10 +841,10 @@ const styles = StyleSheet.create({
     fontSize: scale(18),
   },
   crossIcon: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: scale(10),
     width: scale(60),
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
   cross: {
     fontSize: scale(20),
@@ -851,22 +852,22 @@ const styles = StyleSheet.create({
   image: {
     width: scale(20),
     height: scale(26),
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   lockCampaign: {
     backgroundColor: Color.LightBg,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: scale(12),
     paddingVertical: scale(8),
   },
   campaginCloseTitle: {
-    width: "96%",
-    fontFamily: "Roboto_400Regular",
+    width: '96%',
+    fontFamily: 'Roboto_400Regular',
     fontSize: scale(12),
     paddingLeft: scale(8),
     color: Color.Grey,
@@ -876,28 +877,28 @@ const styles = StyleSheet.create({
     color: Color.Yellow,
   },
   noComment: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   noCommentImage: {
     width: scale(80),
     height: scale(80),
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   noCommentHeading: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     fontSize: 14,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Black,
   },
   noCommentText: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
-    alignSelf: "center",
+    alignSelf: 'center',
     color: Color.Black,
   },
   noCommentContainer: {
-    position: "relative",
+    position: 'relative',
     bottom: scale(16),
   },
 });

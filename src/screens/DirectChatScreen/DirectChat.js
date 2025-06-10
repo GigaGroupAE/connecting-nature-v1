@@ -40,7 +40,7 @@ const fetchMessages = async () => {
   } catch (error) {}
 };
 
-export default function DirectChat(props, { route }) {
+export default function DirectChat(props) {
   const { setgroup } = useStateContext();
 
   const [isSearch, setIsSearch] = useState(false);

@@ -24,6 +24,7 @@ import moment from 'moment';
 import CommentInput from '../../components/CommentInput';
 import { calculateTimeDifference } from '../../utils/timeDifference';
 import AdminIcon from '../../components/AdminIcon';
+import { screenHeight } from '../../utils/ScreenDimensions';
 
 const width = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height;
@@ -385,12 +386,15 @@ const styles = StyleSheet.create({
 
   nameFollow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
+    justifyContent: 'center',
   },
   userName: {
     fontWeight: 'bold',
     color: Color.Black,
-    paddingRight: width * 0.03,
+    // paddingRight: width * 0.03,
+    fontSize: screenHeight * 0.016,
+    marginBottom: screenHeight * 0.002,
   },
   follow: {
     color: Color.Blue,
@@ -431,11 +435,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     overflow: 'hidden',
-  },
-  userName: {
-    fontFamily: 'Roboto_500Medium',
-    fontWeight: '500',
-    fontSize: height * 0.02,
   },
   postDuration: {
     fontSize: 14,
