@@ -64,10 +64,10 @@ export default function DirectChat(props) {
   const setPhotoForDirectChat = (props) => {
     if (props.members[0].member.phoneNumber === userState.phoneNumber) {
       const profile = props.members[1].member.profile;
-      return `${BASE_URL}/images/${profile}`;
+      return `${profile}`;
     } else {
       const profile = props.members[0].member.profile;
-      return `${BASE_URL}/images/${profile}`;
+      return `${profile}`;
     }
   };
   // const selectcontact = (props) => {

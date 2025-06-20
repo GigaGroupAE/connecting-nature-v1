@@ -153,7 +153,7 @@ const VolunteersScreen = ({ route }) => {
               <View key={idx} style={styles.userContainer}>
                 <View style={styles.imgContainer}>
                   <Image
-                    source={{ uri: `${BASE_URL}/images/${v.user.profile}` }}
+                    source={{ uri: `${v.user.profile}` }}
                     style={styles.userImg}
                   />
                   <View style={styles.nameContainer}>

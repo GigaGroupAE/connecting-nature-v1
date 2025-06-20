@@ -122,7 +122,7 @@ const GroupMembersList = ({ group }) => {
                 <View>
                   <Image
                     source={{
-                      uri: `${BASE_URL}/images/${item?.member?.profile}`,
+                      uri: `${item?.member?.profile}`,
                     }}
                     style={styles.userImage}
                   />

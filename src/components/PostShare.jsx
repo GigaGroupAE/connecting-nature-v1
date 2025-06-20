@@ -48,7 +48,7 @@ const PostShare = () => {
       if (route?.params?.post.media) {
         formData.append('media', {
           name: route?.params?.post.media.name,
-          uri: `${BASE_URL}/images/${route?.params?.post?.media.name}`,
+          uri: `${route?.params?.post?.media.name}`,
           type: route?.params?.post?.media.type,
         });
       } else {
@@ -127,7 +127,7 @@ const PostShare = () => {
         <View style={styles.postContent}>
           <Image
             style={styles.headerAvatar}
-            source={{ uri: `${BASE_URL}/images/${userState.profile}` }}
+            source={{ uri: `${userState.profile}` }}
           />
           <TextInput
             style={styles.inputField}
@@ -144,7 +144,7 @@ const PostShare = () => {
           <Image
             style={styles.selectedImages}
             resizeMode="center"
-            source={{ uri: `${BASE_URL}/images/${imageUrl}` }}
+            source={{ uri: `${imageUrl}` }}
           ></Image>
         </View>
       </View>

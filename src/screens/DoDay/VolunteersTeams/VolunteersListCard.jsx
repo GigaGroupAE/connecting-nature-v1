@@ -59,7 +59,7 @@ const VolunteersListCard = ({ data }) => {
             }}
           >
             <Image
-              source={{ uri: `${BASE_URL}/images/${data?.user?.profile}` }}
+              source={{ uri: `${data?.user?.profile}` }}
               style={styles.userImg}
             />
           </View>

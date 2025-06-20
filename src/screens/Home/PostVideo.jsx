@@ -2,7 +2,6 @@ import { Dimensions } from 'react-native';
 import React from 'react';
 import VideoPlayer from 'expo-video-player';
 import { useNavigation } from '@react-navigation/native';
-import { BASE_URL } from '../../../CONSTANTS';
 
 const PostVideo = (props) => {
   const navigation = useNavigation();
@@ -21,7 +20,7 @@ const PostVideo = (props) => {
             shouldPlay: false,
           });
           navigation.navigate('FullPostView', {
-            url: `${BASE_URL}/images/${post?.media?.name}`,
+            url: `${post?.media?.name}`,
             message: '',
             mediatype: 'video',
             //video: props.video,
@@ -36,7 +35,7 @@ const PostVideo = (props) => {
         isLooping: false,
         ref: video,
         source: {
-          uri: `${BASE_URL}/images/${post?.media?.name}`,
+          uri: `${post?.media?.name}`,
         },
         shouldPlay: false,
         resizeMode: 'contain',

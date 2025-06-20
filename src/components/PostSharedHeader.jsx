@@ -69,7 +69,7 @@ const PostSharedHeader = ({
             <Image
               style={styles.userAvatar}
               source={{
-                uri: `${BASE_URL}/images/${userImage}`,
+                uri: `${userImage}`,
                 cache: 'force-cache',
               }}
             />
@@ -132,7 +132,7 @@ const PostSharedHeader = ({
             <Image
               style={{ ...styles.userAvatar, width: 30, height: 30 }}
               source={{
-                uri: `${BASE_URL}/images/${ownerImage}`,
+                uri: `${ownerImage}`,
                 cache: 'force-cache',
               }}
             />

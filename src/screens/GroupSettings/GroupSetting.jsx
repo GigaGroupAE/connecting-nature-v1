@@ -163,7 +163,7 @@ function GroupSettings(props) {
       setmodalProfile(true);
     } else {
       navigation.navigate('ViewImage', {
-        url: `${BASE_URL}/${groupState?.groupPic}`,
+        url: `${groupState?.groupPic}`,
         message: '',
       });
     }
@@ -319,7 +319,7 @@ function GroupSettings(props) {
               source={
                 groupImage === null
                   ? {
-                      uri: `${BASE_URL}/${groupState?.groupPic}`,
+                      uri: `${groupState?.groupPic}`,
                     }
                   : { uri: groupImage }
               }
@@ -999,7 +999,7 @@ function GroupSettings(props) {
                 onPress={() => {
                   setmodalProfile(false),
                     navigation.navigate('ViewImage', {
-                      url: `${BASE_URL}/${groupState?.groupPic}`,
+                      url: `${groupState?.groupPic}`,
                       message: '',
                     });
                 }}

@@ -71,7 +71,7 @@ const CurrentMember = (props) => {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${props.data?.profile}` }}
+          source={{ uri: `${props.data?.profile}` }}
           style={styles.userImg}
         />
         <View

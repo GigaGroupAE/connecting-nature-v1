@@ -216,7 +216,7 @@ const SearchScreen = () => {
                           }}
                         >
                           <Image
-                            source={{ uri: `${BASE_URL}/images/${u.profile}` }}
+                            source={{ uri: `${u.profile}` }}
                             style={{
                               height: Dimensions.get('screen').height * 0.05,
                               width: Dimensions.get('screen').height * 0.05,

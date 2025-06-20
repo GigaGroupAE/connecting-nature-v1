@@ -67,7 +67,7 @@ const WinerCard = ({ winerTeam }) => {
           <View style={winerTeam === 'teamA' ? styles.winer : styles.loser}>
             <Image
               source={{
-                uri: `${BASE_URL}/images/${activeCampaign?.teamA?.leader?.profile}`,
+                uri: `${activeCampaign?.teamA?.leader?.profile}`,
               }}
               style={{
                 // width: Width * 0.2,
@@ -124,7 +124,7 @@ const WinerCard = ({ winerTeam }) => {
           <View style={winerTeam === 'teamB' ? styles.winer : styles.loser}>
             <Image
               source={{
-                uri: `${BASE_URL}/images/${activeCampaign?.teamB?.leader?.profile}`,
+                uri: `${activeCampaign?.teamB?.leader?.profile}`,
               }}
               style={{
                 width: 65,

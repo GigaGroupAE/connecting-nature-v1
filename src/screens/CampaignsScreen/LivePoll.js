@@ -425,7 +425,7 @@ export default function LivePoll(props) {
                           source={
                             doday?.teamA?.leader?.profile
                               ? {
-                                  uri: `${BASE_URL}/images/${doday?.teamA?.leader?.profile}`,
+                                  uri: `${doday?.teamA?.leader?.profile}`,
                                 }
                               : require('../../../assets/avatar-placeholder.png')
                           }
@@ -446,7 +446,7 @@ export default function LivePoll(props) {
                           source={
                             doday?.teamA?.leader?.profile
                               ? {
-                                  uri: `${BASE_URL}/images/${doday?.teamB?.leader?.profile}`,
+                                  uri: `${doday?.teamB?.leader?.profile}`,
                                 }
                               : require('../../../assets/avatar-placeholder.png')
                           }
@@ -513,7 +513,7 @@ export default function LivePoll(props) {
                           style={styles.commentAvatar}
                           //source={require("../../../assets/avatar-placeholder.png")}
                           source={{
-                            uri: `${BASE_URL}/images/${
+                            uri: `${
                               item.profile
                                 ? item.profile
                                 : 'no-profile-picture-placeholder.png'

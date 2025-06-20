@@ -36,12 +36,12 @@ const BiddingPropertyDetails = () => {
           <TouchableOpacity
             onPress={() =>
               navigate('ViewImage', {
-                url: `${BASE_URL}/images/${firstImage.filename}`,
+                url: `${firstImage.filename}`,
               })
             }
           >
             <Image
-              source={{ uri: `${BASE_URL}/images/${firstImage.filename}` }}
+              source={{ uri: `${firstImage.filename}` }}
               style={styles.image}
               contentFit="cover"
             />
@@ -59,7 +59,7 @@ const BiddingPropertyDetails = () => {
                   shouldPlay: false,
                 });
                 navigate('PostView', {
-                  url: `${BASE_URL}/images/${firstImage.filename}`,
+                  url: `${firstImage.filename}`,
                   message: '',
                   mediatype: 'video',
                   description: '',
@@ -74,7 +74,7 @@ const BiddingPropertyDetails = () => {
               isLooping: false,
               ref: video,
               source: {
-                uri: `${BASE_URL}/images/${firstImage.filename}`,
+                uri: `${firstImage.filename}`,
               },
               shouldPlay: false,
               resizeMode: ResizeMode.COVER,
@@ -93,7 +93,7 @@ const BiddingPropertyDetails = () => {
               <Pressable onPress={() => setfirstImage(item)}>
                 {item?.mimetype === 'image/jpeg' ? (
                   <Image
-                    source={{ uri: `${BASE_URL}/images/${item?.filename}` }}
+                    source={{ uri: `${item?.filename}` }}
                     style={{
                       width: screenWidth * 0.25,
                       height: screenHeight * 0.07,
@@ -140,7 +140,7 @@ const BiddingPropertyDetails = () => {
                         isLooping: false,
                         ref: video,
                         source: {
-                          uri: `${BASE_URL}/images/${item.filename}`,
+                          uri: `${item.filename}`,
                         },
                         shouldPlay: false,
                         resizeMode: ResizeMode.COVER,

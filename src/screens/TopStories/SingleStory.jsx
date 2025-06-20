@@ -105,7 +105,7 @@ const SingleStory = ({ post, refetch }) => {
       if (selectedStory.media) {
         formData.append('media', {
           name: selectedStory.media.name,
-          uri: `${BASE_URL}/images/${selectedStory.media.name}`,
+          uri: `${selectedStory.media.name}`,
           type: selectedStory.media.type,
         });
       } else {
@@ -184,7 +184,7 @@ const SingleStory = ({ post, refetch }) => {
       <View style={styles.container}>
         <Image
           style={styles.profilePicture}
-          source={{ uri: `${BASE_URL}/images/${post?.postedby?.profile}` }}
+          source={{ uri: `${post?.postedby?.profile}` }}
           // source={user}
           contentFit="cover"
         />
@@ -259,14 +259,14 @@ const SingleStory = ({ post, refetch }) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('PostView', {
-                  url: `${BASE_URL}/images/${post.media.name}`,
+                  url: `${post.media.name}`,
                   message: post.description,
                 })
               }
             >
               <Image
                 style={styles.postImage}
-                source={{ uri: `${BASE_URL}/images/${post?.media?.name}` }}
+                source={{ uri: `${post?.media?.name}` }}
                 contentFit="cover"
               />
             </TouchableOpacity>
@@ -287,7 +287,7 @@ const SingleStory = ({ post, refetch }) => {
                       shouldPlay: false,
                     });
                     navigation.navigate('PostView', {
-                      url: `${BASE_URL}/images/${post.media.name}`,
+                      url: `${post.media.name}`,
                       message: '',
                       mediatype: 'video',
                       description: post.description,
@@ -301,7 +301,7 @@ const SingleStory = ({ post, refetch }) => {
                   isLooping: false,
                   ref: video,
                   source: {
-                    uri: `${BASE_URL}/images/${post.media.name}`,
+                    uri: `${post.media.name}`,
                   },
                   shouldPlay: false,
                   resizeMode: 'contain',

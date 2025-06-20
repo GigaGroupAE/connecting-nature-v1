@@ -62,10 +62,10 @@ export default function ChatList() {
     if (props.members[0].phoneNumber === userState.phoneNumber) {
       const profile = props.members[1].profile;
 
-      return `${BASE_URL}/images/${profile}`;
+      return `${profile}`;
     } else {
       const profile = props.members[0].profile;
-      return `${BASE_URL}/images/${profile}`;
+      return `${profile}`;
     }
   };
 

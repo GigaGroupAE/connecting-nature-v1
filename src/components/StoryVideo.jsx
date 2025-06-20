@@ -19,7 +19,7 @@ const StoryVideo = ({ postVideo, videoAuther, videoDescription }) => {
             shouldPlay: false,
           });
           navigation.navigate('PostView', {
-            url: `${BASE_URL}/images/${postVideo}`,
+            url: `${postVideo}`,
             message: '',
             mediatype: 'video',
             description: videoDescription,
@@ -35,7 +35,7 @@ const StoryVideo = ({ postVideo, videoAuther, videoDescription }) => {
         isLooping: false,
         ref: video,
         source: {
-          uri: `${BASE_URL}/images/${postVideo}`,
+          uri: `${postVideo}`,
         },
         shouldPlay: false,
         resizeMode: 'contain',

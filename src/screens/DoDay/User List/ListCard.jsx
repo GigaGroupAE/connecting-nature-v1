@@ -53,7 +53,7 @@ const ListCard = (props) => {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${props?.user?.profile}` }}
+          source={{ uri: `${props?.user?.profile}` }}
           style={styles.userImg}
         />
         <View

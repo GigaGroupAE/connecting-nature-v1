@@ -40,7 +40,7 @@ const CommentItem = ({ item }) => {
         <Image
           style={styles.userImg}
           source={{
-            uri: `${BASE_URL}/images/${item.commented_by.profile}`,
+            uri: `${item.commented_by.profile}`,
           }}
         />
       </View>
@@ -161,7 +161,7 @@ const PostViewComments = ({ post }) => {
       if (post.media) {
         formData.append('media', {
           name: post?.media?.name,
-          uri: `${BASE_URL}/images/${post?.media?.name}`,
+          uri: `${post?.media?.name}`,
           type: post?.media?.type,
         });
       } else {

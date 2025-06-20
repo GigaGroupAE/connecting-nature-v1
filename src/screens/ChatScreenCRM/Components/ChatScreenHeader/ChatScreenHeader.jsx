@@ -46,14 +46,12 @@ const ChatScreenHeader = (props) => {
         });
 
         let memb = member[0];
-        setPhoto(`${BASE_URL}/images/${memb.member.profile}`);
+        setPhoto(`${memb.member.profile}`);
         settitle(memb.member.fullName);
         setsubtitle(memb.member.type);
       }
     } else {
-      console.log('ELSE CASE ---');
-      console.log('gropusatee------', groupState.groupPic);
-      setPhoto(`${BASE_URL}/images/${groupState.groupPic}`);
+      setPhoto(`${groupState.groupPic}`);
       settitle(group.title);
       let tempsubtitle = '';
       group?.members?.map((m, index) => {

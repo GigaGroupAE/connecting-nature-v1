@@ -28,7 +28,7 @@ const LikeCommentNotification = ({ data }) => {
   return (
     <TouchableOpacity style={styles.outerDiv} onPress={handleNavigation}>
       <Image
-        source={{ uri: `${BASE_URL}/images/${data?.body?.user?.profile}` }}
+        source={{ uri: `${data?.body?.user?.profile}` }}
         style={styles.avatar}
       />
       <View style={{ marginLeft: '5%' }}>

@@ -138,7 +138,7 @@ export default function BottomTab(props) {
         /> */}
         <Image
           style={styles.headerAvatar}
-          source={{ uri: `${BASE_URL}/images/${userstate.profile}` }}
+          source={{ uri: `${userstate.profile}` }}
           contentFit="cover"
         />
       </Pressable>

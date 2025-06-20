@@ -98,10 +98,7 @@ const List = ({ data, CurrentPage }) => {
               paddingVertical: Height * 0.005,
             }}
           >
-            <Image
-              source={{ uri: `${BASE_URL}/images/${data.profile}` }}
-              style={styles.userImg}
-            />
+            <Image source={{ uri: `${data.profile}` }} style={styles.userImg} />
           </View>
           <View
             style={{

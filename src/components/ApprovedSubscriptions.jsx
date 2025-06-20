@@ -37,7 +37,7 @@ const ApprovedSubscriptions = ({ item, refetch }) => {
                 >
                   <Image
                     source={{
-                      uri: `${BASE_URL}/images/${item?.requestedBy?.profile}`,
+                      uri: `${item?.requestedBy?.profile}`,
                     }}
                     style={styles.image}
                   />

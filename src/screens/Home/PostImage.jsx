@@ -11,7 +11,7 @@ const PostImage = (props) => {
 
   const handleNavigation = () => {
     navigation.navigate('FullPostView', {
-      url: `${BASE_URL}/images/${post?.media?.name}`,
+      url: `${post?.media?.name}`,
       message: '',
       post: post,
       screen: 'home',
@@ -31,7 +31,7 @@ const PostImage = (props) => {
       <Image
         style={imageStyle}
         source={{
-          uri: `${BASE_URL}/images/${post?.media?.name}`,
+          uri: `${post?.media?.name}`,
         }}
         contentFit="cover"
       />

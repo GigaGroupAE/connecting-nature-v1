@@ -1,6 +1,6 @@
 //
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,31 +11,31 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
-} from "react-native";
-import HeaderNormal from "../../components/HeaderNormal";
-import Color from "../../../assets/colors/Color";
-import { useUserState } from "../../slices/userSlice";
+} from 'react-native';
+import HeaderNormal from '../../components/HeaderNormal';
+import Color from '../../../assets/colors/Color';
+import { useUserState } from '../../slices/userSlice';
 
-import { BASE_URL } from "../../../CONSTANTS";
-import { useStateContext } from "../../contexts/ContextProvider";
-import Icon from "../../../assets/BlockedUserIcon.png";
+import { BASE_URL } from '../../../CONSTANTS';
+import { useStateContext } from '../../contexts/ContextProvider';
+import Icon from '../../../assets/BlockedUserIcon.png';
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
+const height = Dimensions.get('screen').height;
+const width = Dimensions.get('screen').width;
 
 //axios instance
-import { axiosInstance } from "../../../axiosInstance";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+import { axiosInstance } from '../../../axiosInstance';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 //react query
 
 // TODO : ADD SOME UI IF THERE IS NO BLOCKED USER
 
 const fetchBlockedUsers = async () => {
-  const { data } = await axiosInstance.get("/user/get-blockedUsers");
+  const { data } = await axiosInstance.get('/user/get-blockedUsers');
   return data;
 };
 const unblockMutationFn = async (id) => {
@@ -49,14 +49,14 @@ const BlockedUsers = () => {
     isLoading: rqIsLoading,
     error: rqError,
   } = useQuery({
-    queryKey: ["BlockedUsers"],
+    queryKey: ['BlockedUsers'],
     queryFn: fetchBlockedUsers,
     staleTime: 1000 * 10, //data will go stale after 10 secs
   });
   const unblockUserMutation = useMutation({
     mutationFn: unblockMutationFn,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["BlockedUsers"]);
+      queryClient.invalidateQueries(['BlockedUsers']);
     },
   });
   const navigation = useNavigation();
@@ -66,26 +66,26 @@ const BlockedUsers = () => {
   if (rqIsLoading)
     return (
       <ActivityIndicator
-        style={{ position: "absolute", bottom: "20%", left: "48%" }}
-        size={"large"}
+        style={{ position: 'absolute', bottom: '20%', left: '48%' }}
+        size={'large'}
         color={Color.Blue}
       />
     );
 
   if (rqError) {
-    console.log("error is ", rqError);
-    Alert.alert("error", rqError.data);
+    console.log('error is ', rqError);
+    Alert.alert('error', rqError.data);
     return;
   }
 
   const handlePress = async (id) => {
-    console.log("unblock pressed");
+    console.log('unblock pressed');
     try {
       setLoading(true);
       await unblockUserMutation.mutateAsync(id);
       setLoading(false);
     } catch (error) {
-      console.log("error while pressing unblock button is  ", error);
+      console.log('error while pressing unblock button is  ', error);
       setLoading(false);
     }
   };
@@ -94,7 +94,7 @@ const BlockedUsers = () => {
     return (
       <View style={styles.container}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${item.profile}` }}
+          source={{ uri: `${item.profile}` }}
           style={styles.profilePicture}
         />
         <View style={styles.userInfo}>
@@ -117,18 +117,18 @@ const BlockedUsers = () => {
       <CustomStatsBar backgroundColor={Color.White} />
       <View style={{ flex: 1 }}>
         <HeaderNormal title="Blocked Users" />
-        <View style={{ backgroundColor: Color.White, height: "100%" }}>
+        <View style={{ backgroundColor: Color.White, height: '100%' }}>
           {rqData?.user?.blockedUsers?.length === 0 ? (
             <View
               style={{
                 flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <View
                 style={{
-                  alignItems: "center",
+                  alignItems: 'center',
                   marginBottom: height * 0.18,
                   // flex: 1,
                 }}
@@ -141,7 +141,7 @@ const BlockedUsers = () => {
                 <Text style={styles.subHeading}>at the moment .</Text>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => navigation.navigate("SearchScreen")}
+                  onPress={() => navigation.navigate('SearchScreen')}
                 >
                   <Text style={styles.buttonTitle}>Find Friends</Text>
                 </TouchableOpacity>
@@ -162,13 +162,13 @@ const BlockedUsers = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 13,
     paddingHorizontal: 20,
     // backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: '#ccc',
     backgroundColor: Color.White,
   },
   profilePicture: {
@@ -176,19 +176,19 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     borderRadius: 30,
     marginRight: 18,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   userInfo: {
     flex: 1,
   },
   name: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#707070",
+    fontWeight: 'bold',
+    color: '#707070',
   },
   location: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
   addButton: {
     // backgroundColor: "#3b5998",
@@ -198,35 +198,35 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   emptyContanier: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     height: height * 0.9,
     backgroundColor: Color.White,
   },
   emptyTitle: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: height * 0.022,
   },
   heading: {
-    fontFamily: "Roboto_700Bold",
+    fontFamily: 'Roboto_700Bold',
     color: Color.Black,
     fontSize: height * 0.019,
     paddingVertical: height * 0.01,
   },
   subHeading: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     color: Color.Black,
     fontSize: height * 0.016,
   },
   bellIcon: {
     width: width * 0.25,
     height: height * 0.15,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   button: {
     backgroundColor: Color.Blue,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: height * 0.01,
   },
   buttonTitle: {
-    fontFamily: "Roboto_600SemiBold",
+    fontFamily: 'Roboto_600SemiBold',
     color: Color.White,
     fontSize: height * 0.02,
   },

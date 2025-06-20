@@ -139,10 +139,7 @@ const ShareScreen = (props) => {
       <TouchableOpacity onPress={() => handleForwardContact(item)}>
         <View style={{ backgroundColor: Color.White }}>
           <View style={styles.contentContainer}>
-            <Image
-              source={{ uri: `${BASE_URL}/images/${item.profile}` }}
-              style={styles.userImg}
-            />
+            <Image source={{ uri: `${item.profile}` }} style={styles.userImg} />
             <View
               style={{
                 marginTop: Height * 0.008,
@@ -163,10 +160,10 @@ const ShareScreen = (props) => {
       if (props.members[0].phoneNumber === userState.phoneNumber) {
         const profile = props.members[1].profile;
 
-        return `${BASE_URL}/images/${profile}`;
+        return `${profile}`;
       } else {
         const profile = props.members[0].profile;
-        return `${BASE_URL}/images/${profile}`;
+        return `${profile}`;
       }
     };
     return (

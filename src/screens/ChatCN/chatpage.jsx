@@ -540,7 +540,7 @@ const ChatPageCN = (props) => {
                         item={item}
                         onPress={() =>
                           props.navigation.navigate('ViewImage', {
-                            url: `${BASE_URL}/messageMedia/${item.content}`,
+                            url: `${item.content}`,
                             message: item.content,
                           })
                         }
@@ -571,7 +571,7 @@ const ChatPageCN = (props) => {
                         item={item}
                         onPress={() =>
                           props.navigation.navigate('ViewImage', {
-                            url: `${BASE_URL}/messageMedia/${item.content}`,
+                            url: `${item.content}`,
                             message: item.content,
                           })
                         }

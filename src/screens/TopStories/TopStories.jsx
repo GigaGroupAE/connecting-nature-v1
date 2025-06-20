@@ -17,7 +17,6 @@ import VideoPlayer from 'expo-video-player';
 import { useStateContext } from '../../contexts/ContextProvider';
 
 import { AntDesign, MaterialCommunityIcons } from 'react-native-vector-icons';
-import { BASE_URL } from '../../../CONSTANTS';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const width = Dimensions.get('screen').width;
@@ -97,7 +96,7 @@ const TopStories = () => {
             <Image
               style={styles.userImg}
               source={{
-                uri: `${BASE_URL}/images/${item.postedby.profile}`,
+                uri: `${item.postedby.profile}`,
               }}
               resizeMode="cover"
             />
@@ -157,7 +156,7 @@ const TopStories = () => {
                         style={styles.postImg}
                         resizeMode="contain"
                         source={{
-                          uri: `${BASE_URL}/images/${item.media.name}`,
+                          uri: `${item.media.name}`,
                         }}
                       />
                     </TouchableOpacity>
@@ -170,7 +169,7 @@ const TopStories = () => {
                       fullscreen={{
                         enterFullscreen: () => {
                           navigation.navigate('PostView', {
-                            url: `${BASE_URL}/images/${item.media.name}`,
+                            url: `${item.media.name}`,
                             message: '',
                             mediatype: 'video',
                           });
@@ -182,7 +181,7 @@ const TopStories = () => {
                         isLooping: false,
                         ref: video,
                         source: {
-                          uri: `${BASE_URL}/images/${item.media.name}`,
+                          uri: `${item.media.name}`,
                         },
                         shouldPlay: false,
                         resizeMode: 'contain',
@@ -241,7 +240,7 @@ const TopStories = () => {
                   fullscreen={{
                     enterFullscreen: () => {
                       navigation.navigate('PostView', {
-                        url: `${BASE_URL}/images/${selectedStory.media.name}`,
+                        url: `${selectedStory.media.name}`,
                         message: '',
                         mediatype: 'video',
                         description: selectedStory.description,
@@ -249,12 +248,12 @@ const TopStories = () => {
                     },
                     exitFullscreen: (e) => console.log(e),
                   }}
-                  defaultControlsVisible={true}
+                  defaultControlsVisible
                   videoProps={{
                     isLooping: false,
                     ref: video,
                     source: {
-                      uri: `${BASE_URL}/images/${selectedStory.media.name}`,
+                      uri: `${selectedStory.media.name}`,
                     },
                     shouldPlay: false,
                     resizeMode: 'contain',
@@ -276,7 +275,7 @@ const TopStories = () => {
                         ]}
                         resizeMode="stretch"
                         source={{
-                          uri: `${BASE_URL}/images/${selectedStory.media.name}`,
+                          uri: `${selectedStory.media.name}`,
                         }}
                       />
                     </TouchableOpacity>
@@ -306,7 +305,7 @@ const TopStories = () => {
                           },
                         ]}
                         source={{
-                          uri: `${BASE_URL}/images/${selectedStory?.postedby?.profile}`,
+                          uri: `${selectedStory?.postedby?.profile}`,
                         }}
                         resizeMode="cover"
                       />

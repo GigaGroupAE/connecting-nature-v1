@@ -1,22 +1,19 @@
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Color from "../../../assets/colors/Color";
-import user from "../../../assets/user.jpg";
-import { AntDesign, Entypo, Ionicons } from "react-native-vector-icons";
-import { BASE_URL } from "../../../CONSTANTS";
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import Color from '../../../assets/colors/Color';
+import user from '../../../assets/user.jpg';
+import { AntDesign, Entypo, Ionicons } from 'react-native-vector-icons';
+import { BASE_URL } from '../../../CONSTANTS';
 
-const Width = Dimensions.get("screen").width;
-const Height = Dimensions.get("screen").height;
+const Width = Dimensions.get('screen').width;
+const Height = Dimensions.get('screen').height;
 
 const AdminHeader = (props) => {
   const { name, role, image, notification } = props;
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          style={styles.userImg}
-          source={{ uri: `${BASE_URL}/images/${image}` }}
-        />
+        <Image style={styles.userImg} source={{ uri: `${image}` }} />
       </View>
       <View style={{ flex: 1, marginLeft: Width * 0.02 }}>
         <Text style={styles.title}>{name}</Text>
@@ -61,24 +58,24 @@ export default AdminHeader;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Color.White,
-    alignContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    alignContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 17,
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderColor: Color.VeryLightGrey,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   title: {
-    fontFamily: "Roboto_600SemiBold",
-    fontWeight: "600",
+    fontFamily: 'Roboto_600SemiBold',
+    fontWeight: '600',
     color: Color.Black,
     fontSize: Height * 0.021,
   },
   role: {
-    fontFamily: "Roboto_500Medium",
-    fontWeight: "400",
+    fontFamily: 'Roboto_500Medium',
+    fontWeight: '400',
     color: Color.Black,
     fontSize: Height * 0.015,
   },
@@ -86,6 +83,6 @@ const styles = StyleSheet.create({
     width: Width * 0.12,
     height: Height * 0.059,
     borderRadius: Height * 0.1,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
 });

@@ -158,7 +158,7 @@ const EditBiddingProjectModal = ({
     const images = project?.image
       ?.filter((imageItem) => imageItem?.mimetype === 'image/jpeg')
       .map((imageItem) => ({
-        uri: `${BASE_URL}/images/${imageItem?.filename}`,
+        uri: `${imageItem?.filename}`,
       }));
 
     seteditProductImages(images);

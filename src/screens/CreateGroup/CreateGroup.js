@@ -58,14 +58,13 @@ export default function CreateGroup() {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [3, 4],
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -121,7 +120,7 @@ export default function CreateGroup() {
 
     if (image !== null) {
       formData.append('groupPic', {
-        name: `groupPic.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
+        name: `${userState?.phoneNumber}groupPic.jpg`, // phone number is added to make sure data doesn't duplicate at any cost
         uri: image,
         type: 'image/jpg',
       });
@@ -148,16 +147,14 @@ export default function CreateGroup() {
     // }
 
     try {
-      const { data } = await axios.post(
-        `${BASE_URL}/groups/creategroup`,
-        formData,
-        config,
-      );
+      await axios.post(`${BASE_URL}/groups/creategroup`, formData, config);
 
-      navigation.goBack();
+      // navigation.goBack();
       setLoading(false);
       showSnackbar('Group Created Successfully');
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   const [groupLeader, setgroupLeader] = useState(null);
   const selectedcontact = (props) => {

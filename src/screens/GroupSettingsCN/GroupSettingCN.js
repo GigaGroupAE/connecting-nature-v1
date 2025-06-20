@@ -10,7 +10,6 @@ import {
 import React, { useState } from 'react';
 import { IconButton, Button, Avatar, Portal, Modal } from 'react-native-paper';
 import { useUserState } from '../../slices/userSlice';
-import { BASE_URL } from './../../../CONSTANTS';
 import { useNavigation } from '@react-navigation/native';
 import HeaderNormal from '../../components/HeaderNormal';
 function GroupSettingsCN(props) {
@@ -22,9 +21,7 @@ function GroupSettingsCN(props) {
   });
   const userState = useUserState();
 
-  const [profile, setProfile] = useState(
-    `${BASE_URL}/images/${groupState.groupPic}`,
-  );
+  const [profile, setProfile] = useState(`${groupState.groupPic}`);
   const navigation = useNavigation();
 
   const styles = StyleSheet.create({

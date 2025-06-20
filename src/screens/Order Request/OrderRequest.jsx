@@ -70,7 +70,7 @@ const UserList = () => {
           <View style={styles.User}>
             <TouchableOpacity style={styles.user}>
               <Image
-                source={{ uri: `${BASE_URL}/images/${item.user.profile}` }}
+                source={{ uri: `${item.user.profile}` }}
                 style={styles.userImage}
               />
               <Text style={styles.userName}>

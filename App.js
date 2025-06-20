@@ -145,8 +145,8 @@ function Main() {
   const { loading } = useStateContext();
   const UserState = useUserState();
   const initialRouteName = isEqual(initialUserState, UserState)
-    ? 'SignIn'
-    : 'Home';
+    ? 'Welcome'
+    : 'Welcome';
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -49,7 +49,7 @@ const GradientBottomImage = ({ source, style, borderRadius = 8, story }) => {
               isLooping: false,
               ref: video,
               source: {
-                uri: `${BASE_URL}/images/${story.media.name}`,
+                uri: `${story.media.name}`,
               },
               shouldPlay: false,
               resizeMode: 'cover',

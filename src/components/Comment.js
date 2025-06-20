@@ -93,7 +93,7 @@ export default function Comment({
         <View style={styles.commentMainContainer}>
           <Image
             style={styles.avatar}
-            source={{ uri: `${BASE_URL}/images/${commented_by?.profile}` }}
+            source={{ uri: `${commented_by?.profile}` }}
           />
           <TouchableOpacity
             style={styles.commentTextContainer}

@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { BASE_URL } from '../../../CONSTANTS';
+
 import { Entypo } from 'react-native-vector-icons';
 import { scale } from 'react-native-size-matters';
 import MessageType from '../../components/DocumentMessage/MessageType';
@@ -16,7 +16,7 @@ import Color from '../../../assets/colors/Color';
 import { useUserState } from '../../slices/userSlice';
 const DocType = ({ data }) => {
   const handleDocumentPress = (item) => {
-    Linking.openURL(`${BASE_URL}/images/messageMedia/${item?.content?.path}`);
+    Linking.openURL(`${item?.content?.path}`);
   };
 
   const userState = useUserState();

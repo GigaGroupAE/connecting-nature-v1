@@ -224,7 +224,7 @@ const WinAnnouncSettings = ({ modalVisible, setModalVisible }) => {
                         >
                           <Image
                             source={{
-                              uri: `${BASE_URL}/images/${item?.bidBy[0]?.profile}`,
+                              uri: `${item?.bidBy[0]?.profile}`,
                             }}
                             style={styles.image}
                           />
