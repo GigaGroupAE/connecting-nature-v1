@@ -50,7 +50,7 @@ const StoryCommentHeader = ({ setmodalVisible }) => {
             <Image
               style={styles.userImg}
               source={{
-                uri: `${BASE_URL}/images/${selectedStory?.postedby?.profile}`,
+                uri: `${selectedStory?.postedby?.profile}`,
               }}
               resizeMode="cover"
             />

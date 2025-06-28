@@ -147,7 +147,7 @@ const StoryComment = (props) => {
       if (selectedStory.media) {
         formData.append('media', {
           name: selectedStory.media.name,
-          uri: `${BASE_URL}/images/${selectedStory.media.name}`,
+          uri: `${selectedStory.media.name}`,
           type: selectedStory.media.type,
         });
       } else {

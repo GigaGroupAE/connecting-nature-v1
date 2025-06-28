@@ -5,19 +5,19 @@ import {
   Text,
   View,
   TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
-import Color from "../../../assets/colors/Color";
-import HeaderNormal from "../../components/HeaderNormal";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useUserState, useUserStateActions } from "../../slices/userSlice";
-import UserFollowers from "./UserFollowers";
-import NoFollower from "./NoFollower";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import CustomStatsBar from "../../components/CustomStatsBar";
+} from 'react-native';
+import React, { useState } from 'react';
+import Color from '../../../assets/colors/Color';
+import HeaderNormal from '../../components/HeaderNormal';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useUserState, useUserStateActions } from '../../slices/userSlice';
+import UserFollowers from './UserFollowers';
+import NoFollower from './NoFollower';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CustomStatsBar from '../../components/CustomStatsBar';
 
-const Height = Dimensions.get("screen").height;
-const Width = Dimensions.get("screen").width;
+const Height = Dimensions.get('screen').height;
+const Width = Dimensions.get('screen').width;
 
 const renderItem = ({ item }, screen, user) => {
   return (
@@ -54,9 +54,9 @@ const Followers = () => {
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            width: "100%",
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '100%',
             borderBottomWidth: 1,
             borderBottomColor: Color.VeryLightGrey,
             height: Height * 0.05,
@@ -80,7 +80,6 @@ const Followers = () => {
             <Text style={styles.title}>{userFollowing?.following?.length}</Text>
             <Text style={styles.title}>following</Text>
           </TouchableOpacity>
-          <TouchableOpacity></TouchableOpacity>
         </View>
 
         {activeFollowers ? (
@@ -111,7 +110,7 @@ const Followers = () => {
                     userState,
                     user,
                     userActions,
-                    setFollowing
+                    setFollowing,
                   )
                 } // Pass 'screen' as a parameter
                 keyExtractor={(item) => Math.random()}
@@ -146,7 +145,7 @@ const Followers = () => {
                     userState,
                     user,
                     userActions,
-                    setFollowing
+                    setFollowing,
                   )
                 } // Pass 'screen' as a parameter
                 keyExtractor={(item) => Math.random()}
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   followerCard: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: Height * 0.009,
 
     backgroundColor: Color.White,
@@ -180,80 +179,80 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 8,
-    width: "90%",
-    alignSelf: "center",
+    width: '90%',
+    alignSelf: 'center',
     paddingVertical: Height * 0.01,
     paddingHorizontal: Width * 0.04,
   },
   userImage: {
     borderRadius: Height * 0.1,
-    width: "100%",
-    height: "100%",
-    resizeMode: "center",
+    width: '100%',
+    height: '100%',
+    resizeMode: 'center',
   },
   imageContainer: {
     width: Width * 0.125,
     height: Height * 0.059,
     borderRadius: Height * 1,
-    overflow: "hidden",
-    alignItems: "center",
+    overflow: 'hidden',
+    alignItems: 'center',
   },
   nameContainer: {
-    flexDirection: "row",
-    width: "85%",
+    flexDirection: 'row',
+    width: '85%',
     marginLeft: Width * 0.02,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   userName: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.0177,
   },
   userRole: {
     // marginLeft: Width * 0.02,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     color: Color.Blue,
-    marginTop: "-1.5%",
+    marginTop: '-1.5%',
     fontSize: Height * 0.016,
   },
   button: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: Color.Blue,
-    marginVertical: "auto",
+    marginVertical: 'auto',
     paddingVertical: Height * 0.01,
     paddingHorizontal: Width * 0.05,
     borderRadius: Height * 0.01,
   },
   buttonTitle: {
     color: Color.White,
-    fontFamily: "Roboto_500Medium",
-    textTransform: "capitalize",
+    fontFamily: 'Roboto_500Medium',
+    textTransform: 'capitalize',
   },
   adminIcon: {
     marginLeft: 5,
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: Height * 0.018,
     color: Color.Blue,
   },
   title: {
-    fontFamily: "Roboto_500Medium",
+    fontFamily: 'Roboto_500Medium',
     fontSize: Height * 0.02,
     paddingHorizontal: Width * 0.01,
   },
   activeScreen: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
 
     borderBottomColor: Color.Blue,
     borderBottomWidth: 2,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   followerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "40%",
-    display: "flex",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '40%',
+    display: 'flex',
+    justifyContent: 'center',
   },
 });

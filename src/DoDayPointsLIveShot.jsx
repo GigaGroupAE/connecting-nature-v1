@@ -143,7 +143,7 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
                   source={
                     doday?.teamA?.leader?.profile
                       ? {
-                          uri: `${BASE_URL}/images/${doday?.teamA?.leader?.profile}`,
+                          uri: `${doday?.teamA?.leader?.profile}`,
                         }
                       : require('../assets/avatar-placeholder.png')
                   }
@@ -162,7 +162,7 @@ const DoDayPointsLIveShot = ({ doday, loading }) => {
                   source={
                     doday?.teamA?.leader?.profile
                       ? {
-                          uri: `${BASE_URL}/images/${doday?.teamB?.leader?.profile}`,
+                          uri: `${doday?.teamB?.leader?.profile}`,
                         }
                       : require('../assets/avatar-placeholder.png')
                   }

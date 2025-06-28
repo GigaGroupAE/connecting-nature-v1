@@ -114,14 +114,18 @@ export default function CompleteProfile() {
     locationPermission();
   }, []);
   const pick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImageUri(result.uri);
-      setimage(result);
+    try {
+      // const result = await DocumentPicker.getDocumentAsync({});
+      const result = await ImagePicker.launchImageLibraryAsync({
+        quality: 0.8,
+        mediaTypes: 'All',
+      });
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+        setimage(result.assets[0]);
+      }
+    } catch {
+    } finally {
     }
   };
   const navigation = useNavigation();

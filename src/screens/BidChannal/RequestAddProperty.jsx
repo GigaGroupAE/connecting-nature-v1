@@ -188,7 +188,7 @@ const RequestAddProperty = () => {
                     >
                       <Image
                         source={{
-                          uri: `${BASE_URL}/images/${sendUser?.profile}`,
+                          uri: `${sendUser?.profile}`,
                         }}
                         style={styles.image}
                       />

@@ -29,10 +29,7 @@ const BidChannelHeader = ({ item }) => {
             // style={{ alignSelf: 'center', alignItems: 'center' }}
           />
         </TouchableOpacity>
-        <Image
-          source={{ uri: `${BASE_URL}/images/${item?.groupPic}` }}
-          style={styles.userImg}
-        />
+        <Image source={{ uri: `${item?.groupPic}` }} style={styles.userImg} />
         <Pressable
           style={styles.nameContainer}
           onPress={() => navigate('channelSetting', { groupData: item })}

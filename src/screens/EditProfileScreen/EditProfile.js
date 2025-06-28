@@ -30,9 +30,7 @@ const EditProfile = () => {
   const { setLoading } = useStateContext();
   const [image, setimage] = useState(null);
   const [userToken, setuserToken] = useState(userState.token);
-  const [imageUri, setImageUri] = useState(
-    `${BASE_URL}/images/${userState.profile}`,
-  );
+  const [imageUri, setImageUri] = useState(`${userState.profile}`);
   const handleChanges = (props) => {
     setChanges(props);
   };
@@ -93,7 +91,7 @@ const EditProfile = () => {
       );
 
       // Assuming userToken is available and set elsewhere
-      userStateActions.setUser(response.data);
+      userStateActions.setUser(response.data?.user);
       userStateActions.settoken(userToken);
 
       setLoading(false);

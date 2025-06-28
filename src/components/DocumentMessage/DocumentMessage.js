@@ -74,9 +74,7 @@ const DocumentMessage = (props) => {
                   paddingHorizontal: 4,
                 }}
                 onPress={() => {
-                  Linking.openURL(
-                    `${BASE_URL}/messageMedia/${item.content?.path}`,
-                  );
+                  Linking.openURL(`${item.content?.path}`);
                 }}
               >
                 <MessageType title={item.content?.name} />

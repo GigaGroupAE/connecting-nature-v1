@@ -31,7 +31,7 @@ export default function RecordingVoiceMessage(props) {
     try {
       setAudioPlayback('Loading');
       const { sound } = await Audio.Sound.createAsync({
-        uri: `${BASE_URL}/messageMedia/${item.content}`,
+        uri: `${item.content}`,
       });
       setSound(sound);
       await sound.playAsync().then(() => {

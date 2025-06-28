@@ -232,7 +232,7 @@ const ChannalSetting = () => {
       {/* Header  */}
       <View style={styles.header}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${groupData[0]?.groupPic}` }}
+          source={{ uri: `${groupData[0]?.groupPic}` }}
           style={styles.profileImage}
         />
         <View style={{ gap: 4 }}>
@@ -477,7 +477,7 @@ const ChannalSetting = () => {
                     <View style={styles.rowContainer}>
                       <Image
                         source={{
-                          uri: `${BASE_URL}/images/${item?.member?.profile}`,
+                          uri: `${item?.member?.profile}`,
                         }}
                         style={styles.profileImage}
                       />

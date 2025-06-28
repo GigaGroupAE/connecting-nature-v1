@@ -15,7 +15,7 @@ import ReportPostModal from './ReportPostModal';
 
 const PostShareModal = ({ modalVisible, setModalVisible, media, id }) => {
   const name = media?.name;
-  const url = `${BASE_URL}/images/${media?.name}`;
+  const url = `${media?.name}`;
   const { showSnackbar } = useStateContext();
   const [isReportPost, setisReportPost] = useState(false);
   const handleShare = async () => {

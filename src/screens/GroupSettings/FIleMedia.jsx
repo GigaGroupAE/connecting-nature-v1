@@ -12,7 +12,7 @@ const FileMedia = ({ data }) => {
 
   const handleImagePress = () => {
     navigation.navigate('ViewImage', {
-      url: `${BASE_URL}/images/messageMedia/${data?.content}`,
+      url: `${data?.content}`,
       message: '',
     });
   };
@@ -23,7 +23,7 @@ const FileMedia = ({ data }) => {
         <TouchableOpacity onPress={handleImagePress}>
           <Image
             source={{
-              uri: `${BASE_URL}/images/messageMedia/${data?.content}`,
+              uri: `${data?.content}`,
             }}
             style={styles.image}
           />
@@ -40,7 +40,7 @@ const FileMedia = ({ data }) => {
                   shouldPlay: false,
                 });
                 navigation.navigate('PostView', {
-                  url: `${BASE_URL}/images/messageMedia/${data?.content}`,
+                  url: `${data?.content}`,
                   message: '',
                   mediatype: 'video',
                   description: '',
@@ -52,7 +52,7 @@ const FileMedia = ({ data }) => {
               isLooping: false,
               ref: video,
               source: {
-                uri: `${BASE_URL}/images/messageMedia/${data?.content}`,
+                uri: `${data?.content}`,
               },
               shouldPlay: false,
               resizeMode: 'cover',

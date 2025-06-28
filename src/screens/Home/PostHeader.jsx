@@ -46,7 +46,7 @@ const PostHeader = ({ data, setmodalVisible }) => {
         <Image
           style={styles.userAvatar}
           source={{
-            uri: `${BASE_URL}/images/${userImage}`,
+            uri: `${userImage}`,
             cache: 'force-cache',
           }}
         />

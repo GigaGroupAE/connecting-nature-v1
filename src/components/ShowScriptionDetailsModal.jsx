@@ -28,7 +28,7 @@ const ShowScriptionDetailsModal = ({ isVisible, setisVisible, item }) => {
               <TouchableOpacity
                 onPress={() => {
                   navigate('ViewImage', {
-                    url: `${BASE_URL}/images/${item?.image}`,
+                    url: `${item?.image}`,
                   });
                   setisVisible(false);
                 }}
@@ -39,7 +39,7 @@ const ShowScriptionDetailsModal = ({ isVisible, setisVisible, item }) => {
                 }}
               >
                 <Image
-                  source={{ uri: `${BASE_URL}/images/${item?.image}` }}
+                  source={{ uri: `${item?.image}` }}
                   style={styles.image}
                 />
               </TouchableOpacity>

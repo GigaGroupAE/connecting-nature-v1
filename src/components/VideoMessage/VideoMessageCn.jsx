@@ -80,7 +80,7 @@ const VideoMessageCn = (props) => {
                           shouldPlay: false,
                         });
                         navigation.navigate('PostView', {
-                          url: `${BASE_URL}/messageMedia/${item?.content}`,
+                          url: `${item?.content}`,
                           message: '',
                           mediatype: 'video',
                           description: '',
@@ -97,7 +97,7 @@ const VideoMessageCn = (props) => {
                       isLooping: false,
                       ref: video,
                       source: {
-                        uri: `${BASE_URL}/messageMedia/${item?.content}`,
+                        uri: `${item?.content}`,
                       },
                       shouldPlay: false,
                       resizeMode: 'contain',

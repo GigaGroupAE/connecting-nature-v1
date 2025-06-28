@@ -24,7 +24,7 @@ const ChatScreenHeader = (props) => {
     });
     // console.log(member[0]);
     const memb = member[0];
-    setPhoto(`${BASE_URL}/images/${memb.profile}`);
+    setPhoto(`${memb.profile}`);
     settitle(memb.fullName);
     setsubtitle(memb.type);
   }, [props]);

@@ -77,7 +77,7 @@ export default function AdminBottomTab(props) {
         /> */}
         <Image
           style={styles.headerAvatar}
-          source={{ uri: `${BASE_URL}/images/${userState.profile}` }}
+          source={{ uri: `${userState.profile}` }}
           contentFit="cover"
         />
       </TouchableOpacity>

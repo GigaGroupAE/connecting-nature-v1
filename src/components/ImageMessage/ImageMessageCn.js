@@ -64,7 +64,7 @@ const ImageMessageCn = (props) => {
                       ? styles.receiverImageMessage
                       : styles.senderImageMessage,
                   ]}
-                  source={{ uri: `${BASE_URL}/messageMedia/${item.content}` }}
+                  source={{ uri: `${item.content}` }}
                   resizeMode="cover"
                 />
               )}

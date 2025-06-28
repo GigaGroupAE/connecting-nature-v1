@@ -112,8 +112,8 @@ function ProfileSettings(props) {
               size={Dimensions.get('screen').height * 0.075}
               source={
                 userState.profile
-                  ? { uri: `${BASE_URL}/images/${userState.profile}` }
-                  : null //require("../../assets/avatar-placeholder.png")
+                  ? { uri: `${userState.profile}` }
+                  : 'https://connecting-nature-media.s3.ap-south-1.amazonaws.com/uploads/no-profile-picture-placeholder.png' //require("../../assets/avatar-placeholder.png")
               }
             />
             <View style={{ marginLeft: 12, gap: 3 }}>

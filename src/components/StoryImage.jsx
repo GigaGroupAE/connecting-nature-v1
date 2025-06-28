@@ -11,7 +11,7 @@ const StoryImage = ({ mediaDesciption, media, id, imageStyle }) => {
       key={id}
       onPress={() =>
         navigation.navigate('PostView', {
-          url: `${BASE_URL}/images/${media}`,
+          url: `${media}`,
           message: mediaDesciption,
         })
       }
@@ -19,7 +19,7 @@ const StoryImage = ({ mediaDesciption, media, id, imageStyle }) => {
       <Image
         style={imageStyle}
         source={{
-          uri: `${BASE_URL}/images/${media}`,
+          uri: `${media}`,
         }}
         contentFit="cover"
       />

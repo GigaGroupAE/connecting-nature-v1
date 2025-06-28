@@ -5,17 +5,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  Linking,
   Pressable,
 } from 'react-native';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
-import { BASE_URL } from '../../../CONSTANTS';
-import { useUserState } from '../../slices/userSlice';
-import Color from '../../../assets/colors/Color';
 import { useNavigation } from '@react-navigation/native';
-import MessageType from './MessageType';
+import { WebView } from 'react-native-webview';
+import Modal from 'react-native-modal';
+
+import { useUserState } from '../../slices/userSlice';
 import { calculateTimeDifference } from '../../utils/timeDifference';
 import { screenHeight } from '../../utils/ScreenDimensions';
+import Color from '../../../assets/colors/Color';
+import MessageType from './MessageType';
 
 const Height = Dimensions.get('screen').height;
 const Width = Dimensions.get('screen').width;
@@ -23,10 +24,10 @@ const Width = Dimensions.get('screen').width;
 const DocumentMessageCn = (props) => {
   const { socket, item } = props;
   const timePassed = calculateTimeDifference(item.date);
-
   const userState = useUserState();
   const [document, setDocument] = React.useState(item?.content);
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   const shortTitle =
     document?.name?.length > 10
@@ -35,6 +36,22 @@ const DocumentMessageCn = (props) => {
 
   return (
     <View>
+      {/* Document Preview Modal */}
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        style={{ margin: 0 }}
+      >
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+          <WebView
+            source={{ uri: document?.path }}
+            startInLoadingState
+            style={{ flex: 1 }}
+          />
+        </View>
+      </Modal>
+
+      {/* Document Message View */}
       <Pressable
         style={[
           userState.id === item?.from
@@ -59,21 +76,12 @@ const DocumentMessageCn = (props) => {
             ]}
           >
             <Pressable
-              onPress={() => {
-                Linking.openURL(
-                  `${BASE_URL}/messageMedia/${item.content.path}`,
-                );
-              }}
+              onPress={() => setModalVisible(true)}
               onLongPress={() => props?.longPress(item._id, item?.from)}
             >
               <View>
                 <View>
-                  <View
-                    style={{
-                      overflow: 'hidden',
-                      flexDirection: 'row',
-                    }}
-                  >
+                  <View style={{ overflow: 'hidden', flexDirection: 'row' }}>
                     <MessageType title={item.content?.name} />
                     <Text
                       style={{
@@ -86,6 +94,7 @@ const DocumentMessageCn = (props) => {
                     </Text>
                   </View>
                 </View>
+
                 <View
                   style={{
                     flexDirection: 'row',
@@ -104,8 +113,8 @@ const DocumentMessageCn = (props) => {
                   >
                     {document.size
                       ? document.size >= 1000000
-                        ? document.size / 1000000 + ' ' + 'MB' + ' '
-                        : document.size / 1000 + ' ' + 'kB' + ' '
+                        ? (document.size / 1000000).toFixed(2) + ' MB'
+                        : (document.size / 1000).toFixed(2) + ' kB'
                       : 'somesize'}
                   </Text>
                   <Text
@@ -122,6 +131,7 @@ const DocumentMessageCn = (props) => {
             </Pressable>
           </View>
         </View>
+
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('MsgShare', {
@@ -181,55 +191,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     marginVertical: 4,
   },
-  textMessageMainContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
-  textMessageContainer: {
-    alignItems: 'baseline',
-    width: Dimensions.get('screen').width * 0.64,
-    // alignSelf: "flex-start",
-    backgroundColor: 'white',
-    maxWidth: '80%',
-    borderLeftWidth: 4,
-    borderColor: '#4582C3',
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    marginVertical: 4.5,
-    paddingHorizontal: 5,
-  },
-  username: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 5,
-    fontFamily: 'Roboto_500Medium',
-    paddingVertical: 3,
-    color: '#4582C3',
-  },
-  message: {
-    fontSize: 14,
-    marginLeft: 5,
-    lineHeight: 18,
-    fontFamily: 'Roboto_400Regular',
-    paddingVertical: 3,
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    marginVertical: '1%',
-  },
-  time: {
-    fontSize: 12,
-    color: Color.Grey,
-    fontFamily: 'Roboto_400Regular',
-    marginLeft: '10%',
-  },
   shareMessage: {
     position: 'absolute',
     right: Width * 0.76,
-    // bottom: -15,
     backgroundColor: '#CFCFCF',
     marginLeft: 9,
     borderRadius: 50,
@@ -237,8 +201,6 @@ const styles = StyleSheet.create({
   },
   receiverShareMessage: {
     position: 'absolute',
-    // right: -40,
-    // bottom: -15,
     left: Width * 0.7,
     backgroundColor: '#CFCFCF',
     marginLeft: 9,

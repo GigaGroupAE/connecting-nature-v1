@@ -14,7 +14,7 @@ const DecorationImagesCard = ({ images, setcoverImage }) => {
             <Pressable onPress={() => setcoverImage(item?.name)}>
               <Image
                 source={{
-                  uri: `${BASE_URL}/images/${item.name}`,
+                  uri: `${item.name}`,
                 }}
                 style={styles.images}
               />

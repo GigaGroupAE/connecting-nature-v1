@@ -41,7 +41,7 @@ export default function StoryCard(props) {
               width: Width * 0.8,
             }}
             source={{
-              uri: `${BASE_URL}/images/${props.story.media.name}`,
+              uri: `${props.story.media.name}`,
             }}
             story={props.story}
           />
@@ -59,7 +59,7 @@ export default function StoryCard(props) {
                 <TouchableOpacity key={props.index}>
                   <Image
                     source={{
-                      uri: `${BASE_URL}/images/${props.story.postedby.profile}`,
+                      uri: `${props.story.postedby.profile}`,
                     }}
                     style={styles.userProfileImage}
                   />
@@ -82,7 +82,7 @@ export default function StoryCard(props) {
               <Image
                 style={styles.storyImage}
                 source={{
-                  uri: `${BASE_URL}/images/${props.story.media.name}`,
+                  uri: `${props.story.media.name}`,
                 }}
               />
               <ProgressBar progress={time} style={{ color: Color.Blue }} />

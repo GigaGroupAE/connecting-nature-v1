@@ -190,10 +190,7 @@ const CampaignChatHeader = ({
           <AntDesign name="left" size={22} color={Color.White} />
         </TouchableOpacity>
         <View style={{ marginLeft: Width * 0.018 }}>
-          <Image
-            style={styles.userImg}
-            source={{ uri: `${BASE_URL}/images/${group.groupPic}` }}
-          />
+          <Image style={styles.userImg} source={{ uri: `${group.groupPic}` }} />
         </View>
         <TouchableOpacity
           style={{ flex: 1, marginLeft: Width * 0.02 }}

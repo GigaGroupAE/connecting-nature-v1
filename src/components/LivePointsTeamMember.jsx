@@ -16,7 +16,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamAuser?.[0]
                     ? {
-                        uri: `${BASE_URL}/images/${teamAuser?.[0]?.profile}`,
+                        uri: `${teamAuser?.[0]?.profile}`,
                       }
                     : null
                 }
@@ -29,7 +29,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamAuser?.[1]
                     ? {
-                        uri: `${BASE_URL}/images/${teamAuser?.[1]?.profile}`,
+                        uri: `${teamAuser?.[1]?.profile}`,
                       }
                     : null
                 }
@@ -42,7 +42,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamAuser?.[2]
                     ? {
-                        uri: `${BASE_URL}/images/${teamAuser?.[2]?.profile}`,
+                        uri: `${teamAuser?.[2]?.profile}`,
                       }
                     : null
                 }
@@ -64,7 +64,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamBuser?.[0]
                     ? {
-                        uri: `${BASE_URL}/images/${teamBuser?.[0]?.profile}`,
+                        uri: `${teamBuser?.[0]?.profile}`,
                       }
                     : null
                 }
@@ -76,7 +76,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamBuser?.[1]
                     ? {
-                        uri: `${BASE_URL}/images/${teamBuser?.[1]?.profile}`,
+                        uri: `${teamBuser?.[1]?.profile}`,
                       }
                     : null
                 }
@@ -88,7 +88,7 @@ const LivePointsTeamMember = ({ teamAuser, teamBuser, campaign }) => {
                 source={
                   teamBuser?.[2]
                     ? {
-                        uri: `${BASE_URL}/images/${teamBuser?.[2]?.profile}`,
+                        uri: `${teamBuser?.[2]?.profile}`,
                       }
                     : null
                 }

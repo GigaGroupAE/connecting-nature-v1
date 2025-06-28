@@ -259,7 +259,7 @@ export default function NewPost(props) {
         <View style={styles.postContent}>
           <Image
             style={styles.headerAvatar}
-            source={{ uri: `${BASE_URL}/images/${userState.profile}` }}
+            source={{ uri: `${userState.profile}` }}
           />
           <TextInput
             style={styles.inputField}

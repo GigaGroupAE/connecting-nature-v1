@@ -144,13 +144,13 @@ const AddDecorProduct = ({ navigation }) => {
                         <Pressable
                           onPress={() =>
                             navigation.navigate('ViewImage', {
-                              url: `${BASE_URL}/images/${item?.image}`,
+                              url: `${item?.image}`,
                             })
                           }
                         >
                           <Image
                             source={{
-                              uri: `${BASE_URL}/images/${item?.image}`,
+                              uri: `${item?.image}`,
                             }}
                             style={styles.productImage}
                           />
@@ -248,7 +248,7 @@ const AddDecorProduct = ({ navigation }) => {
                   {editProductDetails && (
                     <Image
                       source={{
-                        uri: `${BASE_URL}/images/${editProductDetails?.image}`,
+                        uri: `${editProductDetails?.image}`,
                       }}
                       style={styles.image}
                     />

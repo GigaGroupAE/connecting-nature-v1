@@ -764,7 +764,7 @@ const ChatPage = (props) => {
                             socket={socket}
                             onPress={() =>
                               props.navigation.navigate('ViewImage', {
-                                url: `${BASE_URL}/messageMedia/${item.content}`,
+                                url: `${item.content}`,
                                 message: item.content,
                               })
                             }
@@ -780,7 +780,7 @@ const ChatPage = (props) => {
                             <OrderMessage
                               username={item.from.fullName}
                               time={timePassed ? timePassed : '1h'}
-                              image={`${BASE_URL}/images/${item.content.image}`}
+                              image={`${item.content.image}`}
                               onPress={() => {
                                 updateMessage(item);
                               }}
@@ -796,14 +796,14 @@ const ChatPage = (props) => {
                           <View style={isImage ? null : { marginBottom: 5 }}>
                             <ImageMessage
                               groupTitle={props.route?.params?.group?.title}
-                              image={`${BASE_URL}/messageMedia/${item.content}`}
+                              image={`${item.content}`}
                               phoneNumber={item.from}
                               longPress={handleDelete}
                               socket={socket}
                               item={item}
                               onPress={() =>
                                 props.navigation.navigate('ViewImage', {
-                                  url: `${BASE_URL}/messageMedia/${item.content}`,
+                                  url: `${item.content}`,
                                   // message: item.content,
                                 })
                               }
@@ -814,14 +814,14 @@ const ChatPage = (props) => {
                           <View style={isImage ? null : { marginBottom: 5 }}>
                             <VideoMessageCRM
                               groupTitle={props.route?.params?.group?.title}
-                              image={`${BASE_URL}/messageMedia/${item.content}`}
+                              image={`${item.content}`}
                               phoneNumber={item.from}
                               longPress={handleDelete}
                               socket={socket}
                               item={item}
                               onPress={() =>
                                 props.navigation.navigate('ViewImage', {
-                                  url: `${BASE_URL}/messageMedia/${item.content}`,
+                                  url: `${item.content}`,
                                   message: item.content,
                                 })
                               }

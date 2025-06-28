@@ -299,7 +299,7 @@ export default function Invitescreen({ route }) {
                 pinColor="#00FF00"
               >
                 <Image
-                  source={{ uri: `${BASE_URL}/images/${user.profile}` }}
+                  source={{ uri: `${user.profile}` }}
                   style={{ height: 30, width: 30, borderRadius: 30 / 2 }}
                 />
               </Marker>

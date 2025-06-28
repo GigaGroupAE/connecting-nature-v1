@@ -149,7 +149,7 @@ const LivePointsComment = () => {
                       <Image
                         style={styles.avatar}
                         source={{
-                          uri: `${BASE_URL}/images/${item?.commented_by?.profile}`,
+                          uri: `${item?.commented_by?.profile}`,
                         }}
                       />
                       <TouchableOpacity

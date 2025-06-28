@@ -94,10 +94,7 @@ const users = [
 
 const UserListItem = ({ user, onPress }) => (
   <TouchableOpacity style={styles.userItemContainer} onPress={onPress}>
-    <Image
-      source={{ uri: `${BASE_URL}/images/${user.photo}` }}
-      style={styles.userItemImage}
-    />
+    <Image source={{ uri: `${user.photo}` }} style={styles.userItemImage} />
     <Text style={styles.userItemName}>{user.name}</Text>
     <Text style={styles.userItemRole}>{user.phoneNumber}</Text>
   </TouchableOpacity>

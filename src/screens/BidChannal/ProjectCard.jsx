@@ -342,7 +342,7 @@ const ProjectCard = ({ item, currentuser, refetch, groupData }) => {
                 >
                   <Image
                     source={{
-                      uri: `${BASE_URL}/images/${imageItem?.filename}`,
+                      uri: `${imageItem?.filename}`,
                     }}
                     style={styles.image}
                     contentFit="cover"

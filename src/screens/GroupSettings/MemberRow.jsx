@@ -62,7 +62,7 @@ export default function MemberRow(props) {
             source={
               member.member.profile
                 ? {
-                    uri: `${BASE_URL}/images/${member.member.profile}`,
+                    uri: `${member.member.profile}`,
                   }
                 : require('../../../assets/no-profile-picture-placeholder.png')
             }

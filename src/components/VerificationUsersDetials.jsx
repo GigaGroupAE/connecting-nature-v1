@@ -67,7 +67,7 @@ const VerificationUsersDetials = ({ item, refetch }) => {
     <Pressable onPress={() => setisViewUser(true)} style={styles.container}>
       <View style={styles.leftContainer}>
         <Image
-          source={{ uri: `${BASE_URL}/images/${item?.user?.profile}` }}
+          source={{ uri: `${item?.user?.profile}` }}
           style={styles.userImage}
         />
         <View style={{ gap: 8 }}>
@@ -241,7 +241,7 @@ const VerificationUsersDetials = ({ item, refetch }) => {
                     <Text style={styles.label}>Utililty Bill</Text>
                     <Image
                       source={{
-                        uri: `${BASE_URL}/images/${item?.utililtyBill}`,
+                        uri: `${item?.utililtyBill}`,
                       }}
                       style={styles.image}
                       contentFit="cover"
@@ -258,7 +258,7 @@ const VerificationUsersDetials = ({ item, refetch }) => {
                   >
                     <Text style={styles.label}>CNIC Front</Text>
                     <Image
-                      source={{ uri: `${BASE_URL}/images/${item?.cnicFront}` }}
+                      source={{ uri: `${item?.cnicFront}` }}
                       style={styles.image}
                       contentFit="cover"
                     />
@@ -273,7 +273,7 @@ const VerificationUsersDetials = ({ item, refetch }) => {
                   >
                     <Text style={styles.label}>CNIC Back</Text>
                     <Image
-                      source={{ uri: `${BASE_URL}/images/${item?.cnicBack}` }}
+                      source={{ uri: `${item?.cnicBack}` }}
                       style={styles.image}
                       contentFit="cover"
                     />

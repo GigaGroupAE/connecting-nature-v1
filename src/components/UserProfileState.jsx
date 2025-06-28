@@ -153,7 +153,7 @@ const UserProfileState = ({ user, postCount, refetch }) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: `${BASE_URL}/images/${user.profile}`,
+              uri: `${user?.profile}`,
             }}
           />
 
@@ -164,7 +164,7 @@ const UserProfileState = ({ user, postCount, refetch }) => {
                 alignItems: 'center',
               }}
             >
-              <Text style={styles.userName}>{user.fullName}</Text>
+              <Text style={styles.userName}>{user?.fullName}</Text>
 
               {/* {(user.type === 'Operations' ||
                 user.type === 'Admin' ||
