@@ -33,7 +33,7 @@ const FadeInView = (props) => {
   );
 };
 
-const SplashScreen = () => {
+const SplashScreenCustem = () => {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <FadeInView>
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SplashScreen;
+export default SplashScreenCustem;
