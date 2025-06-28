@@ -10,5 +10,14 @@
     "userstate"
   ],
   "editor.fontSize": 16,
-  "files.autoSave": "onWindowChange"
+  "files.autoSave": "onWindowChange",
+  "task.allowAutomaticTasks": true,
+  "debug.openDebug": "neverOpen",
+  "terminal.integrated.inheritEnv": false,
+  "tasks": {
+    "label": "lint on open",
+    "type": "shell",
+    "command": "npm run lint",
+    "runOn": "folderOpen"
+  }
 }
